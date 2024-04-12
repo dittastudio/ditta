@@ -60,6 +60,7 @@ onMounted(() => {
   --icon-size: 25%;
 
   width: var(--icon-size);
+  min-width: 200px;
   height: auto;
 
   color: theme('colors.offblack');
