@@ -1,0 +1,25 @@
+@layer base {
+  @font-face {
+    font-family: 'Greycliff CF';
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+    src: url('/fonts/GreycliffCF-Heavy.woff2') format('woff2');
+  }
+
+  @font-face {
+    font-family: 'Greycliff CF';
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+    src: url('/fonts/GreycliffCF-Medium.woff2') format('woff2');
+  }
+
+  @font-face {
+    font-family: 'Greycliff CF';
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+    src: url('/fonts/GreycliffCF-Light.woff2') format('woff2');
+  }
+}

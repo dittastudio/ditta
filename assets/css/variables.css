@@ -1,0 +1,15 @@
+@layer base {
+  :root {
+    /* Global units */
+    --app-outer-gutter: theme('spacing.16');
+    --app-header-height: 96px;
+    --app-header-outer-gutter: theme('spacing.16');
+    --app-header-inner-gutter: theme('spacing.16');
+
+    @screen md {
+      --app-header-height: 144px;
+      --app-header-outer-gutter: theme('spacing.24');
+      --app-header-inner-gutter: theme('spacing.32');
+    }
+  }
+}

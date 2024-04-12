@@ -1,0 +1,32 @@
+@layer base {
+  html {
+    color: theme('colors.offwhite');
+    background-color: theme('colors.pink');
+  }
+
+  body {
+    font-family: theme('fontFamily.body');
+    font-size: theme('fontSize.16');
+
+    /* Improve text rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: theme('lineHeight.normal');
+
+    /* Remove default touch box */
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .wrapper {
+    margin-inline: auto;
+    padding-inline: var(--app-outer-gutter);
+  }
+
+  .section {
+    padding-block: theme('spacing.24');
+
+    @screen md {
+      padding-block: theme('spacing.64');
+    }
+  }
+}

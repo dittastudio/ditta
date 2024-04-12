@@ -1,0 +1,12 @@
+/* Base */
+@import url('@/assets/css/resets.css');
+@import url('@/assets/css/fonts.css');
+@import url('@/assets/css/variables.css');
+@import url('@/assets/css/page.css');
+@import url('@/assets/css/typography.css');
+
+/* @import url('@/assets/styles/base/type.css'); */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
