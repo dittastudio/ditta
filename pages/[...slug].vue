@@ -14,7 +14,7 @@ if (!story.value) {
   })
 }
 
-const { seo_title, seo_description, seo_image } = story.value.content
+const { seo_title, seo_description, seo_image } = story.value.content?.seo[0]
 
 useSeoMeta({
   title: seo_title ?? story.value.name,
@@ -38,6 +38,9 @@ onMounted(() => {
 
 <template>
   <div class="page__wrapper wrapper">
+
+    <!-- <Screen :log="seo_image" /> -->
+
     <IconDitta class="page__icon" />
     <h1 class="page__hidden">ditta</h1>
     <p><a class="page__link" href="mailto:hello@ditta.studio">hello@ditta.studio</a></p>

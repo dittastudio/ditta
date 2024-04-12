@@ -16,8 +16,6 @@ useHead({
 useSeoMeta({
   titleTemplate: title => (title ? `${title} - ditta` : 'ditta'),
   robots: 'index, follow',
-  description:
-    'ditta is a new digital agency in London. We are a team of designers, developers and strategists who are passionate about creating digital products that people love to use.',
 })
 </script>
 
