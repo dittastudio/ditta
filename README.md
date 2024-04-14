@@ -1,1 +1,11 @@
-# Ditta
+# ditta
+
+## .env
+
+```env
+NUXT_SSR=true
+NUXT_STORYBLOK_TOKEN=<VALUE>
+NUXT_STORYBLOK_VERSION=<VALUE>
+SENDGRID_API_KEY=<VALUE>
+LOCAL=true
+```
