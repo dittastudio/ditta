@@ -43,7 +43,7 @@ export default defineNuxtConfig({
     layoutTransition: false,
   },
   components: true,
-  css: ['@michaelpumo/screen/app.css'],
+  css: [process.env.LOCAL === 'true' ? '@michaelpumo/screen/app.css' : ''],
   gtag: {
     id: '',
   },
