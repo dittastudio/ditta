@@ -18,13 +18,14 @@ const { seo_title, seo_description, seo_image } = story.value.content?.seo[0]
 
 useSeoMeta({
   title: seo_title ?? story.value.name,
-  ogTitle: seo_title ?? story.value.name,
   description: seo_description,
+  ogTitle: seo_title ?? story.value.name,
   ogDescription: seo_description,
   ogImage: storyblokImage(seo_image?.filename, { width: 1230, height: 630 }) || null,
   ogType: 'website',
   twitterTitle: seo_title ?? story.value.name,
-  twitterCard: 'summary_large_image'
+  twitterCard: 'summary_large_image',
+  twitterImage: storyblokImage(seo_image?.filename, { width: 1230, height: 630 }) || null
 })
 
 onMounted(() => {
