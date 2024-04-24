@@ -27,7 +27,7 @@ useHead({
   >
     <div class="w-full max-w-md flex flex-col items-center justify-center gap-8 text-center">
       <h1>
-        <a href="/" class="block">Ditta</a>
+        <a href="/" class="block">ditta</a>
       </h1>
 
       <p class="text-24">

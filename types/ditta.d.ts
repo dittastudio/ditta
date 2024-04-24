@@ -1,2 +1,2 @@
-declare namespace Ditta {
+declare namespace ditta {
 }

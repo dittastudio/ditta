@@ -66,9 +66,9 @@ const storyblokImage = (
 
 const ratioDimensions = (
   maxWidth: number,
-  dimensions: Ditta.ImageDimensions,
+  dimensions: ditta.ImageDimensions,
   ratio: string
-): Ditta.ImageDimensions => {
+): ditta.ImageDimensions => {
   const width = maxWidth !== 0 && maxWidth < dimensions.width ? maxWidth : dimensions.width
   let ratioCalc = dimensions.height / dimensions.width
 

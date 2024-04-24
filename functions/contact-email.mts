@@ -67,7 +67,7 @@ exports.handler = async (event: HandlerEvent) => {
     to: 'hello@ditta.studio',
     from: 'hello@ditta.studio',
     replyTo: `${data.name} <${data.email}>`,
-    subject: `Ditta: ${data.name} from ${data.company}`,
+    subject: `ditta: ${data.name} from ${data.company}`,
     text: `${data.message}`,
     html: data.message
       .split('\n')
