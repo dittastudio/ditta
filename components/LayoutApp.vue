@@ -25,6 +25,8 @@
 .layout-app__main {
   display: flex;
   flex-grow: 1;
+  min-height: 100vh;
+  min-height: 100svh;
 
   &:deep(>*) {
     width: 100%;
