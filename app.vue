@@ -40,11 +40,13 @@ useSeoMeta({
           <p class="text-32 sm:text-38">
             <a class="text-pink" href="mailto:hello@ditta.studio">hello@ditta.studio</a>
           </p>
+
           <p class="text-18 max-w-[40ch] text-balance text-white/40 mb-64">
             Start your next project with us.
           </p>
 
-          <IconDitta class="block w-[50px] h-auto mb-8 text-white" />
+          <IconDitta class="block w-[50px] h-[18px] mb-8 text-white" />
+
           <p class="text-10 max-w-[40ch] text-balance text-grey">
             ditta ltd. is a company registered in England and Wales with company number 15648076.
           </p>
