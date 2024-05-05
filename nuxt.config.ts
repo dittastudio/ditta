@@ -49,8 +49,6 @@ export default defineNuxtConfig({
   },
   modules: [
     '@nuxtjs/sitemap',
-    '@pinia/nuxt',
-    '@pinia-plugin-persistedstate/nuxt',
     '@nuxtjs/tailwindcss',
     ['@storyblok/nuxt', { accessToken: process.env.NUXT_STORYBLOK_TOKEN }],
     'nuxt-gtag',
