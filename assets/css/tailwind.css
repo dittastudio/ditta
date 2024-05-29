@@ -1,0 +1,68 @@
+
+@import "tailwindcss";
+
+@theme {
+  /* Colors */
+  --color-*: initial;
+  --color-white: #fff;
+  --color-black: #000;
+  --color-offblack: #232323;
+  --color-offwhite: #f5f4ea;
+  --color-grey: #474747;
+  --color-blue: #00f;
+  --color-pink: #ffb9b9;
+
+  /* Spacing */
+  --spacing-*: initial;
+  --spacing-8: 8px;
+  --spacing-16: 16px;
+  --spacing-24: 24px;
+  --spacing-32: 32px;
+  --spacing-40: 40px;
+  --spacing-48: 48px;
+  --spacing-56: 56px;
+  --spacing-64: 64px;
+  --spacing-72: 72px;
+  --spacing-80: 80px;
+  --spacing-88: 88px;
+  --spacing-96: 96px;
+  --spacing-120: 120px;
+  --spacing-160: 160px;
+  --spacing-200: 200px;
+  --spacing-240: 240px;
+
+  /* Fonts */
+  --font-family-*: initial;
+  --font-family-body: 'Greycliff CF', system-ui, sans-serif;
+
+   /* Type scale */
+  --font-size-*: initial;
+  --font-size-10: 0.625rem;
+  --font-size-12: 0.75rem;
+  --font-size-14: 0.875rem;
+  --font-size-16: 1rem;
+  --font-size-20: 1.25rem;
+  --font-size-24: 1.5rem;
+  --font-size-32: 2rem;
+  --font-size-38: 2.375rem;
+  --font-size-44: 2.75rem;
+  --font-size-52: 3.25rem;
+  --font-size-64: 4rem;
+  --font-size-80: 5rem;
+  --font-size-104: 6.5rem;
+  --font-size-fluid-18-24: clamp(1.125rem, 0.993rem + 0.5634vi, 1.5rem);
+  --font-size-fluid-30-120: clamp(1.875rem, -0.1056rem + 8.4507vi, 7.5rem);
+
+
+  /* Letter spacing */
+  --letter-spacing-tighter: -0.02em;
+  --letter-spacing-tight: -0.01em;
+  --letter-spacing-normal: 0em;
+  --letter-spacing-wide: 0.04em;
+
+  /* Line-height */
+  --line-height-none: 1;
+  --line-height-tight: 0.85;
+  --line-height-snug: 1.2;
+  --line-height-normal: 1.5;
+}

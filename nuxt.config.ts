@@ -43,25 +43,37 @@ export default defineNuxtConfig({
     layoutTransition: false,
   },
   components: true,
-  css: process.env.LOCAL === 'true' ? ['@michaelpumo/screen/app.css'] : [],
+  css: [
+    '~/assets/css/app.css',
+    // process.env.LOCAL === 'true' ? '@michaelpumo/screen/app.css' : '',
+  ],
+  eslint: {
+    config: {
+      standalone: false,
+      stylistic: true,
+    },
+  },
   gtag: {
     id: '',
   },
   modules: [
+    '@nuxt/eslint',
     '@nuxtjs/sitemap',
-    '@nuxtjs/tailwindcss',
     ['@storyblok/nuxt', { accessToken: process.env.NUXT_STORYBLOK_TOKEN }],
     'nuxt-gtag',
   ],
-  tailwindcss: {
-    cssPath: '@/assets/css/app.css',
-  },
   postcss: {
     plugins: {
       'postcss-import': {},
-      'tailwindcss/nesting': {},
-      tailwindcss: {},
-      autoprefixer: {},
+      'postcss-nesting': {},
+      '@tailwindcss/postcss': {},
+      'postcss-custom-media': {},
+      '@csstools/postcss-media-minmax': {},
+      // 'postcss-utopia': {
+      //   minWidth: 375,
+      //   maxWidth: 1440,
+      // },
+      'autoprefixer': {},
     },
   },
   runtimeConfig: {

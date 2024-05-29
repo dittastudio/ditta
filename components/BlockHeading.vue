@@ -1,11 +1,3 @@
-<template>
-  <span v-if="copy" class="block-heading" :class="themeColorMap[theme]">
-    <span class="block-heading__copy type-giga type-giga--adjust-height">
-      {{ copy }}
-    </span>
-  </span>
-</template>
-
 <script setup lang="ts">
 const themeColorMap: any = {
   offblack: 'bg-offblack text-offwhite',
@@ -23,18 +15,10 @@ export interface Props {
 const { theme = 'offwhite' } = defineProps<Props>()
 </script>
 
-<style lang="postcss" scoped>
-.block-heading {
-  overflow: hidden;
-  display: block;
-
-  width: 100%;
-  padding: theme('spacing.16');
-
-  border-block: thin solid theme('colors.offblack');
-}
-
-.block-heading__copy {
-  display: block;
-}
-</style>
+<template>
+  <span v-if="copy" class="block w-full border-y border-offblack p-[1em]" :class="themeColorMap[theme]">
+    <span class="type-giga type-giga--adjust-height block">
+      {{ copy }}
+    </span>
+  </span>
+</template>

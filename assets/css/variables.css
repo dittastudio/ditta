@@ -1,15 +1,29 @@
-@layer base {
-  :root {
-    /* Global units */
-    --app-outer-gutter: theme('spacing.16');
-    --app-header-height: 96px;
-    --app-header-outer-gutter: theme('spacing.16');
-    --app-header-inner-gutter: theme('spacing.16');
 
-    @screen md {
-      --app-header-height: 144px;
-      --app-header-outer-gutter: theme('spacing.24');
-      --app-header-inner-gutter: theme('spacing.32');
-    }
+@custom-media --xs (width >= 375px);
+@custom-media --xsMax (width < 375px);
+@custom-media --sm (width >= 640px);
+@custom-media --smMax (width < 640px);
+@custom-media --md (width >= 768px);
+@custom-media --mdMax (width < 768px);
+@custom-media --lg (width >= 1024px);
+@custom-media --lgMax (width < 1024px);
+@custom-media --xl (width >= 1200px);
+@custom-media --xlMax (width < 1200px);
+@custom-media --base (width >= 1440px);
+@custom-media --baseMax (width < 1440px);
+@custom-media --2xl (width >= 1800px);
+@custom-media --2xlMax (width < 1800px);
+
+:root {
+  --app-outer-gutter: var(--spacing-16);
+  --app-header-height: 96px;
+  --app-header-outer-gutter: var(--spacing-16);
+  --app-header-inner-gutter: var(--spacing-16);
+
+  @media (--sm) {
+    --app-header-height: 144px;
+    --app-header-outer-gutter: var(--spacing-24);
+    --app-header-inner-gutter: var(--spacing-32);
   }
 }
+

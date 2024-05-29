@@ -1,0 +1,92 @@
+.type-giga,
+.type-h1,
+.type-h2,
+.type-h3 {
+  font-weight: bold;
+  line-height: var(--line-height-tight);
+  text-transform: uppercase;
+}
+
+.type-h4,
+.type-h5,
+.type-h6 {
+  font-weight: normal;
+}
+
+
+.type-giga {
+  /* font-size: utopia.clamp(30, 120); */
+  font-size: var(--font-size-fluid-30-120);
+  letter-spacing: var(--letter-spacing-tighter);
+
+  &--adjust-height {
+    margin-block: -0.105em -0.025em;
+    margin-inline: -0.055em;
+  }
+}
+
+.type-h1 {
+  font-size: var(--font-size-52);
+  letter-spacing: var(--line-height-tighter);
+
+  @media (--md) {
+    font-size: var(--font-size-104);
+  }
+}
+
+.type-h2 {
+  font-size: var(--font-size-44);
+  letter-spacing: var(--line-height-tight);
+
+  @media (--md) {
+    font-size: var(--font-size-80);
+  }
+}
+
+.type-h3 {
+  font-size: var(--font-size-38);
+  letter-spacing: var(--line-height-tight);
+
+  @media (--md) {
+    font-size: var(--font-size-64);
+  }
+}
+
+.type-h4 {
+  font-size: var(--font-size-32);
+
+  @media (--md) {
+    font-size: var(--font-size-44);
+  }
+}
+
+.type-h5 {
+  font-size: var(--font-size-24);
+
+  @media (--md) {
+    font-size: var(--font-size-32);
+  }
+}
+
+.type-h6 {
+  font-size: var(--font-size-20);
+
+  @media (--md) {
+    font-size: var(--font-size-24);
+  }
+}
+
+/* Body */
+.type-body {
+  font-size: var(--font-size-14);
+
+  & b,
+  & strong {
+    font-weight: 500;
+  }
+
+  @media (--md) {
+    font-size: var(--font-size-16);
+  }
+}
+

@@ -1,32 +1,25 @@
-@layer base {
-  html {
-    color: theme('colors.offwhite');
-    background-color: theme('colors.pink');
-  }
+html {
+  color: var(--color-offblack);
+  background-color: var(--color-pink);
+}
 
-  body {
-    font-family: theme('fontFamily.body');
-    font-size: theme('fontSize.16');
+body {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-16);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: var(--line-height-normal);
+}
 
-    /* Improve text rendering */
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    line-height: theme('lineHeight.normal');
+.wrapper {
+  margin-inline: auto;
+  padding-inline: var(--app-outer-gutter);
+}
 
-    /* Remove default touch box */
-    -webkit-tap-highlight-color: transparent;
-  }
+.section {
+  padding-block: var(--spacing-24);
 
-  .wrapper {
-    margin-inline: auto;
-    padding-inline: var(--app-outer-gutter);
-  }
-
-  .section {
-    padding-block: theme('spacing.24');
-
-    @screen md {
-      padding-block: theme('spacing.64');
-    }
+  @media (--md) {
+    padding-block: var(--spacing-64);
   }
 }

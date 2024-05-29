@@ -1,9 +1,16 @@
 {
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "files.associations": {
     "*.css": "tailwindcss"
   },
   "[vue]": {
     "editor.defaultFormatter": "Vue.volar"
+  },
+  "tailwindCSS.includeLanguages": {
+    "vue": "html",
+    "vue-html": "html",
+  },
+  "tailwindCSS.experimental.configFile": "./assets/css/tailwind.css",
+  "editor.quickSuggestions": {
+    "strings": "on"
   }
 }
