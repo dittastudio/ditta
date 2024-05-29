@@ -2,7 +2,6 @@
 import { storyblokImage } from '@/utilities/helpers'
 import type { PageStoryblok } from '@/types/storyblok'
 import IconDitta from '@/assets/icons/ditta.svg'
-import BlockHeading from '~/components/BlockHeading.vue'
 
 const route = useRoute()
 const story = await useStory<PageStoryblok>(route.path)

@@ -42,10 +42,9 @@ export default defineNuxtConfig({
     pageTransition: { name: 'page', mode: 'out-in' },
     layoutTransition: false,
   },
-  components: true,
   css: [
     '~/assets/css/app.css',
-    // process.env.LOCAL === 'true' ? '@michaelpumo/screen/app.css' : '',
+    // process.env.LOCAL === 'true' ? '@michaelpumo/screen/app.css' : undefined,
   ],
   eslint: {
     config: {
@@ -59,9 +58,13 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
     '@nuxtjs/sitemap',
-    ['@storyblok/nuxt', { accessToken: process.env.NUXT_STORYBLOK_TOKEN }],
+    '@storyblok/nuxt',
     'nuxt-gtag',
   ],
+  storyblok: {
+    accessToken: process.env.NUXT_STORYBLOK_TOKEN,
+    componentsDir: '~/components/storyblok',
+  },
   postcss: {
     plugins: {
       'postcss-import': {},
