@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { isStoryblokEditor } from '@/utilities/helpers'
-import IconDitta from '@/assets/icons/ditta.svg'
 
 const route = useRoute()
 

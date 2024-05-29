@@ -1,7 +1,11 @@
+<script lang="ts" setup>
+import IconDitta from '@/assets/icons/ditta.svg'
+</script>
+
 <template>
   <div class="w-full bg-offblack text-white p-32 sm:p-48 lg:p-64">
     <h2 class="text-20 lg:text-24 max-w-[40ch] text-balance mb-40">
-      We're a new digital agency based in London bridging the gap between design and dev.
+      We're a new digital agency based in London bridging the gap between design and development.
     </h2>
 
     <p class="text-32 sm:text-38">

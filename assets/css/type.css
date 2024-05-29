@@ -18,11 +18,11 @@
   /* font-size: utopia.clamp(30, 120); */
   font-size: var(--font-size-fluid-30-120);
   letter-spacing: var(--letter-spacing-tighter);
+}
 
-  &--adjust-height {
-    margin-block: -0.105em -0.025em;
-    margin-inline: -0.055em;
-  }
+.type-giga--adjust-height {
+  margin-block: -0.105em -0.025em;
+  margin-inline: -0.055em;
 }
 
 .type-h1 {

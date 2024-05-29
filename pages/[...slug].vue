@@ -39,13 +39,25 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="wrapper flex flex-col gap-24 items-center justify-center min-h-[90vh]">
-    <IconDitta class="w-[25%] min-w-200 h-auto" />
+  <div>
+    <div class="wrapper flex flex-col gap-24 items-center justify-center min-h-[100vh]">
+      <IconDitta class="w-[25%] min-w-200 h-auto" />
 
-    <h1 class="sr-only">
-      ditta
-    </h1>
+      <h1 class="sr-only">
+        ditta
+      </h1>
 
-    <a class="text-offwhite text-fluid-18-24" href="mailto:hello@ditta.studio">hello@ditta.studio</a>
+      <a class="text-offwhite text-fluid-18-24" href="mailto:hello@ditta.studio">hello@ditta.studio</a>
+    </div>
+
+    <BlockHeading theme="offwhite" copy="Technical Brawn" />
+
+    <BlockHeading theme="blue" copy="Pixel Perfection" />
+
+    <BlockHeading theme="offblack" copy="Bridging the gap" />
+
+    <BlockHeading theme="pink" copy="Bridging the gap" />
+
+    <BlockHeading theme="white" copy="Bridging the gap" />
   </div>
 </template>

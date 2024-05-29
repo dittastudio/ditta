@@ -16,8 +16,8 @@ const { theme = 'offwhite' } = defineProps<Props>()
 </script>
 
 <template>
-  <span v-if="copy" class="block w-full border-y border-offblack p-[1em]" :class="themeColorMap[theme]">
-    <span class="type-giga type-giga--adjust-height block">
+  <span v-if="copy" class="block w-full border-y border-offblack" :class="themeColorMap[theme]">
+    <span class="type-giga type-giga--adjust-height p-[0.15em] block">
       {{ copy }}
     </span>
   </span>
