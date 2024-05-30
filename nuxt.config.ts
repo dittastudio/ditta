@@ -72,10 +72,10 @@ export default defineNuxtConfig({
       '@tailwindcss/postcss': {},
       'postcss-custom-media': {},
       '@csstools/postcss-media-minmax': {},
-      // 'postcss-utopia': {
-      //   minWidth: 375,
-      //   maxWidth: 1440,
-      // },
+      'postcss-utopia': {
+        minWidth: 375,
+        maxWidth: 1440,
+      },
       'autoprefixer': {},
     },
   },

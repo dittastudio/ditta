@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 definePageMeta({
-  layout: false
+  layout: false,
 })
 
 interface Props {
@@ -16,7 +16,7 @@ useHead({
   title:
     error?.statusCode && error?.statusMessage
       ? `${error?.statusCode} ${error?.statusMessage}`
-      : 'An unexpected error occurred'
+      : 'An unexpected error occurred',
 })
 </script>
 
@@ -36,7 +36,7 @@ useHead({
 
       <p>
         <a href="/" class="block">
-          <ButtonAppearance>Back to home</ButtonAppearance>
+          Back to home
         </a>
       </p>
     </div>
