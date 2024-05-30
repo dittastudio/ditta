@@ -4,40 +4,61 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const themeColorMap: any = {
-  offblack: 'bg-offblack text-offwhite',
+const backgroundColorMap: any = {
+  black: 'bg-black',
+  offblack: 'bg-offblack',
   white: 'bg-white',
   offwhite: 'bg-offwhite',
-  blue: 'bg-blue text-offwhite',
+  grey: 'bg-grey',
+  blue: 'bg-blue',
   pink: 'bg-pink',
+  orange: 'bg-orange',
+  red: 'bg-red',
+  green: 'bg-green',
+}
+
+const textColorMap: any = {
+  black: 'text-black',
+  offblack: 'text-offblack',
+  white: 'text-white',
+  offwhite: 'text-offwhite',
+  grey: 'text-grey',
+  blue: 'text-blue',
+  pink: 'text-pink',
+  orange: 'text-orange',
+  red: 'text-red',
+  green: 'text-green',
 }
 
 export interface Props {
-  theme?: string
+  backgroundColor?: string
+  textColor?: string
   copy: string[]
   duration?: string
   isReversed?: boolean
 }
 
-const { theme = 'offwhite', copy, isReversed = false, duration = '60s' } = defineProps<Props>()
+const { backgroundColor = 'offwhite', textColor = 'offblack', copy, isReversed = false, duration = '60s' } = defineProps<Props>()
+
+const container = ref()
 
 onMounted(() => {
   const proxy = { skew: 0 }
-  const skewSetter = gsap.quickSetter('.block-heading__text', 'skewX', 'deg') // fast
+  const skewSetter = gsap.quickSetter(container.value, 'skewX', 'deg') // fast
   const clamp = gsap.utils.clamp(-20, 20)
 
   ScrollTrigger.create({
     onUpdate: (self) => {
       const skew = clamp(self.getVelocity() / -300)
-      // only do something if the skew is MORE severe. Remember, we're always tweening back to 0, so if the user slows their scrolling quickly, it's more natural to just let the tween handle that smoothly rather than jumping to the smaller skew.
+
       if (Math.abs(skew) > Math.abs(proxy.skew)) {
         proxy.skew = skew
-        gsap.to(proxy, { skew: 0, duration: 0.8, ease: 'power3', overwrite: true, onUpdate: () => skewSetter(proxy.skew) })
+        gsap.to(proxy, { skew: 0, duration: 1, ease: 'power3', overwrite: true, onUpdate: () => skewSetter(proxy.skew) })
       }
     },
   })
 
-  gsap.set('.block-heading__text', { transformOrigin: 'right center', force3D: true })
+  gsap.set(container.value, { transformOrigin: 'right center', force3D: true })
 })
 
 // const main = ref()
@@ -65,16 +86,20 @@ onMounted(() => {
 </script>
 
 <template>
-  <div v-if="copy" class="block-heading block w-full border-t border-offblack relative after:absolute after:inset-x-0 after:top-full after:border-b after:border-offblack" :class="themeColorMap[theme]">
-    <div class="block-heading__text marquee type-giga" :class="{ 'marquee--reverse': isReversed }">
+  <div
+    v-if="copy"
+    class="block-heading block w-full border-t border-offblack relative after:absolute after:inset-x-0 after:top-full after:border-b after:border-offblack"
+    :class="[backgroundColorMap[backgroundColor], textColorMap[textColor]]"
+  >
+    <div ref="container" class="marquee type-giga" :class="{ 'marquee--reverse': isReversed }">
       <div class="marquee__group">
-        <p v-for="text in copy" :key="text" class="type-giga-trim block">
+        <p v-for="text in [...copy, ...copy, ...copy]" :key="text" class="type-giga-trim block">
           {{ text }}
         </p>
       </div>
 
       <div aria-hidden="true" class="marquee__group">
-        <p v-for="text in copy" :key="text" class="type-giga-trim block">
+        <p v-for="text in [...copy, ...copy, ...copy]" :key="text" class="type-giga-trim block">
           {{ text }}
         </p>
       </div>

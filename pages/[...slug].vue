@@ -36,7 +36,14 @@ onMounted(() => {
   }
 })
 
-const listOfWords = ['Technical Brawn', 'Pixel Perfection', 'Bridging the gap', 'DX & UX & UI oh my!']
+const line1 = ['Technical Brawn']
+const line2 = ['Pixel Perfection']
+const line3 = ['Aesthetic Drive']
+const line4 = ['NI & AI']
+const line5 = ['Say Hello']
+const line6 = ['Digital Studio']
+const line7 = ['Organically Made']
+const line8 = ['Local Ingredients']
 </script>
 
 <template>
@@ -51,14 +58,20 @@ const listOfWords = ['Technical Brawn', 'Pixel Perfection', 'Bridging the gap', 
       <a class="text-offwhite text-fluid-18-24" href="mailto:hello@ditta.studio">hello@ditta.studio</a>
     </div>
 
-    <BlockHeading theme="offwhite" :copy="listOfWords" duration="60s" />
+    <BlockHeading background-color="offblack" text-color="pink" :copy="line1" duration="60s" />
 
-    <BlockHeading theme="blue" :copy="listOfWords" is-reversed duration="50s" />
+    <BlockHeading background-color="offwhite" text-color="offblack" :copy="line6" duration="80s" is-reversed />
 
-    <BlockHeading theme="offblack" :copy="listOfWords" is-reversed duration="40s" />
+    <BlockHeading background-color="offblack" text-color="orange" :copy="line3" duration="70s" />
 
-    <BlockHeading theme="pink" :copy="listOfWords" duration="80s" />
+    <BlockHeading background-color="blue" text-color="white" :copy="line2" duration="65s" is-reversed />
 
-    <BlockHeading theme="white" :copy="listOfWords" duration="70s" />
+    <BlockHeading background-color="pink" text-color="offblack" :copy="line4" duration="85s" />
+
+    <BlockHeading background-color="offblack" text-color="green" :copy="line7" duration="85s" is-reversed />
+
+    <BlockHeading background-color="white" text-color="red" :copy="line8" duration="75s" />
+
+    <BlockHeading background-color="offblack" text-color="pink" :copy="line5" duration="65s" is-reversed />
   </div>
 </template>

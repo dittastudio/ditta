@@ -9,8 +9,11 @@
   --color-offblack: #232323;
   --color-offwhite: #f5f4ea;
   --color-grey: #474747;
-  --color-blue: #00f;
+  --color-blue: #676EF6;
   --color-pink: #ffb9b9;
+  --color-orange: #F3AF4C;
+  --color-red: #ED6F6F;
+  --color-green: #67D791;
 
   /* Spacing */
   --spacing-*: initial;
