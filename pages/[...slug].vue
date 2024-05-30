@@ -35,6 +35,8 @@ onMounted(() => {
     })
   }
 })
+
+const listOfWords = ['Technical Brawn', 'Pixel Perfection', 'Bridging the gap', 'DX & UX & UI oh my!']
 </script>
 
 <template>
@@ -49,14 +51,14 @@ onMounted(() => {
       <a class="text-offwhite text-fluid-18-24" href="mailto:hello@ditta.studio">hello@ditta.studio</a>
     </div>
 
-    <BlockHeading theme="offwhite" copy="Technical Brawn" />
+    <BlockHeading theme="offwhite" :copy="listOfWords" duration="60s" />
 
-    <BlockHeading theme="blue" copy="Pixel Perfection" />
+    <BlockHeading theme="blue" :copy="listOfWords" is-reversed duration="50s" />
 
-    <BlockHeading theme="offblack" copy="Bridging the gap" />
+    <BlockHeading theme="offblack" :copy="listOfWords" is-reversed duration="40s" />
 
-    <BlockHeading theme="pink" copy="Bridging the gap" />
+    <BlockHeading theme="pink" :copy="listOfWords" duration="80s" />
 
-    <BlockHeading theme="white" copy="Bridging the gap" />
+    <BlockHeading theme="white" :copy="listOfWords" duration="70s" />
   </div>
 </template>

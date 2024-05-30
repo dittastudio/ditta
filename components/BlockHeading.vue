@@ -14,10 +14,12 @@ const themeColorMap: any = {
 
 export interface Props {
   theme?: string
-  copy: string
+  copy: string[]
+  duration?: string
+  isReversed?: boolean
 }
 
-const { theme = 'offwhite' } = defineProps<Props>()
+const { theme = 'offwhite', copy, isReversed = false, duration = '60s' } = defineProps<Props>()
 
 onMounted(() => {
   const proxy = { skew: 0 }
@@ -26,7 +28,7 @@ onMounted(() => {
 
   ScrollTrigger.create({
     onUpdate: (self) => {
-      const skew = clamp(self.getVelocity() / -500)
+      const skew = clamp(self.getVelocity() / -300)
       // only do something if the skew is MORE severe. Remember, we're always tweening back to 0, so if the user slows their scrolling quickly, it's more natural to just let the tween handle that smoothly rather than jumping to the smaller skew.
       if (Math.abs(skew) > Math.abs(proxy.skew)) {
         proxy.skew = skew
@@ -63,11 +65,67 @@ onMounted(() => {
 </script>
 
 <template>
-  <span v-if="copy" class="block-heading block w-full border-t border-offblack relative after:absolute after:inset-x-0 after:top-full after:border-b after:border-offblack" :class="themeColorMap[theme]">
-    <span class="block-heading__text block overflow-hidden type-giga p-[0.15em]">
-      <span class="type-giga-trim block">
-        {{ copy }}
-      </span>
-    </span>
-  </span>
+  <div v-if="copy" class="block-heading block w-full border-t border-offblack relative after:absolute after:inset-x-0 after:top-full after:border-b after:border-offblack" :class="themeColorMap[theme]">
+    <div class="block-heading__text marquee type-giga" :class="{ 'marquee--reverse': isReversed }">
+      <div class="marquee__group">
+        <p v-for="text in copy" :key="text" class="type-giga-trim block">
+          {{ text }}
+        </p>
+      </div>
+
+      <div aria-hidden="true" class="marquee__group">
+        <p v-for="text in copy" :key="text" class="type-giga-trim block">
+          {{ text }}
+        </p>
+      </div>
+    </div>
+  </div>
 </template>
+
+<style scoped>
+.marquee {
+  --duration: v-bind(duration);
+  --gap: 1em;
+
+  user-select: none;
+
+  overflow: hidden;
+  display: flex;
+  gap: var(--gap);
+
+  padding: 0.15em;
+}
+
+.marquee__group {
+  display: flex;
+  flex-shrink: 0;
+  gap: var(--gap);
+  align-items: center;
+  justify-content: space-around;
+
+  min-width: 100%;
+
+  animation: scroll var(--duration) linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee__group {
+    animation-play-state: paused;
+  }
+}
+
+.marquee--reverse .marquee__group {
+  animation-delay: calc(var(--duration) / -2);
+  animation-direction: reverse;
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(calc(-100% - var(--gap)));
+  }
+}
+</style>
