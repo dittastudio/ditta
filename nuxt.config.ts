@@ -68,7 +68,7 @@ export default defineNuxtConfig({
   postcss: {
     plugins: {
       'postcss-import': {},
-      'postcss-nesting': {},
+      'postcss-nested': {},
       '@tailwindcss/postcss': {},
       'postcss-custom-media': {},
       '@csstools/postcss-media-minmax': {},

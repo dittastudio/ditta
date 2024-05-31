@@ -65,7 +65,7 @@ onMounted(() => {
 <template>
   <div
     v-if="copy"
-    class="block w-full border-t border-offblack relative after:absolute after:inset-x-0 after:top-full after:border-b after:border-offblack"
+    class="contain-paint block w-full border-t border-offblack relative after:absolute after:inset-x-0 after:top-full after:border-b after:border-offblack"
     :class="[backgroundColorMap[backgroundColor], textColorMap[textColor]]"
   >
     <div ref="container" class="marquee type-giga" :class="{ 'marquee--reverse': isReversed }">
@@ -84,18 +84,52 @@ onMounted(() => {
   </div>
 </template>
 
-<style scoped>
+<style lang="postcss" scoped>
+@keyframes reveal {
+  from {
+    translate: 0% 0 0;
+  }
+
+  to {
+    translate: -25% 0 0;
+  }
+}
+
+@keyframes reveal-reverse {
+  from {
+    translate: 0% 0 0;
+  }
+
+  to {
+    translate: 25% 0 0;
+  }
+}
+
 .marquee {
   --duration: v-bind(duration);
   --gap: 1em;
 
   user-select: none;
 
-  overflow: hidden;
   display: flex;
   gap: var(--gap);
 
+  /* justify-content: flex-start; */
+
   padding: 0.15em;
+
+  animation: auto linear reveal both;
+  animation-timeline: view();
+
+  animation-range: entry 0% cover 100%;
+
+  &--reverse {
+    /* justify-content: flex-end; */
+    animation: auto linear reveal-reverse both;
+    animation-timeline: view();
+
+    animation-range: entry 0% cover 100%;
+  }
 }
 
 .marquee__group {

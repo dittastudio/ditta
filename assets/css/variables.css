@@ -15,15 +15,15 @@
 @custom-media --2xlMax (width < 1800px);
 
 :root {
-  --app-outer-gutter: var(--spacing-16);
+  --app-max-width: 1440px;
+  --app-inner-gutter: var(--spacing-16);
+  --app-outer-gutter: var(--spacing-24);
   --app-header-height: 96px;
-  --app-header-outer-gutter: var(--spacing-16);
-  --app-header-inner-gutter: var(--spacing-16);
 
-  @media (--sm) {
+  @media (--md) {
+    --app-inner-gutter: var(--spacing-24);
+    --app-outer-gutter: var(--spacing-64);
     --app-header-height: 144px;
-    --app-header-outer-gutter: var(--spacing-24);
-    --app-header-inner-gutter: var(--spacing-32);
   }
 }
 
