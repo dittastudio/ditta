@@ -60,35 +60,12 @@ onMounted(() => {
 
   gsap.set(container.value, { transformOrigin: 'right center', force3D: true })
 })
-
-// const main = ref()
-// let ctx: any
-
-// onMounted(() => {
-//   ctx = gsap.context((self) => {
-//     const text = self.selector('.block-heading__text')
-
-//     gsap.to(text, {
-//       x: 150,
-//       scrollTrigger: {
-//         trigger: text,
-//         start: 'top bottom',
-//         end: 'top 20%',
-//         scrub: 1,
-//       },
-//     })
-//   }, main.value) // <- Scope!
-// })
-
-// onUnmounted(() => {
-//   ctx.revert() // <- Easy Cleanup!
-// })
 </script>
 
 <template>
   <div
     v-if="copy"
-    class="block-heading block w-full border-t border-offblack relative after:absolute after:inset-x-0 after:top-full after:border-b after:border-offblack"
+    class="block w-full border-t border-offblack relative after:absolute after:inset-x-0 after:top-full after:border-b after:border-offblack"
     :class="[backgroundColorMap[backgroundColor], textColorMap[textColor]]"
   >
     <div ref="container" class="marquee type-giga" :class="{ 'marquee--reverse': isReversed }">

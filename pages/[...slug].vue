@@ -42,8 +42,8 @@ const line3 = ['Aesthetic Drive']
 const line4 = ['NI & AI']
 const line5 = ['Say Hello']
 const line6 = ['Digital Studio']
-const line7 = ['Organically Made']
-const line8 = ['Local Ingredients']
+const line7 = ['HandMade']
+const line8 = ['Openly Sourced']
 </script>
 
 <template>
