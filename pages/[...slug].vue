@@ -77,13 +77,15 @@ const line8 = ['Openly Sourced']
       <a class="text-offwhite text-fluid-18-24" href="mailto:hello@ditta.studio">hello@ditta.studio</a>
     </div>
 
-    <BlockScrollTest />
+    <!-- <BlockScrollTest /> -->
 
     <!-- <BlockCarousel :slides="slides">
       <template #default="{ slide }">
         <img :src="slide.src" :alt="slide.alt">
       </template>
     </BlockCarousel> -->
+
+    <!-- <BlockHeading background-color="offblack" text-color="pink" :copy="['test']" duration="60s" is-reversed /> -->
 
     <BlockHeading background-color="offblack" text-color="pink" :copy="line1" duration="60s" />
 
