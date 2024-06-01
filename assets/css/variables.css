@@ -15,7 +15,7 @@
 @custom-media --2xlMax (width < 1800px);
 
 :root {
-  --app-max-width: 1440px;
+  --app-max-width: 1800px;
   --app-inner-gutter: var(--spacing-16);
   --app-outer-gutter: var(--spacing-24);
   --app-header-height: 96px;

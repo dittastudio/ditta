@@ -15,7 +15,7 @@
 
 
 .type-giga {
-  font-size: var(--font-size-fluid-30-120);
+  font-size: var(--font-size-fluid-lg);
   letter-spacing: var(--letter-spacing-tighter);
 }
 

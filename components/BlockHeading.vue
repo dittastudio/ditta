@@ -11,8 +11,10 @@ const backgroundColorMap: any = {
   offwhite: 'bg-offwhite',
   grey: 'bg-grey',
   blue: 'bg-blue',
+  lightblue: 'bg-lightblue',
   pink: 'bg-pink',
   orange: 'bg-orange',
+  yellow: 'bg-yellow',
   red: 'bg-red',
   green: 'bg-green',
 }
@@ -24,8 +26,10 @@ const textColorMap: any = {
   offwhite: 'text-offwhite',
   grey: 'text-grey',
   blue: 'text-blue',
+  lightblue: 'text-lightblue',
   pink: 'text-pink',
   orange: 'text-orange',
+  yellow: 'text-yellow',
   red: 'text-red',
   green: 'text-green',
 }
@@ -73,13 +77,12 @@ const multipleWords = [...copy, ...copy, ...copy]
     <div ref="container">
       <div class="marquee type-giga" :class="{ 'marquee--is-reversed': isReversed }">
         <div class="marquee__group">
-          <p v-for="word in multipleWords" :key="word" class="type-giga-trim block">
-            {{ word }}
-          </p>
-        </div>
-
-        <div aria-hidden="true" class="marquee__group">
-          <p v-for="word in multipleWords" :key="word" class="type-giga-trim block">
+          <p
+            v-for="(word, index) in multipleWords"
+            :key="word"
+            :aria-hidden="index > 0 ? true : null"
+            class="type-giga-trim block"
+          >
             {{ word }}
           </p>
         </div>
@@ -155,7 +158,7 @@ const multipleWords = [...copy, ...copy, ...copy]
   }
 
   to {
-    translate: -50% 0 0;
+    translate: -25% 0 0;
   }
 }
 
@@ -165,7 +168,7 @@ const multipleWords = [...copy, ...copy, ...copy]
   }
 
   to {
-    translate: 50% 0 0;
+    translate: 25% 0 0;
   }
 }
 

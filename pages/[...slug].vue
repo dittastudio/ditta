@@ -74,18 +74,16 @@ const line8 = ['Openly Sourced']
         ditta
       </h1>
 
-      <a class="text-offwhite text-fluid-18-24" href="mailto:hello@ditta.studio">hello@ditta.studio</a>
+      <a class="text-offwhite text-fluid-sm" href="mailto:hello@ditta.studio">hello@ditta.studio</a>
     </div>
 
     <!-- <BlockScrollTest /> -->
 
-    <!-- <BlockCarousel :slides="slides">
+    <BlockCarousel :slides="slides">
       <template #default="{ slide }">
         <img :src="slide.src" :alt="slide.alt">
       </template>
-    </BlockCarousel> -->
-
-    <!-- <BlockHeading background-color="offblack" text-color="pink" :copy="['test']" duration="60s" is-reversed /> -->
+    </BlockCarousel>
 
     <BlockHeading background-color="offblack" text-color="pink" :copy="line1" duration="60s" />
 
@@ -97,9 +95,9 @@ const line8 = ['Openly Sourced']
 
     <BlockHeading background-color="pink" text-color="offblack" :copy="line4" duration="85s" />
 
-    <BlockHeading background-color="offblack" text-color="green" :copy="line7" duration="85s" is-reversed />
+    <BlockHeading background-color="yellow" text-color="green" :copy="line7" duration="85s" is-reversed />
 
-    <BlockHeading background-color="white" text-color="red" :copy="line8" duration="75s" />
+    <BlockHeading background-color="lightblue" text-color="red" :copy="line8" duration="75s" />
 
     <BlockHeading background-color="offblack" text-color="pink" :copy="line5" duration="65s" is-reversed />
   </div>

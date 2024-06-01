@@ -10,10 +10,12 @@
   --color-offwhite: #f5f4ea;
   --color-grey: #474747;
   --color-blue: #676EF6;
+  --color-lightblue: #9ed5ff;
   --color-pink: #ffb9b9;
   --color-orange: #F3AF4C;
-  --color-red: #ED6F6F;
-  --color-green: #67D791;
+  --color-yellow: #F5D365;
+  --color-red: #ff5675;
+  --color-green: #207c66;
 
   /* Spacing */
   --spacing-*: initial;
@@ -54,8 +56,8 @@
   --font-size-64: 4rem;
   --font-size-80: 5rem;
   --font-size-104: 6.5rem;
-  --font-size-fluid-18-24: utopia.clamp(18, 24);
-  --font-size-fluid-30-120: utopia.clamp(30, 120);
+  --font-size-fluid-sm: utopia.clamp(18, 24);
+  --font-size-fluid-lg: utopia.clamp(40, 120);
 
 
   /* Letter spacing */
