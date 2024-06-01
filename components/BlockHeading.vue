@@ -157,7 +157,7 @@ const multipleWords = [...copy, ...copy, ...copy]
   }
 
   to {
-    translate: -100% 0 0;
+    translate: -50% 0 0;
   }
 }
 
@@ -167,7 +167,7 @@ const multipleWords = [...copy, ...copy, ...copy]
   }
 
   to {
-    translate: 100% 0 0;
+    translate: 50% 0 0;
   }
 }
 
