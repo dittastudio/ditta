@@ -49,7 +49,7 @@ onMounted(() => {
 
   ScrollTrigger.create({
     onUpdate: (self) => {
-      const skew = clamp(self.getVelocity() / -300)
+      const skew = clamp(self.getVelocity() / -250)
 
       if (Math.abs(skew) > Math.abs(proxy.skew)) {
         proxy.skew = skew
@@ -60,53 +60,45 @@ onMounted(() => {
 
   gsap.set(container.value, { transformOrigin: 'right center', force3D: true })
 })
+
+const multipleWords = [...copy, ...copy, ...copy]
 </script>
 
 <template>
   <div
     v-if="copy"
-    class="contain-paint block w-full border-t border-offblack relative after:absolute after:inset-x-0 after:top-full after:border-b after:border-offblack"
+    class="transform-gpu backface-hidden contain-paint block w-full border-t border-offblack relative after:absolute after:inset-x-0 after:top-full after:border-b after:border-offblack"
     :class="[backgroundColorMap[backgroundColor], textColorMap[textColor]]"
   >
-    <div ref="container" class="marquee type-giga" :class="{ 'marquee--reverse': isReversed }">
-      <div class="marquee__group">
-        <p v-for="text in [...copy, ...copy, ...copy]" :key="text" class="type-giga-trim block">
-          {{ text }}
-        </p>
-      </div>
+    <div ref="container">
+      <div class="marquee type-giga" :class="{ 'marquee--is-reversed': isReversed }">
+        <div class="marquee__group">
+          <p v-for="word in multipleWords" :key="word" class="type-giga-trim block">
+            {{ word }}
+          </p>
+        </div>
 
-      <div aria-hidden="true" class="marquee__group">
-        <p v-for="text in [...copy, ...copy, ...copy]" :key="text" class="type-giga-trim block">
-          {{ text }}
-        </p>
+        <div aria-hidden="true" class="marquee__group">
+          <p v-for="word in multipleWords" :key="word" class="type-giga-trim block">
+            {{ word }}
+          </p>
+        </div>
+
+        <div aria-hidden="true" class="marquee__group">
+          <p v-for="word in multipleWords" :key="word" class="type-giga-trim block">
+            {{ word }}
+          </p>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <style lang="postcss" scoped>
-@keyframes reveal {
-  from {
-    translate: 0% 0 0;
-  }
-
-  to {
-    translate: -25% 0 0;
-  }
-}
-
-@keyframes reveal-reverse {
-  from {
-    translate: 0% 0 0;
-  }
-
-  to {
-    translate: 25% 0 0;
-  }
-}
-
 .marquee {
   --duration: v-bind(duration);
+
+  /* --duration: 5s!important; */
   --gap: 1em;
 
   user-select: none;
@@ -114,18 +106,19 @@ onMounted(() => {
   display: flex;
   gap: var(--gap);
 
-  /* justify-content: flex-start; */
-
+  min-width: 100%;
   padding: 0.15em;
 
-  animation: auto linear reveal both;
-  animation-timeline: view();
+  &:not(&--is-reversed) {
+    animation: auto linear scroll-left both;
+    animation-timeline: view();
 
-  animation-range: entry 0% cover 100%;
+    animation-range: entry 0% cover 100%;
+  }
 
-  &--reverse {
-    /* justify-content: flex-end; */
-    animation: auto linear reveal-reverse both;
+  &--is-reversed {
+    justify-content: flex-end;
+    animation: auto linear scroll-right both;
     animation-timeline: view();
 
     animation-range: entry 0% cover 100%;
@@ -133,6 +126,8 @@ onMounted(() => {
 }
 
 .marquee__group {
+  will-change: translate;
+
   display: flex;
   flex-shrink: 0;
   gap: var(--gap);
@@ -141,7 +136,13 @@ onMounted(() => {
 
   min-width: 100%;
 
-  animation: scroll var(--duration) linear infinite;
+  .marquee:not(.marquee--is-reversed) & {
+    animation: ticker-left var(--duration) linear infinite;
+  }
+
+  .marquee--is-reversed & {
+    animation: ticker-right var(--duration) linear infinite;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -150,18 +151,43 @@ onMounted(() => {
   }
 }
 
-.marquee--reverse .marquee__group {
-  animation-delay: calc(var(--duration) / -2);
-  animation-direction: reverse;
+@keyframes scroll-left {
+  from {
+    translate: 0% 0 0;
+  }
+
+  to {
+    translate: -100% 0 0;
+  }
 }
 
-@keyframes scroll {
+@keyframes scroll-right {
+  from {
+    translate: 0% 0 0;
+  }
+
+  to {
+    translate: 100% 0 0;
+  }
+}
+
+@keyframes ticker-left {
   0% {
-    transform: translateX(0);
+    translate: 0 0 0;
   }
 
   100% {
-    transform: translateX(calc(-100% - var(--gap)));
+    translate: calc(-100% - var(--gap)) 0 0;
+  }
+}
+
+@keyframes ticker-right {
+  0% {
+    translate: 0 0 0;
+  }
+
+  100% {
+    translate: calc(100% + var(--gap)) 0 0;
   }
 }
 </style>
