@@ -97,8 +97,6 @@ const multipleWords = [...copy, ...copy, ...copy]
 <style lang="postcss" scoped>
 .marquee {
   --duration: v-bind(duration);
-
-  /* --duration: 5s!important; */
   --gap: 1em;
 
   user-select: none;

@@ -3,7 +3,7 @@ import IconDitta from '@/assets/icons/ditta.svg'
 </script>
 
 <template>
-  <div class="wrapper section w-full h-[300vh] bg-offblack text-white">
+  <div class="wrapper section w-full bg-offblack text-offwhite">
     <h2 class="text-20 lg:text-24 max-w-[40ch] text-balance mb-40">
       We're a new digital agency based in London bridging the gap between design and development.
     </h2>
@@ -16,7 +16,7 @@ import IconDitta from '@/assets/icons/ditta.svg'
       Start your next project with us.
     </p>
 
-    <IconDitta class="block w-[50px] h-[18px] mb-8 text-white" />
+    <IconDitta class="block w-[50px] h-[18px] mb-8" />
 
     <p class="text-10 max-w-[40ch] text-balance text-grey">
       ditta ltd. is a company registered in England and Wales with company number 15648076.
