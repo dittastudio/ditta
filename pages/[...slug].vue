@@ -81,7 +81,7 @@ const line8 = ['Openly Sourced']
 
     <BlockCarousel :slides="slides">
       <template #default="{ slide }">
-        <img class="rounded-md" :src="slide.src" :alt="slide.alt">
+        <img :src="slide.src" :alt="slide.alt">
       </template>
     </BlockCarousel>
 

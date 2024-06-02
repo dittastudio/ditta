@@ -63,9 +63,13 @@ const cardMouseOut = () => {
   border-radius: var(--radius-md);
 
   @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    will-change: transform;
+
     transform-style: preserve-3d;
-    transform: translate3d(0, 0, 0) scale(1) rotateX(0) rotateY(0);
+    transform: translate3d(0, 0, 0) rotateX(0) rotateY(0);
+
     outline: 1px solid transparent; /* FF smooths edges */
+
     transition: transform 0.3s var(--transition-timing-function-inOutBack);
 
     &::after {
@@ -77,7 +81,7 @@ const cardMouseOut = () => {
       z-index: 1;
       inset: 0;
       transform-style: preserve-3d;
-      transform: translate3d(0, 0, 0);
+      translate: 0 0 0;
 
       width: 50%;
       height: 0;
@@ -91,14 +95,14 @@ const cardMouseOut = () => {
 
       transition:
         opacity 0.25s var(--transition-timing-function-out),
-        transform 0s 0.25s;
+        translate 0s 0.25s;
 
       .CardProject:hover & {
-        transform: translate3d(calc(var(--x) * -1px), calc(var(--y) * -1px), 0);
+        translate: calc(var(--x) * -1px) calc(var(--y) * -1px) 0;
         opacity: 0.15;
         transition:
           opacity 0.25s var(--transition-timing-function-out),
-          transform 0.25s var(--transition-timing-function-out);
+          translate 0.25s var(--transition-timing-function-out);
       }
     }
 
@@ -106,9 +110,9 @@ const cardMouseOut = () => {
       transform: translate3d(
           calc(var(--x) / var(--t) * 8px),
           calc(var(--y) / var(--t) * 8px),
-          1rem
+          16px
         )
-        scale(1) rotateX(calc(var(--y) / var(--t) * -1deg))
+        rotateX(calc(var(--y) / var(--t) * -1deg))
         rotateY(calc(var(--x) / var(--t) * 1deg));
       transition: transform 0.1s var(--transition-timing-function-out);
     }
