@@ -99,7 +99,7 @@ const cardMouseOut = () => {
 
       .CardProject:hover & {
         translate: calc(var(--x) * -1px) calc(var(--y) * -1px) 0;
-        opacity: 0.15;
+        opacity: 0.2;
         transition:
           opacity 0.25s var(--transition-timing-function-out),
           translate 0.25s var(--transition-timing-function-out);

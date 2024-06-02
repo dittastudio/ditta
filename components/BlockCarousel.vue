@@ -7,7 +7,7 @@ const { slides } = defineProps<Props>()
 </script>
 
 <template>
-  <div class="UiCarousel">
+  <div class="UiCarousel section">
     <div class="UiCarousel__scroll scroll-x">
       <div class="UiCarousel__list">
         <div
@@ -30,8 +30,6 @@ const { slides } = defineProps<Props>()
 .UiCarousel {
   --full: minmax(var(--app-outer-gutter), 1fr);
   --content: min((var(--app-max-width) - var(--app-outer-gutter) * 2), (100% - var(--app-outer-gutter) * 2));
-
-  margin-block: var(--spacing-32);
 }
 
 .UiCarousel__scroll {

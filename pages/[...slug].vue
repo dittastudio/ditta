@@ -38,20 +38,24 @@ onMounted(() => {
 
 const slides = [
   {
-    src: 'https://placehold.co/600x400/232323/777',
+    src: '/imgs/luca-test-2.jpg',
     alt: 'Ditta Studio',
+    type: 'image',
   },
   {
-    src: 'https://placehold.co/600x400/232323/777',
+    src: '/videos/luca-test.mp4',
     alt: 'Ditta Studio',
+    type: 'video',
   },
   {
-    src: 'https://placehold.co/600x400/232323/777',
+    src: '',
     alt: 'Ditta Studio',
+    type: 'image',
   },
   {
-    src: 'https://placehold.co/600x400/232323/777',
+    src: '',
     alt: 'Ditta Studio',
+    type: 'image',
   },
 ]
 
@@ -81,7 +85,23 @@ const line8 = ['Openly Sourced']
 
     <BlockCarousel :slides="slides">
       <template #default="{ slide }">
-        <img :src="slide.src" :alt="slide.alt">
+        <img v-if="slide.src && slide.type === 'image'" class="w-full h-full object-cover" :src="slide.src" :alt="slide.alt">
+
+        <video
+          v-else-if="slide.src && slide.type === 'video'"
+          class="w-full h-full object-cover"
+          :src="slide.src"
+          playsinline
+          autoplay
+          muted
+          loop
+        />
+
+        <div v-else class="aspect-[3/2] w-full h-full flex items-center justify-center bg-offblack">
+          <div class="relative z-2 w-[25%]">
+            <IconDitta class="w-full h-auto mx-auto" />
+          </div>
+        </div>
       </template>
     </BlockCarousel>
 

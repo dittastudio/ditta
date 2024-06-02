@@ -37,7 +37,7 @@ const textColorMap: any = {
 export interface Props {
   backgroundColor?: string
   textColor?: string
-  copy: string[]
+  copy: any[]
   duration?: string
   isReversed?: boolean
 }
