@@ -10,12 +10,13 @@
   --color-offwhite: #f5f4ea;
   --color-grey: #474747;
   --color-blue: #676EF6;
-  --color-lightblue: #9ed5ff;
+  --color-blue-light: #9ed5ff;
   --color-pink: #ffb9b9;
   --color-orange: #F3AF4C;
-  --color-yellow: #F5D365;
-  --color-red: #ff5675;
-  --color-green: #207c66;
+  --color-yellow: #ffdb66;
+  --color-yellow-light: #F3ECD7;
+  --color-red: #ff627e;
+  --color-green: #00674e;
 
   /* Spacing */
   --spacing-*: initial;
@@ -71,4 +72,7 @@
   --line-height-tight: 0.85;
   --line-height-snug: 1.2;
   --line-height-normal: 1.5;
+
+  /* Transitions */
+  --transition-timing-function-inOutBack: cubic-bezier(0.68, -0.6, 0.32, 1.6);
 }

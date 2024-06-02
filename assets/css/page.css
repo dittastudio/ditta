@@ -25,12 +25,9 @@ body {
 }
 
 .scroll-x {
-  --scrollbar-thumb: 8px;
-  --scrollbar-height: 10px;
-  --scrollbar-border: 2px;
+  scrollbar-width: none; /* for Firefox */
 
-  /* Firefox */
-  scrollbar-width: none;
+  /* scrollbar-width: none; */
   scroll-snap-type: x mandatory;
 
   overflow-x: scroll;
@@ -38,36 +35,14 @@ body {
 
   max-width: 100%;
 
+  -ms-overflow-style: none; /* for Internet Explorer, Edge */
+
   &::-webkit-scrollbar {
-    height: var(--scrollbar-height);
-    background-color: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: transparent;
-  }
-
-  &:hover::-webkit-scrollbar,
-  &::-webkit-scrollbar:active {
-    background-color: rgb(255 255 255 / 10%);
-    box-shadow: inset 0 0 0 4px var(--color-black);
-  }
-
-  &:hover::-webkit-scrollbar-thumb,
-  &::-webkit-scrollbar-thumb:active {
-    background-color: var(--color-grey);
-    border: var(--scrollbar-border) solid var(--color-black);
-    border-radius: 4px;
+    display: none;
   }
 
   @media (prefers-reduced-motion: no-preference) {
     scroll-behavior: smooth;
-  }
-
-  @media not all and (any-hover: hover) {
-    &::-webkit-scrollbar {
-      display: none;
-    }
   }
 
   @supports (-moz-appearance: none) {

@@ -16,7 +16,9 @@ const { slides } = defineProps<Props>()
           class="UiCarousel__item w-full md:w-1/2"
         >
           <div class="UiCarousel__block">
-            <slot :slide="slide" />
+            <UiCard>
+              <slot :slide="slide" />
+            </UiCard>
           </div>
         </div>
       </div>
@@ -29,13 +31,7 @@ const { slides } = defineProps<Props>()
   --full: minmax(var(--app-outer-gutter), 1fr);
   --content: min((var(--app-max-width) - var(--app-outer-gutter) * 2), (100% - var(--app-outer-gutter) * 2));
 
-  position: relative;
-
-  /* margin-block-end: calc(var(--spacing-64) * -1);
-
-  @supports selector(::-webkit-scrollbar) {
-    margin-block-end: calc((var(--spacing-64) + 22px) * -1);
-  } */
+  margin-block: var(--spacing-32);
 }
 
 .UiCarousel__scroll {
@@ -48,13 +44,10 @@ const { slides } = defineProps<Props>()
 .UiCarousel__list {
   --gap: calc(var(--app-outer-gutter) / 4);
 
-  position: relative;
-
   display: flex;
   grid-column: content;
-
   margin-inline: calc(var(--gap) * -1);
-  padding-block: var(--spacing-64);
+  padding-block: var(--spacing-32);
 
   &::after {
     content: '';

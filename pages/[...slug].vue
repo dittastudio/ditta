@@ -38,19 +38,19 @@ onMounted(() => {
 
 const slides = [
   {
-    src: 'https://placehold.co/600x400',
+    src: 'https://placehold.co/600x400/232323/777',
     alt: 'Ditta Studio',
   },
   {
-    src: 'https://placehold.co/600x400',
+    src: 'https://placehold.co/600x400/232323/777',
     alt: 'Ditta Studio',
   },
   {
-    src: 'https://placehold.co/600x400',
+    src: 'https://placehold.co/600x400/232323/777',
     alt: 'Ditta Studio',
   },
   {
-    src: 'https://placehold.co/600x400',
+    src: 'https://placehold.co/600x400/232323/777',
     alt: 'Ditta Studio',
   },
 ]
@@ -81,7 +81,7 @@ const line8 = ['Openly Sourced']
 
     <BlockCarousel :slides="slides">
       <template #default="{ slide }">
-        <img :src="slide.src" :alt="slide.alt">
+        <img class="rounded-md" :src="slide.src" :alt="slide.alt">
       </template>
     </BlockCarousel>
 
@@ -97,7 +97,7 @@ const line8 = ['Openly Sourced']
 
     <BlockHeading background-color="yellow" text-color="green" :copy="line7" duration="85s" is-reversed />
 
-    <BlockHeading background-color="lightblue" text-color="red" :copy="line8" duration="75s" />
+    <BlockHeading background-color="blue-light" text-color="red" :copy="line8" duration="75s" />
 
     <BlockHeading background-color="offblack" text-color="pink" :copy="line5" duration="65s" is-reversed />
   </div>
