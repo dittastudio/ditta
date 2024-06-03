@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-const project = ref<HTMLDivElement | null>(null)
+const card = ref<HTMLDivElement | null>(null)
 
 const cardMouseOver = (event: any) => {
-  const el = project.value
+  const el = card.value
 
   if (!el)
     return
@@ -20,7 +20,7 @@ const cardMouseOver = (event: any) => {
 }
 
 const cardMouseOut = () => {
-  const el = project.value
+  const el = card.value
 
   if (!el)
     return
@@ -32,19 +32,19 @@ const cardMouseOut = () => {
 
 <template>
   <div
-    ref="project"
-    class="CardProject"
+    ref="card"
+    class="ui-card"
     @mousemove="cardMouseOver"
     @mouseout="cardMouseOut"
   >
-    <div class="CardProject__media">
+    <div class="ui-card__media">
       <slot />
     </div>
   </div>
 </template>
 
 <style lang="postcss">
-.CardProject {
+.ui-card {
   isolation: isolate;
 
   @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
@@ -57,7 +57,7 @@ const cardMouseOut = () => {
   }
 }
 
-.CardProject__media {
+.ui-card__media {
   position: relative;
   overflow: hidden;
   border-radius: var(--radius-md);
@@ -97,7 +97,7 @@ const cardMouseOut = () => {
         opacity 0.25s var(--transition-timing-function-out),
         translate 0s 0.25s;
 
-      .CardProject:hover & {
+      .ui-card:hover & {
         translate: calc(var(--x) * -1px) calc(var(--y) * -1px) 0;
         opacity: 0.2;
         transition:
@@ -106,7 +106,7 @@ const cardMouseOut = () => {
       }
     }
 
-    .CardProject:hover & {
+    .ui-card:hover & {
       transform: translate3d(
           calc(var(--x) / var(--t) * 8px),
           calc(var(--y) / var(--t) * 8px),

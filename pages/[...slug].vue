@@ -78,14 +78,28 @@ const line8 = ['Openly Sourced']
         ditta
       </h1>
 
-      <a class="text-offwhite text-fluid-sm" href="mailto:hello@ditta.studio">hello@ditta.studio</a>
+      <a
+        class="text-offwhite text-fluid-sm"
+        href="mailto:hello@ditta.studio"
+      >
+        hello@ditta.studio
+      </a>
+    </div>
+
+    <div class="wrapper section">
+      <UiHolographic />
     </div>
 
     <BlockScrollTest />
 
     <BlockCarousel :slides="slides">
       <template #default="{ slide }">
-        <img v-if="slide.src && slide.type === 'image'" class="w-full h-full object-cover" :src="slide.src" :alt="slide.alt">
+        <img
+          v-if="slide.src && slide.type === 'image'"
+          class="w-full h-full object-cover"
+          :src="slide.src"
+          :alt="slide.alt"
+        >
 
         <video
           v-else-if="slide.src && slide.type === 'video'"
@@ -97,7 +111,10 @@ const line8 = ['Openly Sourced']
           loop
         />
 
-        <div v-else class="aspect-[3/2] w-full h-full flex items-center justify-center bg-offblack">
+        <div
+          v-else
+          class="aspect-[3/2] w-full h-full flex items-center justify-center bg-offblack"
+        >
           <div class="relative z-2 w-[25%]">
             <IconDitta class="w-full h-auto mx-auto" />
           </div>
@@ -105,20 +122,64 @@ const line8 = ['Openly Sourced']
       </template>
     </BlockCarousel>
 
-    <BlockHeading background-color="offblack" text-color="pink" :copy="line1" duration="60s" />
+    <BlockHeading
+      background-color="offblack"
+      text-color="pink"
+      :copy="line1"
+      duration="60s"
+    />
 
-    <BlockHeading background-color="offwhite" text-color="offblack" :copy="line6" duration="80s" is-reversed />
+    <BlockHeading
+      background-color="offwhite"
+      text-color="offblack"
+      :copy="line6"
+      duration="80s"
+      is-reversed
+    />
 
-    <BlockHeading background-color="offblack" text-color="orange" :copy="line3" duration="70s" />
+    <BlockHeading
+      background-color="offblack"
+      text-color="orange"
+      :copy="line3"
+      duration="70s"
+    />
 
-    <BlockHeading background-color="blue" text-color="white" :copy="line2" duration="65s" is-reversed />
+    <BlockHeading
+      background-color="blue"
+      text-color="white"
+      :copy="line2"
+      duration="65s"
+      is-reversed
+    />
 
-    <BlockHeading background-color="pink" text-color="offblack" :copy="line4" duration="85s" />
+    <BlockHeading
+      background-color="pink"
+      text-color="offblack"
+      :copy="line4"
+      duration="85s"
+    />
 
-    <BlockHeading background-color="yellow" text-color="green" :copy="line7" duration="85s" is-reversed />
+    <BlockHeading
+      background-color="yellow"
+      text-color="green"
+      :copy="line7"
+      duration="85s"
+      is-reversed
+    />
 
-    <BlockHeading background-color="blue-light" text-color="red" :copy="line8" duration="75s" />
+    <BlockHeading
+      background-color="blue-light"
+      text-color="red"
+      :copy="line8"
+      duration="75s"
+    />
 
-    <BlockHeading background-color="offblack" text-color="pink" :copy="line5" duration="65s" is-reversed />
+    <BlockHeading
+      background-color="offblack"
+      text-color="pink"
+      :copy="line5"
+      duration="65s"
+      is-reversed
+    />
   </div>
 </template>
