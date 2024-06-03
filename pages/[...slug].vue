@@ -81,7 +81,7 @@ const line8 = ['Openly Sourced']
       <a class="text-offwhite text-fluid-sm" href="mailto:hello@ditta.studio">hello@ditta.studio</a>
     </div>
 
-    <!-- <BlockScrollTest /> -->
+    <BlockScrollTest />
 
     <BlockCarousel :slides="slides">
       <template #default="{ slide }">

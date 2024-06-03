@@ -24,6 +24,14 @@ export default withNuxt(
       'vue/custom-event-name-casing': ['error', 'kebab-case', {
         ignores: [],
       }],
+      'vue/max-attributes-per-line': ['error', {
+        singleline: {
+          max: 1,
+        },
+        multiline: {
+          max: 1,
+        },
+      }],
     },
   }),
 )
