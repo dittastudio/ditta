@@ -65,7 +65,7 @@ onMounted(() => {
   gsap.set(container.value, { transformOrigin: 'right center', force3D: true })
 })
 
-const multipleWords = [...copy, ...copy, ...copy]
+const multipleWords: any = [...copy, ...copy, ...copy]
 </script>
 
 <template>
@@ -75,20 +75,30 @@ const multipleWords = [...copy, ...copy, ...copy]
     :class="[backgroundColorMap[backgroundColor], textColorMap[textColor]]"
   >
     <div ref="container">
-      <div class="marquee type-giga" :class="{ 'marquee--is-reversed': isReversed }">
+      <div
+        class="marquee type-giga"
+        :class="{ 'marquee--is-reversed': isReversed }"
+      >
         <div class="marquee__group">
           <p
             v-for="(word, index) in multipleWords"
             :key="word"
-            :aria-hidden="index > 0 ? true : null"
+            :aria-hidden="index > 0 ? true : undefined"
             class="type-giga-trim block"
           >
             {{ word }}
           </p>
         </div>
 
-        <div aria-hidden="true" class="marquee__group">
-          <p v-for="word in multipleWords" :key="word" class="type-giga-trim block">
+        <div
+          aria-hidden="true"
+          class="marquee__group"
+        >
+          <p
+            v-for="word in multipleWords"
+            :key="word"
+            class="type-giga-trim block"
+          >
             {{ word }}
           </p>
         </div>

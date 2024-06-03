@@ -86,10 +86,6 @@ const line8 = ['Openly Sourced']
       </a>
     </div>
 
-    <div class="wrapper section">
-      <UiHolographic />
-    </div>
-
     <BlockScrollTest />
 
     <BlockCarousel :slides="slides">
