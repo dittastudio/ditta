@@ -1,6 +1,10 @@
-@import '@/assets/css/tailwind.css';
+/* @import '@/assets/css/tailwind.css'; */
 @import '@/assets/css/variables.css' layer(base);
 @import '@/assets/css/resets.css' layer(base);
 @import '@/assets/css/fonts.css' layer(base);
 @import '@/assets/css/page.css' layer(base);
 @import '@/assets/css/type.css' layer(base);
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

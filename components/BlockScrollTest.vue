@@ -7,16 +7,16 @@ const { slideTotal = 8 } = defineProps<Props>()
 </script>
 
 <template>
-  <div class="container">
-    <div class="container__panel sticky top-0 contain-paint h-screen">
-      <div class="scroll h-full flex flex-col justify-center">
+  <div class="block-scroll-test">
+    <div class="block-scroll-test__panel sticky top-0 contain-paint h-screen">
+      <div class="block-scroll-test__scroll h-full flex flex-col justify-center">
         <ul
-          class="scroll__list"
+          class="block-scroll-test__list"
         >
           <li
             v-for="i in slideTotal"
             :key="i"
-            class="scroll__item"
+            class="block-scroll-test__item"
           >
             <div class="rounded-md overflow-hidden">
               <img
@@ -33,7 +33,7 @@ const { slideTotal = 8 } = defineProps<Props>()
 </template>
 
 <style lang="postcss" scoped>
-.container {
+.block-scroll-test {
   --slide-total: v-bind(slideTotal);
   --slide-per-view: 1;
   --wrapper-outer-gutter: var(--app-outer-gutter);
@@ -44,27 +44,27 @@ const { slideTotal = 8 } = defineProps<Props>()
 
   height: calc(var(--scrub-vh-sections) * 100vh);
 
-  @media (width >= 768px) {
+  @screen md {
     --slide-per-view: 2;
   }
 }
 
-.container__panel {
+.block-scroll-test__panel {
   padding-inline: calc(var(--wrapper-outer-gutter) - (var(--wrapper-inner-gutter) / 2));
 }
 
-.scroll {
+.block-scroll-test__scroll {
   animation: auto linear scroller both;
   animation-timeline: view();
 
   animation-range: entry 100% cover calc(100% / var(--scrub-vh-total) * var(--scrub-vh-sections));
 }
 
-.scroll__list {
+.block-scroll-test__list {
   display: flex;
 }
 
-.scroll__item {
+.block-scroll-test__item {
   flex-shrink: 0;
   width: calc(100% / var(--slide-per-view));
   padding-inline: calc(var(--wrapper-inner-gutter) / 2);

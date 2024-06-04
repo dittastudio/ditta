@@ -42,10 +42,7 @@ export default defineNuxtConfig({
     pageTransition: { name: 'page', mode: 'out-in' },
     layoutTransition: false,
   },
-  css: [
-    '~/assets/css/app.css',
-    // process.env.LOCAL === 'true' ? '@michaelpumo/screen/app.css' : undefined,
-  ],
+  css: process.env.LOCAL === 'true' ? ['@michaelpumo/screen/app.css'] : [],
   eslint: {
     config: {
       standalone: false,
@@ -58,6 +55,7 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
     '@nuxtjs/sitemap',
+    '@nuxtjs/tailwindcss',
     '@storyblok/nuxt',
     'nuxt-gtag',
   ],
@@ -67,16 +65,12 @@ export default defineNuxtConfig({
   },
   postcss: {
     plugins: {
-      'postcss-import': {},
-      'postcss-nested': {},
-      '@tailwindcss/postcss': {},
-      'postcss-custom-media': {},
-      '@csstools/postcss-media-minmax': {},
+      'tailwindcss/nesting': {},
+      'tailwindcss': {},
       'postcss-utopia': {
         minWidth: 375,
         maxWidth: 1440,
       },
-      'autoprefixer': {},
     },
   },
   runtimeConfig: {
@@ -91,6 +85,9 @@ export default defineNuxtConfig({
     url: 'https://ditta.studio',
   },
   ssr: process.env.NUXT_SSR === 'true' ? true : false,
+  tailwindcss: {
+    cssPath: '@/assets/css/app.css',
+  },
   typescript: {
     strict: true,
   },

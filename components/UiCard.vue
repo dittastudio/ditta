@@ -60,7 +60,7 @@ const cardMouseOut = () => {
 .ui-card__media {
   position: relative;
   overflow: hidden;
-  border-radius: var(--radius-md);
+  border-radius: theme('borderRadius.md');
 
   @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
     will-change: transform;
@@ -89,20 +89,20 @@ const cardMouseOut = () => {
       padding-block-end: 50%;
 
       opacity: 0;
-      background-color: var(--color-yellow-light);
+      background-color: theme('colors.yellow-light');
       filter: blur(100px);
       border-radius: 50%;
 
       transition:
-        opacity 0.25s var(--transition-timing-function-out),
+        opacity 0.25s theme('transitionTimingFunction.out'),
         translate 0s 0.25s;
 
       .ui-card:hover & {
         translate: calc(var(--x) * -1px) calc(var(--y) * -1px) 0;
         opacity: 0.2;
         transition:
-          opacity 0.25s var(--transition-timing-function-out),
-          translate 0.25s var(--transition-timing-function-out);
+          opacity 0.25s theme('transitionTimingFunction.out'),
+          translate 0.25s theme('transitionTimingFunction.out');
       }
     }
 
@@ -114,7 +114,7 @@ const cardMouseOut = () => {
         )
         rotateX(calc(var(--y) / var(--t) * -1deg))
         rotateY(calc(var(--x) / var(--t) * 1deg));
-      transition: transform 0.1s var(--transition-timing-function-out);
+      transition: transform 0.1s theme('transitionTimingFunction.out');
     }
   }
 }

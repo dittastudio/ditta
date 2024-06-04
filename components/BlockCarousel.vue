@@ -99,7 +99,7 @@ const changeSlide = (direction: 'prev' | 'next') => {
   display: flex;
   grid-column: content;
   margin-inline: calc(var(--gap) * -1);
-  padding-block: var(--spacing-32);
+  padding-block: theme('spacing.32');
 
   &::after {
     content: '';

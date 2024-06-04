@@ -1,28 +1,15 @@
 
-@custom-media --xs (width >= 375px);
-@custom-media --xsMax (width < 375px);
-@custom-media --sm (width >= 640px);
-@custom-media --smMax (width < 640px);
-@custom-media --md (width >= 768px);
-@custom-media --mdMax (width < 768px);
-@custom-media --lg (width >= 1024px);
-@custom-media --lgMax (width < 1024px);
-@custom-media --xl (width >= 1200px);
-@custom-media --xlMax (width < 1200px);
-@custom-media --base (width >= 1440px);
-@custom-media --baseMax (width < 1440px);
-@custom-media --2xl (width >= 1800px);
-@custom-media --2xlMax (width < 1800px);
-
 :root {
-  --app-max-width: 1800px;
-  --app-inner-gutter: var(--spacing-16);
-  --app-outer-gutter: var(--spacing-24);
+  --app-max-width: 1920px;
+  --app-inner-gutter: theme('spacing.16');
+  --app-outer-gutter: theme('spacing.24');
   --app-header-height: 96px;
+  --font-size-fluid-sm: utopia.clamp(18, 24);
+  --font-size-fluid-lg: utopia.clamp(40, 120);
 
-  @media (--md) {
-    --app-inner-gutter: var(--spacing-24);
-    --app-outer-gutter: var(--spacing-64);
+  @screen md {
+    --app-inner-gutter: theme('spacing.24');
+    --app-outer-gutter: theme('spacing.64');
     --app-header-height: 144px;
   }
 }

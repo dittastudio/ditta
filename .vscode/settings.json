@@ -9,7 +9,6 @@
     "vue": "html",
     "vue-html": "html",
   },
-  "tailwindCSS.experimental.configFile": "./assets/css/tailwind.css",
   "editor.quickSuggestions": {
     "strings": "on"
   }

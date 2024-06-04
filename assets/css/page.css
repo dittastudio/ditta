@@ -1,14 +1,14 @@
 html {
-  color: var(--color-offblack);
-  background-color: var(--color-pink);
+  color: theme('colors.offblack');
+  background-color: theme('colors.pink');
 }
 
 body {
-  font-family: var(--font-family-body);
-  font-size: var(--font-size-16);
+  font-family: theme('fontFamily.body');
+  font-size: theme('fontSize.16');
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  line-height: var(--line-height-normal);
+  line-height: theme('lineHeight.normal');
 }
 
 .wrapper {
@@ -17,10 +17,10 @@ body {
 }
 
 .section {
-  padding-block: var(--spacing-24);
+  padding-block: theme('spacing.64');
 
-  @media (--md) {
-    padding-block: var(--spacing-120);
+  @screen md {
+    padding-block: theme('spacing.120');
   }
 }
 

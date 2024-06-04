@@ -3,7 +3,7 @@
 .type-h2,
 .type-h3 {
   font-weight: bold;
-  line-height: var(--line-height-tight);
+  line-height: theme('lineHeight.tight');
   text-transform: uppercase;
 }
 
@@ -13,10 +13,9 @@
   font-weight: normal;
 }
 
-
 .type-giga {
   font-size: var(--font-size-fluid-lg);
-  letter-spacing: var(--letter-spacing-tighter);
+  letter-spacing: theme('lineHeight.tight');
 }
 
 .type-giga-trim {
@@ -25,67 +24,67 @@
 }
 
 .type-h1 {
-  font-size: var(--font-size-52);
-  letter-spacing: var(--line-height-tighter);
+  font-size: theme('fontSize.52');
+  letter-spacing: theme('lineHeight.tight');
 
-  @media (--md) {
-    font-size: var(--font-size-104);
+  @screen md {
+    font-size: theme('fontSize.104');
   }
 }
 
 .type-h2 {
-  font-size: var(--font-size-44);
-  letter-spacing: var(--line-height-tight);
+  font-size: theme('fontSize.44');
+  letter-spacing: theme('lineHeight.tight');
 
-  @media (--md) {
-    font-size: var(--font-size-80);
+  @screen md {
+    font-size: theme('fontSize.80');
   }
 }
 
 .type-h3 {
-  font-size: var(--font-size-38);
-  letter-spacing: var(--line-height-tight);
+  font-size: theme('fontSize.38');
+  letter-spacing: theme('lineHeight.tight');
 
-  @media (--md) {
-    font-size: var(--font-size-64);
+  @screen md {
+    font-size: theme('fontSize.64');
   }
 }
 
 .type-h4 {
-  font-size: var(--font-size-32);
+  font-size: theme('fontSize.32');
 
-  @media (--md) {
-    font-size: var(--font-size-44);
+  @screen md {
+    font-size: theme('fontSize.44');
   }
 }
 
 .type-h5 {
-  font-size: var(--font-size-24);
+  font-size: theme('fontSize.24');
 
-  @media (--md) {
-    font-size: var(--font-size-32);
+  @screen md {
+    font-size: theme('fontSize.32');
   }
 }
 
 .type-h6 {
-  font-size: var(--font-size-20);
+  font-size: theme('fontSize.20');
 
-  @media (--md) {
-    font-size: var(--font-size-24);
+  @screen md {
+    font-size: theme('fontSize.24');
   }
 }
 
 /* Body */
 .type-body {
-  font-size: var(--font-size-14);
+  font-size: theme('fontSize.14');
 
   & b,
   & strong {
     font-weight: 500;
   }
 
-  @media (--md) {
-    font-size: var(--font-size-16);
+  @screen md {
+    font-size: theme('fontSize.16');
   }
 }
 
