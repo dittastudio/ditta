@@ -59,13 +59,68 @@ onMounted(() => {
 //   },
 // ]
 
-const line1 = ['Technical Brawn']
-const line2 = ['Pixel Perfection']
-const line3 = ['Aesthetic Drive']
-const line4 = ['NI & AI']
-const line6 = ['Digital Studio']
-const line7 = ['HandMade']
-const line8 = ['Openly Sourced']
+const headings = [
+  {
+    backgroundColor: 'offblack',
+    textColor: 'offwhite',
+    copy: ['Obey'],
+    duration: '60s',
+  },
+  {
+    backgroundColor: 'offwhite',
+    textColor: 'offblack',
+    copy: ['Consume'],
+    duration: '80s',
+  },
+  {
+    backgroundColor: 'offblack',
+    textColor: 'pink',
+    copy: ['Subscribe'],
+    duration: '70s',
+  },
+  {
+    backgroundColor: 'pink',
+    textColor: 'offblack',
+    copy: ['Buy'],
+    duration: '65s',
+  },
+  {
+    backgroundColor: 'offblack',
+    textColor: 'offwhite',
+    copy: ['Conform'],
+    duration: '85s',
+  },
+  {
+    backgroundColor: 'offwhite',
+    textColor: 'offblack',
+    copy: ['Hire us'],
+    duration: '75s',
+  },
+  {
+    backgroundColor: 'offblack',
+    textColor: 'pink',
+    copy: ['Sleep'],
+    duration: '60s',
+  },
+  {
+    backgroundColor: 'pink',
+    textColor: 'offblack',
+    copy: ['Wake up'],
+    duration: '80s',
+  },
+  {
+    backgroundColor: 'offblack',
+    textColor: 'offwhite',
+    copy: ['Pay us'],
+    duration: '70s',
+  },
+  {
+    backgroundColor: 'offwhite',
+    textColor: 'offblack',
+    copy: ['Rest'],
+    duration: '65s',
+  },
+]
 </script>
 
 <template>
@@ -118,55 +173,13 @@ const line8 = ['Openly Sourced']
     </BlockCarousel>  -->
 
     <BlockHeading
-      background-color="offblack"
-      text-color="pink"
-      :copy="line1"
-      duration="60s"
-    />
-
-    <BlockHeading
-      background-color="offwhite"
-      text-color="offblack"
-      :copy="line6"
-      duration="80s"
-      is-reversed
-    />
-
-    <BlockHeading
-      background-color="offblack"
-      text-color="orange"
-      :copy="line3"
-      duration="70s"
-    />
-
-    <BlockHeading
-      background-color="blue"
-      text-color="white"
-      :copy="line2"
-      duration="65s"
-      is-reversed
-    />
-
-    <BlockHeading
-      background-color="pink"
-      text-color="offblack"
-      :copy="line4"
-      duration="85s"
-    />
-
-    <BlockHeading
-      background-color="yellow"
-      text-color="green"
-      :copy="line7"
-      duration="85s"
-      is-reversed
-    />
-
-    <BlockHeading
-      background-color="blue-light"
-      text-color="red"
-      :copy="line8"
-      duration="75s"
+      v-for="(heading, index) in headings"
+      :key="index"
+      :background-color="heading.backgroundColor"
+      :text-color="heading.textColor"
+      :copy="heading.copy"
+      :duration="heading.duration"
+      :is-reversed="Boolean(index % 2)"
     />
   </div>
 </template>

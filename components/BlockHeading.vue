@@ -65,7 +65,7 @@ onMounted(() => {
   gsap.set(container.value, { transformOrigin: 'right center', force3D: true })
 })
 
-const multipleWords: any = [...copy, ...copy, ...copy]
+const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy]
 </script>
 
 <template>
@@ -97,7 +97,7 @@ const multipleWords: any = [...copy, ...copy, ...copy]
           <p
             v-for="word in multipleWords"
             :key="word"
-            class="type-giga-trim block"
+            class="type-fluid-lg-trim block"
           >
             {{ word }}
           </p>
@@ -110,7 +110,7 @@ const multipleWords: any = [...copy, ...copy, ...copy]
 <style lang="postcss" scoped>
 .marquee {
   --duration: v-bind(duration);
-  --gap: 1em;
+  --gap: 0.5em;
 
   user-select: none;
 

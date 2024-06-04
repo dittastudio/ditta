@@ -9,7 +9,6 @@ import IconDitta from '@/assets/icons/ditta.svg'
       text-color="pink"
       :copy="['Say Hello']"
       duration="65s"
-      is-reversed
     />
 
     <div class="wrapper section w-full text-offwhite">
