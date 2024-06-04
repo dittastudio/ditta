@@ -45,7 +45,7 @@ export default defineNuxtConfig({
   components: true,
   css: process.env.LOCAL === 'true' ? ['@michaelpumo/screen/app.css'] : [],
   gtag: {
-    id: '',
+    id: 'G-VPGVW7ZKGD',
   },
   modules: [
     '@nuxtjs/sitemap',
@@ -53,9 +53,6 @@ export default defineNuxtConfig({
     ['@storyblok/nuxt', { accessToken: process.env.NUXT_STORYBLOK_TOKEN }],
     'nuxt-gtag',
   ],
-  tailwindcss: {
-    cssPath: '@/assets/css/app.css',
-  },
   postcss: {
     plugins: {
       'postcss-import': {},
@@ -76,6 +73,9 @@ export default defineNuxtConfig({
     url: 'https://ditta.studio',
   },
   ssr: process.env.NUXT_SSR === 'true' ? true : false,
+  tailwindcss: {
+    cssPath: '@/assets/css/app.css',
+  },
   typescript: {
     strict: true,
   },
