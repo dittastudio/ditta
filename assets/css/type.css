@@ -1,4 +1,4 @@
-.type-giga,
+.type-fluid-lg,
 .type-h1,
 .type-h2,
 .type-h3 {
@@ -13,14 +13,18 @@
   font-weight: normal;
 }
 
-.type-giga {
-  font-size: var(--font-size-fluid-lg);
+.type-fluid-lg {
+  font-size: utopia.clamp(40, 120);
   letter-spacing: theme('lineHeight.tight');
 }
 
-.type-giga-trim {
+.type-fluid-lg-trim {
   margin-block: -0.105em -0.025em;
   margin-inline: -0.035em;
+}
+
+.type-fluid-sm {
+  font-size: utopia.clamp(16, 32);
 }
 
 .type-h1 {

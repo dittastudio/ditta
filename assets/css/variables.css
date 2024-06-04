@@ -4,8 +4,6 @@
   --app-inner-gutter: theme('spacing.16');
   --app-outer-gutter: theme('spacing.24');
   --app-header-height: 96px;
-  --font-size-fluid-sm: utopia.clamp(18, 24);
-  --font-size-fluid-lg: utopia.clamp(40, 120);
 
   @screen md {
     --app-inner-gutter: theme('spacing.24');

@@ -71,12 +71,12 @@ const multipleWords: any = [...copy, ...copy, ...copy]
 <template>
   <div
     v-if="copy"
-    class="transform-gpu backface-hidden contain-paint block w-full border-t border-offblack relative after:absolute after:inset-x-0 after:top-full after:border-b after:border-offblack"
+    class="transform-gpu backface-hidden contain-paint block w-full"
     :class="[backgroundColorMap[backgroundColor], textColorMap[textColor]]"
   >
     <div ref="container">
       <div
-        class="marquee type-giga"
+        class="marquee type-fluid-lg"
         :class="{ 'marquee--is-reversed': isReversed }"
       >
         <div class="marquee__group">
@@ -84,7 +84,7 @@ const multipleWords: any = [...copy, ...copy, ...copy]
             v-for="(word, index) in multipleWords"
             :key="word"
             :aria-hidden="index > 0 ? true : undefined"
-            class="type-giga-trim block"
+            class="type-fluid-lg-trim block"
           >
             {{ word }}
           </p>

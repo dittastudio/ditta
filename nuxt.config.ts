@@ -50,7 +50,7 @@ export default defineNuxtConfig({
     },
   },
   gtag: {
-    id: '',
+    id: 'G-VPGVW7ZKGD',
   },
   modules: [
     '@nuxt/eslint',
@@ -61,7 +61,6 @@ export default defineNuxtConfig({
   ],
   storyblok: {
     accessToken: process.env.NUXT_STORYBLOK_TOKEN,
-    componentsDir: '~/components/storyblok',
   },
   postcss: {
     plugins: {

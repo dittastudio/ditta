@@ -36,34 +36,33 @@ onMounted(() => {
   }
 })
 
-const slides = [
-  {
-    src: '/imgs/luca-test-2.jpg',
-    alt: 'Ditta Studio',
-    type: 'image',
-  },
-  {
-    src: '/videos/luca-test.mp4',
-    alt: 'Ditta Studio',
-    type: 'video',
-  },
-  {
-    src: '',
-    alt: 'Ditta Studio',
-    type: 'image',
-  },
-  {
-    src: '',
-    alt: 'Ditta Studio',
-    type: 'image',
-  },
-]
+// const slides = [
+//   {
+//     src: '/imgs/luca-test-2.jpg',
+//     alt: 'Ditta Studio',
+//     type: 'image',
+//   },
+//   {
+//     src: '/videos/luca-test.mp4',
+//     alt: 'Ditta Studio',
+//     type: 'video',
+//   },
+//   {
+//     src: '',
+//     alt: 'Ditta Studio',
+//     type: 'image',
+//   },
+//   {
+//     src: '',
+//     alt: 'Ditta Studio',
+//     type: 'image',
+//   },
+// ]
 
 const line1 = ['Technical Brawn']
 const line2 = ['Pixel Perfection']
 const line3 = ['Aesthetic Drive']
 const line4 = ['NI & AI']
-const line5 = ['Say Hello']
 const line6 = ['Digital Studio']
 const line7 = ['HandMade']
 const line8 = ['Openly Sourced']
@@ -71,21 +70,21 @@ const line8 = ['Openly Sourced']
 
 <template>
   <div>
-    <div class="wrapper flex flex-col gap-24 items-center justify-center min-h-[100vh]">
-      <IconDitta class="w-[25%] min-w-200 h-auto" />
+    <div class="wrapper flex flex-col items-center justify-center min-h-[100vh]">
+      <IconDitta class="w-[27%] min-w-200 h-auto" />
 
       <h1 class="sr-only">
         ditta
       </h1>
 
       <a
-        class="text-offwhite text-fluid-sm"
+        class="text-offwhite type-fluid-sm font-bold p-[1em] transition-opacity duration-200 ease-smooth hover:opacity-70"
         href="mailto:hello@ditta.studio"
       >
         hello@ditta.studio
       </a>
     </div>
-
+    <!--
     <BlockScrollTest />
 
     <BlockCarousel :slides="slides">
@@ -116,7 +115,7 @@ const line8 = ['Openly Sourced']
           </div>
         </div>
       </template>
-    </BlockCarousel>
+    </BlockCarousel>  -->
 
     <BlockHeading
       background-color="offblack"
@@ -168,14 +167,6 @@ const line8 = ['Openly Sourced']
       text-color="red"
       :copy="line8"
       duration="75s"
-    />
-
-    <BlockHeading
-      background-color="offblack"
-      text-color="pink"
-      :copy="line5"
-      duration="65s"
-      is-reversed
     />
   </div>
 </template>

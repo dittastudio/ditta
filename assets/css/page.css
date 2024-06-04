@@ -17,10 +17,10 @@ body {
 }
 
 .section {
-  padding-block: theme('spacing.64');
+  padding-block: theme('spacing.32');
 
   @screen md {
-    padding-block: theme('spacing.120');
+    padding-block: theme('spacing.64');
   }
 }
 
