@@ -43,6 +43,9 @@ export default defineNuxtConfig({
     layoutTransition: false,
   },
   css: process.env.LOCAL === 'true' ? ['@michaelpumo/screen/app.css'] : [],
+  build: {
+    transpile: ['gsap'],
+  },
   eslint: {
     config: {
       standalone: false,

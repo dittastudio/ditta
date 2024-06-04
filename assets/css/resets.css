@@ -1,51 +1,53 @@
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  hyphens: auto;
-  overflow-wrap: break-word;
-}
-
-a,
-button {
-  touch-action: manipulation;
-  cursor: pointer;
-  user-select: none;
-
-  &:disabled {
-    cursor: not-allowed;
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    hyphens: auto;
+    overflow-wrap: break-word;
   }
-}
 
-button {
-  text-transform: inherit;
-  letter-spacing: inherit;
-}
+  a,
+  button {
+    touch-action: manipulation;
+    cursor: pointer;
+    user-select: none;
 
-svg {
-  display: block;
-  fill: currentcolor;
-}
+    &:disabled {
+      cursor: not-allowed;
+    }
+  }
 
-img {
-  width: 100%;
-}
+  button {
+    text-transform: inherit;
+    letter-spacing: inherit;
+  }
 
-input {
-  text-transform: inherit;
-  letter-spacing: inherit;
-  background-color: transparent;
-}
+  svg {
+    display: block;
+    fill: currentcolor;
+  }
 
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    scroll-behavior: auto !important;
-    transition-duration: 0.01ms !important;
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
+  img {
+    width: 100%;
+  }
+
+  input {
+    text-transform: inherit;
+    letter-spacing: inherit;
+    background-color: transparent;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      scroll-behavior: auto !important;
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+    }
   }
 }
