@@ -4,15 +4,55 @@ export interface Props {
 }
 
 const { slides } = defineProps<Props>()
+
+const carousel = ref<HTMLDivElement | null>(null)
+const list = ref<HTMLDivElement | null>(null)
+const items = ref<any | null>(null)
+const currentIndex = ref(0)
+
+const changeSlide = (direction: 'prev' | 'next') => {
+  if (!carousel.value || !list.value)
+    return
+
+  const maxItems = slides.length
+
+  if (direction === 'prev') {
+    currentIndex.value -= 1
+  }
+  else {
+    currentIndex.value += 1
+  }
+
+  if (currentIndex.value >= maxItems) {
+    currentIndex.value = 0
+  }
+
+  if (currentIndex.value < 0) {
+    currentIndex.value = maxItems - 1
+  }
+
+  items.value[currentIndex.value].scrollIntoView({
+    behavior: 'smooth',
+    block: 'nearest',
+    inline: 'center',
+  })
+}
 </script>
 
 <template>
   <div class="block-carousel section">
-    <div class="block-carousel__scroll scroll-x">
-      <div class="block-carousel__list">
+    <div
+      ref="carousel"
+      class="block-carousel__scroll scroll-x"
+    >
+      <div
+        ref="list"
+        class="block-carousel__list"
+      >
         <div
           v-for="(slide, index) in slides"
           :key="index"
+          ref="items"
           class="block-carousel__item w-full md:w-1/2"
         >
           <div class="block-carousel__block">
@@ -23,6 +63,20 @@ const { slides } = defineProps<Props>()
         </div>
       </div>
     </div>
+
+    <button
+      class="block-carousel__button block-carousel__button--prev"
+      @click="changeSlide('prev')"
+    >
+      Previous
+    </button>
+
+    <button
+      class="block-carousel__button block-carousel__button--next"
+      @click="changeSlide('next')"
+    >
+      Next
+    </button>
   </div>
 </template>
 

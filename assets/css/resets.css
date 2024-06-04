@@ -11,6 +11,7 @@ h6 {
 a,
 button {
   touch-action: manipulation;
+  cursor: pointer;
   user-select: none;
 
   &:disabled {

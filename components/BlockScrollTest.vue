@@ -3,7 +3,7 @@ export interface Props {
   slideTotal?: number
 }
 
-const { slideTotal = 12 } = defineProps<Props>()
+const { slideTotal = 8 } = defineProps<Props>()
 </script>
 
 <template>
@@ -38,7 +38,7 @@ const { slideTotal = 12 } = defineProps<Props>()
   --slide-per-view: 1;
   --wrapper-outer-gutter: var(--app-outer-gutter);
   --wrapper-inner-gutter: var(--app-inner-gutter);
-  --scrub-vh-sections: 3;
+  --scrub-vh-sections: 4;
   --scrub-vh-sticky: 1;
   --scrub-vh-total: calc(var(--scrub-vh-sticky) + var(--scrub-vh-sections));
 
