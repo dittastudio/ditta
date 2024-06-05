@@ -1,96 +1,96 @@
-@layer base {
-  .type-fluid-lg,
-  .type-h1,
-  .type-h2,
-  .type-h3 {
-    font-weight: bold;
-    line-height: theme('lineHeight.tight');
-    text-transform: uppercase;
-  }
+.type-fluid-lg,
+.type-h1,
+.type-h2,
+.type-h3 {
+  font-weight: bold;
+  line-height: theme('lineHeight.tight');
+  text-transform: uppercase;
+}
 
-  .type-h4,
-  .type-h5,
-  .type-h6 {
-    font-weight: normal;
-  }
+.type-h4,
+.type-h5,
+.type-h6 {
+  font-weight: normal;
+}
 
-  .type-fluid-lg {
-    font-size: utopia.clamp(40, 120);
-    letter-spacing: theme('lineHeight.tight');
-  }
+.type-fluid-lg {
+  font-size: utopia.clamp(80, 120);
+  letter-spacing: theme('lineHeight.tight');
+}
 
-  .type-fluid-lg-trim {
-    margin-block: -0.105em -0.025em;
-    margin-inline: -0.035em;
-  }
+.type-fluid-lg-trim {
+  margin-block: -0.105em -0.025em;
+  margin-inline: -0.035em;
+}
 
-  .type-fluid-sm {
-    font-size: utopia.clamp(16, 32);
-  }
+.type-fluid-sm {
+  font-size: utopia.clamp(16, 32);
+}
 
-  .type-h1 {
-    font-size: theme('fontSize.52');
-    letter-spacing: theme('lineHeight.tight');
+.type-h1 {
+  font-size: theme('fontSize.52');
+  letter-spacing: theme('lineHeight.tight');
 
-    @screen md {
-      font-size: theme('fontSize.104');
-    }
-  }
-
-  .type-h2 {
-    font-size: theme('fontSize.44');
-    letter-spacing: theme('lineHeight.tight');
-
-    @screen md {
-      font-size: theme('fontSize.80');
-    }
-  }
-
-  .type-h3 {
-    font-size: theme('fontSize.38');
-    letter-spacing: theme('lineHeight.tight');
-
-    @screen md {
-      font-size: theme('fontSize.64');
-    }
-  }
-
-  .type-h4 {
-    font-size: theme('fontSize.32');
-
-    @screen md {
-      font-size: theme('fontSize.44');
-    }
-  }
-
-  .type-h5 {
-    font-size: theme('fontSize.24');
-
-    @screen md {
-      font-size: theme('fontSize.32');
-    }
-  }
-
-  .type-h6 {
-    font-size: theme('fontSize.20');
-
-    @screen md {
-      font-size: theme('fontSize.24');
-    }
-  }
-
-  /* Body */
-  .type-body {
-    font-size: theme('fontSize.14');
-
-    & b,
-    & strong {
-      font-weight: 500;
-    }
-
-    @screen md {
-      font-size: theme('fontSize.16');
-    }
+  @screen md {
+    font-size: theme('fontSize.104');
   }
 }
+
+.type-h2 {
+  font-size: theme('fontSize.44');
+  letter-spacing: theme('lineHeight.tight');
+
+  @screen md {
+    font-size: theme('fontSize.80');
+  }
+}
+
+.type-h3 {
+  font-size: theme('fontSize.38');
+  letter-spacing: theme('lineHeight.tight');
+
+  @screen md {
+    font-size: theme('fontSize.64');
+  }
+}
+
+.type-h4 {
+  font-size: theme('fontSize.32');
+
+  @screen md {
+    font-size: theme('fontSize.44');
+  }
+}
+
+.type-h5 {
+  font-size: theme('fontSize.24');
+
+  @screen md {
+    font-size: theme('fontSize.32');
+  }
+}
+
+.type-h6 {
+  font-size: theme('fontSize.20');
+
+  @screen md {
+    font-size: theme('fontSize.24');
+  }
+}
+
+/* Body */
+.type-body {
+  font-size: theme('fontSize.14');
+
+  & b,
+  & strong {
+    font-weight: 500;
+  }
+
+  @screen md {
+    font-size: theme('fontSize.16');
+  }
+}
+
+
 

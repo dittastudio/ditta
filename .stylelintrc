@@ -33,6 +33,7 @@
         "ignorePseudoClasses": ["global"]
       }
     ],
+    "import-notation": "string",
     "no-invalid-position-at-import-rule": null,
     "custom-property-pattern": null,
     "custom-media-pattern": null,

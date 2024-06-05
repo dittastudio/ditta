@@ -1,8 +1,9 @@
-@import url('@/assets/css/variables.css');
-@import url('@/assets/css/resets.css');
-@import url('@/assets/css/fonts.css');
-@import url('@/assets/css/page.css');
-@import url('@/assets/css/type.css');
+
+@import '~/assets/css/variables.css' layer(base);
+@import '~/assets/css/resets.css' layer(base);
+@import '~/assets/css/fonts.css' layer(base);
+@import '~/assets/css/page.css' layer(base);
+@import '~/assets/css/type.css' layer(base);
 
 @tailwind base;
 @tailwind components;

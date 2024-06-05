@@ -65,7 +65,7 @@ onMounted(() => {
   gsap.set(container.value, { transformOrigin: 'right center', force3D: true })
 })
 
-const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy]
+const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy, ...copy, ...copy, ...copy, ...copy, ...copy, ...copy]
 </script>
 
 <template>
