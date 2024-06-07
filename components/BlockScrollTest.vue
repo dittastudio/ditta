@@ -8,19 +8,19 @@ const { slideTotal = 8 } = defineProps<Props>()
 
 <template>
   <div class="block-scroll-test">
-    <div class="block-scroll-test__panel sticky top-0 contain-paint h-screen">
-      <div class="block-scroll-test__scroll h-full flex flex-col justify-center">
+    <div class="sticky top-0 h-screen block-scroll-test__panel contain-paint">
+      <div class="flex flex-col justify-center h-full block-scroll-test__scroll">
         <ul
           class="block-scroll-test__list"
         >
           <li
             v-for="i in slideTotal"
             :key="i"
-            class="block-scroll-test__item"
+            class="block-scroll-test__item shrink-0"
           >
-            <div class="rounded-md overflow-hidden">
+            <div class="overflow-hidden rounded-md">
               <img
-                class="w-full h-full object-cover"
+                class="object-cover w-full h-full"
                 src="https://placehold.co/600x400"
                 alt=""
               >
@@ -65,7 +65,6 @@ const { slideTotal = 8 } = defineProps<Props>()
 }
 
 .block-scroll-test__item {
-  flex-shrink: 0;
   width: calc(100% / var(--slide-per-view));
   padding-inline: calc(var(--wrapper-inner-gutter) / 2);
 }

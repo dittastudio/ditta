@@ -70,7 +70,7 @@ const cardMouseOut = () => {
 
     outline: 1px solid transparent; /* FF smooths edges */
 
-    transition: transform 0.3s var(--transition-timing-function-inOutBack);
+    transition: transform 0.3s theme('transitionTimingFunction.inOutBack');
 
     &::after {
       pointer-events: none;

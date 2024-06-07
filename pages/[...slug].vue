@@ -75,50 +75,56 @@ const headings = [
   {
     backgroundColor: 'offblack',
     textColor: 'pink',
-    copy: ['Subscribe'],
+    copy: ['Like'],
     duration: '70s',
   },
   {
     backgroundColor: 'pink',
     textColor: 'offblack',
-    copy: ['Buy'],
+    copy: ['Subscribe'],
     duration: '65s',
   },
   {
     backgroundColor: 'offblack',
     textColor: 'offwhite',
-    copy: ['Conform'],
+    copy: ['Upgrade'],
     duration: '85s',
   },
   {
     backgroundColor: 'offwhite',
     textColor: 'offblack',
-    copy: ['Hire us'],
+    copy: ['Conform'],
     duration: '75s',
   },
   {
     backgroundColor: 'offblack',
     textColor: 'pink',
-    copy: ['Sleep'],
+    copy: ['Hire us'],
     duration: '60s',
   },
   {
     backgroundColor: 'pink',
     textColor: 'offblack',
-    copy: ['Wake up'],
+    copy: ['Sleep'],
     duration: '80s',
-  },
-  {
-    backgroundColor: 'offblack',
-    textColor: 'offwhite',
-    copy: ['Pay us'],
-    duration: '70s',
   },
   {
     backgroundColor: 'offwhite',
     textColor: 'offblack',
-    copy: ['Rest'],
+    copy: ['Wake up'],
+    duration: '70s',
+  },
+  {
+    backgroundColor: 'offblack',
+    textColor: 'offwhite',
+    copy: ['Pay up'],
     duration: '65s',
+  },
+  {
+    backgroundColor: 'pink',
+    textColor: 'offblack',
+    copy: ['Repeat'],
+    duration: '85s',
   },
 ]
 </script>
@@ -139,21 +145,21 @@ const headings = [
         hello@ditta.studio
       </a>
     </div>
-    <!--
-    <BlockScrollTest />
+
+    <!-- <BlockScrollTest />
 
     <BlockCarousel :slides="slides">
       <template #default="{ slide }">
         <img
           v-if="slide.src && slide.type === 'image'"
-          class="w-full h-full object-cover"
+          class="object-cover w-full h-full"
           :src="slide.src"
           :alt="slide.alt"
         >
 
         <video
           v-else-if="slide.src && slide.type === 'video'"
-          class="w-full h-full object-cover"
+          class="object-cover w-full h-full"
           :src="slide.src"
           playsinline
           autoplay
@@ -170,7 +176,7 @@ const headings = [
           </div>
         </div>
       </template>
-    </BlockCarousel>  -->
+    </BlockCarousel> -->
 
     <BlockHeading
       v-for="(heading, index) in headings"
@@ -179,7 +185,7 @@ const headings = [
       :text-color="heading.textColor"
       :copy="heading.copy"
       :duration="heading.duration"
-      :is-reversed="Boolean(index % 2)"
+      :direction="index % 2 ? 'right' : 'left'"
     />
   </div>
 </template>

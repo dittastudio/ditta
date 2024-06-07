@@ -39,10 +39,10 @@ export interface Props {
   textColor?: string
   copy: any[]
   duration?: string
-  isReversed?: boolean
+  direction?: 'left' | 'right'
 }
 
-const { backgroundColor = 'offwhite', textColor = 'offblack', copy, isReversed = false, duration = '60s' } = defineProps<Props>()
+const { backgroundColor = 'offwhite', textColor = 'offblack', copy, direction = 'left', duration = '60s' } = defineProps<Props>()
 
 const container = ref()
 
@@ -65,26 +65,29 @@ onMounted(() => {
   gsap.set(container.value, { transformOrigin: 'right center', force3D: true })
 })
 
-const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy, ...copy, ...copy, ...copy, ...copy, ...copy, ...copy]
+const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy, ...copy, ...copy, ...copy]
 </script>
 
 <template>
   <div
     v-if="copy"
-    class="transform-gpu backface-hidden contain-paint block w-full"
+    class="block w-full block-heading transform-gpu backface-hidden contain-paint"
     :class="[backgroundColorMap[backgroundColor], textColorMap[textColor]]"
   >
-    <div ref="container">
+    <div
+      ref="container"
+      class="block-heading__wrapper"
+    >
       <div
-        class="marquee type-fluid-lg"
-        :class="{ 'marquee--is-reversed': isReversed }"
+        class="block-heading__marquee type-fluid-lg"
+        :class="{ [`block-heading__marquee--${direction}`]: direction }"
       >
-        <div class="marquee__group">
+        <div class="block-heading__group">
           <p
             v-for="(word, index) in multipleWords"
             :key="word"
             :aria-hidden="index > 0 ? true : undefined"
-            class="type-fluid-lg-trim block"
+            class="block type-fluid-lg-trim"
           >
             {{ word }}
           </p>
@@ -92,12 +95,12 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
 
         <div
           aria-hidden="true"
-          class="marquee__group"
+          class="block-heading__group"
         >
           <p
             v-for="word in multipleWords"
             :key="word"
-            class="type-fluid-lg-trim block"
+            class="block type-fluid-lg-trim"
           >
             {{ word }}
           </p>
@@ -108,7 +111,7 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
 </template>
 
 <style lang="postcss" scoped>
-.marquee {
+.block-heading__marquee {
   --duration: v-bind(duration);
   --gap: 0.5em;
 
@@ -120,14 +123,14 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
   min-width: 100%;
   padding: 0.15em;
 
-  &:not(&--is-reversed) {
+  &--left {
     animation: auto linear scroll-left both;
     animation-timeline: view();
 
     animation-range: entry 0% cover 100%;
   }
 
-  &--is-reversed {
+  &--right {
     justify-content: flex-end;
     animation: auto linear scroll-right both;
     animation-timeline: view();
@@ -136,7 +139,7 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
   }
 }
 
-.marquee__group {
+.block-heading__group {
   will-change: translate;
 
   display: flex;
@@ -147,17 +150,15 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
 
   min-width: 100%;
 
-  .marquee:not(.marquee--is-reversed) & {
+  .block-heading__marquee--left & {
     animation: ticker-left var(--duration) linear infinite;
   }
 
-  .marquee--is-reversed & {
+  .block-heading__marquee--right & {
     animation: ticker-right var(--duration) linear infinite;
   }
-}
 
-@media (prefers-reduced-motion: reduce) {
-  .marquee__group {
+  @media (prefers-reduced-motion: reduce) {
     animation-play-state: paused;
   }
 }
