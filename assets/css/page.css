@@ -1,6 +1,11 @@
 html {
   color: theme('colors.offblack');
   background-color: theme('colors.pink');
+
+  @media (prefers-color-scheme: dark) {
+    color: theme('colors.pink');
+    background-color: theme('colors.offblack');
+  }
 }
 
 body {
