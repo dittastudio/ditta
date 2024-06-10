@@ -18,14 +18,14 @@
     "@netlify/functions": "^2.7.0",
     "@sendgrid/mail": "^8.1.3",
     "@storyblok/nuxt": "^6.0.10",
-    "@vee-validate/zod": "^4.13.0",
+    "@vee-validate/zod": "^4.13.1",
     "@vueuse/core": "^10.10.0",
     "gsap": "^3.12.5",
-    "vee-validate": "^4.13.0",
+    "vee-validate": "^4.13.1",
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^2.20.0",
+    "@antfu/eslint-config": "^2.21.0",
     "@michaelpumo/screen": "^0.0.18",
     "@nuxt/eslint": "^0.3.13",
     "@nuxtjs/sitemap": "^5.2.0",
