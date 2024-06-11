@@ -8,6 +8,14 @@
 
 @font-face {
   font-family: 'Greycliff CF';
+  font-weight: bold;
+  font-style: italic;
+  font-display: swap;
+  src: url('/fonts/GreycliffCF-BoldOblique.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Greycliff CF';
   font-weight: normal;
   font-style: normal;
   font-display: swap;

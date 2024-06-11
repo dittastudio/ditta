@@ -60,6 +60,75 @@ onMounted(() => {
 // ]
 
 const headings = [
+  // {
+  //   backgroundColor: 'offblack',
+  //   textColor: 'offwhite',
+  //   copy: ['Obey'],
+  //   duration: '60s',
+  // },
+  // {
+  //   backgroundColor: 'offwhite',
+  //   textColor: 'offblack',
+  //   copy: ['Consume'],
+  //   duration: '80s',
+  // },
+  // {
+  //   backgroundColor: 'offblack',
+  //   textColor: 'pink',
+  //   copy: ['Like'],
+  //   duration: '70s',
+  // },
+  // {
+  //   backgroundColor: 'pink',
+  //   textColor: 'offblack',
+  //   copy: ['Subscribe'],
+  //   duration: '65s',
+  // },
+  // {
+  //   backgroundColor: 'offblack',
+  //   textColor: 'offwhite',
+  //   copy: ['Upgrade'],
+  //   duration: '85s',
+  // },
+  // {
+  //   backgroundColor: 'offwhite',
+  //   textColor: 'offblack',
+  //   copy: ['Conform'],
+  //   duration: '75s',
+  // },
+  {
+    backgroundColor: 'offblack',
+    textColor: 'pink',
+    copy: ['Hire us'],
+    duration: '60s',
+  },
+  {
+    backgroundColor: 'pink',
+    textColor: 'offblack',
+    copy: ['Sleep'],
+    duration: '80s',
+  },
+  {
+    backgroundColor: 'offwhite',
+    textColor: 'offblack',
+    copy: ['Wake up'],
+    duration: '70s',
+  },
+  {
+    backgroundColor: 'offblack',
+    textColor: 'offwhite',
+    copy: ['Pay up'],
+    duration: '65s',
+  },
+  {
+    backgroundColor: 'pink',
+    textColor: 'offblack',
+    copy: ['Repeat'],
+    duration: '85s',
+  },
+]
+
+const headings1 = [
   {
     backgroundColor: 'offblack',
     textColor: 'offwhite',
@@ -96,55 +165,51 @@ const headings = [
     copy: ['Conform'],
     duration: '75s',
   },
-  {
-    backgroundColor: 'offblack',
-    textColor: 'pink',
-    copy: ['Hire us'],
-    duration: '60s',
-  },
-  {
-    backgroundColor: 'pink',
-    textColor: 'offblack',
-    copy: ['Sleep'],
-    duration: '80s',
-  },
-  {
-    backgroundColor: 'offwhite',
-    textColor: 'offblack',
-    copy: ['Wake up'],
-    duration: '70s',
-  },
-  {
-    backgroundColor: 'offblack',
-    textColor: 'offwhite',
-    copy: ['Pay up'],
-    duration: '65s',
-  },
-  {
-    backgroundColor: 'pink',
-    textColor: 'offblack',
-    copy: ['Repeat'],
-    duration: '85s',
-  },
 ]
+
+const blockText1 = `
+  <p>We’re a new digital agency based in London bridging the gap between design and development.</p>
+
+ <p>You can’t <em>do digital</em> but we can.
+  Start your next web project with us.</p>
+`
 </script>
 
 <template>
   <div>
-    <div class="wrapper flex flex-col items-center justify-center min-h-[100vh]">
-      <IconDitta class="w-[27%] min-w-200 h-auto" />
+    <div class="pt-80">
+      <div class="wrapper">
+        <IconDitta class="w-[100px] h-auto text-pink" />
 
-      <h1 class="sr-only">
-        ditta
-      </h1>
+        <h1 class="sr-only">
+          ditta
+        </h1>
+      </div>
 
-      <a
-        class="text-offwhite type-fluid-sm font-bold p-[1em] transition-opacity duration-200 ease-smooth hover:opacity-70"
-        href="mailto:hello@ditta.studio"
-      >
-        hello@ditta.studio
-      </a>
+      <BlockText :copy="blockText1" />
     </div>
+
+    <BlockHeading
+      v-for="(heading, index) in headings1"
+      :key="index"
+      :background-color="heading.backgroundColor"
+      :text-color="heading.textColor"
+      :copy="heading.copy"
+      :duration="heading.duration"
+      :direction="index % 2 ? 'right' : 'left'"
+    />
+
+    <div class="bg-offwhite min-h-screen" />
+
+    <BlockHeading
+      v-for="(heading, index) in headings2"
+      :key="index"
+      :background-color="heading.backgroundColor"
+      :text-color="heading.textColor"
+      :copy="heading.copy"
+      :duration="heading.duration"
+      :direction="index % 2 ? 'right' : 'left'"
+    />
 
     <!-- <BlockScrollTest />
 

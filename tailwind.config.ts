@@ -92,7 +92,8 @@ export default {
       none: '1',
       tight: '0.85',
       snug: '1.2',
-      normal: '1.5',
+      normal: '1.4',
+      relaxed: '1.5',
     },
     letterSpacing: {
       tighter: '-0.02em',

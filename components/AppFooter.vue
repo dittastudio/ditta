@@ -3,7 +3,7 @@ import IconDitta from '@/assets/icons/ditta.svg'
 </script>
 
 <template>
-  <div class="flex flex-col justify-between min-h-screen  bg-offblack">
+  <div class="bg-offblack flex flex-col justify-between min-h-screen">
     <BlockHeading
       background-color="offblack"
       text-color="pink"
@@ -12,21 +12,21 @@ import IconDitta from '@/assets/icons/ditta.svg'
       direction="right"
     />
 
-    <div class="w-full wrapper section text-offwhite">
+    <div class="wrapper section w-full">
       <h2 class="text-20 lg:text-24 max-w-[40ch] text-balance mb-40">
         We're a new digital agency based in London bridging the gap between design and development.
       </h2>
 
       <p class="text-32 sm:text-38">
         <a
-          class="transition-opacity duration-200 text-pink ease-smooth hover:opacity-70"
+          class="text-pink ease-smooth hover:opacity-70 transition-opacity duration-200"
           href="mailto:hello@ditta.studio"
         >
           hello@ditta.studio
         </a>
       </p>
 
-      <p class="text-18 max-w-[40ch] text-balance text-white/40 mb-64">
+      <p class="text-18 max-w-[40ch] text-balance opacity-40 mb-64">
         Start your next project with us.
       </p>
 

@@ -2,6 +2,7 @@
 import { isStoryblokEditor } from '@/utilities/helpers'
 
 const route = useRoute()
+const isDev = import.meta.dev
 
 const globalClasses = computed(() => ({
   'is-storyblok-editor': isStoryblokEditor(route.query),
@@ -24,5 +25,7 @@ useSeoMeta({
     <NuxtPage />
 
     <AppFooter />
+
+    <ToolGrid v-if="isDev" />
   </div>
 </template>
