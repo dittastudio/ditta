@@ -27,7 +27,7 @@ const toggleGrid = () => {
     ]"
     class="wrapper ease-smooth fixed inset-0 z-40 w-full h-full transition-opacity duration-200 pointer-events-none"
   >
-    <div class="grid gap-x-[length:var(--app-inner-gutter)] grid-cols-2 sm:grid-cols-4 md:grid-cols-12 h-screen">
+    <div class="grid gap-x-[var(--app-inner-gutter)] grid-cols-2 sm:grid-cols-4 md:grid-cols-12 h-screen">
       <div
         v-for="i in 12"
         :key="i"

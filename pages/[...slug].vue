@@ -201,16 +201,6 @@ const blockText1 = `
 
     <div class="bg-offwhite min-h-screen" />
 
-    <BlockHeading
-      v-for="(heading, index) in headings2"
-      :key="index"
-      :background-color="heading.backgroundColor"
-      :text-color="heading.textColor"
-      :copy="heading.copy"
-      :duration="heading.duration"
-      :direction="index % 2 ? 'right' : 'left'"
-    />
-
     <!-- <BlockScrollTest />
 
     <BlockCarousel :slides="slides">

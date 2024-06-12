@@ -9,7 +9,7 @@ const { copy } = defineProps<Props>()
 <template>
   <div
     v-if="copy"
-    class="block-text section wrapper grid gap-x-[length:var(--app-inner-gutter)] md:grid-cols-2"
+    class="block-text section wrapper grid gap-x-[var(--app-inner-gutter)] md:grid-cols-2"
   >
     <div class="col-span-full w-full">
       <div v-html="copy" />

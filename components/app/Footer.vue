@@ -32,6 +32,28 @@ import IconDitta from '@/assets/icons/ditta.svg'
 
       <IconDitta class="block w-[50px] h-[18px] mb-8" />
 
+      <ul class="flex gap-8 mb-16">
+        <li class="text-14">
+          <a
+            class="opacity-40 hover:opacity-100 focus:opacity-100 transition-opacity duration-200"
+            href="https://www.linkedin.com/company/dittastudio"
+            target="_blank"
+          >
+            LinkedIn
+          </a>
+        </li>
+
+        <li class="text-14">
+          <a
+            class="opacity-40 hover:opacity-100 focus:opacity-100 transition-opacity duration-200"
+            href="https://www.instagram.com/_dittastudio/"
+            target="_blank"
+          >
+            Instagram
+          </a>
+        </li>
+      </ul>
+
       <p class="text-10 max-w-[40ch] text-balance text-grey">
         ditta ltd. is a company registered in England and Wales with company number 15648076.
       </p>

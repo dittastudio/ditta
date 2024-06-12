@@ -4,7 +4,7 @@ const raf = ref(null as number | null)
 const mouse = ref({ x: 0, y: 0 })
 const cursor = ref({ x: 0, y: 0 })
 // const cursorRef = ref(null as HTMLElement | null)
-const speed = 0.2
+const speed = 0.05
 
 const lerp = (a: number, b: number, n: number) => (1 - n) * a + n * b
 
