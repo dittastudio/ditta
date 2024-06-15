@@ -3,7 +3,7 @@
   font-weight: bold;
   font-style: normal;
   font-display: swap;
-  src: url('/fonts/GreycliffCF-Heavy.woff2') format('woff2');
+  src: url('/fonts/webfonts/greycliffcf-heavy-webfont.woff2') format('woff2');
 }
 
 @font-face {
@@ -11,7 +11,7 @@
   font-weight: bold;
   font-style: italic;
   font-display: swap;
-  src: url('/fonts/GreycliffCF-BoldOblique.woff2') format('woff2');
+  src: url('/fonts/webfonts/greycliffcf-boldoblique-webfont.woff2') format('woff2');
 }
 
 @font-face {
@@ -19,7 +19,7 @@
   font-weight: normal;
   font-style: normal;
   font-display: swap;
-  src: url('/fonts/GreycliffCF-Medium.woff2') format('woff2');
+  src: url('/fonts/webfonts/greycliffcf-medium-webfont.woff2') format('woff2');
 }
 
 @font-face {
@@ -27,7 +27,7 @@
   font-weight: 300;
   font-style: normal;
   font-display: swap;
-  src: url('/fonts/GreycliffCF-Light.woff2') format('woff2');
+  src: url('/fonts/webfonts/greycliffcf-light-webfont.woff2') format('woff2');
 }
 
 

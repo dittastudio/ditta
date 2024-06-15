@@ -71,7 +71,7 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
 <template>
   <div
     v-if="copy"
-    class="block w-full block-heading transform-gpu backface-hidden contain-paint"
+    class="block-heading transform-gpu backface-hidden contain-paint block w-full"
     :class="[backgroundColorMap[backgroundColor], textColorMap[textColor]]"
   >
     <div
@@ -82,12 +82,11 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
         class="block-heading__marquee type-fluid-lg"
         :class="{ [`block-heading__marquee--${direction}`]: direction }"
       >
-        <div class="block-heading__group">
+        <div class="block-heading__group type-fluid-lg-trim">
           <p
             v-for="(word, index) in multipleWords"
             :key="word"
             :aria-hidden="index > 0 ? true : undefined"
-            class="block type-fluid-lg-trim"
           >
             {{ word }}
           </p>
@@ -95,12 +94,11 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
 
         <div
           aria-hidden="true"
-          class="block-heading__group"
+          class="block-heading__group type-fluid-lg-trim"
         >
           <p
             v-for="word in multipleWords"
             :key="word"
-            class="block type-fluid-lg-trim"
           >
             {{ word }}
           </p>
@@ -121,6 +119,8 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
   gap: var(--gap);
 
   min-width: 100%;
+
+  /* margin-block: 0 -0; */
   padding: 0.15em;
 
   &--left {
