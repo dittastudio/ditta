@@ -113,15 +113,15 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
   --duration: v-bind(duration);
   --gap: 0.5em;
 
-  user-select: none;
+  /* user-select: none; */
 
   display: flex;
   gap: var(--gap);
 
   min-width: 100%;
-
-  /* margin-block: 0 -0; */
   padding: 0.15em;
+
+  line-height: unset;
 
   &--left {
     animation: auto linear scroll-left both;
