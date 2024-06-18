@@ -125,6 +125,16 @@ export interface RichtextStoryblok {
   [k: string]: any;
 }
 
+export interface BlockStudiosStoryblok {
+  text: RichtextStoryblok;
+  studios?: StudioStoryblok[];
+  colour: number | string;
+  background: number | string;
+  _uid: string;
+  component: "block_studios";
+  [k: string]: any;
+}
+
 export interface BlockTextStoryblok {
   text: RichtextStoryblok;
   colour: number | string;
@@ -135,7 +145,7 @@ export interface BlockTextStoryblok {
 }
 
 export interface PageStoryblok {
-  blocks?: (BlockBentoBoxStoryblok | BlockMediaStoryblok | BlockTextStoryblok)[];
+  blocks?: (BlockBentoBoxStoryblok | BlockMediaStoryblok | BlockStudiosStoryblok | BlockTextStoryblok)[];
   seo: SeoStoryblok[];
   _uid: string;
   component: "page";
@@ -149,5 +159,12 @@ export interface SeoStoryblok {
   seo_image: AssetStoryblok;
   _uid: string;
   component: "seo";
+  [k: string]: any;
+}
+
+export interface StudioStoryblok {
+  name: string;
+  _uid: string;
+  component: "studio";
   [k: string]: any;
 }
