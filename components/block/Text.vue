@@ -35,7 +35,7 @@ const { block } = defineProps<Props>()
 
 <style lang="postcss" scoped>
 .block-text {
-  --text-size: utopia.clamp(40, 64);
+  --text-size: utopia.clamp(40, 65);
   --line-height: theme('lineHeight.snug');
 
   & :deep(p) {
