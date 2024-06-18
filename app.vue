@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { isStoryblokEditor } from '@/utilities/helpers'
+import { storyblokEditor } from '@/utilities/storyblok'
 
 const route = useRoute()
 const isDev = import.meta.dev
 
 const globalClasses = computed(() => ({
-  'is-storyblok-editor': isStoryblokEditor(route.query),
+  'is-storyblok-editor': storyblokEditor(route.query),
 }))
 
 useHead({

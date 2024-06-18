@@ -19,6 +19,11 @@ const { content } = defineProps<Props>()
         :block="block"
       />
 
+      <BlockMedia
+        v-else-if="block.component === 'block_media'"
+        :block="block"
+      />
+
       <BlockText
         v-else-if="block.component === 'block_text'"
         :block="block"

@@ -17,7 +17,7 @@ import IconDitta from '@/assets/icons/ditta.svg'
         We're a new digital agency based in London bridging the gap between design and development.
       </h2>
 
-      <p class="text-32 sm:text-38">
+      <p class="text-32 sm:text-40">
         <a
           class="text-pink ease-smooth hover:opacity-70 transition-opacity duration-200"
           href="mailto:hello@ditta.studio"
@@ -54,7 +54,7 @@ import IconDitta from '@/assets/icons/ditta.svg'
         </li>
       </ul>
 
-      <p class="text-10 max-w-[40ch] text-balance text-grey">
+      <p class="text-12 max-w-[40ch] text-balance text-grey">
         ditta ltd. is a company registered in England and Wales with company number 15648076.
       </p>
     </div>

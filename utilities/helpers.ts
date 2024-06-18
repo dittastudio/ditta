@@ -1,117 +1,61 @@
-import type { LocationQuery } from 'vue-router'
+const arrayToTuples = (items: unknown[]) => {
+  const tuples = []
 
-const isStoryblokEditor = (search: LocationQuery) => '_storyblok' in search
-
-const randomNumberInRange = (min: number, max: number): number =>
-  Math.floor(Math.random() * (max - min + 1)) + min
-
-const storyblokSlug = (path: string): string =>
-  ['/', ''].includes(path) ? '/home' : path.replace(/\/+$/, '')
-
-interface IImageTransformOptions {
-  width: number
-  height: number
-  smart?: boolean
-  quality?: number
-  blur?: number
-}
-
-const storyblokImageDimensions = (
-  filename: string | null | undefined
-): { width: number; height: number } => {
-  if (!filename?.length) {
-    return {
-      width: 0,
-      height: 0
+  for (let i = 0; i < items.length; i += 2) {
+    if (i + 1 < items.length) {
+      tuples.push([items[i], items[i + 1]])
+    }
+    else {
+      tuples.push([items[i]])
     }
   }
 
-  const [width, height] = filename.split('/')[5].split('x')
-
-  return { width: Number(width), height: Number(height) }
+  return tuples
 }
 
-const storyblokImage = (
-  filename: string | null | undefined,
-  options?: IImageTransformOptions | undefined
-): string => {
-  if (!filename?.length) return ''
+const calculateAspectRatio = (width: number, height: number, newWidth: number = 100): string => {
+  const aspectRatioWidth = newWidth
+  const aspectRatioHeight = Math.round((height / width) * aspectRatioWidth)
 
-  const settings: IImageTransformOptions = {
-    width: 0,
-    height: 0,
-    smart: false,
-    quality: 90,
-    blur: 0,
-    ...options
-  }
-
-  const filterProperties: Record<string, string> = {
-    blur: settings.blur && settings.blur > 0 ? `:blur(${settings.blur})` : '',
-    quality: `:quality(${settings.quality})`
-  }
-
-  const filters: string = Object.values(filterProperties)
-    .map(item => item.trim())
-    .filter(item => item.length)
-    .join('')
-
-  const transforms = `m/${settings.width}x${settings.height}${
-    settings.smart ? '/smart' : ''
-  }/filters${filters}`
-  const path = `${filename}/${transforms}`.replace('//a.storyblok.com', '//a2.storyblok.com')
-
-  return path
+  return `${aspectRatioWidth}:${aspectRatioHeight}`
 }
 
 const ratioDimensions = (
-  maxWidth: number,
-  dimensions: ditta.ImageDimensions,
-  ratio: string
+  ratio: ditta.TAspectRatios | string | number,
 ): ditta.ImageDimensions => {
-  const width = maxWidth !== 0 && maxWidth < dimensions.width ? maxWidth : dimensions.width
-  let ratioCalc = dimensions.height / dimensions.width
-
-  if (['1:1', '4:3', '3:4', '16:9', '9:16', '21:9'].includes(ratio)) {
-    const parts = ratio.split(':').map((num: string): number => Number(num))
-    ratioCalc = parts[1] / parts[0]
-  }
-
-  const newHeight = Math.round(ratioCalc * width)
+  const parts = ratio.toString().split(':').map((num: string): number => Number(num))
 
   return {
-    width: width,
-    height: newHeight
+    width: parts[0],
+    height: parts[1],
   }
 }
 
 const wait = (ms: number = 0) => new Promise(resolve => setTimeout(resolve, ms))
 
-const nl2br = (input: string): string => input.replace(/\n/g, '<br>')
+const validAspectRatio = (ratio: string | number = '') => {
+  const pattern = /[0-9.]+:[0-9.]+/g
 
-const sleep = async (ms: number): Promise<void> =>
-  new Promise<void>(resolve => setTimeout(resolve, ms))
-
-const requestDelay = async <T>(promise: T, ms: number = 1000) => {
-  const [p] = await Promise.all([promise, sleep(ms)])
-
-  return p
+  return pattern.test(String(ratio))
 }
 
-const hasRichTextContent = (richtext: any): boolean => {
-  return Boolean(richtext?.content?.[0]?.content?.length)
+const objectToUrlParams = (obj: Record<string, unknown>) => {
+  const params = new URLSearchParams()
+
+  for (const key in obj) {
+    if (Object.hasOwn(obj, key) && obj[key]) {
+      params.append(key, String(obj[key]))
+    }
+  }
+
+  return params.toString()
 }
 
 export {
-  isStoryblokEditor,
-  randomNumberInRange,
-  storyblokSlug,
-  storyblokImageDimensions,
-  storyblokImage,
+  arrayToTuples,
+  calculateAspectRatio,
+  objectToUrlParams,
   ratioDimensions,
+  validAspectRatio,
   wait,
-  nl2br,
-  sleep,
-  requestDelay,
-  hasRichTextContent,
 }

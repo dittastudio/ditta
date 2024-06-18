@@ -12,6 +12,8 @@ interface Props {
 
 const { error } = defineProps<Props>()
 
+console.log(error)
+
 useHead({
   title:
     error?.statusCode && error?.statusMessage
@@ -27,7 +29,10 @@ useHead({
   >
     <div class="w-full max-w-md flex flex-col items-center justify-center gap-8 text-center">
       <h1>
-        <a href="/" class="block">ditta</a>
+        <a
+          href="/"
+          class="block"
+        >ditta</a>
       </h1>
 
       <p class="text-24">
@@ -35,7 +40,10 @@ useHead({
       </p>
 
       <p>
-        <a href="/" class="block">
+        <a
+          href="/"
+          class="block"
+        >
           Back to home
         </a>
       </p>

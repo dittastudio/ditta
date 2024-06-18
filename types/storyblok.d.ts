@@ -83,8 +83,36 @@ export interface BlockBentoBoxStoryblok {
     | BentoWeatherStoryblok
     | BentoWorkStoryblok
   )[];
+  colour: number | string;
+  background: number | string;
   _uid: string;
   component: "block_bento_box";
+  [k: string]: any;
+}
+
+export interface AssetStoryblok {
+  _uid?: string;
+  id: number;
+  alt?: string;
+  name: string;
+  focus?: string;
+  source?: string;
+  title?: string;
+  filename: string;
+  copyright?: string;
+  fieldtype?: string;
+  meta_data?: null | {
+    [k: string]: any;
+  };
+  is_external_url?: boolean;
+  [k: string]: any;
+}
+
+export interface BlockMediaStoryblok {
+  media: AssetStoryblok;
+  ratio: number | string;
+  _uid: string;
+  component: "block_media";
   [k: string]: any;
 }
 
@@ -107,29 +135,11 @@ export interface BlockTextStoryblok {
 }
 
 export interface PageStoryblok {
-  blocks?: any[];
+  blocks?: (BlockBentoBoxStoryblok | BlockMediaStoryblok | BlockTextStoryblok)[];
   seo: SeoStoryblok[];
   _uid: string;
   component: "page";
   uuid?: string;
-  [k: string]: any;
-}
-
-export interface AssetStoryblok {
-  _uid?: string;
-  id: number;
-  alt?: string;
-  name: string;
-  focus?: string;
-  source?: string;
-  title?: string;
-  filename: string;
-  copyright?: string;
-  fieldtype?: string;
-  meta_data?: null | {
-    [k: string]: any;
-  };
-  is_external_url?: boolean;
   [k: string]: any;
 }
 

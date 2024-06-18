@@ -22,4 +22,10 @@ const colourBackground: Record<string, string> = {
   green: 'bg-green',
 } as const
 
-export { colourText, colourBackground }
+const ratioMap: Record<string, string> = {
+  'auto': '',
+  '1:1': 'aspect-1/1',
+  '3:2': 'aspect-3/2',
+} as const
+
+export { colourText, colourBackground, ratioMap }

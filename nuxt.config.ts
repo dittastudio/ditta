@@ -15,7 +15,7 @@ export default defineNuxtConfig({
         { name: 'msapplication-TileColor', content: '#ffb9b9' },
         { name: 'theme-color', content: '#ffb9b9' },
         { name: 'google', content: 'notranslate' },
-        { 'http-equiv': 'content-language', content: 'en-GB' },
+        { 'http-equiv': 'content-language', 'content': 'en-GB' },
       ],
       link: [
         { rel: 'preconnect', href: 'https://a2.storyblok.com' },
@@ -55,8 +55,26 @@ export default defineNuxtConfig({
   gtag: {
     id: 'G-VPGVW7ZKGD',
   },
+  image: {
+    provider: 'storyblok',
+    storyblok: {
+      baseURL: 'https://a.storyblok.com',
+    },
+    domains: ['storyblok.com', 'ditta.studio'],
+    quality: 80,
+    screens: {
+      'xs': 375,
+      'sm': 640,
+      'md': 768,
+      'lg': 1024,
+      'xl': 1200,
+      '2xl': 1440,
+      '3xl': 1920,
+    },
+  },
   modules: [
     '@nuxt/eslint',
+    '@nuxt/image',
     '@nuxtjs/sitemap',
     '@nuxtjs/tailwindcss',
     '@storyblok/nuxt',
@@ -86,7 +104,7 @@ export default defineNuxtConfig({
   site: {
     url: 'https://ditta.studio',
   },
-  ssr: process.env.NUXT_SSR === 'true' ? true : false,
+  ssr: process.env.NUXT_SSR === 'true',
   tailwindcss: {
     cssPath: '@/assets/css/app.css',
   },
