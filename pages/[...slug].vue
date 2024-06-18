@@ -36,66 +36,7 @@ onMounted(() => {
   }
 })
 
-// const slides = [
-//   {
-//     src: '/imgs/luca-test-2.jpg',
-//     alt: 'Ditta Studio',
-//     type: 'image',
-//   },
-//   {
-//     src: '/videos/luca-test.mp4',
-//     alt: 'Ditta Studio',
-//     type: 'video',
-//   },
-//   {
-//     src: '',
-//     alt: 'Ditta Studio',
-//     type: 'image',
-//   },
-//   {
-//     src: '',
-//     alt: 'Ditta Studio',
-//     type: 'image',
-//   },
-// ]
-
 const headings = [
-  // {
-  //   backgroundColor: 'offblack',
-  //   textColor: 'offwhite',
-  //   copy: ['Obey'],
-  //   duration: '60s',
-  // },
-  // {
-  //   backgroundColor: 'offwhite',
-  //   textColor: 'offblack',
-  //   copy: ['Consume'],
-  //   duration: '80s',
-  // },
-  // {
-  //   backgroundColor: 'offblack',
-  //   textColor: 'pink',
-  //   copy: ['Like'],
-  //   duration: '70s',
-  // },
-  // {
-  //   backgroundColor: 'pink',
-  //   textColor: 'offblack',
-  //   copy: ['Subscribe'],
-  //   duration: '65s',
-  // },
-  // {
-  //   backgroundColor: 'offblack',
-  //   textColor: 'offwhite',
-  //   copy: ['Upgrade'],
-  //   duration: '85s',
-  // },
-  // {
-  //   backgroundColor: 'offwhite',
-  //   textColor: 'offblack',
-  //   copy: ['Conform'],
-  //   duration: '75s',
-  // },
   {
     backgroundColor: 'offblack',
     textColor: 'pink',
@@ -127,113 +68,13 @@ const headings = [
     duration: '85s',
   },
 ]
-
-const headings1 = [
-  {
-    backgroundColor: 'offblack',
-    textColor: 'offwhite',
-    copy: ['Obey'],
-    duration: '60s',
-  },
-  {
-    backgroundColor: 'offwhite',
-    textColor: 'offblack',
-    copy: ['Consume'],
-    duration: '80s',
-  },
-  {
-    backgroundColor: 'offblack',
-    textColor: 'pink',
-    copy: ['Like'],
-    duration: '70s',
-  },
-  {
-    backgroundColor: 'pink',
-    textColor: 'offblack',
-    copy: ['Subscribe'],
-    duration: '65s',
-  },
-  {
-    backgroundColor: 'offblack',
-    textColor: 'offwhite',
-    copy: ['Upgrade'],
-    duration: '85s',
-  },
-  {
-    backgroundColor: 'offwhite',
-    textColor: 'offblack',
-    copy: ['Conform'],
-    duration: '75s',
-  },
-]
-
-const blockText1 = `
-  <p>We’re a new digital agency based in London bridging the gap between design and development.</p>
-
- <p>You can’t <em>do digital</em> but we can.
-  Start your next web project with us.</p>
-`
 </script>
 
 <template>
   <div>
-    <div class="pt-80">
-      <div class="wrapper">
-        <IconDitta class="w-[100px] h-auto text-pink" />
+    <BlockComponents :content="story.content" />
 
-        <h1 class="sr-only">
-          ditta
-        </h1>
-      </div>
-
-      <BlockText :copy="blockText1" />
-    </div>
-
-    <BlockHeading
-      v-for="(heading, index) in headings1"
-      :key="index"
-      :background-color="heading.backgroundColor"
-      :text-color="heading.textColor"
-      :copy="heading.copy"
-      :duration="heading.duration"
-      :direction="index % 2 ? 'right' : 'left'"
-    />
-
-    <div class="bg-offwhite min-h-screen" />
-
-    <!-- <BlockScrollTest />
-
-    <BlockCarousel :slides="slides">
-      <template #default="{ slide }">
-        <img
-          v-if="slide.src && slide.type === 'image'"
-          class="object-cover w-full h-full"
-          :src="slide.src"
-          :alt="slide.alt"
-        >
-
-        <video
-          v-else-if="slide.src && slide.type === 'video'"
-          class="object-cover w-full h-full"
-          :src="slide.src"
-          playsinline
-          autoplay
-          muted
-          loop
-        />
-
-        <div
-          v-else
-          class="aspect-[3/2] w-full h-full flex items-center justify-center bg-offblack"
-        >
-          <div class="relative z-2 w-[25%]">
-            <IconDitta class="w-full h-auto mx-auto" />
-          </div>
-        </div>
-      </template>
-    </BlockCarousel> -->
-
-    <BlockHeading
+    <ElementMarquee
       v-for="(heading, index) in headings"
       :key="index"
       :background-color="heading.backgroundColor"

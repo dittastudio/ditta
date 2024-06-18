@@ -5,33 +5,27 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 gsap.registerPlugin(ScrollTrigger)
 
 const backgroundColorMap: any = {
-  'black': 'bg-black',
-  'offblack': 'bg-offblack',
-  'white': 'bg-white',
-  'offwhite': 'bg-offwhite',
-  'grey': 'bg-grey',
-  'blue': 'bg-blue',
-  'blue-light': 'bg-blue-light',
-  'pink': 'bg-pink',
-  'orange': 'bg-orange',
-  'yellow': 'bg-yellow',
-  'red': 'bg-red',
-  'green': 'bg-green',
+  black: 'bg-black',
+  offblack: 'bg-offblack',
+  white: 'bg-white',
+  offwhite: 'bg-offwhite',
+  grey: 'bg-grey',
+  blue: 'bg-blue',
+  pink: 'bg-pink',
+  orange: 'bg-orange',
+  green: 'bg-green',
 }
 
 const textColorMap: any = {
-  'black': 'text-black',
-  'offblack': 'text-offblack',
-  'white': 'text-white',
-  'offwhite': 'text-offwhite',
-  'grey': 'text-grey',
-  'blue': 'text-blue',
-  'blue-light': 'text-blue-light',
-  'pink': 'text-pink',
-  'orange': 'text-orange',
-  'yellow': 'text-yellow',
-  'red': 'text-red',
-  'green': 'text-green',
+  black: 'text-black',
+  offblack: 'text-offblack',
+  white: 'text-white',
+  offwhite: 'text-offwhite',
+  grey: 'text-grey',
+  blue: 'text-blue',
+  pink: 'text-pink',
+  orange: 'text-orange',
+  green: 'text-green',
 }
 
 export interface Props {
@@ -71,18 +65,18 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
 <template>
   <div
     v-if="copy"
-    class="block-heading transform-gpu backface-hidden contain-paint block w-full"
+    class="block-marquee transform-gpu backface-hidden contain-paint block w-full"
     :class="[backgroundColorMap[backgroundColor], textColorMap[textColor]]"
   >
     <div
       ref="container"
-      class="block-heading__wrapper"
+      class="block-marquee__wrapper"
     >
       <div
-        class="block-heading__marquee type-fluid-lg"
-        :class="{ [`block-heading__marquee--${direction}`]: direction }"
+        class="block-marquee__marquee type-fluid-lg"
+        :class="{ [`block-marquee__marquee--${direction}`]: direction }"
       >
-        <div class="block-heading__group type-fluid-lg-trim">
+        <div class="block-marquee__group type-fluid-lg-trim">
           <p
             v-for="(word, index) in multipleWords"
             :key="word"
@@ -94,7 +88,7 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
 
         <div
           aria-hidden="true"
-          class="block-heading__group type-fluid-lg-trim"
+          class="block-marquee__group type-fluid-lg-trim"
         >
           <p
             v-for="word in multipleWords"
@@ -109,7 +103,7 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
 </template>
 
 <style lang="postcss" scoped>
-.block-heading__marquee {
+.block-marquee__marquee {
   --duration: v-bind(duration);
   --gap: 0.5em;
 
@@ -139,7 +133,7 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
   }
 }
 
-.block-heading__group {
+.block-marquee__group {
   will-change: translate;
 
   display: flex;
@@ -150,11 +144,11 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
 
   min-width: 100%;
 
-  .block-heading__marquee--left & {
+  .block-marquee__marquee--left & {
     animation: ticker-left var(--duration) linear infinite;
   }
 
-  .block-heading__marquee--right & {
+  .block-marquee__marquee--right & {
     animation: ticker-right var(--duration) linear infinite;
   }
 

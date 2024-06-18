@@ -4,7 +4,7 @@ import IconDitta from '@/assets/icons/ditta.svg'
 
 <template>
   <div class="bg-offblack flex flex-col justify-between min-h-screen">
-    <BlockHeading
+    <ElementMarquee
       background-color="offblack"
       text-color="pink"
       :copy="['Say Hello']"

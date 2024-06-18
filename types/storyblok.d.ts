@@ -1,7 +1,29 @@
 import {StoryblokStory} from 'storyblok-generate-ts'
 
+export interface BlockBentoBoxStoryblok {
+  _uid: string;
+  component: "block_bento_box";
+  [k: string]: any;
+}
+
+export interface RichtextStoryblok {
+  type: string;
+  content?: RichtextStoryblok[];
+  marks?: RichtextStoryblok[];
+  attrs?: any;
+  text?: string;
+  [k: string]: any;
+}
+
+export interface BlockTextStoryblok {
+  text: RichtextStoryblok;
+  _uid: string;
+  component: "block_text";
+  [k: string]: any;
+}
+
 export interface PageStoryblok {
-  title?: string;
+  blocks?: any[];
   seo: SeoStoryblok[];
   _uid: string;
   component: "page";

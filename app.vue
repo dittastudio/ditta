@@ -22,7 +22,9 @@ useSeoMeta({
 
 <template>
   <div data-component="App">
-    <NuxtPage />
+    <main>
+      <NuxtPage />
+    </main>
 
     <AppFooter />
 

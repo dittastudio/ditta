@@ -29,19 +29,15 @@ export const screens = {
 }
 
 export const colours = {
-  'white': '#ffffff',
-  'black': '#000000',
-  'offwhite': '#f5f4ea',
-  'offblack': '#232323',
-  'grey': '#474747',
-  'blue': '#676EF6',
-  'blue-light': '#9ed5ff',
-  'pink': '#ffb9b9',
-  'orange': '#F3AF4C',
-  'yellow': '#ffdb66',
-  'yellow-light': '#F3ECD7',
-  'red': '#ff627e',
-  'green': '#00674e',
+  white: '#ffffff',
+  black: '#000000',
+  offwhite: '#F5F4EA',
+  offblack: '#232323',
+  grey: '#F0F1F4',
+  blue: '#B8F2FE',
+  pink: '#FEB9B8',
+  orange: '#FEDBB8',
+  green: '#B8FEC4',
 }
 
 export default {
@@ -107,10 +103,12 @@ export default {
       4: '4px',
       8: '8px',
       16: '16px',
+      20: '20px',
       24: '24px',
       32: '32px',
       40: '40px',
       48: '48px',
+      50: '50px',
       56: '56px',
       64: '64px',
       72: '72px',

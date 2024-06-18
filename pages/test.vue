@@ -100,7 +100,7 @@ onBeforeUnmount(() => {
 
     <div class="top-layer">
       <div class="bg-offblack flex flex-col justify-between min-h-screen">
-        <BlockHeading
+        <ElementMarquee
           background-color="offblack"
           text-color="offwhite"
           :copy="['Freedom']"
@@ -108,7 +108,7 @@ onBeforeUnmount(() => {
           direction="left"
         />
 
-        <BlockHeading
+        <ElementMarquee
           background-color="offblack"
           text-color="offwhite"
           :copy="['Transparency']"
@@ -118,7 +118,7 @@ onBeforeUnmount(() => {
       </div>
 
       <div class="bg-offwhite flex flex-col justify-between min-h-screen">
-        <BlockHeading
+        <ElementMarquee
           background-color="offwhite"
           text-color="offblack"
           :copy="['Obey']"
@@ -126,7 +126,7 @@ onBeforeUnmount(() => {
           direction="left"
         />
 
-        <BlockHeading
+        <ElementMarquee
           background-color="offwhite"
           text-color="offblack"
           :copy="['Consume']"
@@ -136,7 +136,7 @@ onBeforeUnmount(() => {
       </div>
 
       <div class="bg-offblack flex flex-col justify-between min-h-screen">
-        <BlockHeading
+        <ElementMarquee
           background-color="offblack"
           text-color="pink"
           :copy="['Obey']"
@@ -144,7 +144,7 @@ onBeforeUnmount(() => {
           direction="left"
         />
 
-        <BlockHeading
+        <ElementMarquee
           background-color="offblack"
           text-color="pink"
           :copy="['Consume']"
@@ -154,7 +154,7 @@ onBeforeUnmount(() => {
       </div>
 
       <div class="bg-pink flex flex-col justify-between min-h-screen">
-        <BlockHeading
+        <ElementMarquee
           background-color="pink"
           text-color="offblack"
           :copy="['Obey']"
@@ -162,7 +162,7 @@ onBeforeUnmount(() => {
           direction="left"
         />
 
-        <BlockHeading
+        <ElementMarquee
           background-color="pink"
           text-color="offblack"
           :copy="['Consume']"
@@ -174,7 +174,7 @@ onBeforeUnmount(() => {
 
     <div class="bottom-layer">
       <div class="bg-offwhite flex flex-col justify-between min-h-screen">
-        <BlockHeading
+        <ElementMarquee
           background-color="offwhite"
           text-color="offblack"
           :copy="['Obey']"
@@ -182,7 +182,7 @@ onBeforeUnmount(() => {
           direction="left"
         />
 
-        <BlockHeading
+        <ElementMarquee
           background-color="offwhite"
           text-color="offblack"
           :copy="['Consume']"
@@ -192,7 +192,7 @@ onBeforeUnmount(() => {
       </div>
 
       <div class="bg-offblack flex flex-col justify-between min-h-screen">
-        <BlockHeading
+        <ElementMarquee
           background-color="offblack"
           text-color="offwhite"
           :copy="['Obey']"
@@ -200,7 +200,7 @@ onBeforeUnmount(() => {
           direction="left"
         />
 
-        <BlockHeading
+        <ElementMarquee
           background-color="offblack"
           text-color="offwhite"
           :copy="['Consume']"
@@ -210,7 +210,7 @@ onBeforeUnmount(() => {
       </div>
 
       <div class="bg-pink flex flex-col justify-between min-h-screen">
-        <BlockHeading
+        <ElementMarquee
           background-color="pink"
           text-color="offblack"
           :copy="['Obey']"
@@ -218,7 +218,7 @@ onBeforeUnmount(() => {
           direction="left"
         />
 
-        <BlockHeading
+        <ElementMarquee
           background-color="pink"
           text-color="offblack"
           :copy="['Consume']"
@@ -228,7 +228,7 @@ onBeforeUnmount(() => {
       </div>
 
       <div class="bg-offblack flex flex-col justify-between min-h-screen">
-        <BlockHeading
+        <ElementMarquee
           background-color="offblack"
           text-color="pink"
           :copy="['Obey']"
@@ -236,7 +236,7 @@ onBeforeUnmount(() => {
           direction="left"
         />
 
-        <BlockHeading
+        <ElementMarquee
           background-color="offblack"
           text-color="pink"
           :copy="['Consume']"
