@@ -1,6 +1,88 @@
 import {StoryblokStory} from 'storyblok-generate-ts'
 
+export interface BentoStoryblok {
+  items?: (
+    | BentoGameStoryblok
+    | BentoInstagramStoryblok
+    | BentoMusicStoryblok
+    | BentoNoticeStoryblok
+    | BentoQrStoryblok
+    | BentoShopifyStoryblok
+    | BentoTeamStoryblok
+    | BentoWeatherStoryblok
+    | BentoWorkStoryblok
+  )[];
+  _uid: string;
+  component: "bento";
+  [k: string]: any;
+}
+
+export interface BentoGameStoryblok {
+  _uid: string;
+  component: "bento_game";
+  [k: string]: any;
+}
+
+export interface BentoInstagramStoryblok {
+  _uid: string;
+  component: "bento_instagram";
+  [k: string]: any;
+}
+
+export interface BentoMusicStoryblok {
+  _uid: string;
+  component: "bento_music";
+  [k: string]: any;
+}
+
+export interface BentoNoticeStoryblok {
+  _uid: string;
+  component: "bento_notice";
+  [k: string]: any;
+}
+
+export interface BentoQrStoryblok {
+  _uid: string;
+  component: "bento_qr";
+  [k: string]: any;
+}
+
+export interface BentoShopifyStoryblok {
+  _uid: string;
+  component: "bento_shopify";
+  [k: string]: any;
+}
+
+export interface BentoTeamStoryblok {
+  _uid: string;
+  component: "bento_team";
+  [k: string]: any;
+}
+
+export interface BentoWeatherStoryblok {
+  _uid: string;
+  component: "bento_weather";
+  [k: string]: any;
+}
+
+export interface BentoWorkStoryblok {
+  _uid: string;
+  component: "bento_work";
+  [k: string]: any;
+}
+
 export interface BlockBentoBoxStoryblok {
+  items?: (
+    | BentoGameStoryblok
+    | BentoInstagramStoryblok
+    | BentoMusicStoryblok
+    | BentoNoticeStoryblok
+    | BentoQrStoryblok
+    | BentoShopifyStoryblok
+    | BentoTeamStoryblok
+    | BentoWeatherStoryblok
+    | BentoWorkStoryblok
+  )[];
   _uid: string;
   component: "block_bento_box";
   [k: string]: any;
@@ -17,6 +99,8 @@ export interface RichtextStoryblok {
 
 export interface BlockTextStoryblok {
   text: RichtextStoryblok;
+  colour: number | string;
+  background: number | string;
   _uid: string;
   component: "block_text";
   [k: string]: any;

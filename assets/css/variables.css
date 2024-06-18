@@ -1,5 +1,5 @@
 :root {
-  --app-max-width: 1920px;
+  --app-max-width: 1400px;
   --app-inner-gutter: theme('spacing.16');
   --app-outer-gutter: theme('spacing.24');
   --app-header-height: 96px;
