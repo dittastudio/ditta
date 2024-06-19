@@ -17,11 +17,11 @@ const { block } = defineProps<Props>()
     :class="[colourText[block.colour], colourBackground[block.background]]"
   >
     <div class="section wrapper grid gap-x-[var(--app-inner-gutter)] grid-cols-1 md:grid-cols-12">
-      <div class="w-full md:col-start-4 md:-col-end-1 flex flex-col gap-[2lh]">
+      <div class="md:col-start-4 md:-col-end-1 flex flex-col gap-40">
         <StoryblokRichText
           v-if="storyblokRichTextContent(block.text)"
           :content="block.text"
-          class="richtext"
+          class="richtext prose-light prose-headings:max-w-[60ch] prose-headings:text-balance prose-h1:text-fluid-md prose-p:opacity-50 prose-p:text-18 prose-p:md:text-24"
         />
 
         <ul v-if="block.studios?.length">
@@ -41,39 +41,6 @@ const { block } = defineProps<Props>()
 <style lang="postcss" scoped>
 .block-studios {
   .richtext {
-    & :deep(:is(h1, h2, h3, h4, h5, h6)) {
-      max-width: 60ch;
-      text-wrap: balance;
-    }
-
-    & :deep(h1) {
-      @apply text-65;
-    }
-
-    & :deep(h2) {
-      @apply text-40;
-    }
-
-    & :deep(h3) {
-      @apply text-24;
-    }
-
-    & :deep(h4) {
-      @apply text-20;
-    }
-
-    & :deep(h5) {
-      @apply text-18;
-    }
-
-    & :deep(h6) {
-      @apply text-16;
-    }
-
-    & :deep(:is(p, li)) {
-      @apply text-24 opacity-50;
-    }
-
     & :deep(* + *) {
       margin-block-start: 1lh;
     }

@@ -21,7 +21,7 @@ const classes = [colourText[block.colour], colourBackground[block.background]]
       <StoryblokRichText
         v-if="storyblokRichTextContent(block.text)"
         :content="block.text"
-        class="prose-p:text-fluid-md prose-ditta"
+        class="prose-p:text-fluid-md prose-dark"
       />
     </div>
   </div>
