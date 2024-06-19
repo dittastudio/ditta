@@ -15,7 +15,7 @@ const { block } = defineProps<Props>()
     class="w-full px-[var(--app-outer-gutter)]"
     :class="[colourText[block.colour], colourBackground[block.background]]"
   >
-    <div class="bento-box grid gap-[var(--app-inner-gutter)] w-full max-w-[var(--app-max-width)] mx-auto py-160">
+    <div class="bento-box grid gap-16 xl:gap-20 w-full max-w-[var(--app-max-width)] mx-auto py-160">
       <section
         v-for="bento in block.items"
         :key="bento._uid"
@@ -77,7 +77,7 @@ const { block } = defineProps<Props>()
   grid-auto-rows: 1fr;
   grid-template-columns: repeat(2, 1fr);
 
-  @screen md {
+  @screen lg {
     grid-template-columns: repeat(4, 1fr);
   }
 
@@ -107,7 +107,7 @@ const { block } = defineProps<Props>()
     grid-row: span 1;
     background-color: theme('colors.black/30%');
 
-    @screen md {
+    @screen lg {
       grid-column-start: 2;
       grid-row-start: 2;
     }
@@ -143,7 +143,7 @@ const { block } = defineProps<Props>()
     background-color: theme('colors.black/80%');
     order: 2;
 
-    @screen md {
+    @screen lg {
       grid-column-start: 3;
       grid-row-start: 4;
     }
@@ -154,7 +154,7 @@ const { block } = defineProps<Props>()
     grid-row: span 2;
     background-color: theme('colors.black/90%');
 
-    @screen md {
+    @screen lg {
       grid-column: span 1;
       grid-row: span 2;
     }
