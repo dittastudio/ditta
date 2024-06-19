@@ -118,12 +118,16 @@ const { data, error } = await useAsyncData<WeatherResponse>('weather', async () 
     weather: data.weather[0],
   }),
 })
+
+const isOpen = useInOfficeHours()
+const classes = isOpen.value ? ['from-pink to-orange'] : ['from-purple-darker to-pink']
 </script>
 
 <template>
   <div
     v-editable="block"
-    class="@container w-full h-full flex flex-col p-20 bg-gradient-to-t from-pink to-orange"
+    class="@container w-full h-full flex flex-col p-20 bg-gradient-to-t"
+    :class="classes"
   >
     <h4 class="text-20 font-bold text-offblack">
       Londinium

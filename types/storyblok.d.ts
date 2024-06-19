@@ -47,6 +47,7 @@ export interface RichtextStoryblok {
 export interface BentoNoticeStoryblok {
   open_text: RichtextStoryblok;
   closed_text: RichtextStoryblok;
+  times?: string;
   _uid: string;
   component: "bento_notice";
   [k: string]: any;
