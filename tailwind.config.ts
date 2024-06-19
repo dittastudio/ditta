@@ -57,15 +57,19 @@ export const screens = {
 }
 
 export const colours = {
-  white: '#ffffff',
-  black: '#000000',
-  offwhite: '#F5F4EA',
-  offblack: '#232323',
-  grey: '#F0F1F4',
-  blue: '#B8F2FE',
-  pink: '#FEB9B8',
-  orange: '#FEDBB8',
-  green: '#B8FEC4',
+  'white': '#ffffff',
+  'black': '#000000',
+  'offwhite': '#F5F4EA',
+  'offblack': '#232323',
+  'grey': '#F0F1F4',
+  'blue': '#B8F2FE',
+  'pink': '#FEB9B8',
+  'pink-darker': '#ED615E',
+  'orange': '#FEDBB8',
+  'green': '#B8FEC4',
+  'green-darker': '#0EC32C',
+  'purple': '#BEB8FE',
+  'purple-darker': '#A38EF0',
 }
 
 export default {
@@ -92,7 +96,7 @@ export default {
     fontSize: {
       '12': ['0.75rem', { lineHeight: '1.2', letterSpacing: '-0.01em' }],
       '16': ['1rem', { lineHeight: '1.5', letterSpacing: '-0.01em' }],
-      '18': ['1.125rem', { lineHeight: '1.5', letterSpacing: '-0.01em' }],
+      '18': ['1.125rem', { lineHeight: '1.4', letterSpacing: '-0.01em' }],
       '20': ['1.25rem', { lineHeight: '1.5', letterSpacing: '-0.01em' }],
       '24': ['1.5rem', { lineHeight: '1.5', letterSpacing: '-0.01em' }],
       '40': ['2.5rem', { lineHeight: '1.3', letterSpacing: '-0.01em' }],
@@ -105,7 +109,7 @@ export default {
           maxPixels: 65,
           maxViewportWidthPixels: screenSizes['2xl'],
         }),
-        { lineHeight: '1.2', letterSpacing: '-0.01em', fontWeight: '500' },
+        { lineHeight: '1.1', letterSpacing: '-0.01em', fontWeight: '500' },
       ],
       'fluid-lg': [
         clamp({

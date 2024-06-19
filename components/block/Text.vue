@@ -2,20 +2,20 @@
 import type { BlockTextStoryblok } from '@/types/storyblok'
 import { storyblokRichTextContent } from '@/utilities/storyblok'
 import { colourBackground, colourText } from '@/utilities/maps'
-import IconDitta from '@/assets/icons/ditta.svg'
 
 interface Props {
   block: BlockTextStoryblok
 }
 
 const { block } = defineProps<Props>()
+const classes = [colourText[block.colour], colourBackground[block.background]]
 </script>
 
 <template>
   <div
     v-editable="block"
     class="block-text"
-    :class="[colourText[block.colour], colourBackground[block.background]]"
+    :class="classes"
   >
     <div class="section wrapper">
       <StoryblokRichText

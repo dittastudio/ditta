@@ -73,7 +73,7 @@ const info = {
   801: { icon: WeatherCloudy, description: `It's a bit cloudy out, innit?` },
   802: { icon: WeatherCloudy, description: `Scattered clouds there be` },
   803: { icon: WeatherCloudy, description: `Broken clouds overhead` },
-  804: { icon: WeatherCloudy, description: `That British classic of overcast clouds` },
+  804: { icon: WeatherCloudy, description: `That classic British overcast` },
 }
 
 interface Props {
@@ -118,12 +118,16 @@ const { data, error } = await useAsyncData<WeatherResponse>('weather', async () 
     weather: data.weather[0],
   }),
 })
+
+const isOpen = useInOfficeHours()
+const classes = isOpen.value ? ['from-pink to-orange'] : ['from-purple-darker to-pink']
 </script>
 
 <template>
   <div
     v-editable="block"
-    class="@container w-full h-full flex flex-col p-20 bg-gradient-to-t from-pink to-orange"
+    class="@container w-full h-full flex flex-col p-20 bg-gradient-to-t"
+    :class="classes"
   >
     <h4 class="text-20 font-bold text-offblack">
       Londinium
