@@ -11,6 +11,8 @@ import WeatherSunny from '@/assets/icons/weather/sunny.svg'
 import WeatherSunshine from '@/assets/icons/weather/sunshine.svg'
 import WeatherThunder from '@/assets/icons/weather/thunder.svg'
 
+// https://openweathermap.org/weather-conditions
+
 const info = {
   200: { icon: WeatherThunder, description: `Thunderstorm with light rain` },
   201: { icon: WeatherThunder, description: `Thunderstorm with rain` },
