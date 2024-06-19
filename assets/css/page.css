@@ -12,16 +12,14 @@ body {
 }
 
 .wrapper {
+  width: 100%;
+  max-width: theme('screens.3xl');
   margin-inline: auto;
   padding-inline: var(--app-outer-gutter);
 }
 
 .section {
-  padding-block: theme('spacing.64');
-
-  @screen md {
-    padding-block: theme('spacing.120');
-  }
+  padding-block: var(--app-vertical-spacing);
 }
 
 .scroll-x {

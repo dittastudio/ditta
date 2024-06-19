@@ -3,6 +3,7 @@
   --app-inner-gutter: theme('spacing.16');
   --app-outer-gutter: theme('spacing.24');
   --app-header-height: 96px;
+  --app-vertical-spacing: utopia.clamp(80, 160);
 
   @screen md {
     --app-inner-gutter: theme('spacing.20');

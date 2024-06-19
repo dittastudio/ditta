@@ -14,19 +14,12 @@ const { block } = defineProps<Props>()
 <template>
   <div
     v-editable="block"
-    class="block-text px-[var(--app-outer-gutter)]"
+    class="block-text"
     :class="[colourText[block.colour], colourBackground[block.background]]"
   >
-    <div class="w-full max-w-[var(--app-max-width)] mx-auto grid gap-x-[var(--app-inner-gutter)] md:grid-cols-2 relative py-160">
-      <IconDitta class="absolute top-[var(--app-outer-gutter)] left-0 w-[100px] h-auto text-pink" />
-
-      <h1 class="sr-only">
-        ditta
-      </h1>
-
+    <div class="section wrapper">
       <StoryblokRichText
         v-if="storyblokRichTextContent(block.text)"
-        class="col-span-full w-full"
         :content="block.text"
       />
     </div>
@@ -40,6 +33,7 @@ const { block } = defineProps<Props>()
 
   & :deep(p) {
     max-width: 60ch;
+
     font-size:  var(--text-size);
     line-height: var(--line-height);
     text-wrap: balance;

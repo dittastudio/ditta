@@ -12,10 +12,10 @@ const { block } = defineProps<Props>()
 <template>
   <div
     v-editable="block"
-    class="w-full px-[var(--app-outer-gutter)]"
+    class="bento-box"
     :class="[colourText[block.colour], colourBackground[block.background]]"
   >
-    <div class="bento-box grid gap-16 xl:gap-20 w-full max-w-[var(--app-max-width)] mx-auto py-160">
+    <div class="bento-box__grid wrapper grid gap-16 xl:gap-20 py-160">
       <section
         v-for="bento in block.items"
         :key="bento._uid"
@@ -71,7 +71,7 @@ const { block } = defineProps<Props>()
 </template>
 
 <style lang="postcss" scoped>
-.bento-box {
+.bento-box__grid {
   grid-auto-columns: 1fr;
   grid-auto-flow: dense;
   grid-auto-rows: 1fr;
@@ -140,8 +140,8 @@ const { block } = defineProps<Props>()
   &:deep(> :nth-child(8)) {
     grid-column: span 1;
     grid-row: span 1;
-    background-color: theme('colors.black/80%');
     order: 2;
+    background-color: theme('colors.black/80%');
 
     @screen lg {
       grid-column-start: 3;
