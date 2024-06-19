@@ -73,7 +73,7 @@ const info = {
   801: { icon: WeatherCloudy, description: `It's a bit cloudy out, innit?` },
   802: { icon: WeatherCloudy, description: `Scattered clouds there be` },
   803: { icon: WeatherCloudy, description: `Broken clouds overhead` },
-  804: { icon: WeatherCloudy, description: `That British classic of overcast clouds` },
+  804: { icon: WeatherCloudy, description: `That classic British overcast` },
 }
 
 interface Props {
