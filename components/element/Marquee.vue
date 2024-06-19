@@ -73,10 +73,10 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
       class="block-marquee__wrapper"
     >
       <div
-        class="block-marquee__marquee type-fluid-lg"
+        class="block-marquee__marquee text-fluid-lg uppercase"
         :class="{ [`block-marquee__marquee--${direction}`]: direction }"
       >
-        <div class="block-marquee__group type-fluid-lg-trim">
+        <div class="block-marquee__group">
           <p
             v-for="(word, index) in multipleWords"
             :key="word"
@@ -88,7 +88,7 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
 
         <div
           aria-hidden="true"
-          class="block-marquee__group type-fluid-lg-trim"
+          class="block-marquee__group"
         >
           <p
             v-for="word in multipleWords"
@@ -111,11 +111,8 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
 
   display: flex;
   gap: var(--gap);
-
   min-width: 100%;
   padding: 0.15em;
-
-  line-height: unset;
 
   &--left {
     animation: auto linear scroll-left both;
@@ -143,6 +140,7 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
   justify-content: space-around;
 
   min-width: 100%;
+  margin-block: -0.16em -0.11em;
 
   .block-marquee__marquee--left & {
     animation: ticker-left var(--duration) linear infinite;

@@ -85,12 +85,10 @@ export default defineNuxtConfig({
   },
   postcss: {
     plugins: {
+      'postcss-import': {},
       'tailwindcss/nesting': {},
       'tailwindcss': {},
-      'postcss-utopia': {
-        minWidth: 375,
-        maxWidth: 1440,
-      },
+      'autoprefixer': {},
     },
   },
   runtimeConfig: {

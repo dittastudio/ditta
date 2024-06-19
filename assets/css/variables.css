@@ -1,12 +1,12 @@
 :root {
   --app-max-width: 1400px;
   --app-inner-gutter: theme('spacing.16');
-  --app-outer-gutter: theme('spacing.24');
+  --app-outer-gutter: theme('spacing.outer-gutter');
   --app-header-height: 96px;
+  --app-vertical-rhythm: theme('spacing.vertical-rhythm');
 
   @screen md {
     --app-inner-gutter: theme('spacing.20');
-    --app-outer-gutter: theme('spacing.50');
     --app-header-height: 144px;
   }
 }

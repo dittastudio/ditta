@@ -3,6 +3,31 @@ import forms from '@tailwindcss/forms'
 import typography from '@tailwindcss/typography'
 import containerQueries from '@tailwindcss/container-queries'
 
+const pixelsToRemsUnit = (pixels: number): number => pixels / 16
+
+interface ClampOptions {
+  minPixels: number
+  minViewportWidthPixels: number
+  maxPixels: number
+  maxViewportWidthPixels: number
+}
+
+const clamp = ({
+  minPixels,
+  minViewportWidthPixels,
+  maxPixels,
+  maxViewportWidthPixels,
+}: ClampOptions) => {
+  const minValueRems = pixelsToRemsUnit(minPixels)
+  const maxValueRems = pixelsToRemsUnit(maxPixels)
+  const minViewportWidthRems = pixelsToRemsUnit(minViewportWidthPixels)
+  const maxViewportWidthRems = pixelsToRemsUnit(maxViewportWidthPixels)
+  const slope = (maxValueRems - minValueRems) / (maxViewportWidthRems - minViewportWidthRems)
+  const intercept = minValueRems - slope * minViewportWidthRems
+
+  return `clamp(${minValueRems}rem, ${intercept}rem + ${slope * 100}vw, ${maxValueRems}rem)`
+}
+
 export const screenSizes = {
   'zero': 0,
   'xs': 375,
@@ -65,18 +90,35 @@ export default {
       body: ['Greycliff CF', 'system-ui', 'sans-serif'],
     },
     fontSize: {
-      12: ['0.75rem', { lineHeight: '1.2', letterSpacing: '-0.01em' }],
-      16: ['1rem', { lineHeight: '1.5', letterSpacing: '-0.01em' }],
-      18: ['1.125rem', { lineHeight: '1.5', letterSpacing: '-0.01em' }],
-      20: ['1.25rem', { lineHeight: '1.5', letterSpacing: '-0.01em' }],
-      24: ['1.5rem', { lineHeight: '1.5', letterSpacing: '-0.01em' }],
-      40: ['2.5rem', { lineHeight: '1.3', letterSpacing: '-0.01em' }],
-      50: ['3.125rem', { lineHeight: '1.3', letterSpacing: '-0.01em' }],
-      65: ['4.0625rem', { lineHeight: '1.1', letterSpacing: '-0.01em' }],
+      '12': ['0.75rem', { lineHeight: '1.2', letterSpacing: '-0.01em' }],
+      '16': ['1rem', { lineHeight: '1.5', letterSpacing: '-0.01em' }],
+      '18': ['1.125rem', { lineHeight: '1.5', letterSpacing: '-0.01em' }],
+      '20': ['1.25rem', { lineHeight: '1.5', letterSpacing: '-0.01em' }],
+      '24': ['1.5rem', { lineHeight: '1.5', letterSpacing: '-0.01em' }],
+      '40': ['2.5rem', { lineHeight: '1.3', letterSpacing: '-0.01em' }],
+      '50': ['3.125rem', { lineHeight: '1.3', letterSpacing: '-0.01em' }],
+      '65': ['4.0625rem', { lineHeight: '1.1', letterSpacing: '-0.01em' }],
+      'fluid-md': [
+        clamp({
+          minPixels: 40,
+          minViewportWidthPixels: screenSizes.xs,
+          maxPixels: 65,
+          maxViewportWidthPixels: screenSizes['2xl'],
+        }),
+        { lineHeight: '1.2', letterSpacing: '-0.01em', fontWeight: '500' },
+      ],
+      'fluid-lg': [
+        clamp({
+          minPixels: 80,
+          minViewportWidthPixels: screenSizes.xs,
+          maxPixels: 120,
+          maxViewportWidthPixels: screenSizes['2xl'],
+        }),
+        { lineHeight: '1', letterSpacing: '-0.01em', fontWeight: '800' },
+      ],
     },
     lineHeight: {
       none: '1',
-      tight: '0.85',
       snug: '1.1',
       normal: '1.5',
     },
@@ -84,30 +126,41 @@ export default {
       tighter: '-0.02em',
       tight: '-0.01em',
       normal: '0',
-      wide: '0.04em',
     },
     screens,
     spacing: {
-      0: '0',
-      4: '4px',
-      8: '8px',
-      16: '16px',
-      20: '20px',
-      24: '24px',
-      32: '32px',
-      40: '40px',
-      48: '48px',
-      50: '50px',
-      56: '56px',
-      64: '64px',
-      72: '72px',
-      80: '80px',
-      88: '88px',
-      96: '96px',
-      120: '120px',
-      160: '160px',
-      200: '200px',
-      240: '240px',
+      '0': '0',
+      '4': '4px',
+      '8': '8px',
+      '16': '16px',
+      '20': '20px',
+      '24': '24px',
+      '32': '32px',
+      '40': '40px',
+      '48': '48px',
+      '50': '50px',
+      '56': '56px',
+      '64': '64px',
+      '72': '72px',
+      '80': '80px',
+      '88': '88px',
+      '96': '96px',
+      '120': '120px',
+      '160': '160px',
+      '200': '200px',
+      '240': '240px',
+      'outer-gutter': clamp({
+        minPixels: 32,
+        minViewportWidthPixels: screenSizes.xs,
+        maxPixels: 80,
+        maxViewportWidthPixels: screenSizes['2xl'],
+      }),
+      'vertical-rhythm': clamp({
+        minPixels: 80,
+        minViewportWidthPixels: screenSizes.xs,
+        maxPixels: 120,
+        maxViewportWidthPixels: screenSizes['2xl'],
+      }),
     },
     transitionTimingFunction: {
       smooth: 'cubic-bezier(0.4, 0.0, 0.2, 1)',
@@ -162,7 +215,7 @@ export default {
       typography: ({ theme }: { theme: any }) => ({
         ditta: {
           css: {
-            // '--tw-prose-body': theme('colors.pink[800]'),
+            '--tw-prose-body': theme('colors.offwhite'),
             // '--tw-prose-headings': theme('colors.pink[900]'),
             // '--tw-prose-lead': theme('colors.pink[700]'),
             // '--tw-prose-links': theme('colors.pink[900]'),
