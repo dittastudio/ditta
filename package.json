@@ -39,7 +39,6 @@
     "eslint": "^9.5.0",
     "nuxt": "^3.12.2",
     "nuxt-gtag": "^2.0.6",
-    "postcss-utopia": "^1.1.0",
     "storyblok-generate-ts": "^2.1.0",
     "stylelint": "^16.6.1",
     "stylelint-config-clean-order": "^6.0.0",

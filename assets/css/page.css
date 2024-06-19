@@ -19,7 +19,7 @@ body {
 }
 
 .section {
-  padding-block: var(--app-vertical-spacing);
+  padding-block: var(--app-vertical-rhythm);
 }
 
 .scroll-x {

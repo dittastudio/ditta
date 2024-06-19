@@ -14,6 +14,6 @@ import IconDitta from '@/assets/icons/ditta.svg'
 
 <style lang="postcss" scoped>
 .app-header {
-  margin-block-end: calc(-1 * var(--app-vertical-spacing));
+  margin-block-end: calc(-1 * var(--app-vertical-rhythm));
 }
 </style>
