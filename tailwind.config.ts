@@ -105,7 +105,7 @@ export default {
           maxPixels: 65,
           maxViewportWidthPixels: screenSizes['2xl'],
         }),
-        { lineHeight: '1.2', letterSpacing: '-0.01em', fontWeight: '500' },
+        { lineHeight: '1.1', letterSpacing: '-0.01em', fontWeight: '500' },
       ],
       'fluid-lg': [
         clamp({
