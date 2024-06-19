@@ -26,7 +26,7 @@ import IconDitta from '@/assets/icons/ditta.svg'
         </a>
       </p>
 
-      <p class="text-18 max-w-[40ch] text-balance opacity-40 mb-64">
+      <p class="text-18 max-w-[40ch] text-balance opacity-50 mb-64">
         Start your next project with us.
       </p>
 
@@ -35,7 +35,7 @@ import IconDitta from '@/assets/icons/ditta.svg'
       <ul class="flex gap-8 mb-16">
         <li class="text-14">
           <a
-            class="opacity-40 hover:opacity-100 focus:opacity-100 transition-opacity duration-200"
+            class="opacity-50 hover:opacity-100 focus:opacity-100 transition-opacity duration-200"
             href="https://www.linkedin.com/company/dittastudio"
             target="_blank"
           >
@@ -45,7 +45,7 @@ import IconDitta from '@/assets/icons/ditta.svg'
 
         <li class="text-14">
           <a
-            class="opacity-40 hover:opacity-100 focus:opacity-100 transition-opacity duration-200"
+            class="opacity-50 hover:opacity-100 focus:opacity-100 transition-opacity duration-200"
             href="https://www.instagram.com/_dittastudio/"
             target="_blank"
           >
@@ -54,7 +54,7 @@ import IconDitta from '@/assets/icons/ditta.svg'
         </li>
       </ul>
 
-      <p class="text-12 max-w-[40ch] text-balance text-grey">
+      <p class="text-12 max-w-[40ch] text-balance text-white opacity-50">
         ditta ltd. is a company registered in England and Wales with company number 15648076.
       </p>
     </div>
