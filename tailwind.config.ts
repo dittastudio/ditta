@@ -149,13 +149,13 @@ export default {
       '160': '160px',
       '200': '200px',
       '240': '240px',
-      'outer-gutter': clamp({
+      'fluid-outer-gutter': clamp({
         minPixels: 32,
         minViewportWidthPixels: screenSizes.xs,
         maxPixels: 80,
         maxViewportWidthPixels: screenSizes['2xl'],
       }),
-      'vertical-rhythm': clamp({
+      'fluid-vertical-rhythm': clamp({
         minPixels: 80,
         minViewportWidthPixels: screenSizes.xs,
         maxPixels: 120,
@@ -213,7 +213,10 @@ export default {
         '2': '2',
       },
       typography: ({ theme }: { theme: any }) => ({
-        ditta: {
+        light: {
+          '--tw-prose-body': theme('colors.offblack'),
+        },
+        dark: {
           css: {
             '--tw-prose-body': theme('colors.offwhite'),
             // '--tw-prose-headings': theme('colors.pink[900]'),
