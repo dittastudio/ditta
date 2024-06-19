@@ -72,12 +72,89 @@ const { block } = defineProps<Props>()
 
 <style lang="postcss" scoped>
 .bento-box {
-  grid-template-columns: repeat(4, 1fr);
-  grid-auto-rows: 200px;
+  grid-auto-columns: 1fr;
+  grid-auto-flow: dense;
+  grid-auto-rows: 1fr;
+  grid-template-columns: repeat(2, 1fr);
+
+  @screen md {
+    grid-template-columns: repeat(4, 1fr);
+  }
 
   /* This all needs improving. lol */
 
   &:deep(> :nth-child(1n)) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &:deep(> :nth-child(1)) {
+    grid-column: span 1;
+    grid-row: span 2;
+    background-color: theme('colors.black/10%');
+  }
+
+  &:deep(> :nth-child(2)) {
+    grid-column: span 1;
+    grid-row: span 1;
+    aspect-ratio: 4 / 3;
+    background-color: theme('colors.black/20%');
+  }
+
+  &:deep(> :nth-child(3)) {
+    grid-column: span 1;
+    grid-row: span 1;
+  background-color: theme('colors.black/30%');
+
+    @screen md {
+      grid-column-start: 2;
+      grid-row-start: 2;
+    }
+  }
+
+  &:deep(> :nth-child(4)) {
+    grid-column: span 2;
+    grid-row: span 2;
+    background-color: theme('colors.black/40%');
+  }
+
+  &:deep(> :nth-child(5)) {
+    grid-column: span 1;
+    grid-row: span 2;
+    background-color: theme('colors.black/50%');
+  }
+
+  &:deep(> :nth-child(6)) {
+    grid-column: span 1;
+    grid-row: span 2;
+    background-color: theme('colors.black/60%');
+  }
+
+  &:deep(> :nth-child(7)) {
+    grid-column: span 1;
+    grid-row: span 1;
+    background-color: theme('colors.black/70%');
+  }
+
+  &:deep(> :nth-child(8)) {
+    grid-column: span 1;
+    grid-row: span 1;
+    background-color: theme('colors.black/80%');
+
+    @screen md {
+      grid-column-start: 3;
+      grid-row-start: 4;
+    }
+  }
+
+  &:deep(> :nth-child(9)) {
+    grid-column: span 1;
+    grid-row: span 2;
+    background-color: theme('colors.black/90%');
+  }
+
+  /* &:deep(> :nth-child(1n)) {
     grid-column: auto / span 1;
     grid-row: auto / span 2;
     background-color: red;
@@ -117,6 +194,6 @@ const { block } = defineProps<Props>()
     grid-column: auto / span 1;
     grid-row: auto / span 1;
     background-color: plum;
-  }
+  } */
 }
 </style>
