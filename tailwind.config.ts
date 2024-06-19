@@ -1,6 +1,7 @@
 import type { Config } from 'tailwindcss'
 import forms from '@tailwindcss/forms'
 import typography from '@tailwindcss/typography'
+import containerQueries from '@tailwindcss/container-queries'
 
 export const screenSizes = {
   'zero': 0,
@@ -64,12 +65,13 @@ export default {
       body: ['Greycliff CF', 'system-ui', 'sans-serif'],
     },
     fontSize: {
-      12: ['0.75rem', { lineHeight: '1', letterSpacing: '-0.01em' }],
+      12: ['0.75rem', { lineHeight: '1.2', letterSpacing: '-0.01em' }],
       16: ['1rem', { lineHeight: '1.5', letterSpacing: '-0.01em' }],
       18: ['1.125rem', { lineHeight: '1.5', letterSpacing: '-0.01em' }],
       20: ['1.25rem', { lineHeight: '1.5', letterSpacing: '-0.01em' }],
       24: ['1.5rem', { lineHeight: '1.5', letterSpacing: '-0.01em' }],
       40: ['2.5rem', { lineHeight: '1.3', letterSpacing: '-0.01em' }],
+      50: ['3.125rem', { lineHeight: '1.3', letterSpacing: '-0.01em' }],
       65: ['4.0625rem', { lineHeight: '1.1', letterSpacing: '-0.01em' }],
     },
     lineHeight: {
@@ -122,6 +124,10 @@ export default {
       inOutBack: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
     },
     extend: {
+      containers: {
+        '3xs': '12rem',
+        '2xs': '16rem',
+      },
       transitionDuration: {
         175: '175ms',
         250: '250ms',
@@ -196,5 +202,6 @@ export default {
   plugins: [
     forms,
     typography,
+    containerQueries,
   ],
 } satisfies Config

@@ -85,8 +85,8 @@ const { block } = defineProps<Props>()
 
   &:deep(> :nth-child(1n)) {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
+    overflow: hidden;
   }
 
   &:deep(> :nth-child(1)) {

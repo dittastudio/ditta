@@ -2,7 +2,7 @@
 .type-h1,
 .type-h2,
 .type-h3 {
-  font-weight: bold;
+  font-weight: 700;
   line-height: theme('lineHeight.tight');
   text-transform: uppercase;
 }
@@ -10,7 +10,7 @@
 .type-h4,
 .type-h5,
 .type-h6 {
-  font-weight: normal;
+  font-weight: 500;
 }
 
 .type-fluid-lg {
@@ -46,31 +46,23 @@
 }
 
 .type-h3 {
-  font-size: theme('fontSize.38');
+  font-size: theme('fontSize.40');
   letter-spacing: theme('lineHeight.tight');
 
   @screen md {
-    font-size: theme('fontSize.64');
+    font-size: theme('fontSize.65');
   }
 }
 
 .type-h4 {
-  font-size: theme('fontSize.32');
+  font-size: theme('fontSize.24');
 
   @screen md {
-    font-size: theme('fontSize.44');
+    font-size: theme('fontSize.40');
   }
 }
 
 .type-h5 {
-  font-size: theme('fontSize.24');
-
-  @screen md {
-    font-size: theme('fontSize.32');
-  }
-}
-
-.type-h6 {
   font-size: theme('fontSize.20');
 
   @screen md {
@@ -78,9 +70,17 @@
   }
 }
 
+.type-h6 {
+  font-size: theme('fontSize.18');
+
+  @screen md {
+    font-size: theme('fontSize.20');
+  }
+}
+
 /* Body */
 .type-body {
-  font-size: theme('fontSize.14');
+  font-size: theme('fontSize.16');
 
   & b,
   & strong {
@@ -88,7 +88,7 @@
   }
 
   @screen md {
-    font-size: theme('fontSize.16');
+    font-size: theme('fontSize.18');
   }
 }
 

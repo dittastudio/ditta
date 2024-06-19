@@ -1,33 +1,34 @@
+/*
+Thin: 100
+Light: 300
+Regular: 400
+Medium: 500 ✅
+Demi: 600
+Bold: 700 ✅
+Extra Bold: 800 ✅
+Heavy: 900
+*/
+
 @font-face {
   font-family: 'Greycliff CF';
-  font-weight: bold;
+  font-weight: 500;
   font-style: normal;
   font-display: swap;
-  src: url('/fonts/webfonts/greycliffcf-heavy-webfont.woff2') format('woff2');
+  src: url('/fonts/GreycliffCF-Medium.woff2') format('woff2');
 }
 
 @font-face {
   font-family: 'Greycliff CF';
-  font-weight: bold;
-  font-style: italic;
-  font-display: swap;
-  src: url('/fonts/webfonts/greycliffcf-boldoblique-webfont.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'Greycliff CF';
-  font-weight: normal;
+  font-weight: 700;
   font-style: normal;
   font-display: swap;
-  src: url('/fonts/webfonts/greycliffcf-medium-webfont.woff2') format('woff2');
+  src: url('/fonts/GreycliffCF-Bold.woff2') format('woff2');
 }
 
 @font-face {
   font-family: 'Greycliff CF';
-  font-weight: 300;
+  font-weight: 800;
   font-style: normal;
   font-display: swap;
-  src: url('/fonts/webfonts/greycliffcf-light-webfont.woff2') format('woff2');
+  src: url('/fonts/GreycliffCF-ExtraBold.woff2') format('woff2');
 }
-
-
