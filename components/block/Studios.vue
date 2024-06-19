@@ -13,11 +13,11 @@ const { block } = defineProps<Props>()
 <template>
   <div
     v-editable="block"
-    class="block-studios px-[var(--app-outer-gutter)]"
+    class="block-studios"
     :class="[colourText[block.colour], colourBackground[block.background]]"
   >
-    <div class="w-full max-w-[var(--app-max-width)] mx-auto grid gap-x-[var(--app-inner-gutter)] grid-cols-2 md:grid-cols-12 py-160">
-      <div class="w-full col-start-4 -col-end-1 flex flex-col gap-[2lh]">
+    <div class="section wrapper grid gap-x-[var(--app-inner-gutter)] grid-cols-1 md:grid-cols-12">
+      <div class="w-full md:col-start-4 md:-col-end-1 flex flex-col gap-[2lh]">
         <StoryblokRichText
           v-if="storyblokRichTextContent(block.text)"
           :content="block.text"
@@ -40,7 +40,6 @@ const { block } = defineProps<Props>()
 
 <style lang="postcss" scoped>
 .block-studios {
-
   .richtext {
     & :deep(:is(h1, h2, h3, h4, h5, h6)) {
       max-width: 60ch;

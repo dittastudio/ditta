@@ -21,6 +21,7 @@ const { block } = defineProps<Props>()
       <StoryblokRichText
         v-if="storyblokRichTextContent(block.text)"
         :content="block.text"
+        class="prose-p:text-fluid-md prose-ditta"
       />
     </div>
   </div>
@@ -28,16 +29,9 @@ const { block } = defineProps<Props>()
 
 <style lang="postcss" scoped>
 .block-text {
-  --text-size: utopia.clamp(40, 65);
-  --line-height: theme('lineHeight.snug');
-
   & :deep(p) {
     max-width: 60ch;
-
-    font-size:  var(--text-size);
-    line-height: var(--line-height);
     text-wrap: balance;
-    letter-spacing: theme('letterSpacing.tight');
   }
 
   & :deep(p + p) {

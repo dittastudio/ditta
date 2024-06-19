@@ -15,7 +15,7 @@ const { block } = defineProps<Props>()
     class="bento-box"
     :class="[colourText[block.colour], colourBackground[block.background]]"
   >
-    <div class="bento-box__grid wrapper grid gap-16 xl:gap-20 py-160">
+    <div class="bento-box__grid section wrapper gap-[var(--app-inner-gutter)] grid">
       <section
         v-for="bento in block.items"
         :key="bento._uid"
