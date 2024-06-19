@@ -35,7 +35,18 @@ export interface BentoMusicStoryblok {
   [k: string]: any;
 }
 
+export interface RichtextStoryblok {
+  type: string;
+  content?: RichtextStoryblok[];
+  marks?: RichtextStoryblok[];
+  attrs?: any;
+  text?: string;
+  [k: string]: any;
+}
+
 export interface BentoNoticeStoryblok {
+  open_text: RichtextStoryblok;
+  closed_text: RichtextStoryblok;
   _uid: string;
   component: "bento_notice";
   [k: string]: any;
@@ -113,15 +124,6 @@ export interface BlockMediaStoryblok {
   ratio: number | string;
   _uid: string;
   component: "block_media";
-  [k: string]: any;
-}
-
-export interface RichtextStoryblok {
-  type: string;
-  content?: RichtextStoryblok[];
-  marks?: RichtextStoryblok[];
-  attrs?: any;
-  text?: string;
   [k: string]: any;
 }
 
