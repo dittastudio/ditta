@@ -9,7 +9,10 @@ const { block } = defineProps<Props>()
 </script>
 
 <template>
-  <div v-editable="block">
-    <pre>{{ block.component }}</pre>
+  <div
+    v-editable="block"
+    class="w-full h-full bg-blue"
+  >
+    <!-- <pre>{{ block.component }}</pre> -->
   </div>
 </template>
