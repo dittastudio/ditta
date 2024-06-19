@@ -105,7 +105,7 @@ const { block } = defineProps<Props>()
   &:deep(> :nth-child(3)) {
     grid-column: span 1;
     grid-row: span 1;
-  background-color: theme('colors.black/30%');
+    background-color: theme('colors.black/30%');
 
     @screen md {
       grid-column-start: 2;
@@ -141,6 +141,7 @@ const { block } = defineProps<Props>()
     grid-column: span 1;
     grid-row: span 1;
     background-color: theme('colors.black/80%');
+    order: 2;
 
     @screen md {
       grid-column-start: 3;
@@ -152,48 +153,11 @@ const { block } = defineProps<Props>()
     grid-column: span 1;
     grid-row: span 2;
     background-color: theme('colors.black/90%');
-  }
 
-  /* &:deep(> :nth-child(1n)) {
-    grid-column: auto / span 1;
-    grid-row: auto / span 2;
-    background-color: red;
+    @screen md {
+      grid-column: span 1;
+      grid-row: span 2;
+    }
   }
-
-  &:deep(> :nth-child(2n)) {
-    grid-column: auto / span 1;
-    grid-row: auto / span 1;
-    background-color: orange;
-  }
-
-  &:deep(> :nth-child(7n)) {
-    grid-column: auto / span 1;
-    grid-row: auto / span 1;
-    background-color: palegreen;
-  }
-
-  &:deep(> :nth-child(3n)) {
-    grid-column: auto / span 2;
-    grid-row: auto / span 2;
-    background-color: darkblue;
-  }
-
-  &:deep(> :nth-child(6n)) {
-    grid-column: auto / span 1;
-    grid-row: auto / span 2;
-    background-color: palevioletred;
-  }
-
-  &:deep(> :nth-child(8n)) {
-    grid-column: auto / span 1;
-    grid-row: auto / span 2;
-    background-color: saddlebrown;
-  }
-
-  &:deep(> :nth-child(9n)) {
-    grid-column: auto / span 1;
-    grid-row: auto / span 1;
-    background-color: plum;
-  } */
 }
 </style>
