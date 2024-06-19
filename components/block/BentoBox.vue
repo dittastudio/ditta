@@ -19,7 +19,7 @@ const { block } = defineProps<Props>()
       <section
         v-for="bento in block.items"
         :key="bento._uid"
-        class="rounded-[20px] bg-pink"
+        class="rounded-[20px]"
       >
         <BentoGame
           v-if="bento.component === 'bento_game'"

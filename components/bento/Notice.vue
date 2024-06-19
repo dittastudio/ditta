@@ -55,7 +55,7 @@ const classes = [
 
     <ElementIndicator
       :on="isOpen"
-      class="w-full max-w-[180px] m-auto"
+      class="w-10/12 max-w-[180px] m-auto"
     />
   </div>
 </template>

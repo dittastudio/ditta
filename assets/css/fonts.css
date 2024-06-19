@@ -19,6 +19,14 @@ Heavy: 900
 
 @font-face {
   font-family: 'Greycliff CF';
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+  src: url('/fonts/GreycliffCF-MediumOblique.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Greycliff CF';
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -27,8 +35,24 @@ Heavy: 900
 
 @font-face {
   font-family: 'Greycliff CF';
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+  src: url('/fonts/GreycliffCF-BoldOblique.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Greycliff CF';
   font-weight: 800;
   font-style: normal;
   font-display: swap;
   src: url('/fonts/GreycliffCF-ExtraBold.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Greycliff CF';
+  font-weight: 800;
+  font-style: italic;
+  font-display: swap;
+  src: url('/fonts/GreycliffCF-ExtraBoldOblique.woff2') format('woff2');
 }
