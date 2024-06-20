@@ -140,7 +140,7 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
   justify-content: space-around;
 
   min-width: 100%;
-  margin-block: -0.16em -0.11em;
+  margin-block: -0.088em -0.181em;
 
   .block-marquee__marquee--left & {
     animation: ticker-left var(--duration) linear infinite;

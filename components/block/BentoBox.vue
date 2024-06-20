@@ -77,11 +77,11 @@ const { block } = defineProps<Props>()
   grid-template-columns: repeat(1, minmax(0, 1fr));
   gap: var(--app-inner-gutter);
 
-  @screen md {
+  @screen sm {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  @screen lg {
+  @screen md {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
@@ -131,7 +131,7 @@ const { block } = defineProps<Props>()
     grid-row: span 2;
     aspect-ratio: 4 / 6;
 
-    @screen lg {
+    @screen md {
       grid-row: span 1;
       aspect-ratio: 4 / 3;
     }
