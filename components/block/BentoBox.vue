@@ -73,7 +73,6 @@ const { block } = defineProps<Props>()
 <style lang="postcss" scoped>
 .bento-box__grid {
   display: grid;
-  grid-auto-columns: 1fr;
   grid-auto-flow: dense;
   grid-template-columns: repeat(1, minmax(0, 1fr));
   gap: var(--app-inner-gutter);
@@ -94,34 +93,27 @@ const { block } = defineProps<Props>()
     grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 
-  &:deep(> :nth-child(1n)) {
+  &:deep(> *) {
     overflow: hidden;
-    display: flex;
-    flex-direction: column;
-
     width: 100%;
     height: 100%;
   }
 
-  &:deep(> :nth-child(1)) {
+  &:deep(> :nth-child(9n + 1)) {
+    grid-column: span 1;
     grid-row: span 2;
-    order: 1;
     aspect-ratio: 4 / 6;
   }
 
-  &:deep(> :nth-child(2)) {
-    order: 2;
+  &:deep(> :nth-child(9n + 2)) {
+    grid-column: span 1;
+    grid-row: span 1;
     aspect-ratio: 4 / 3;
   }
 
-  &:deep(> :nth-child(3)) {
-    order: 5;
-    aspect-ratio: 4 / 3;
-  }
-
-  &:deep(> :nth-child(4)) {
+  &:deep(> :nth-child(9n + 3)) {
+    grid-column: span 1;
     grid-row: span 2;
-    order: 4;
     aspect-ratio: 4 / 3;
 
     @screen sm {
@@ -129,36 +121,28 @@ const { block } = defineProps<Props>()
     }
   }
 
-  &:deep(> :nth-child(5)) {
-    grid-row: span 2;
-    order: 5;
-    aspect-ratio: 4 / 6;
-  }
-
-  &:deep(> :nth-child(6)) {
-    grid-row: span 2;
-    order: 6;
-    aspect-ratio: 4 / 6;
-  }
-
-  &:deep(> :nth-child(7)) {
+  &:deep(> :nth-child(9n + 4)) {
     grid-column: span 1;
     grid-row: span 1;
-    order: 7;
     aspect-ratio: 4 / 3;
   }
 
-  &:deep(> :nth-child(8)) {
+  &:deep(> :nth-child(9n + 5)),
+  &:deep(> :nth-child(9n + 6)) {
+    grid-column: span 1;
+    grid-row: span 2;
+    aspect-ratio: 4 / 6;
+  }
+
+  &:deep(> :nth-child(9n + 7)) {
     grid-column: span 1;
     grid-row: span 1;
-    order: 10;
     aspect-ratio: 4 / 3;
   }
 
-  &:deep(> :nth-child(9)) {
+  &:deep(> :nth-child(9n + 8)) {
     grid-column: span 1;
     grid-row: span 2;
-    order: 9;
     aspect-ratio: 4 / 6;
 
     @screen lg {
@@ -175,6 +159,12 @@ const { block } = defineProps<Props>()
       grid-row: span 1;
       aspect-ratio: 4 / 3;
     }
+  }
+
+  &:deep(> :nth-child(9n + 9)) {
+    grid-column: span 1;
+    grid-row: span 1;
+    aspect-ratio: 4 / 3;
   }
 }
 </style>
