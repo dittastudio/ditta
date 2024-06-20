@@ -69,7 +69,7 @@ const info = {
   771: { icon: WeatherFog, description: `Beware of the squalls` },
   781: { icon: WeatherFog, description: `Tornado party time` },
 
-  800: { icon: WeatherSunny, description: `Clear skies out there. Unusual for London town.` },
+  800: { icon: WeatherSunny, description: `Clear skies out there.` },
   801: { icon: WeatherCloudy, description: `It's a bit cloudy out, innit?` },
   802: { icon: WeatherCloudy, description: `Scattered clouds there be` },
   803: { icon: WeatherCloudy, description: `Broken clouds overhead` },
@@ -112,7 +112,7 @@ interface TransformedWeatherData {
   weather: WeatherWeather
 }
 
-const { data, error } = await useAsyncData<WeatherResponse>('weather', async () => await $fetch(payload), {
+const { data, error, refresh } = await useAsyncData<WeatherResponse>('weather', async () => await $fetch(payload), {
   transform: (data: WeatherResponse): TransformedWeatherData => ({
     main: data.main,
     weather: data.weather[0],
@@ -121,6 +121,22 @@ const { data, error } = await useAsyncData<WeatherResponse>('weather', async () 
 
 const isOpen = useInOfficeHours()
 const classes = isOpen.value ? ['from-pink to-orange'] : ['from-purple-darker to-pink']
+
+let intervalRefresh: NodeJS.Timeout | undefined
+
+onMounted(() => {
+  refresh()
+
+  intervalRefresh = setInterval(() => {
+    refresh()
+  }, 60 * 1000)
+})
+
+onUnmounted(() => {
+  if (intervalRefresh) {
+    clearInterval(intervalRefresh)
+  }
+})
 </script>
 
 <template>
