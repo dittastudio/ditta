@@ -99,13 +99,18 @@ const { block } = defineProps<Props>()
     height: 100%;
   }
 
-  &:deep(> :nth-child(9n + 1)) {
+  &:deep(> :nth-child(9n + 1)),
+  &:deep(> :nth-child(9n + 5)),
+  &:deep(> :nth-child(9n + 6)) {
     grid-column: span 1;
     grid-row: span 2;
     aspect-ratio: 4 / 6;
   }
 
-  &:deep(> :nth-child(9n + 2)) {
+  &:deep(> :nth-child(9n + 2)),
+  &:deep(> :nth-child(9n + 4)),
+  &:deep(> :nth-child(9n + 7)),
+  &:deep(> :nth-child(9n + 9)) {
     grid-column: span 1;
     grid-row: span 1;
     aspect-ratio: 4 / 3;
@@ -119,25 +124,6 @@ const { block } = defineProps<Props>()
     @screen sm {
       grid-column: span 2;
     }
-  }
-
-  &:deep(> :nth-child(9n + 4)) {
-    grid-column: span 1;
-    grid-row: span 1;
-    aspect-ratio: 4 / 3;
-  }
-
-  &:deep(> :nth-child(9n + 5)),
-  &:deep(> :nth-child(9n + 6)) {
-    grid-column: span 1;
-    grid-row: span 2;
-    aspect-ratio: 4 / 6;
-  }
-
-  &:deep(> :nth-child(9n + 7)) {
-    grid-column: span 1;
-    grid-row: span 1;
-    aspect-ratio: 4 / 3;
   }
 
   &:deep(> :nth-child(9n + 8)) {
@@ -159,12 +145,6 @@ const { block } = defineProps<Props>()
       grid-row: span 1;
       aspect-ratio: 4 / 3;
     }
-  }
-
-  &:deep(> :nth-child(9n + 9)) {
-    grid-column: span 1;
-    grid-row: span 1;
-    aspect-ratio: 4 / 3;
   }
 }
 </style>
