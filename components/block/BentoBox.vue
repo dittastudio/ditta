@@ -107,26 +107,22 @@ const { block } = defineProps<Props>()
     grid-row: span 2;
     order: 1;
     aspect-ratio: 4 / 6;
-    background-color: theme('colors.black/10%');
   }
 
   &:deep(> :nth-child(2)) {
     order: 2;
     aspect-ratio: 4 / 3;
-    background-color: theme('colors.black/20%');
   }
 
   &:deep(> :nth-child(3)) {
     order: 5;
     aspect-ratio: 4 / 3;
-    background-color: theme('colors.black/30%');
   }
 
   &:deep(> :nth-child(4)) {
     grid-row: span 2;
     order: 4;
     aspect-ratio: 4 / 3;
-    background-color: theme('colors.black/40%');
 
     @screen sm {
       grid-column: span 2;
@@ -137,44 +133,33 @@ const { block } = defineProps<Props>()
     grid-row: span 2;
     order: 5;
     aspect-ratio: 4 / 6;
-    background-color: theme('colors.black/50%');
   }
 
   &:deep(> :nth-child(6)) {
     grid-row: span 2;
     order: 6;
     aspect-ratio: 4 / 6;
-    background-color: theme('colors.black/60%');
   }
 
   &:deep(> :nth-child(7)) {
     grid-column: span 1;
     grid-row: span 1;
     order: 7;
-
     aspect-ratio: 4 / 3;
-
-    background-color: theme('colors.black/70%');
   }
 
   &:deep(> :nth-child(8)) {
     grid-column: span 1;
     grid-row: span 1;
     order: 10;
-
     aspect-ratio: 4 / 3;
-
-    background-color: theme('colors.black/80%');
   }
 
   &:deep(> :nth-child(9)) {
     grid-column: span 1;
     grid-row: span 2;
     order: 9;
-
     aspect-ratio: 4 / 6;
-
-    background-color: theme('colors.black/90%');
 
     @screen lg {
       grid-row: span 1;
