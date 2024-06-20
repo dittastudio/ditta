@@ -25,7 +25,7 @@ const clamp = ({
   const slope = (maxValueRems - minValueRems) / (maxViewportWidthRems - minViewportWidthRems)
   const intercept = minValueRems - slope * minViewportWidthRems
 
-  return `clamp(${minValueRems}rem, ${intercept}rem + ${slope * 100}vw, ${maxValueRems}rem)`
+  return `clamp(${minValueRems}rem, ${intercept}rem + ${slope * 100}vi, ${maxValueRems}rem)`
 }
 
 export const screenSizes = {
