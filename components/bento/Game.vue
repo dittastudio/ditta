@@ -13,6 +13,7 @@ interface Velocity {
 const { block } = defineProps<Props>()
 
 const container = ref<HTMLDivElement | null>(null)
+const audio = ref<HTMLAudioElement | null>(null)
 const itemRefs = ref<HTMLDivElement[]>([])
 const circles: any = []
 
@@ -123,11 +124,9 @@ class Circle {
       this.el.style.transform = `translate3d(${this.x}px, ${this.y}px, 0)`
     }
     else {
-      const activeItems = circles.filter((circle: Circle) => !circle.deactivated)
-      const scaleFactor = Math.floor(Math.max(w, h) * 2 / (this.radius * 2))
-
-      this.el.style.transform = `translate3d(${this.x}px, ${this.y}px, 0) scale(${scaleFactor})`
-      this.el.style.zIndex = `-${activeItems.length}`
+      this.el.style.transition = 'transform 0.25s ease-in-out, opacity 0.25s ease-in-out'
+      this.el.style.opacity = '0'
+      this.el.style.transform = `translate3d(${this.x}px, ${this.y}px, 0) scale(2.5)`
       this.deactivated = true
     }
   }
@@ -200,10 +199,10 @@ onMounted(() => {
     const mass = 1
     const circle = new Circle(item, x, y, velocity, radius, mass, true, false)
 
-    // item.addEventListener('click', () => {
-    //   item.classList.add('is-grown')
-    //   circles[index].interactive = false
-    // })
+    item.addEventListener('click', () => {
+      audio.value?.play()
+      circles[_index].interactive = false
+    })
 
     circles.push(circle)
 
@@ -215,21 +214,28 @@ onMounted(() => {
 </script>
 
 <template>
-  <ul
+  <div
     ref="container"
     v-editable="block"
     class="w-full h-full bg-offblack"
   >
-    <li
-      v-for="(item, index) in list"
-      ref="itemRefs"
-      :key="item"
-      class="absolute size-24 rounded-full opacity-0"
-      :class="item"
-    >
-      <span class="sr-only">
-        Ball {{ index + 1 }}
-      </span>
-    </li>
-  </ul>
+    <audio
+      ref="audio"
+      src="/audio/pop.mp3"
+    />
+
+    <ul class="w-full h-full">
+      <li
+        v-for="(item, index) in list"
+        ref="itemRefs"
+        :key="item"
+        class="absolute size-32 rounded-full opacity-0 cursor-pointer"
+        :class="item"
+      >
+        <span class="sr-only">
+          Ball {{ index + 1 }}
+        </span>
+      </li>
+    </ul>
+  </div>
 </template>
