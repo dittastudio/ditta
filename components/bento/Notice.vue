@@ -19,6 +19,7 @@ const classes = [
   'prose-h5:text-18',
   'prose-h6:text-18',
   'prose-p:text-18',
+  'prose-p:text-balance',
   'prose-p:opacity-50',
   'prose-p:mb-16',
   '@2xs:prose-h1:text-65',
