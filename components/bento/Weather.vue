@@ -142,7 +142,7 @@ onUnmounted(() => {
 <template>
   <div
     v-editable="block"
-    class="@container w-full h-full flex flex-col p-20 bg-gradient-to-t"
+    class="w-full h-full flex flex-col p-20 bg-gradient-to-t"
     :class="classes"
   >
     <h4 class="text-20 font-bold text-offblack">
@@ -151,13 +151,25 @@ onUnmounted(() => {
 
     <template v-if="data">
       <div class="grid grid-cols-2 gap-8 items-center">
-        <p class="text-40 @3xs:text-65 @2xs:text-[85px] @xs:text-[110px] text-offblack font-bold">
-          {{ Math.round(data.main.temp) }}&deg;
-        </p>
+        <svg
+          viewBox="0 0 100 50"
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-full h-auto"
+        >
+          <text
+            x="0"
+            y="0"
+            dy="0.5em"
+            class="text-offblack font-bold text-65"
+            dominant-baseline="middle"
+          >
+            {{ Math.round(data.main.temp) }}&deg;
+          </text>
+        </svg>
 
         <Component
           :is="info[data.weather.id as keyof typeof info].icon || WeatherSunshine"
-          class="size-full ml-auto"
+          class="w-full h-auto ml-auto"
         />
       </div>
 
