@@ -1,5 +1,16 @@
 <script lang="ts" setup>
 import IconDitta from '@/assets/icons/ditta.svg'
+
+const socialLinks = [
+  {
+    url: 'https://www.linkedin.com/company/dittastudio',
+    text: 'LinkedIn',
+  },
+  {
+    url: 'https://www.instagram.com/_dittastudio/',
+    text: 'Instagram',
+  },
+]
 </script>
 
 <template>
@@ -12,7 +23,7 @@ import IconDitta from '@/assets/icons/ditta.svg'
       direction="right"
     />
 
-    <div class="wrapper section w-full">
+    <div class="wrapper py-40">
       <h2 class="text-20 lg:text-24 max-w-[40ch] text-balance mb-40">
         We're a new digital agency based in London bridging the gap between design and development.
       </h2>
@@ -33,28 +44,22 @@ import IconDitta from '@/assets/icons/ditta.svg'
       <IconDitta class="block w-[50px] h-[18px] mb-8" />
 
       <ul class="flex gap-8 mb-16">
-        <li class="text-14">
+        <li
+          v-for="link in socialLinks"
+          :key="link.url"
+          class="text-14"
+        >
           <a
-            class="opacity-50 hover:opacity-100 focus:opacity-100 transition-opacity duration-200"
-            href="https://www.linkedin.com/company/dittastudio"
+            :href="link.url"
+            class="hover:opacity-100 hover:text-pink focus:opacity-100 text-offwhite/50 transition-colors duration-200"
             target="_blank"
           >
-            LinkedIn
-          </a>
-        </li>
-
-        <li class="text-14">
-          <a
-            class="opacity-50 hover:opacity-100 focus:opacity-100 transition-opacity duration-200"
-            href="https://www.instagram.com/_dittastudio/"
-            target="_blank"
-          >
-            Instagram
+            {{ link.text }}
           </a>
         </li>
       </ul>
 
-      <p class="text-12 max-w-[40ch] text-balance text-white opacity-50">
+      <p class="text-12 max-w-[60ch] text-balance text-offwhite/20">
         ditta ltd. is a company registered in England and Wales with company number 15648076.
       </p>
     </div>

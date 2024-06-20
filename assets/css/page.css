@@ -11,6 +11,11 @@ body {
   line-height: theme('lineHeight.normal');
 }
 
+::selection {
+  color: theme('colors.offwhite');
+  background-color: theme('colors.pink');
+}
+
 .wrapper {
   width: 100%;
   max-width: theme('screens.3xl');
