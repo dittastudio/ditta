@@ -5,6 +5,7 @@ import WeatherCloudy from '@/assets/icons/weather/cloudy.svg'
 import WeatherDrizzle from '@/assets/icons/weather/drizzle.svg'
 import WeatherFog from '@/assets/icons/weather/fog.svg'
 import WeatherFrost from '@/assets/icons/weather/frost.svg'
+import WeatherMoon from '@/assets/icons/weather/moon.svg'
 import WeatherRainHeavy from '@/assets/icons/weather/rain-heavy.svg'
 import WeatherRain from '@/assets/icons/weather/rain.svg'
 import WeatherSunny from '@/assets/icons/weather/sunny.svg'
@@ -13,7 +14,9 @@ import WeatherThunder from '@/assets/icons/weather/thunder.svg'
 
 // https://openweathermap.org/weather-conditions
 
-const info = {
+const isNight = useNowIsBetween('21:00', '23:59')
+
+const info = computed(() => ({
   200: { icon: WeatherThunder, description: `Thunderstorm with light rain` },
   201: { icon: WeatherThunder, description: `Thunderstorm with rain` },
   202: { icon: WeatherThunder, description: `Thunderstorm with heavy rain` },
@@ -69,12 +72,12 @@ const info = {
   771: { icon: WeatherFog, description: `Beware of the squalls` },
   781: { icon: WeatherFog, description: `Tornado party time` },
 
-  800: { icon: WeatherSunny, description: `Clear skies out there.` },
+  800: { icon: isNight.value ? WeatherMoon : WeatherSunny, description: `Clear skies out there.` },
   801: { icon: WeatherCloudy, description: `It's a bit cloudy out, innit?` },
   802: { icon: WeatherCloudy, description: `Scattered clouds there be` },
   803: { icon: WeatherCloudy, description: `Broken clouds overhead` },
   804: { icon: WeatherCloudy, description: `That classic British overcast` },
-}
+}))
 
 interface Props {
   block: BentoWeatherStoryblok
@@ -112,14 +115,18 @@ interface TransformedWeatherData {
   weather: WeatherWeather
 }
 
-const { data, error, refresh } = await useAsyncData<WeatherResponse>('weather', async () => await $fetch(payload), {
-  transform: (data: WeatherResponse): TransformedWeatherData => ({
-    main: data.main,
-    weather: data.weather[0],
-  }),
-})
+const { data, error, refresh } = await useAsyncData<WeatherResponse>(
+  'weather',
+  async () => await $fetch(payload),
+  {
+    transform: (data: WeatherResponse): TransformedWeatherData => ({
+      main: data.main,
+      weather: data.weather[0],
+    }),
+  },
+)
 
-const isOpen = useInOfficeHours()
+const isOpen = useNowIsBetween('09:00', '18:00')
 const classes = isOpen.value ? ['from-pink to-orange'] : ['from-purple-darker to-pink']
 
 let intervalRefresh: NodeJS.Timeout | undefined
@@ -179,7 +186,7 @@ onUnmounted(() => {
     </template>
 
     <template v-else-if="error || !data">
-      <p>Problem getting weather</p>
+      <p>Oh no, there was a problem getting the weather</p>
     </template>
   </div>
 </template>

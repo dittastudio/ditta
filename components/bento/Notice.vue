@@ -7,7 +7,7 @@ interface Props {
 }
 
 const { block } = defineProps<Props>()
-const isOpen = useInOfficeHours()
+const isOpen = useNowIsBetween('09:00', '18:00')
 
 const classes = [
   'prose-headings:text-white',
