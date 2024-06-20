@@ -6,15 +6,17 @@ interface Props {
 }
 
 const { on = true } = defineProps<Props>()
-const styles = on
-  ? {
-      dot: colours['green-darker'],
-      background: colours.green,
-    }
-  : {
-      dot: colours['pink-darker'],
-      background: colours.pink,
-    }
+const styles = computed(() => {
+  return on
+    ? {
+        dot: colours['green-darker'],
+        background: colours.green,
+      }
+    : {
+        dot: colours['pink-darker'],
+        background: colours.pink,
+      }
+})
 </script>
 
 <template>
