@@ -64,7 +64,7 @@ export const colours = {
   'offblack': '#232323',
   'grey': '#F0F1F4',
   'blue': '#B8F2FE',
-  'pink': '#FEB9B8',
+  'pink': '#F8BFBE',
   'pink-darker': '#ED615E',
   'orange': '#FEDBB8',
   'green': '#B8FEC4',
