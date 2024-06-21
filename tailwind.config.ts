@@ -119,7 +119,7 @@ export default {
           maxPixels: 120,
           maxViewportWidthPixels: screenSizes['2xl'],
         }),
-        { lineHeight: '1', letterSpacing: '-0.01em', fontWeight: '800' },
+        { lineHeight: '1', letterSpacing: '-0.01em', fontWeight: '900' },
       ],
     },
     lineHeight: {
