@@ -113,6 +113,13 @@ export interface BlockBentoBoxStoryblok {
   [k: string]: any;
 }
 
+export interface BlockMarqueesStoryblok {
+  words?: WordStoryblok[];
+  _uid: string;
+  component: "block_marquees";
+  [k: string]: any;
+}
+
 export interface AssetStoryblok {
   _uid?: string;
   id: number;
@@ -159,7 +166,13 @@ export interface BlockTextStoryblok {
 }
 
 export interface PageStoryblok {
-  blocks?: (BlockBentoBoxStoryblok | BlockMediaStoryblok | BlockStudiosStoryblok | BlockTextStoryblok)[];
+  blocks?: (
+    | BlockBentoBoxStoryblok
+    | BlockMarqueesStoryblok
+    | BlockMediaStoryblok
+    | BlockStudiosStoryblok
+    | BlockTextStoryblok
+  )[];
   seo: SeoStoryblok[];
   _uid: string;
   component: "page";
@@ -180,5 +193,12 @@ export interface StudioStoryblok {
   name: string;
   _uid: string;
   component: "studio";
+  [k: string]: any;
+}
+
+export interface WordStoryblok {
+  word?: string;
+  _uid: string;
+  component: "word";
   [k: string]: any;
 }

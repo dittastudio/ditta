@@ -16,26 +16,35 @@ const swiperEl = ref<HTMLDivElement | null>(null)
 const prev = ref<HTMLButtonElement | null>(null)
 const next = ref<HTMLButtonElement | null>(null)
 const paginationEl = ref<HTMLDivElement | null>(null)
-const currentSlidesPerView = 1
+const bulletTotal = 5
+const bulletsVisible = 2
 
 const updatePagination = (swiper: Swiper) => {
-  if (swiper.realIndex < (slides.length - (currentSlidesPerView + 1))) {
-    const bulletSize = 16
-    const position = swiper.realIndex < 3 ? 0 : -Math.abs(bulletSize * (swiper.realIndex - 2))
+  const bulletSize = 16
 
-    paginationEl.value?.style.setProperty('--bullet-movement', `${position}px`)
+  let position = 0
 
-    const bullets = paginationEl.value?.querySelectorAll('.ui-carousel__bullet') as NodeListOf<HTMLButtonElement>
-
-    bullets.forEach((bullet, index) => {
-      if (index >= swiper.realIndex - 2 && index <= swiper.realIndex + 2) {
-        bullet.classList.remove('ui-carousel__bullet--is-hidden')
-      }
-      else {
-        bullet.classList.add('ui-carousel__bullet--is-hidden')
-      }
-    })
+  if (swiper.realIndex < (slides.length - bulletsVisible)) {
+    position = swiper.realIndex < (bulletsVisible + 1) ? 0 : -Math.abs(bulletSize * (swiper.realIndex - bulletsVisible))
   }
+  else {
+    position = -Math.abs(bulletSize * (slides.length - bulletTotal))
+  }
+
+  paginationEl.value?.style.setProperty('--bullet-movement', `${position}px`)
+
+  const bullets = paginationEl.value?.querySelectorAll('.ui-carousel__bullet') as NodeListOf<HTMLButtonElement>
+
+  bullets.forEach((bullet, index) => {
+    if ((swiper.realIndex < 2 && index < 5)
+      || (swiper.realIndex > bullets.length - 3 && index >= bullets.length - 5)
+      || (index >= swiper.realIndex - 2 && index <= swiper.realIndex + 2)) {
+      bullet.classList.remove('ui-carousel__bullet--is-hidden')
+    }
+    else {
+      bullet.classList.add('ui-carousel__bullet--is-hidden')
+    }
+  })
 }
 
 const initSwiper = () => {
@@ -69,10 +78,12 @@ const initSwiper = () => {
       : false,
     on: {
       init: (slider) => {
-        updatePagination(slider)
+        if (slides.length > bulletTotal)
+          updatePagination(slider)
       },
       slideChange: (slider) => {
-        updatePagination(slider)
+        if (slides.length > bulletTotal)
+          updatePagination(slider)
       },
     },
     ...options,
@@ -93,9 +104,8 @@ watch(() => slides, () => {
 })
 
 watch(() => options, () => {
-  if (!swiper.value) {
+  if (!swiper.value)
     return
-  }
 
   if (typeof options?.autoplay === 'boolean' && !options?.autoplay) {
     swiper.value.autoplay.pause()
@@ -140,15 +150,17 @@ watch(() => options, () => {
       <span class="sr-only">Next</span>
     </button>
 
-    <div
-      v-if="pagination && slides?.length > 1"
-      class="ui-carousel__pagination-wrapper xoverflow-hidden z-1 absolute inset-x-0 bottom-0 text-white bg-black"
-    >
+    <div class="bg-gradient-to-t from-black/50 to-black/0 pt-80 absolute inset-x-0 bottom-0 pointer-events-none">
       <div
-        ref="paginationEl"
-        class="swiper-pagination flex translate-x-[var(--bullet-movement)] transition-transform duration-500 ease-smooth will-change-transform"
-        :class="{ 'justify-center': pagination && slides?.length < 5 }"
-      />
+        v-if="pagination && slides?.length > 1"
+        class="ui-carousel__pagination-wrapper z-1 text-white pointer-events-auto"
+      >
+        <div
+          ref="paginationEl"
+          class="swiper-pagination flex translate-x-[var(--bullet-movement)] transition-transform duration-500 ease-smooth will-change-transform"
+          :class="{ 'justify-center': pagination && slides?.length < 5 }"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -165,13 +177,17 @@ watch(() => options, () => {
 .ui-carousel__bullet {
   padding: theme('spacing.20') calc(var(--dot-size) / 2);
   opacity: 0.2;
-  transition: opacity theme('transitionDuration.500') theme('transitionTimingFunction.smooth');
+  transition:
+    opacity theme('transitionDuration.500') theme('transitionTimingFunction.smooth'),
+    scale theme('transitionDuration.500') theme('transitionTimingFunction.smooth');
 
   &--is-hidden {
+    scale: 0.5;
     opacity: 0;
   }
 
   &--is-active {
+    scale: 1;
     opacity: 1;
   }
 }

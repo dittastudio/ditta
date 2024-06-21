@@ -73,8 +73,8 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
       class="block-marquee__wrapper"
     >
       <div
-        class="block-marquee__marquee text-fluid-lg uppercase"
-        :class="{ [`block-marquee__marquee--${direction}`]: direction }"
+        class="block-marquee__words text-fluid-lg uppercase"
+        :class="{ [`block-marquee__words--${direction}`]: direction }"
       >
         <div class="block-marquee__group">
           <p
@@ -103,14 +103,15 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
 </template>
 
 <style lang="postcss" scoped>
-.block-marquee__marquee {
+.block-marquee__words {
   --duration: v-bind(duration);
   --gap: 0.5em;
 
-  /* user-select: none; */
+  user-select: none;
 
   display: flex;
   gap: var(--gap);
+
   min-width: 100%;
   padding: 0.15em;
 
@@ -142,11 +143,11 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
   min-width: 100%;
   margin-block: -0.088em -0.181em;
 
-  .block-marquee__marquee--left & {
+  .block-marquee__words--left & {
     animation: ticker-left var(--duration) linear infinite;
   }
 
-  .block-marquee__marquee--right & {
+  .block-marquee__words--right & {
     animation: ticker-right var(--duration) linear infinite;
   }
 
