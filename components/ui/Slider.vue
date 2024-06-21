@@ -149,15 +149,17 @@ watch(() => options, () => {
       <span class="sr-only">Next</span>
     </button>
 
-    <div
-      v-if="pagination && slides?.length > 1"
-      class="ui-carousel__pagination-wrapper xoverflow-hidden z-1 absolute inset-x-0 bottom-0 text-white"
-    >
+    <div class="bg-gradient-to-t from-black/50 to-black/0 pt-80 absolute inset-x-0 bottom-0 pointer-events-none">
       <div
-        ref="paginationEl"
-        class="swiper-pagination flex translate-x-[var(--bullet-movement)] transition-transform duration-500 ease-smooth will-change-transform"
-        :class="{ 'justify-center': pagination && slides?.length < 5 }"
-      />
+        v-if="pagination && slides?.length > 1"
+        class="ui-carousel__pagination-wrapper z-1 text-white pointer-events-auto"
+      >
+        <div
+          ref="paginationEl"
+          class="swiper-pagination flex translate-x-[var(--bullet-movement)] transition-transform duration-500 ease-smooth will-change-transform"
+          :class="{ 'justify-center': pagination && slides?.length < 5 }"
+        />
+      </div>
     </div>
   </div>
 </template>
