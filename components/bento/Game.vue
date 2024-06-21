@@ -11,12 +11,12 @@ interface Velocity {
 }
 
 const { block } = defineProps<Props>()
-
 const container = ref<HTMLDivElement | null>(null)
 const audio = ref<HTMLAudioElement | null>(null)
 const itemRefs = ref<HTMLDivElement[]>([])
 const circles: any = []
 
+let timeoutResize: ReturnType<typeof setTimeout>
 let w = 0
 let h = 0
 
@@ -88,8 +88,6 @@ const setPosition = (radius: number): Velocity => {
   return { x, y }
 }
 
-let timeout: ReturnType<typeof setTimeout>
-
 const setCanvasSize = () => {
   if (!container.value) {
     return
@@ -99,9 +97,9 @@ const setCanvasSize = () => {
   w = width
   h = height
 
-  timeout && clearTimeout(timeout)
+  timeoutResize && clearTimeout(timeoutResize)
 
-  timeout = setTimeout(() => {
+  timeoutResize = setTimeout(() => {
     circles.forEach((circle: Circle) => {
       circle.unpause()
     })
