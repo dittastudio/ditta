@@ -24,11 +24,11 @@ const socialLinks = [
     />
 
     <div class="wrapper py-40">
-      <h2 class="text-20 lg:text-24 max-w-[40ch] text-balance mb-40">
+      <h2 class="text-20 sm:text-24 max-w-[40ch] text-balance mb-40">
         We're a new digital agency based in London bridging the gap between design and development.
       </h2>
 
-      <p class="text-32 sm:text-40">
+      <p class="text-24 xs:text-40">
         <a
           class="text-pink ease-smooth hover:opacity-70 transition-opacity duration-200"
           href="mailto:hello@ditta.studio"
