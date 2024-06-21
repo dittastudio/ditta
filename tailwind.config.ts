@@ -67,6 +67,7 @@ export const colours = {
   'pink': '#F8BFBE',
   'pink-darker': '#ED615E',
   'orange': '#FEDBB8',
+  'orange-darker': '#FDB268',
   'green': '#B8FEC4',
   'green-darker': '#0EC32C',
   'purple': '#BEB8FE',
