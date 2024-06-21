@@ -31,6 +31,41 @@ const playlist: Track[] = [
   { name: 'Disco', path: '/audio/disco.mp3' },
 ]
 
+const createEqualizer = (analyser: AnalyserNode) => {
+  const bufferLength = analyser.frequencyBinCount
+  const dataArray = new Uint8Array(bufferLength)
+  const canvas = equalizer.value
+  const context = canvas?.getContext('2d')
+
+  if (!canvas || !context) {
+    return
+  }
+
+  const draw = () => {
+    requestAnimationFrame(draw)
+
+    analyser.getByteFrequencyData(dataArray)
+    context.fillStyle = '#FEDBB8'
+    context.fillRect(0, 0, canvas.width, canvas.height)
+
+    const barWidth = (canvas.width / bufferLength) * 5
+
+    let barHeight
+    let x = 0
+
+    for (let i = 0; i < bufferLength; i++) {
+      barHeight = dataArray[i]
+
+      context.fillStyle = `rgb(253, 178, 104)` // `rgb(${barHeight + 100}, 0, 0)`
+      context.fillRect(x, canvas.height - barHeight / 2, barWidth, barHeight / 2)
+
+      x += barWidth + 2
+    }
+  }
+
+  draw()
+}
+
 const setAudio = () => {
   const audioItem = track.value
     ? track.value.path
@@ -55,40 +90,7 @@ const setAudio = () => {
   analyser.connect(audioContext.destination)
   analyser.fftSize = 256
 
-  // const bufferLength = analyser.frequencyBinCount
-  // const dataArray = new Uint8Array(bufferLength)
-  // const canvas = equalizer.value
-  // const context = canvas?.getContext('2d')
-
-  // if (!canvas || !context) {
-  //   return
-  // }
-
-  // const draw = () => {
-  //   requestAnimationFrame(draw)
-
-  //   analyser.getByteFrequencyData(dataArray)
-  //   context.fillStyle = '#FEDBB8'
-  //   context.fillRect(0, 0, canvas.width, canvas.height)
-
-  //   const barWidth = (canvas.width / bufferLength) * 5
-
-  //   let barHeight
-  //   let x = 0
-
-  //   for (let i = 0; i < bufferLength; i++) {
-  //     barHeight = dataArray[i]
-
-  //     context.fillStyle = `rgb(253, 178, 104)` // `rgb(${barHeight + 100}, 0, 0)`
-  //     context.fillRect(x, canvas.height - barHeight / 2, barWidth, barHeight / 2)
-
-  //     x += barWidth + 2
-  //   }
-
-  //   console.log(dataArray)
-  // }
-
-  // draw()
+  createEqualizer(analyser)
 
   audioElement.value.play()
   playing.value = true
