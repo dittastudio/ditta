@@ -22,7 +22,6 @@ const bulletsVisible = 2
 const updatePagination = (swiper: Swiper) => {
   const bulletSize = 16
 
-  console.log('swiper.realIndex', swiper.realIndex)
   let position = 0
 
   if (swiper.realIndex < (slides.length - bulletsVisible)) {
@@ -79,10 +78,12 @@ const initSwiper = () => {
       : false,
     on: {
       init: (slider) => {
-        updatePagination(slider)
+        if (slides.length > bulletTotal)
+          updatePagination(slider)
       },
       slideChange: (slider) => {
-        updatePagination(slider)
+        if (slides.length > bulletTotal)
+          updatePagination(slider)
       },
     },
     ...options,
