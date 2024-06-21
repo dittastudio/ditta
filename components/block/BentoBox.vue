@@ -123,6 +123,7 @@ const { block } = defineProps<Props>()
 
     @screen sm {
       grid-column: span 2;
+      aspect-ratio: 6 / 4;
     }
   }
 
