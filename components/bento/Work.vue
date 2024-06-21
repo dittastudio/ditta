@@ -23,7 +23,7 @@ useIntersectionObserver(
 const swiperOptions = computed<SwiperOptions>(() => ({
   effect: 'fade',
   loop: true,
-  autoplay: isVisible.value ? { delay: 3000, pauseOnMouseEnter: true } : false,
+  // autoplay: isVisible.value ? { delay: 3000, pauseOnMouseEnter: true } : false,
   keyboard: {
     enabled: true,
   },
@@ -48,6 +48,5 @@ const swiperOptions = computed<SwiperOptions>(() => ({
         >
       </template>
     </UiSlider>
-    <!-- <pre>{{ block.component }}</pre> -->
   </div>
 </template>

@@ -57,6 +57,7 @@ export const screens = {
 }
 
 export const colours = {
+  'current': 'currentColor',
   'white': '#ffffff',
   'black': '#000000',
   'offwhite': '#F5F4EA',
