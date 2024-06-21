@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { ElementVinyl } from '#build/components'
 import type { BentoMusicStoryblok } from '@/types/storyblok'
 import IconPlay from '@/assets/icons/play.svg'
 import IconPause from '@/assets/icons/pause.svg'
@@ -15,6 +16,7 @@ interface Track {
 
 const { block } = defineProps<Props>()
 const playing = ref(false)
+const vinyl = ref<InstanceType<typeof ElementVinyl> | null>(null)
 const files = ref<FileList | null>(null)
 const play = ref<HTMLButtonElement | null>(null)
 const pause = ref<HTMLButtonElement | null>(null)
@@ -129,7 +131,19 @@ const pauseAudio = () => {
   playing.value = false
 }
 
+const setSpinning = (value: boolean) => {
+  if (vinyl.value?.$el) {
+    vinyl.value.$el.style.animationPlayState = value ? 'running' : 'paused'
+  }
+}
+
+watch(() => playing.value, (value) => {
+  setSpinning(value)
+})
+
 onMounted(() => {
+  setSpinning(playing.value)
+
   play.value?.addEventListener('click', playAudio)
   pause.value?.addEventListener('click', pauseAudio)
 })
@@ -177,7 +191,10 @@ onUnmounted(() => {
       class="absolute inset-32 z-20"
       @click="listingVisible = true"
     >
-      <ElementVinyl class="vinyl size-full" />
+      <ElementVinyl
+        ref="vinyl"
+        class="vinyl size-full"
+      />
     </button>
 
     <p class="absolute z-50 left-20 bottom-16 text-12 font-bold text-offblack">
