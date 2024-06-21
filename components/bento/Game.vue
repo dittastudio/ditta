@@ -125,8 +125,9 @@ class Circle {
     }
     else {
       this.el.style.transition = 'transform 0.25s ease-in-out, opacity 0.25s ease-in-out'
-      this.el.style.opacity = '0'
       this.el.style.transform = `translate3d(${this.x}px, ${this.y}px, 0) scale(2.5)`
+      this.el.style.opacity = '0'
+      this.el.style.pointerEvents = 'none'
       this.deactivated = true
     }
   }
@@ -200,7 +201,8 @@ onMounted(() => {
     const circle = new Circle(item, x, y, velocity, radius, mass, true, false)
 
     item.addEventListener('click', () => {
-      audio.value?.play()
+      audio.value.currentTime = 0
+      audio.value.play()
       circles[_index].interactive = false
     })
 
