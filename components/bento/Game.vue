@@ -66,16 +66,6 @@ const resolveCollision = (particle: any, otherParticle: any) => {
   }
 }
 
-const setCanvasSize = () => {
-  if (!container.value) {
-    return
-  }
-
-  const { width, height } = container.value.getBoundingClientRect()
-  w = width
-  h = height
-}
-
 const objectCollision = (aX: number, aY: number, aR: number, bX: number, bY: number, bR: number) => {
   const dx = aX - bX
   const dy = aY - bY
@@ -84,18 +74,42 @@ const objectCollision = (aX: number, aY: number, aR: number, bX: number, bY: num
   return (distance < aR + bR)
 }
 
-const getPosition = (radius: number): Velocity => {
+const setPosition = (radius: number): Velocity => {
   const x = Math.random() * (w - radius * 2)
   const y = Math.random() * (h - radius * 2)
 
   for (const circle of circles) {
     if (objectCollision(x, y, radius, circle.x, circle.y, circle.radius)) {
       console.log('there was a collion, try again')
-      return getPosition(radius)
+      return setPosition(radius)
     }
   }
 
   return { x, y }
+}
+
+let timeout: ReturnType<typeof setTimeout>
+
+const setCanvasSize = () => {
+  if (!container.value) {
+    return
+  }
+
+  const { width, height } = container.value.getBoundingClientRect()
+  w = width
+  h = height
+
+  timeout && clearTimeout(timeout)
+
+  timeout = setTimeout(() => {
+    circles.forEach((circle: Circle) => {
+      circle.unpause()
+    })
+  }, 500)
+
+  circles.forEach((circle: Circle) => {
+    circle.pause()
+  })
 }
 
 class Circle {
@@ -107,6 +121,7 @@ class Circle {
   mass: number
   interactive: boolean
   deactivated: boolean
+  paused: boolean
 
   constructor(el: HTMLDivElement, x: number, y: number, velocity: Velocity, radius: number, mass: number, interactive: boolean, deactivated: boolean) {
     this.el = el
@@ -117,6 +132,7 @@ class Circle {
     this.mass = mass
     this.interactive = interactive
     this.deactivated = deactivated
+    this.paused = false
   }
 
   draw() {
@@ -132,24 +148,64 @@ class Circle {
     }
   }
 
-  update() {
-    if (this.x + (this.radius * 2) > w || this.x < 0) {
-      this.velocity.x = -this.velocity.x
-    }
+  pause() {
+    this.paused = true
+  }
 
-    if (this.y + (this.radius * 2) > h || this.y < 0) {
-      this.velocity.y = -this.velocity.y
-    }
+  unpause() {
+    this.paused = false
+  }
 
+  reposition() {
     circles.forEach((circle: Circle) => {
       if (this !== circle && this.interactive && circle.interactive) {
         if (objectCollision(this.x, this.y, this.radius, circle.x, circle.y, circle.radius)) {
-          // this.velocity.x = -this.velocity.x
-          // this.velocity.y = -this.velocity.y
           resolveCollision(this, circle)
         }
       }
     })
+  }
+
+  update() {
+    if (this.paused) {
+      return
+    }
+
+    // Out of bounds X detection, move to nearest X.
+    if (this.x + (this.radius * 2) > w) {
+      this.x = w - (this.radius * 2)
+
+      this.reposition()
+    }
+    else if (this.x < 0) {
+      this.x = 0
+
+      this.reposition()
+    }
+
+    // Out of bounds Y detection, move to nearest Y.
+    if (this.y + (this.radius * 2) > h) {
+      this.y = h - (this.radius * 2)
+
+      this.reposition()
+    }
+    else if (this.y < 0) {
+      this.y = 0
+
+      this.reposition()
+    }
+
+    // Walls collision.
+    if (this.x + (this.radius * 2) >= w || this.x <= 0) {
+      this.velocity.x = -this.velocity.x
+    }
+
+    // Floor and ceiling collision.
+    if (this.y + (this.radius * 2) >= h || this.y <= 0) {
+      this.velocity.y = -this.velocity.y
+    }
+
+    this.reposition()
 
     if (this.interactive) {
       this.x += this.velocity.x
@@ -176,14 +232,15 @@ const list = [
 ]
 
 onMounted(() => {
-  if (!container.value) {
+  if (!container.value || !itemRefs.value.length) {
     return
   }
 
+  const items = itemRefs.value
   const { width, height } = container.value.getBoundingClientRect()
+
   w = width
   h = height
-  const items = itemRefs.value
 
   setCanvasSize()
   window.addEventListener('resize', setCanvasSize)
@@ -196,13 +253,16 @@ onMounted(() => {
       x: (Math.random() - 0.5) * speed,
       y: (Math.random() - 0.5) * speed,
     }
-    const { x, y } = getPosition(radius)
+    const { x, y } = setPosition(radius)
     const mass = 1
     const circle = new Circle(item, x, y, velocity, radius, mass, true, false)
 
     item.addEventListener('click', () => {
-      audio.value.currentTime = 0
-      audio.value.play()
+      if (audio.value) {
+        audio.value.currentTime = 0
+        audio.value.play()
+      }
+
       circles[_index].interactive = false
     })
 
