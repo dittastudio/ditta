@@ -11,8 +11,8 @@ const { block } = defineProps<Props>()
 <template>
   <div
     v-editable="block"
-    class="bg-orange w-full h-full"
+    class="bg-orange w-full h-full p-20"
   >
-    <!-- <pre>{{ block.component }}</pre> -->
+    <ElementSpeaker class="size-full" />
   </div>
 </template>
