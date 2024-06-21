@@ -22,6 +22,7 @@
     "@vee-validate/zod": "^4.13.1",
     "@vueuse/core": "^10.11.0",
     "gsap": "^3.12.5",
+    "swiper": "^11.1.4",
     "vee-validate": "^4.13.1",
     "zod": "^3.23.8"
   },

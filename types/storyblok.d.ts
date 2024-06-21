@@ -77,7 +77,18 @@ export interface BentoWeatherStoryblok {
   [k: string]: any;
 }
 
+export type MultiassetStoryblok = {
+  alt?: string;
+  copyright?: string;
+  id: number;
+  filename: string;
+  name: string;
+  title?: string;
+  [k: string]: any;
+}[];
+
 export interface BentoWorkStoryblok {
+  slides?: MultiassetStoryblok;
   _uid: string;
   component: "bento_work";
   [k: string]: any;

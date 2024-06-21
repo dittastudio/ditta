@@ -11,7 +11,7 @@ const { block } = defineProps<Props>()
 <template>
   <div
     v-editable="block"
-    class="w-full h-full bg-orange"
+    class="bg-orange w-full h-full"
   >
     <!-- <pre>{{ block.component }}</pre> -->
   </div>

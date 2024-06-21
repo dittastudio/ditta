@@ -266,9 +266,18 @@
       "name": "bento_work",
       "display_name": null,
       "created_at": "2024-06-18T16:41:28.193Z",
-      "updated_at": "2024-06-18T16:41:28.193Z",
+      "updated_at": "2024-06-21T08:51:25.427Z",
       "id": 5945633,
-      "schema": {},
+      "schema": {
+        "slides": {
+          "type": "multiasset",
+          "pos": 0,
+          "filetypes": [
+            "images",
+            "videos"
+          ]
+        }
+      },
       "image": null,
       "preview_field": null,
       "is_root": false,
