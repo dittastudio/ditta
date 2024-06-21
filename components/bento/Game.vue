@@ -241,6 +241,7 @@ onMounted(() => {
   h = height
 
   setCanvasSize()
+
   window.addEventListener('resize', setCanvasSize)
 
   items.forEach((item, _index) => {
@@ -270,6 +271,10 @@ onMounted(() => {
   })
 
   draw()
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', setCanvasSize)
 })
 </script>
 
