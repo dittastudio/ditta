@@ -29,7 +29,7 @@ const info = computed(() => ({
   232: { icon: WeatherThunder, description: `Thunderstorm with heavy drizzle` },
 
   300: { icon: WeatherDrizzle, description: `Light intensity drizzle` },
-  301: { icon: WeatherDrizzle, description: `Drizzle` },
+  301: { icon: WeatherDrizzle, description: `Drizzle...oh we love it` },
   302: { icon: WeatherDrizzle, description: `Heavy intensity drizzle` },
   310: { icon: WeatherDrizzle, description: `Light intensity drizzle rain` },
   311: { icon: WeatherDrizzle, description: `Drizzle rain` },
@@ -61,15 +61,15 @@ const info = computed(() => ({
   621: { icon: WeatherFrost, description: `Shower snow` },
   622: { icon: WeatherFrost, description: `Heavy shower snow` },
 
-  701: { icon: WeatherFog, description: `Mist` },
-  711: { icon: WeatherFog, description: `Smoke` },
-  721: { icon: WeatherFog, description: `Haze haze` },
+  701: { icon: WeatherFog, description: `Mist. Kinda creepy` },
+  711: { icon: WeatherFog, description: `Smokey fog out there` },
+  721: { icon: WeatherFog, description: `Hazey atmosphere` },
   731: { icon: WeatherFog, description: `Dust sand/dust whirls` },
   741: { icon: WeatherFog, description: `Dickensian style fog` },
   751: { icon: WeatherFog, description: `Sand from the Sahara maybe?` },
   761: { icon: WeatherFog, description: `Dust gettin' up in ya business` },
   762: { icon: WeatherFog, description: `Volcanic ash from distant lands` },
-  771: { icon: WeatherFog, description: `Beware of the squalls` },
+  771: { icon: WeatherFog, description: `Beware of the squalls!` },
   781: { icon: WeatherFog, description: `Tornado party time` },
 
   800: { icon: isNight.value ? WeatherMoon : WeatherSunny, description: `Clear skies out there.` },
