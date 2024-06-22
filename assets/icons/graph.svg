@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="318" fill="none">
+<path fill="url(#graph-gradient)" d="M50 204 0 134v184h700V134l-25-40-25-40-50-35-50 90-50-60-50 90-50-105-50 95-50-95-50-30-50 140-50-67.468L100 104 50 204Z"/><path stroke="#fff" stroke-linejoin="round" stroke-width="4" d="m0 134 50 70 50-100 50-27.468L200 144 250 4l50 30 50 95 50-95 50 105 50-90 50 60 50-90 50 35 25 40 25 40"/><path fill="#fff" d="M7 134a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/><circle cx="50" cy="202" r="7" fill="#fff"/><circle cx="100" cy="104" r="7" fill="#fff"/><circle cx="150" cy="78" r="7" fill="#fff"/><circle cx="200" cy="141" r="7" fill="#fff"/><circle cx="250" cy="7" r="7" fill="#fff"/><circle cx="300" cy="34" r="7" fill="#fff"/><circle cx="350" cy="126" r="7" fill="#fff"/><circle cx="400" cy="37" r="7" fill="#fff"/><circle cx="450" cy="137" r="7" fill="#fff"/><circle cx="500" cy="51" r="7" fill="#fff"/><circle cx="550" cy="106" r="7" fill="#fff"/><circle cx="600" cy="21" r="7" fill="#fff"/><circle cx="650" cy="54" r="7" fill="#fff"/><circle cx="700" cy="134" r="7" fill="#fff"/>
+
+<defs>
+<linearGradient id="graph-gradient" x1="350" x2="350" y1="86.632" y2="318" gradientUnits="userSpaceOnUse">
+<stop stop-color="#68FD82"/>
+<stop offset="1" stop-color="#B8FEC4" stop-opacity="0"/>
+</linearGradient>
+</defs>
+</svg>

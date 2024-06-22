@@ -96,7 +96,7 @@ export default {
       body: ['Greycliff CF', 'system-ui', 'sans-serif'],
     },
     fontSize: {
-      '12': ['0.75rem', { lineHeight: '1.2', letterSpacing: '-0.01em' }],
+      '12': ['0.75rem', { lineHeight: '1.2', letterSpacing: '-0.005em' }],
       '16': ['1rem', { lineHeight: '1.5', letterSpacing: '-0.01em' }],
       '18': ['1.125rem', { lineHeight: '1.4', letterSpacing: '-0.01em' }],
       '20': ['1.25rem', { lineHeight: '1.5', letterSpacing: '-0.01em' }],

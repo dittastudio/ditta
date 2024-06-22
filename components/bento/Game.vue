@@ -242,7 +242,7 @@ onMounted(() => {
 
   setCanvasSize()
 
-  container.value.addEventListener('resize', setCanvasSize)
+  window.addEventListener('resize', setCanvasSize)
 
   items.forEach((item, _index) => {
     const { width: itemWidth } = item.getBoundingClientRect()
@@ -274,7 +274,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  container.value?.removeEventListener('resize', setCanvasSize)
+  window.removeEventListener('resize', setCanvasSize)
 })
 </script>
 
