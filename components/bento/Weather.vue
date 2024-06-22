@@ -126,8 +126,7 @@ const { data, error, refresh } = await useAsyncData<WeatherResponse>(
   },
 )
 
-const isOpen = useNowIsBetween('09:00', '18:00')
-const classes = isOpen.value ? ['from-pink to-orange'] : ['from-purple-darker to-pink']
+const classes = isNight.value ? ['from-purple-darker to-pink'] : ['from-pink to-orange']
 
 let intervalRefresh: NodeJS.Timeout | undefined
 
