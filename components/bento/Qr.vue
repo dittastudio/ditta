@@ -12,7 +12,7 @@ const { block } = defineProps<Props>()
 <template>
   <div
     v-editable="block"
-    class="bg-blue flex flex-col justify-between h-full gap-10 py-10"
+    class="bg-blue flex flex-col justify-around h-full gap-[5px] py-10"
   >
     <ElementMarquee
       background-color="transparent"
