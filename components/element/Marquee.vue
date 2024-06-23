@@ -31,12 +31,20 @@ const textColorMap: any = {
 export interface Props {
   backgroundColor?: string
   textColor?: string
+  textSize?: 'bento' | 'large'
   copy: any[]
   duration?: string
   direction?: 'left' | 'right'
 }
 
-const { backgroundColor = 'offwhite', textColor = 'offblack', copy, direction = 'left', duration = '60s' } = defineProps<Props>()
+const {
+  backgroundColor = 'offwhite',
+  textColor = 'offblack',
+  textSize = 'large',
+  copy,
+  direction = 'left',
+  duration = '60s',
+} = defineProps<Props>()
 
 const container = ref()
 
@@ -73,10 +81,13 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
       class="block-marquee__wrapper"
     >
       <div
-        class="block-marquee__words text-fluid-lg uppercase"
-        :class="{ [`block-marquee__words--${direction}`]: direction }"
+        class="block-marquee__words uppercase select-none flex gap-[var(--gap)] min-w-full"
+        :class="[
+          textSize === 'bento' ? 'text-fluid-zero-sm sm:text-fluid-sm-md italic' : 'text-fluid-lg',
+          { [`block-marquee__words--${direction}`]: direction },
+        ]"
       >
-        <div class="block-marquee__group">
+        <div class="block-marquee__group will-change-transform flex shrink-0 gap-[var(--gap)] items-center justify-around min-w-full">
           <p
             v-for="(word, index) in multipleWords"
             :key="word"
@@ -88,7 +99,7 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
 
         <div
           aria-hidden="true"
-          class="block-marquee__group"
+          class="block-marquee__group  will-change-transform flex shrink-0 gap-[var(--gap)] items-center justify-around min-w-full"
         >
           <p
             v-for="word in multipleWords"
@@ -107,12 +118,6 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
   --duration: v-bind(duration);
   --gap: 0.5em;
 
-  user-select: none;
-
-  display: flex;
-  gap: var(--gap);
-
-  min-width: 100%;
   padding: 0.15em;
 
   &--left {
@@ -132,15 +137,6 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
 }
 
 .block-marquee__group {
-  will-change: translate;
-
-  display: flex;
-  flex-shrink: 0;
-  gap: var(--gap);
-  align-items: center;
-  justify-content: space-around;
-
-  min-width: 100%;
   margin-block: -0.088em -0.181em;
 
   .block-marquee__words--left & {

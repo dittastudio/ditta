@@ -72,6 +72,9 @@ const { block } = defineProps<Props>()
 
 <style lang="postcss" scoped>
 .bento-box__grid {
+  --ratio-portrait: 7 / 10;
+  --ratio-landscape: 3 / 2;
+
   display: grid;
   grid-auto-flow: dense;
   grid-template-columns: repeat(1, minmax(0, 1fr));
@@ -104,7 +107,7 @@ const { block } = defineProps<Props>()
   &:deep(> :nth-child(9n + 6)) {
     grid-column: span 1;
     grid-row: span 2;
-    aspect-ratio: 4 / 6;
+    aspect-ratio: var(--ratio-portrait);
   }
 
   &:deep(> :nth-child(9n + 2)),
@@ -113,38 +116,38 @@ const { block } = defineProps<Props>()
   &:deep(> :nth-child(9n + 9)) {
     grid-column: span 1;
     grid-row: span 1;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: var(--ratio-landscape);
   }
 
   &:deep(> :nth-child(9n + 3)) {
     grid-column: span 1;
     grid-row: span 2;
     aspect-ratio: 4 / 3;
+    aspect-ratio: var(--ratio-landscape);
 
     @screen sm {
       grid-column: span 2;
-      aspect-ratio: 6 / 4;
     }
   }
 
   &:deep(> :nth-child(9n + 8)) {
     grid-column: span 1;
     grid-row: span 2;
-    aspect-ratio: 4 / 6;
+    aspect-ratio: var(--ratio-portrait);
 
     @screen md {
       grid-row: span 1;
-      aspect-ratio: 4 / 3;
+      aspect-ratio: var(--ratio-landscape);
     }
 
     @screen xl {
       grid-row: span 2;
-      aspect-ratio: 4 / 6;
+      aspect-ratio: var(--ratio-portrait);
     }
 
     @screen 2xl {
       grid-row: span 1;
-      aspect-ratio: 4 / 3;
+      aspect-ratio: var(--ratio-landscape);
     }
   }
 }

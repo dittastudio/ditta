@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import Swiper from 'swiper'
 import type { SwiperOptions } from 'swiper/types'
-import { Autoplay, EffectFade, Keyboard, Navigation, Pagination } from 'swiper/modules'
+import { Autoplay, EffectFade, Keyboard, Pagination } from 'swiper/modules'
 
 interface Props {
   slides: any
@@ -53,14 +53,9 @@ const initSwiper = () => {
   }
 
   swiper.value = new Swiper(swiperEl.value, {
-    modules: [Autoplay, EffectFade, Keyboard, Navigation, Pagination],
+    modules: [Autoplay, EffectFade, Keyboard, Pagination],
     enabled: slides && slides.length > 1,
     speed: 500,
-    navigation: {
-      hideOnClick: true,
-      nextEl: next.value,
-      prevEl: prev.value,
-    },
     pagination: pagination
       ? {
           el: paginationEl.value,
@@ -121,7 +116,7 @@ watch(() => options, () => {
     ref="swiperEl"
     class="swiper select-none relative h-[inherit]"
   >
-    <div class="swiper-wrapper size-full flex transition-transform ease-out">
+    <div class="swiper-wrapper size-full hover:cursor-grab active:cursor-grabbing flex transition-transform ease-out">
       <div
         v-for="(slide, index) in slides"
         :key="index"
@@ -133,22 +128,6 @@ watch(() => options, () => {
         />
       </div>
     </div>
-
-    <button
-      ref="prev"
-      class="hover:cursor-w-resize absolute inset-y-0 left-0 w-1/2"
-      type="button"
-    >
-      <span class="sr-only">Prev</span>
-    </button>
-
-    <button
-      ref="next"
-      class="hover:cursor-e-resize absolute inset-y-0 right-0 w-1/2"
-      type="button"
-    >
-      <span class="sr-only">Next</span>
-    </button>
 
     <div class="bg-gradient-to-t from-black/50 to-black/0 pt-80 absolute inset-x-0 bottom-0 pointer-events-none">
       <div

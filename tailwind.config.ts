@@ -122,6 +122,24 @@ export default {
         }),
         { lineHeight: '1', letterSpacing: '-0.01em', fontWeight: '900' },
       ],
+      'fluid-zero-sm': [
+        clamp({
+          minPixels: 20,
+          minViewportWidthPixels: screenSizes.zero,
+          maxPixels: 80,
+          maxViewportWidthPixels: screenSizes.sm,
+        }),
+        { lineHeight: '1.1', letterSpacing: '-0.01em', fontWeight: '900' },
+      ],
+      'fluid-sm-md': [
+        clamp({
+          minPixels: 40,
+          minViewportWidthPixels: screenSizes.sm,
+          maxPixels: 50,
+          maxViewportWidthPixels: screenSizes['2xl'],
+        }),
+        { lineHeight: '1.1', letterSpacing: '-0.01em', fontWeight: '900' },
+      ],
     },
     lineHeight: {
       none: '1',
