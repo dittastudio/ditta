@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
 import type { BentoQrStoryblok } from '@/types/storyblok'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -2007,7 +2006,7 @@ onMounted(() => {
   </div>
 </template>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .qr path {
   opacity: 0;
 }
