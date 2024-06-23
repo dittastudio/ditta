@@ -148,7 +148,7 @@ onUnmounted(() => {
 <template>
   <div
     v-editable="block"
-    class="w-full h-full flex flex-col p-20 bg-gradient-to-t"
+    class="@container w-full h-full grid grid-cols-1 p-20 bg-gradient-to-t"
     :class="classes"
   >
     <h4 class="text-20 font-bold text-offblack">
@@ -175,7 +175,7 @@ onUnmounted(() => {
 
         <Component
           :is="info[data.weather.id as keyof typeof info].icon || WeatherSunshine"
-          class="w-full h-auto ml-auto"
+          class="w-3/4 @2xs:w-full h-auto ml-auto"
         />
       </div>
 
