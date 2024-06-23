@@ -148,7 +148,7 @@ onUnmounted(() => {
 <template>
   <div
     v-editable="block"
-    class="@container w-full h-full grid grid-cols-1 p-20 bg-gradient-to-t"
+    class="w-full h-full grid grid-cols-1 grid-rows-[26px_1fr_20px] p-20 bg-gradient-to-t"
     :class="classes"
   >
     <h4 class="text-20 font-bold text-offblack">
@@ -156,7 +156,7 @@ onUnmounted(() => {
     </h4>
 
     <template v-if="data">
-      <div class="grid grid-cols-2 gap-8 items-center">
+      <div class="grid grid-cols-2 gap-8 items-center overflow-hidden">
         <svg
           viewBox="0 0 100 50"
           xmlns="http://www.w3.org/2000/svg"
@@ -175,7 +175,7 @@ onUnmounted(() => {
 
         <Component
           :is="info[data.weather.id as keyof typeof info].icon || WeatherSunshine"
-          class="w-3/4 @2xs:w-full h-auto ml-auto"
+          class="w-full h-auto ml-auto"
         />
       </div>
 
