@@ -19,6 +19,8 @@ export const useNowIsBetween = (from = '09:00', to = '18:00') => {
     const timeMinutes = timeToMinutes(timeNow)
     const startMinutes = timeToMinutes(from)
     const endMinutes = timeToMinutes(to)
+    console.log('time now', timeNow)
+    console.log('minutes', startMinutes, endMinutes)
 
     if (endMinutes < startMinutes) {
       isBetween.value = timeMinutes >= startMinutes || timeMinutes <= endMinutes
