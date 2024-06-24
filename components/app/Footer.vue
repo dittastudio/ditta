@@ -59,7 +59,7 @@ const socialLinks = [
         </li>
       </ul>
 
-      <p class="text-12 max-w-[60ch] text-balance text-offwhite/20">
+      <p class="text-12 max-w-[40ch] text-balance text-offwhite/20">
         ditta ltd. is a company registered in England and Wales with company number 15648076.
       </p>
     </div>

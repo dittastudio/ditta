@@ -27,11 +27,12 @@ const classes = computed(() => ([colourText[block.colour], colourBackground[bloc
       <StoryblokLink
         v-if="block.link"
         :item="block.link[0].link"
-        class="mt-20"
+        class="md:mt-40 inline-block mt-20"
       >
         <ButtonAppearance
           text-color="offwhite"
           background-color="offblack"
+          size="large"
         >
           {{ block.link[0].title }}
         </ButtonAppearance>

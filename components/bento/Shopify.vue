@@ -36,7 +36,7 @@ const { block } = defineProps<Props>()
           {{ block.tagline }}
         </p>
 
-        <div class="mt-auto ml-auto">
+        <div class="self-end mt-auto">
           <ButtonAppearance
             text-color="offblack"
             background-color="green"
