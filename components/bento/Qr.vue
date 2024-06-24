@@ -17,7 +17,9 @@ onMounted(() => {
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: svg,
-        start: 'top 80%',
+        start: 'top 100%',
+        end: 'bottom 50%',
+        scrub: 1,
       },
     })
 
@@ -26,8 +28,9 @@ onMounted(() => {
       duration: 1,
       ease: 'power2.out',
       stagger: {
-        each: 0.005,
-        from: 'random',
+        grid: [1, 22],
+        each: 0.05,
+        from: 'start',
       },
     })
   })
