@@ -12,7 +12,7 @@ body {
 }
 
 ::selection {
-  color: theme('colors.offwhite');
+  color: theme('colors.offblack');
   background-color: theme('colors.pink');
 }
 

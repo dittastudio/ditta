@@ -21,7 +21,7 @@ useSeoMeta({
 </script>
 
 <template>
-  <div data-component="App">
+  <div>
     <AppHeader />
 
     <main>

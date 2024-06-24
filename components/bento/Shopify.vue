@@ -12,23 +12,43 @@ const { block } = defineProps<Props>()
 <template>
   <div
     v-editable="block"
-    class="@container relative w-full h-full bg-green p-20 text-offblack"
+    class="@container relative w-full h-full bg-green text-offblack"
   >
-    <h3 class="text-24 font-medium mb-4">
-      Shopify experts
-    </h3>
+    <StoryblokLink
+      :item="block.link"
+      class="block w-full h-full p-20"
+    >
+      <div
+        v-if="block.headline || block.tagline"
+        class="relative z-10 flex flex-col w-full h-full"
+      >
+        <h3
+          v-if="block.headline"
+          class="text-24 font-medium mb-4"
+        >
+          {{ block.headline }}
+        </h3>
 
-    <p class="text-green-darker text-12 font-bold">
-      Sell your products the right way
-    </p>
+        <p
+          v-if="block.tagline"
+          class="text-green-darker text-12 font-bold"
+        >
+          {{ block.tagline }}
+        </p>
 
-    <div class="translate-y-1/4 @2xs:translate-y-0 absolute bottom-0 left-0 z-0 w-full h-[318px] overflow-hidden">
-      <div class="graph flex flex-row w-[1400px] h-[318px]">
-        <IconGraph class="fill-none w-[700px] h-[318px]" />
-
-        <IconGraph class="fill-none w-[700px] h-[318px]" />
+        <ButtonAppearance class="backdrop-blur-[2px] bg-green-darker/50 text-white mt-auto flex gap-8 items-center justify-center">
+          Discover more <span>&rarr;</span>
+        </ButtonAppearance>
       </div>
-    </div>
+
+      <div class="translate-y-1/4 @2xs:translate-y-0 absolute bottom-0 left-0 z-0 w-full h-[318px] overflow-hidden">
+        <div class="graph flex flex-row w-[1400px] h-[318px]">
+          <IconGraph class="fill-none w-[700px] h-[318px]" />
+
+          <IconGraph class="fill-none w-[700px] h-[318px]" />
+        </div>
+      </div>
+    </StoryblokLink>
   </div>
 </template>
 

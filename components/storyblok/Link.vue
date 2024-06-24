@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-// import type { MultilinkStoryblok } from '@/types/storyblok'
+import type { MultilinkStoryblok } from '@/types/storyblok'
 
 interface Props {
-  item: any
+  item: MultilinkStoryblok | undefined
+  disabled?: boolean
 }
 
-const { item } = defineProps<Props>()
+const { item, disabled = false } = defineProps<Props>()
 
 const href
   = item?.linktype === 'email'
@@ -25,10 +26,15 @@ const attributes = {
   to: href?.trim().replace(/\/+$/, ''),
   target: item?.target ?? item?.linktype === 'asset' ? '_blank' : null,
 }
+
+const element = !item || disabled ? 'div' : resolveComponent('NuxtLink')
 </script>
 
 <template>
-  <NuxtLink data-component="StoryblokLink" v-bind="attributes">
+  <Component
+    :is="element"
+    v-bind="attributes"
+  >
     <slot />
-  </NuxtLink>
+  </Component>
 </template>
