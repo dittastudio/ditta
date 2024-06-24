@@ -183,7 +183,7 @@ export default {
       'fluid-vertical-rhythm': clamp({
         minPixels: 80,
         minViewportWidthPixels: screenSizes.xs,
-        maxPixels: 120,
+        maxPixels: 160,
         maxViewportWidthPixels: screenSizes['2xl'],
       }),
     },

@@ -61,9 +61,23 @@
       "name": "bento_instagram",
       "display_name": null,
       "created_at": "2024-06-18T16:43:31.126Z",
-      "updated_at": "2024-06-18T16:43:31.126Z",
+      "updated_at": "2024-06-23T22:11:43.478Z",
       "id": 5945639,
-      "schema": {},
+      "schema": {
+        "image": {
+          "type": "asset",
+          "pos": 0,
+          "required": true,
+          "filetypes": [
+            "images"
+          ]
+        },
+        "caption": {
+          "type": "text",
+          "pos": 1,
+          "required": true
+        }
+      },
       "image": null,
       "preview_field": null,
       "is_root": false,
