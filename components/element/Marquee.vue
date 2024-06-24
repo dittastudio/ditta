@@ -1,32 +1,9 @@
 <script setup lang="ts">
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { colourBackground, colourText } from '@/utilities/maps'
 
 gsap.registerPlugin(ScrollTrigger)
-
-const backgroundColorMap: any = {
-  black: 'bg-black',
-  offblack: 'bg-offblack',
-  white: 'bg-white',
-  offwhite: 'bg-offwhite',
-  grey: 'bg-grey',
-  blue: 'bg-blue',
-  pink: 'bg-pink',
-  orange: 'bg-orange',
-  green: 'bg-green',
-}
-
-const textColorMap: any = {
-  black: 'text-black',
-  offblack: 'text-offblack',
-  white: 'text-white',
-  offwhite: 'text-offwhite',
-  grey: 'text-grey',
-  blue: 'text-blue',
-  pink: 'text-pink',
-  orange: 'text-orange',
-  green: 'text-green',
-}
 
 export interface Props {
   backgroundColor?: string
@@ -74,7 +51,7 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
   <div
     v-if="copy"
     class="block-marquee transform-gpu backface-hidden contain-paint block w-full"
-    :class="[backgroundColorMap[backgroundColor], textColorMap[textColor]]"
+    :class="[colourBackground[backgroundColor], colourText[textColor]]"
   >
     <div
       ref="container"

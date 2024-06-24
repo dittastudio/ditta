@@ -68,7 +68,8 @@ export const colours = {
   'pink-darker': '#ED615E',
   'orange': '#FEDBB8',
   'orange-darker': '#FDB268',
-  'green': '#B8FEC4',
+  'green': '#90FA8B',
+  'green-lighter': '#B8FEC4',
   'green-darker': '#0EC32C',
   'purple': '#BEB8FE',
   'purple-darker': '#A38EF0',
@@ -239,11 +240,23 @@ export default {
       },
       typography: ({ theme }: { theme: any }) => ({
         light: {
-          '--tw-prose-body': theme('colors.offblack'),
+          css: {
+            '--tw-prose-body': theme('colors.offblack'),
+          },
         },
         dark: {
           css: {
             '--tw-prose-body': theme('colors.offwhite'),
+          },
+        },
+        default: {
+          css: {
+            '--tw-prose-body': 'currentColor',
+          },
+        },
+        example: {
+          css: {
+            // '--tw-prose-body': theme('colors.offwhite'),
             // '--tw-prose-headings': theme('colors.pink[900]'),
             // '--tw-prose-lead': theme('colors.pink[700]'),
             // '--tw-prose-links': theme('colors.pink[900]'),

@@ -161,6 +161,15 @@ export interface BlockBentoBoxStoryblok {
   [k: string]: any;
 }
 
+export interface BlockHeroTextStoryblok {
+  text: RichtextStoryblok;
+  colour: number | string;
+  background: number | string;
+  _uid: string;
+  component: "block_hero_text";
+  [k: string]: any;
+}
+
 export interface BlockMarqueesStoryblok {
   words?: WordStoryblok[];
   _uid: string;
@@ -190,14 +199,24 @@ export interface BlockTextStoryblok {
   text: RichtextStoryblok;
   colour: number | string;
   background: number | string;
+  link?: ButtonStoryblok[];
   _uid: string;
   component: "block_text";
+  [k: string]: any;
+}
+
+export interface ButtonStoryblok {
+  title?: string;
+  link?: Exclude<MultilinkStoryblok, {linktype?: "email"} | {linktype?: "asset"}>;
+  _uid: string;
+  component: "button";
   [k: string]: any;
 }
 
 export interface PageStoryblok {
   blocks?: (
     | BlockBentoBoxStoryblok
+    | BlockHeroTextStoryblok
     | BlockMarqueesStoryblok
     | BlockMediaStoryblok
     | BlockStudiosStoryblok

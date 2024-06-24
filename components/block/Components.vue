@@ -19,6 +19,16 @@ const { content } = defineProps<Props>()
         :block="block"
       />
 
+      <BlockHeroText
+        v-else-if="block.component === 'block_hero_text'"
+        :block="block"
+      />
+
+      <BlockMarquees
+        v-else-if="block.component === 'block_marquees'"
+        :block="block"
+      />
+
       <BlockMedia
         v-else-if="block.component === 'block_media'"
         :block="block"
@@ -31,11 +41,6 @@ const { content } = defineProps<Props>()
 
       <BlockText
         v-else-if="block.component === 'block_text'"
-        :block="block"
-      />
-
-      <BlockMarquees
-        v-else-if="block.component === 'block_marquees'"
         :block="block"
       />
     </section>

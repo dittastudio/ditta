@@ -34,6 +34,7 @@ const element = !item || disabled ? 'div' : resolveComponent('NuxtLink')
   <Component
     :is="element"
     v-bind="attributes"
+    class="block"
   >
     <slot />
   </Component>

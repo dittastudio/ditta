@@ -383,6 +383,60 @@
       "component_group_name": "Blocks"
     },
     {
+      "name": "block_hero_text",
+      "display_name": "",
+      "created_at": "2024-06-18T12:17:53.304Z",
+      "updated_at": "2024-06-24T17:28:43.230Z",
+      "id": 5943920,
+      "schema": {
+        "text": {
+          "type": "richtext",
+          "pos": 0,
+          "required": true,
+          "customize_toolbar": true,
+          "toolbar": [
+            "bold",
+            "link",
+            "italic",
+            "anchor"
+          ]
+        },
+        "colour": {
+          "type": "option",
+          "pos": 1,
+          "use_uuid": true,
+          "required": true,
+          "source": "internal",
+          "datasource_slug": "colours",
+          "exclude_empty_option": true
+        },
+        "background": {
+          "type": "option",
+          "pos": 2,
+          "use_uuid": true,
+          "required": true,
+          "source": "internal",
+          "datasource_slug": "colours",
+          "exclude_empty_option": true
+        }
+      },
+      "image": null,
+      "preview_field": null,
+      "is_root": false,
+      "preview_tmpl": null,
+      "is_nestable": true,
+      "all_presets": [],
+      "preset_id": null,
+      "real_name": "block_hero_text",
+      "component_group_uuid": "c56a9133-c409-488d-9f91-40d75d6e78cd",
+      "color": null,
+      "icon": null,
+      "internal_tags_list": [],
+      "internal_tag_ids": [],
+      "content_type_asset_preview": null,
+      "component_group_name": "Blocks"
+    },
+    {
       "name": "block_marquees",
       "display_name": null,
       "created_at": "2024-06-21T16:03:15.364Z",
@@ -531,9 +585,9 @@
     {
       "name": "block_text",
       "display_name": null,
-      "created_at": "2024-06-18T12:17:53.304Z",
-      "updated_at": "2024-06-18T13:35:13.880Z",
-      "id": 5943920,
+      "created_at": "2024-06-24T17:22:15.617Z",
+      "updated_at": "2024-06-24T17:50:41.876Z",
+      "id": 5970068,
       "schema": {
         "text": {
           "type": "richtext",
@@ -552,7 +606,8 @@
             "italic",
             "anchor",
             "paragraph"
-          ]
+          ],
+          "key": "text"
         },
         "colour": {
           "type": "option",
@@ -561,7 +616,8 @@
           "required": true,
           "source": "internal",
           "datasource_slug": "colours",
-          "exclude_empty_option": true
+          "exclude_empty_option": true,
+          "key": "colour"
         },
         "background": {
           "type": "option",
@@ -570,7 +626,21 @@
           "required": true,
           "source": "internal",
           "datasource_slug": "colours",
-          "exclude_empty_option": true
+          "exclude_empty_option": true,
+          "key": "background"
+        },
+        "link": {
+          "type": "bloks",
+          "pos": 3,
+          "restrict_type": "",
+          "restrict_components": true,
+          "component_whitelist": [
+            "button"
+          ],
+          "minimum": 1,
+          "maximum": 1,
+          "display_name": "Link",
+          "key": "button"
         }
       },
       "image": null,
@@ -588,6 +658,38 @@
       "internal_tag_ids": [],
       "content_type_asset_preview": null,
       "component_group_name": "Blocks"
+    },
+    {
+      "name": "button",
+      "display_name": null,
+      "created_at": "2024-06-24T17:31:14.248Z",
+      "updated_at": "2024-06-24T17:32:47.320Z",
+      "id": 5970106,
+      "schema": {
+        "title": {
+          "type": "text",
+          "pos": 0
+        },
+        "link": {
+          "type": "multilink",
+          "pos": 1
+        }
+      },
+      "image": null,
+      "preview_field": null,
+      "is_root": false,
+      "preview_tmpl": null,
+      "is_nestable": true,
+      "all_presets": [],
+      "preset_id": null,
+      "real_name": "button",
+      "component_group_uuid": "a4bb317a-f2a8-450c-95ee-324278de45c2",
+      "color": null,
+      "icon": null,
+      "internal_tags_list": [],
+      "internal_tag_ids": [],
+      "content_type_asset_preview": null,
+      "component_group_name": "Elements"
     },
     {
       "name": "page",

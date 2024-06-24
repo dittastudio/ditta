@@ -163,34 +163,34 @@ onUnmounted(() => {
   >
     <canvas
       ref="equalizer"
-      class="absolute inset-0 z-0 w-full h-full pointer-events-none opacity-50"
+      class="absolute inset-0 z-0 w-full h-full opacity-50 pointer-events-none"
     />
 
     <button
       v-show="!playing"
       ref="play"
       type="button"
-      class="p-20 absolute right-0 bottom-0 z-50"
+      class="absolute bottom-0 right-0 z-50 p-20"
     >
       <span class="sr-only">Play</span>
 
-      <IconPlay class="w-20 h-20 block" />
+      <IconPlay class="block w-20 h-20" />
     </button>
 
     <button
       v-show="playing"
       ref="pause"
       type="button"
-      class="p-20 absolute right-0 bottom-0 z-50"
+      class="absolute bottom-0 right-0 z-50 p-20"
     >
       <span class="sr-only">Pause</span>
 
-      <IconPause class="w-20 h-20 block" />
+      <IconPause class="block w-20 h-20" />
     </button>
 
     <button
       type="button"
-      class="absolute inset-32 z-20"
+      class="inset-32 absolute z-20"
       @click="listingVisible = true"
     >
       <ElementVinyl
@@ -199,7 +199,7 @@ onUnmounted(() => {
       />
     </button>
 
-    <p class="absolute z-50 left-20 bottom-16 text-12 font-bold text-offblack">
+    <p class="left-20 bottom-16 text-12 text-offblack absolute z-50 font-bold">
       <template v-if="track">
         {{ track.name }}
       </template>
@@ -214,12 +214,12 @@ onUnmounted(() => {
     </p>
 
     <div
-      class="absolute inset-10 z-50 bg-offblack rounded-xl grid grid-cols-2 items-center p-20 opacity-0 pointer-events-none transition-opacity duration-300"
+      class="inset-10 bg-offblack rounded-xl absolute z-50 grid items-center grid-cols-2 p-20 transition-opacity duration-300 opacity-0 pointer-events-none"
       :class="{ 'opacity-100 pointer-events-auto': listingVisible }"
     >
       <button
         type="button"
-        class="p-20 absolute left-0 top-0 z-50 opacity-50 transition-opacity duration-300 hover:opacity-100 focus:opacity-100"
+        class="hover:opacity-100 focus:opacity-100 absolute top-0 left-0 z-50 p-20 transition-opacity duration-300 opacity-50"
         @click="listingVisible = false"
       >
         <span class="sr-only">Close Playlist</span>
@@ -239,7 +239,7 @@ onUnmounted(() => {
             @click="setTrack(item)"
           >
             <span
-              class="rounded-full w-8 h-8 block"
+              class="block w-8 h-8 rounded-full"
               :class="`${track?.path === item.path ? 'bg-green' : 'bg-white/50'}`"
             />
             {{ item.name }}
@@ -251,12 +251,12 @@ onUnmounted(() => {
         <input
           type="file"
           accept="audio/*"
-          class="absolute left-1/2 -translate-x-1/2 block w-50 h-50 cursor-pointer opacity-0"
+          class="input left-1/2 absolute block w-full h-full -translate-x-1/2 opacity-0 cursor-pointer"
           title="Select your own music"
           @change="setFile"
         >
 
-        <div class="w-50 h-50 bg-green rounded-full flex flex-col items-center justify-center p-10">
+        <div class="w-50 h-50 bg-green flex flex-col items-center justify-center p-10 rounded-full">
           <IconCross class="size-full text-offblack" />
         </div>
       </div>
@@ -277,5 +277,9 @@ onUnmounted(() => {
 
 .vinyl {
   animation: spin 5s linear infinite;
+}
+
+.input::-webkit-file-upload-button {
+  cursor: pointer;
 }
 </style>
