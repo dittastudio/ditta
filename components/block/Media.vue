@@ -17,10 +17,7 @@ const assetType = computed(() => storyblokAssetType(block.media?.filename || '')
       class="block-media__media"
       :asset="block.media"
       :ratio="block.ratio"
-      sizes="
-        100vw
-        sm:100vw
-      "
+      sizes="100vw sm:100vw md:100vw lg:100vw xl:100vw 2xl:100vw 3xl:100vw"
     />
 
     <MediaVideo

@@ -112,8 +112,10 @@ const imgAttrs = computed(() => ({
 
   isolation: isolate;
   position: relative;
+
   overflow: hidden;
   display: block;
+
   width: 100%;
   height: inherit;
 
@@ -125,8 +127,10 @@ const imgAttrs = computed(() => ({
       position: absolute;
       z-index: 1;
       inset: 0;
+
       backface-visibility: hidden;
       opacity: 0;
+
       transition: opacity var(--transition-duration) theme('transitionTimingFunction.out');
     }
 
@@ -137,11 +141,14 @@ const imgAttrs = computed(() => ({
 
   &__placeholder {
     pointer-events: none;
+
     width: 100%;
     height: auto;
+
     backface-visibility: hidden;
     opacity: 1;
     filter: blur(8px);
+
     transition: opacity calc(var(--transition-duration) * 2) theme('transitionTimingFunction.out') calc(var(--transition-duration) / 2);
 
     .media-image__asset.is-loaded + & {

@@ -23,7 +23,7 @@ useIntersectionObserver(
 const swiperOptions = computed<SwiperOptions>(() => ({
   effect: 'fade',
   loop: true,
-  // autoplay: isVisible.value ? { delay: 3000, pauseOnMouseEnter: true } : false,
+  autoplay: isVisible.value ? { delay: 3000, pauseOnMouseEnter: true } : false,
   keyboard: {
     enabled: true,
   },
@@ -45,11 +45,7 @@ const swiperOptions = computed<SwiperOptions>(() => ({
           v-if="slide.filename"
           class="[&>img]:object-cover [&>img]:!h-full"
           :asset="slide"
-          sizes="
-            100vw
-            sm:100vw
-            2xl:100vw
-          "
+          sizes="100vw sm:66vw md:66vw lg:50vw xl:50vw 2xl:40vw 3xl:40vw"
         />
       </template>
     </UiSlider>
