@@ -21,7 +21,7 @@ const classes = computed(() => ([colourText[block.colour], colourBackground[bloc
       <StoryblokRichText
         v-if="storyblokRichTextContent(block.text)"
         :content="block.text"
-        class="prose-p:text-16 prose-p:md:text-18 prose-headings:text-24 prose-headings:md:text-40 prose-default"
+        class="prose-p:text-24 prose-p:opacity-50 prose-headings:text-fluid-md prose-default"
       />
 
       <StoryblokLink
@@ -43,6 +43,12 @@ const classes = computed(() => ([colourText[block.colour], colourBackground[bloc
 
 <style lang="postcss" scoped>
 .block-text {
+  & :deep(:is(h1, h2, h3, h4, h5, h6)) {
+    max-width: 30ch;
+    margin-inline: auto;
+    text-wrap: balance;
+  }
+
   & :deep(p) {
     max-width: 60ch;
     margin-inline: auto;
