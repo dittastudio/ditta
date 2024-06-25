@@ -43,16 +43,16 @@ onMounted(() => {
     class="bg-blue flex flex-col justify-around h-full gap-[5px] py-10"
   >
     <ElementMarquee
+      v-if="block.marquee_top"
       background-color="transparent"
       text-color="offblack"
       text-size="bento"
-      :copy="['Follow us']"
+      :copy="[block.marquee_top]"
       duration="60s"
       direction="right"
     />
 
     <div class="px-20">
-      <!-- <IconDittaQr class="w-full h-auto" /> -->
       <svg
         width="270"
         height="270"
@@ -1999,10 +1999,11 @@ onMounted(() => {
     </div>
 
     <ElementMarquee
+      v-if="block.marquee_bottom"
       background-color="transparent"
       text-color="offblack"
       text-size="bento"
-      :copy="['Worship us']"
+      :copy="[block.marquee_bottom]"
       duration="60s"
       direction="left"
     />
