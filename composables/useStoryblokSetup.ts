@@ -17,7 +17,7 @@ export const useStoryblokSetup = async <T extends Seo>(story: Ref<ISbStoryData<T
   }
 
   const seo = story.value.content?.seo?.[0]
-  const { title, description, image } = seo || {}
+  const { seo_title: title, seo_description: description, seo_image: image } = seo || {}
 
   useSeoMeta({
     title: title ?? story.value.name,
