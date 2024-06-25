@@ -9,7 +9,7 @@ export interface Props {
   backgroundColor?: string
   textColor?: string
   textSize?: 'bento' | 'large'
-  copy: any[]
+  copy: string[]
   duration?: string
   direction?: 'left' | 'right'
 }
@@ -18,7 +18,7 @@ const {
   backgroundColor = 'offwhite',
   textColor = 'offblack',
   textSize = 'large',
-  copy,
+  copy = [],
   direction = 'left',
   duration = '60s',
 } = defineProps<Props>()
@@ -44,7 +44,7 @@ onMounted(() => {
   gsap.set(container.value, { transformOrigin: 'right center', force3D: true })
 })
 
-const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy, ...copy, ...copy, ...copy]
+const multipleWords: string[] = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy, ...copy, ...copy, ...copy]
 </script>
 
 <template>
