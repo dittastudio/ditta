@@ -151,6 +151,8 @@ onUnmounted(() => {
       Londinium
     </h4>
 
+    <p>isNight: {{ isNight }}</p>
+
     <template v-if="data">
       <div class="grid grid-cols-2 gap-8 items-center overflow-hidden">
         <svg

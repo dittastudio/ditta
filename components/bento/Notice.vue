@@ -54,6 +54,8 @@ const classes = [
       {{ block.times }}
     </p>
 
+    <p>isOpen {{ isOpen }}</p>
+
     <ElementIndicator
       :on="isOpen"
       class="w-10/12 max-w-[180px] m-auto"
