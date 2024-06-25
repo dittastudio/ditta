@@ -39,7 +39,7 @@ const { block } = defineProps<Props>()
         <div class="self-end mt-auto">
           <ButtonAppearance
             text-color="offblack"
-            background-color="green"
+            background-color="green-darker"
             class="shadow-green-darker/50 shadow-sm"
           >
             <span class="flex items-center justify-center gap-8">
