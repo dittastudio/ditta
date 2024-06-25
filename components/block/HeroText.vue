@@ -30,7 +30,7 @@ const classes = [colourText[block.colour], colourBackground[block.background]]
 <style lang="postcss" scoped>
 .block-hero-text {
   & :deep(p) {
-    max-width: 60ch;
+    max-width: 30ch;
     text-wrap: balance;
   }
 
