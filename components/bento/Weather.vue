@@ -12,9 +12,17 @@ import WeatherSunny from '@/assets/icons/weather/sunny.svg'
 import WeatherSunshine from '@/assets/icons/weather/sunshine.svg'
 import WeatherThunder from '@/assets/icons/weather/thunder.svg'
 
-// https://openweathermap.org/weather-conditions
+interface Props {
+  block: BentoWeatherStoryblok
+}
 
-const isNight = useNowIsBetween('21:00', '23:59')
+const { block } = defineProps<Props>()
+const runtimeConfig = useRuntimeConfig()
+const latitude = 51.509865
+const longitude = -0.118092
+const payload = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${runtimeConfig.public.WEATHER_API_KEY}&units=metric`
+const isNight = useNowIsBetween('21:00', '23:59') // https://openweathermap.org/weather-conditions
+const classes = computed(() => isNight.value ? 'from-purple-darker to-pink' : 'from-pink to-orange')
 
 const info = computed(() => ({
   200: { icon: WeatherThunder, description: `Thunderstorm with light rain` },
@@ -79,16 +87,6 @@ const info = computed(() => ({
   804: { icon: WeatherCloudy, description: `That classic British overcast` },
 }))
 
-interface Props {
-  block: BentoWeatherStoryblok
-}
-
-const { block } = defineProps<Props>()
-const runtimeConfig = useRuntimeConfig()
-const latitude = 51.509865
-const longitude = -0.118092
-const payload = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${runtimeConfig.public.WEATHER_API_KEY}&units=metric`
-
 interface WeatherMain {
   feels_like: number
   humidity: number
@@ -125,8 +123,6 @@ const { data, error, refresh } = await useAsyncData<WeatherResponse>(
     }),
   },
 )
-
-const classes = isNight.value ? ['from-purple-darker to-pink'] : ['from-pink to-orange']
 
 let intervalRefresh: NodeJS.Timeout | undefined
 
@@ -175,7 +171,7 @@ onUnmounted(() => {
 
         <Component
           :is="info[data.weather.id as keyof typeof info].icon || WeatherSunshine"
-          class="w-full h-auto ml-auto"
+          class="w-auto h-full ml-auto"
         />
       </div>
 
