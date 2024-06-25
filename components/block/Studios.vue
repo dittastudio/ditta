@@ -21,7 +21,7 @@ const { block } = defineProps<Props>()
         <StoryblokRichText
           v-if="storyblokRichTextContent(block.text)"
           :content="block.text"
-          class="richtext prose-light prose-headings:max-w-[60ch] prose-headings:text-balance prose-h1:text-fluid-md prose-p:opacity-50 prose-p:text-18 prose-p:md:text-24"
+          class="richtext prose-light prose-headings:max-w-[60ch] prose-headings:text-balance prose-h1:text-fluid-md prose-p:opacity-50 prose-p:text-18 prose-p:md:text-24 prose-p:max-w-[35ch]"
         />
 
         <ul v-if="block.studios?.length">
