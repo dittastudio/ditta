@@ -195,9 +195,20 @@
       "name": "bento_qr",
       "display_name": null,
       "created_at": "2024-06-18T16:42:46.247Z",
-      "updated_at": "2024-06-18T16:42:46.247Z",
+      "updated_at": "2024-06-25T10:40:24.556Z",
       "id": 5945637,
-      "schema": {},
+      "schema": {
+        "marquee_top": {
+          "type": "text",
+          "pos": 0,
+          "required": true
+        },
+        "marquee_bottom": {
+          "type": "text",
+          "pos": 1,
+          "required": true
+        }
+      },
       "image": null,
       "preview_field": null,
       "is_root": false,

@@ -99,6 +99,8 @@ export interface BentoNoticeStoryblok {
 }
 
 export interface BentoQrStoryblok {
+  marquee_top: string;
+  marquee_bottom: string;
   _uid: string;
   component: "bento_qr";
   [k: string]: any;
