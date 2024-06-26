@@ -26,10 +26,6 @@ export const useNowIsBetween = (from = '09:00', to = '18:00') => {
     else {
       isBetween.value = timeMinutes >= startMinutes && timeMinutes <= endMinutes
     }
-
-    console.log('time now', timeNow)
-    console.log('minutes', timeMinutes, startMinutes, endMinutes)
-    console.log(`${timeNow} is between ${from} ${to}? `, isBetween.value)
   }
 
   setBetween()

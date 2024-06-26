@@ -22,7 +22,6 @@ const latitude = 51.509865
 const longitude = -0.118092
 const payload = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${runtimeConfig.public.WEATHER_API_KEY}&units=metric`
 const isNight = useNowIsBetween('21:00', '23:59') // https://openweathermap.org/weather-conditions
-const classes = computed(() => isNight.value ? 'from-purple-darker to-pink' : 'from-pink to-orange')
 
 const info = computed(() => ({
   200: { icon: WeatherThunder, description: `Thunderstorm with light rain` },
@@ -145,13 +144,11 @@ onUnmounted(() => {
   <div
     v-editable="block"
     class="w-full h-full grid grid-cols-1 grid-rows-[26px_1fr_20px] p-20 bg-gradient-to-t"
-    :class="classes"
+    :class="isNight ? 'from-purple-darker to-pink' : 'from-pink to-orange'"
   >
     <h4 class="text-20 font-bold text-offblack">
       Londinium
     </h4>
-
-    <p>isNight: {{ isNight }}</p>
 
     <template v-if="data">
       <div class="grid grid-cols-2 gap-8 items-center overflow-hidden">
