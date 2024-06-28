@@ -1,8 +1,8 @@
 [dev]
-  functions = "./functions"
+  functions = "netlify/functions"
 
 [build]
-  functions = "./functions"
+  functions = "netlify/functions"
 
 [functions]
   node_bundler = "esbuild"
