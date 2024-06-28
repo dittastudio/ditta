@@ -21,7 +21,7 @@ const runtimeConfig = useRuntimeConfig()
 const latitude = 51.509865
 const longitude = -0.118092
 const payload = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${runtimeConfig.public.WEATHER_API_KEY}&units=metric`
-const isNight = useNowIsBetween('21:00', '23:59') // https://openweathermap.org/weather-conditions
+const isNight = useNowIsBetween('21:00', '05:00') // https://openweathermap.org/weather-conditions
 
 const info = computed(() => ({
   200: { icon: WeatherThunder, description: `Thunderstorm with light rain` },
