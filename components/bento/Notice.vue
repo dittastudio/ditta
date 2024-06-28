@@ -7,7 +7,7 @@ interface Props {
 }
 
 const { block } = defineProps<Props>()
-const isOpen = useNowIsBetween('20:00', '23:28')
+const isOpen = useNowIsBetween('09:00', '18:00')
 
 const classes = [
   'prose-headings:text-white',
@@ -53,8 +53,6 @@ const classes = [
     >
       {{ block.times }}
     </p>
-
-    <p>isOpen {{ isOpen }}</p>
 
     <ElementIndicator
       :on="isOpen"
