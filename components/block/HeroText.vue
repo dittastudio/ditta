@@ -8,7 +8,7 @@ interface Props {
 }
 
 const { block } = defineProps<Props>()
-const classes = [colourText[block.colour], colourBackground[block.background]]
+const classes = computed(() => [colourText[block.colour], colourBackground[block.background]])
 </script>
 
 <template>
