@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import IconDitta from '@/assets/icons/ditta.svg'
+
 definePageMeta({
   layout: false,
 })
@@ -12,8 +14,6 @@ interface Props {
 
 const { error } = defineProps<Props>()
 
-console.log(error)
-
 useHead({
   title:
     error?.statusCode && error?.statusMessage
@@ -23,25 +23,27 @@ useHead({
 </script>
 
 <template>
-  <div class="w-full h-screen flex items-center justify-center px-4 sm:px-6 py-24">
-    <div class="w-full max-w-md flex flex-col items-center justify-center gap-8 text-center">
+  <div class="w-full h-screen flex items-center justify-center">
+    <div class="w-full max-w-md flex flex-col items-center justify-center gap-40 text-center">
       <h1>
         <a
           href="/"
           class="block"
-        >ditta</a>
+        >
+          <IconDitta class="block w-full max-w-[100px] h-auto text-pink" />
+        </a>
       </h1>
 
-      <p class="text-24">
-        Sorry, the page you were looking for couldn't be found. It may have been moved or deleted.
+      <p class="text-24 text-balance">
+        Uh oh, the page you were looking for couldn't be found.
       </p>
 
       <p>
         <a
           href="/"
-          class="block"
+          class="block text-pink"
         >
-          Back to home
+          Andiamo a casa mia <span>&rarr;</span>
         </a>
       </p>
     </div>

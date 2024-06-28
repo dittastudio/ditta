@@ -16,7 +16,7 @@ const {
 
 const classes = computed(() => {
   return [
-    'relative isolate w-[inherit] inline-flex items-center justify-center rounded-lg font-medium text-center capitalize',
+    'relative isolate w-[inherit] inline-flex items-center justify-center rounded-lg font-medium text-center',
     'before:absolute before:inset-0 before:bg-white/10 before:opacity-0 before:-z-1 before:rounded-[inherit]',
     'before:transition-opacity before:duration-200 before:ease-smooth',
     'group-hover/link:before:opacity-100 group-active/link:before:opacity-0',
