@@ -103,7 +103,7 @@ export default defineNuxtConfig({
   site: {
     url: 'https://ditta.studio',
   },
-  ssr: process.env.NUXT_SSR === 'true',
+  ssr: true,
   tailwindcss: {
     cssPath: '@/assets/css/app.css',
   },

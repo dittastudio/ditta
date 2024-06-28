@@ -13,8 +13,6 @@ const { slides, pagination = true, options } = defineProps<Props>()
 
 const swiper = ref<Swiper>()
 const swiperEl = ref<HTMLDivElement | null>(null)
-const prev = ref<HTMLButtonElement | null>(null)
-const next = ref<HTMLButtonElement | null>(null)
 const paginationEl = ref<HTMLDivElement | null>(null)
 const bulletTotal = 5
 const bulletsVisible = 2
@@ -62,10 +60,12 @@ const initSwiper = () => {
           clickable: true,
           bulletClass: 'ui-carousel__bullet',
           bulletActiveClass: 'ui-carousel__bullet--is-active',
-          renderBullet(_, className) {
+          renderBullet(index, className) {
             return `
               <button type="button" class="${className}">
-                <span class="ui-carousel__dot block bg-current rounded-full"></span>
+                <span class="ui-carousel__dot block bg-current rounded-full">
+                  <span class="sr-only">Slide ${index + 1}</span>
+                </span>
               </button>
             `
           },
