@@ -193,6 +193,8 @@ onUnmounted(() => {
       class="inset-32 absolute z-20"
       @click="listingVisible = true"
     >
+      <span class="sr-only">Open Playlist</span>
+
       <ElementVinyl
         ref="vinyl"
         class="vinyl size-full"
