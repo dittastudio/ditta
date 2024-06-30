@@ -126,11 +126,9 @@ const { data, error, refresh } = await useAsyncData<WeatherResponse>(
 let intervalRefresh: NodeJS.Timeout | undefined
 
 onMounted(() => {
-  refresh()
-
   intervalRefresh = setInterval(() => {
     refresh()
-  }, 60 * 1000)
+  }, (60 * 5) * 1000)
 })
 
 onUnmounted(() => {
