@@ -168,7 +168,7 @@ onUnmounted(() => {
 
         <Component
           :is="info[data.weather.id as keyof typeof info].icon || WeatherSunshine"
-          class="w-auto h-full ml-auto"
+          class="w-full h-full ml-auto"
         />
       </div>
 
