@@ -158,6 +158,7 @@ export interface BlockBentoBoxStoryblok {
   )[];
   colour: number | string;
   background: number | string;
+  hidden?: boolean;
   _uid: string;
   component: "block_bento_box";
   [k: string]: any;
@@ -167,6 +168,7 @@ export interface BlockHeroTextStoryblok {
   text: RichtextStoryblok;
   colour: number | string;
   background: number | string;
+  hidden?: boolean;
   _uid: string;
   component: "block_hero_text";
   [k: string]: any;
@@ -174,6 +176,7 @@ export interface BlockHeroTextStoryblok {
 
 export interface BlockMarqueesStoryblok {
   words?: WordStoryblok[];
+  hidden?: boolean;
   _uid: string;
   component: "block_marquees";
   [k: string]: any;
@@ -182,6 +185,7 @@ export interface BlockMarqueesStoryblok {
 export interface BlockMediaStoryblok {
   media: AssetStoryblok;
   ratio: number | string;
+  hidden?: boolean;
   _uid: string;
   component: "block_media";
   [k: string]: any;
@@ -192,6 +196,7 @@ export interface BlockStudiosStoryblok {
   studios?: StudioStoryblok[];
   colour: number | string;
   background: number | string;
+  hidden?: boolean;
   _uid: string;
   component: "block_studios";
   [k: string]: any;
@@ -202,6 +207,7 @@ export interface BlockTextStoryblok {
   colour: number | string;
   background: number | string;
   link?: ButtonStoryblok[];
+  hidden?: boolean;
   _uid: string;
   component: "block_text";
   [k: string]: any;
