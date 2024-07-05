@@ -1,279 +1,204 @@
 <script lang="ts" setup>
 import type { BentoGameStoryblok } from '@/types/storyblok'
+import { colours } from '@/tailwind.config'
 
 interface Props {
   block: BentoGameStoryblok
 }
 
-interface Velocity {
-  x: number
-  y: number
-}
-
 const { block } = defineProps<Props>()
 const container = ref<HTMLDivElement | null>(null)
 const audio = ref<HTMLAudioElement | null>(null)
-const itemRefs = ref<HTMLDivElement[]>([])
-const circles: any = []
-
-let timeoutResize: ReturnType<typeof setTimeout>
-let w = 0
-let h = 0
-
-const rotate = (velocity: Velocity, angle: number) => {
-  const rotatedVelocities = {
-    x: velocity.x * Math.cos(angle) - velocity.y * Math.sin(angle),
-    y: velocity.x * Math.sin(angle) + velocity.y * Math.cos(angle),
-  }
-
-  return rotatedVelocities
-}
-
-const resolveCollision = (particle: any, otherParticle: any) => {
-  const xVelocityDiff = particle.velocity.x - otherParticle.velocity.x
-  const yVelocityDiff = particle.velocity.y - otherParticle.velocity.y
-
-  const xDist = otherParticle.x - particle.x
-  const yDist = otherParticle.y - particle.y
-
-  // Prevent accidental overlap of particles
-  if (xVelocityDiff * xDist + yVelocityDiff * yDist >= 0) {
-    // Grab angle between the two colliding particles
-    const angle = -Math.atan2(otherParticle.y - particle.y, otherParticle.x - particle.x)
-
-    // Store mass in var for better readability in collision equation
-    const m1 = particle.mass
-    const m2 = otherParticle.mass
-
-    // Velocity before equation
-    const u1 = rotate(particle.velocity, angle)
-    const u2 = rotate(otherParticle.velocity, angle)
-
-    // Velocity after 1d collision equation
-    const v1 = { x: u1.x * (m1 - m2) / (m1 + m2) + u2.x * 2 * m2 / (m1 + m2), y: u1.y }
-    const v2 = { x: u2.x * (m1 - m2) / (m1 + m2) + u1.x * 2 * m2 / (m1 + m2), y: u2.y }
-
-    // Final velocity after rotating axis back to original location
-    const vFinal1 = rotate(v1, -angle)
-    const vFinal2 = rotate(v2, -angle)
-
-    // Swap particle velocities for realistic bounce effect
-    particle.velocity.x = vFinal1.x
-    particle.velocity.y = vFinal1.y
-
-    otherParticle.velocity.x = vFinal2.x
-    otherParticle.velocity.y = vFinal2.y
-  }
-}
-
-const objectCollision = (aX: number, aY: number, aR: number, bX: number, bY: number, bR: number) => {
-  const dx = aX - bX
-  const dy = aY - bY
-  const distance = Math.sqrt(dx * dx + dy * dy)
-
-  return (distance < aR + bR)
-}
-
-const setPosition = (radius: number): Velocity => {
-  const x = Math.random() * (w - radius * 2)
-  const y = Math.random() * (h - radius * 2)
-
-  for (const circle of circles) {
-    if (objectCollision(x, y, radius, circle.x, circle.y, circle.radius)) {
-      console.log('there was a collion, try again')
-      return setPosition(radius)
-    }
-  }
-
-  return { x, y }
-}
-
-const setCanvasSize = () => {
-  if (!container.value) {
-    return
-  }
-
-  const { width, height } = container.value.getBoundingClientRect()
-  w = width
-  h = height
-
-  timeoutResize && clearTimeout(timeoutResize)
-
-  timeoutResize = setTimeout(() => {
-    circles.forEach((circle: Circle) => {
-      circle.unpause()
-    })
-  }, 500)
-
-  circles.forEach((circle: Circle) => {
-    circle.pause()
-  })
-}
+const canvas = ref<HTMLCanvasElement | null>(null)
+const ctx = ref<CanvasRenderingContext2D | null>(null)
 
 class Circle {
-  el: HTMLDivElement
+  canvas: HTMLCanvasElement
+  ctx: CanvasRenderingContext2D
   x: number
   y: number
-  velocity: Velocity
   radius: number
-  mass: number
-  interactive: boolean
-  deactivated: boolean
-  paused: boolean
+  color: string
+  dx: number
+  dy: number
 
-  constructor(el: HTMLDivElement, x: number, y: number, velocity: Velocity, radius: number, mass: number, interactive: boolean, deactivated: boolean) {
-    this.el = el
+  constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, x: number, y: number, radius: number, color: string, dx: number, dy: number) {
+    this.canvas = canvas
+    this.ctx = ctx
     this.x = x
     this.y = y
-    this.velocity = velocity
     this.radius = radius
-    this.mass = mass
-    this.interactive = interactive
-    this.deactivated = deactivated
-    this.paused = false
+    this.color = color
+    this.dx = dx
+    this.dy = dy
   }
 
   draw() {
-    if (this.interactive) {
-      this.el.style.transform = `translate3d(${this.x}px, ${this.y}px, 0)`
+    this.ctx.beginPath()
+    this.ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2)
+    this.ctx.fillStyle = this.color
+    this.ctx.fill()
+    this.ctx.closePath()
+  }
+
+  update(circles: Circle[]) {
+    this.x += this.dx
+    this.y += this.dy
+
+    // Bounce off the walls
+    if (this.x - this.radius < 0 || this.x + this.radius > canvas.value.width) {
+      this.dx = -this.dx
     }
-    else {
-      this.el.style.transition = 'transform 0.25s ease-in-out, opacity 0.25s ease-in-out'
-      this.el.style.transform = `translate3d(${this.x}px, ${this.y}px, 0) scale(2.5)`
-      this.el.style.opacity = '0'
-      this.el.style.pointerEvents = 'none'
-      this.deactivated = true
+
+    if (this.y - this.radius < 0 || this.y + this.radius > canvas.value.height) {
+      this.dy = -this.dy
     }
-  }
 
-  pause() {
-    this.paused = true
-  }
-
-  unpause() {
-    this.paused = false
-  }
-
-  reposition() {
-    circles.forEach((circle: Circle) => {
-      if (this !== circle && this.interactive && circle.interactive) {
-        if (objectCollision(this.x, this.y, this.radius, circle.x, circle.y, circle.radius)) {
-          resolveCollision(this, circle)
-        }
+    // Collision detection
+    for (const circle of circles) {
+      if (this !== circle && this.isCollidingWith(circle)) {
+        this.resolveCollision(circle)
       }
-    })
+    }
+
+    this.draw()
   }
 
-  update() {
-    if (this.paused) {
-      return
+  isCollidingWith(circle: Circle): boolean {
+    const dist = Math.hypot(this.x - circle.x, this.y - circle.y)
+    return dist - this.radius - circle.radius < 0
+  }
+
+  resolveCollision(circle: Circle) {
+    const xVelocityDiff = this.dx - circle.dx
+    const yVelocityDiff = this.dy - circle.dy
+    const xDist = circle.x - this.x
+    const yDist = circle.y - this.y
+
+    if (xVelocityDiff * xDist + yVelocityDiff * yDist >= 0) {
+      const angle = -Math.atan2(circle.y - this.y, circle.x - this.x)
+      const m1 = this.radius
+      const m2 = circle.radius
+      const u1 = this.rotate(this.dx, this.dy, angle)
+      const u2 = this.rotate(circle.dx, circle.dy, angle)
+      const v1 = { x: u1.x * (m1 - m2) / (m1 + m2) + u2.x * 2 * m2 / (m1 + m2), y: u1.y }
+      const v2 = { x: u2.x * (m1 - m2) / (m1 + m2) + u1.x * 2 * m1 / (m1 + m2), y: u2.y }
+      const vFinal1 = this.rotate(v1.x, v1.y, -angle)
+      const vFinal2 = this.rotate(v2.x, v2.y, -angle)
+      this.dx = vFinal1.x
+      this.dy = vFinal1.y
+      circle.dx = vFinal2.x
+      circle.dy = vFinal2.y
     }
+  }
 
-    // Out of bounds X detection, move to nearest X.
-    if (this.x + (this.radius * 2) > w) {
-      this.x = w - (this.radius * 2)
-
-      this.reposition()
-    }
-    else if (this.x < 0) {
-      this.x = 0
-
-      this.reposition()
-    }
-
-    // Out of bounds Y detection, move to nearest Y.
-    if (this.y + (this.radius * 2) > h) {
-      this.y = h - (this.radius * 2)
-
-      this.reposition()
-    }
-    else if (this.y < 0) {
-      this.y = 0
-
-      this.reposition()
-    }
-
-    // Walls collision.
-    if (this.x + (this.radius * 2) >= w || this.x <= 0) {
-      this.velocity.x = -this.velocity.x
-    }
-
-    // Floor and ceiling collision.
-    if (this.y + (this.radius * 2) >= h || this.y <= 0) {
-      this.velocity.y = -this.velocity.y
-    }
-
-    this.reposition()
-
-    if (this.interactive) {
-      this.x += this.velocity.x
-      this.y += this.velocity.y
-    }
-
-    if (!this.deactivated) {
-      this.draw()
+  rotate(dx: number, dy: number, angle: number) {
+    return {
+      x: dx * Math.cos(angle) - dy * Math.sin(angle),
+      y: dx * Math.sin(angle) + dy * Math.cos(angle),
     }
   }
 }
 
-const draw = () => {
-  circles.forEach((circle: Circle) => circle.update())
-  window.requestAnimationFrame(draw)
-}
+const { blue, pink, orange, green, purple } = colours
+const colors = [blue, pink, orange, green, purple]
+const circles: Circle[] = []
 
-const list = [
-  'bg-blue',
-  'bg-green',
-  'bg-purple',
-  'bg-orange',
-  'bg-pink',
-]
-
-onMounted(() => {
-  if (!container.value || !itemRefs.value.length) {
+const onClick = (event: any) => {
+  if (!canvas.value || !ctx.value) {
     return
   }
 
-  const items = itemRefs.value
+  const rect = canvas.value.getBoundingClientRect()
+  const mouseX = event.clientX - rect.left
+  const mouseY = event.clientY - rect.top
+
+  for (let i = 0; i < circles.length; i++) {
+    const circle = circles[i]
+
+    if (Math.hypot(circle.x - mouseX, circle.y - mouseY) < circle.radius) {
+      const newRadius = circle.radius / 2
+
+      // Can we split?
+      if (newRadius > 2) {
+        if (audio.value) {
+          audio.value.currentTime = 0
+          audio.value.play()
+        }
+
+        const angle = Math.random() * Math.PI * 2
+        const dx1 = circle.dx * Math.cos(angle)
+        const dy1 = circle.dy * Math.sin(angle)
+        const dx2 = -circle.dx * Math.cos(angle)
+        const dy2 = -circle.dy * Math.sin(angle)
+
+        circles.push(new Circle(canvas.value, ctx.value, circle.x, circle.y, newRadius, circle.color, dx1, dy1))
+        circles.push(new Circle(canvas.value, ctx.value, circle.x, circle.y, newRadius, circle.color, dx2, dy2))
+        circles.splice(i, 1)
+      }
+
+      break
+    }
+  }
+}
+
+const animate = () => {
+  if (!canvas.value || !ctx.value) {
+    return
+  }
+
+  ctx.value.clearRect(0, 0, canvas.value.width, canvas.value.height)
+
+  for (const circle of circles) {
+    circle.update(circles)
+  }
+
+  requestAnimationFrame(animate)
+}
+
+const setCanvasSize = () => {
+  if (!container.value || !canvas.value) {
+    return
+  }
+
   const { width, height } = container.value.getBoundingClientRect()
 
-  w = width
-  h = height
+  canvas.value.width = width
+  canvas.value.height = height
+}
+
+onMounted(() => {
+  if (!container.value || !canvas.value) {
+    return
+  }
+
+  ctx.value = canvas.value.getContext('2d')
+
+  if (!ctx.value) {
+    return
+  }
 
   setCanvasSize()
 
+  for (let i = 0; i < 5; i++) {
+    const radius = 20
+    const x = Math.random() * (canvas.value.width - radius * 2) + radius
+    const y = Math.random() * (canvas.value.height - radius * 2) + radius
+    const dx = (Math.random() - 0.5) * 2
+    const dy = (Math.random() - 0.5) * 2
+    const color = colors[i] ?? colors[0]
+
+    circles.push(new Circle(canvas.value, ctx.value, x, y, radius, color, dx, dy))
+  }
+
+  canvas.value.addEventListener('click', onClick)
   window.addEventListener('resize', setCanvasSize)
 
-  items.forEach((item, _index) => {
-    const { width: itemWidth } = item.getBoundingClientRect()
-    const radius = itemWidth / 2
-    const speed = 2
-    const velocity = {
-      x: (Math.random() - 0.5) * speed,
-      y: (Math.random() - 0.5) * speed,
-    }
-    const { x, y } = setPosition(radius)
-    const mass = 1
-    const circle = new Circle(item, x, y, velocity, radius, mass, true, false)
-
-    item.addEventListener('click', () => {
-      if (audio.value) {
-        audio.value.currentTime = 0
-        audio.value.play()
-      }
-
-      circles[_index].interactive = false
-    })
-
-    circles.push(circle)
-
-    item.classList.remove('opacity-0')
-  })
-
-  draw()
+  animate()
 })
 
 onUnmounted(() => {
+  canvas.value?.removeEventListener('click', onClick)
   window.removeEventListener('resize', setCanvasSize)
 })
 </script>
@@ -289,18 +214,9 @@ onUnmounted(() => {
       src="/audio/pop.mp3"
     />
 
-    <ul class="w-full h-full">
-      <li
-        v-for="(item, index) in list"
-        ref="itemRefs"
-        :key="item"
-        class="absolute size-32 rounded-full opacity-0 cursor-pointer"
-        :class="item"
-      >
-        <span class="sr-only">
-          Ball {{ index + 1 }}
-        </span>
-      </li>
-    </ul>
+    <canvas
+      ref="canvas"
+      class="block w-full h-full"
+    />
   </div>
 </template>
