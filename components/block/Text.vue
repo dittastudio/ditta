@@ -21,7 +21,16 @@ const classes = computed(() => ([colourText[block.colour], colourBackground[bloc
       <StoryblokRichText
         v-if="storyblokRichTextContent(block.text)"
         :content="block.text"
-        class="prose-p:text-24 prose-p:opacity-50 prose-headings:text-fluid-md prose-default"
+        class="
+        prose-h1:text-65
+        prose-h2:text-50
+        prose-h3:text-40
+        prose-h4:text-34
+        prose-h5:text-24
+        prose-h6:text-20
+        prose-p:text-24
+        prose-p:opacity-50
+        prose-default"
       />
 
       <StoryblokLink

@@ -19,13 +19,10 @@ interface Props {
 }
 
 const { asset, ratio, sizes, lazy = true } = defineProps<Props>()
-
 const container = ref<HTMLPictureElement | null>(null)
 const ready = ref(!lazy)
 const loaded = ref(!lazy)
-
 const { width, height } = storyblokImageDimensions(asset.filename)
-
 const ratioValid = validAspectRatio(ratio)
 const ratioFormat = ratio && ratioValid ? calculateAspectRatio(ratioDimensions(ratio).width, ratioDimensions(ratio).height) : calculateAspectRatio(width, height)
 
