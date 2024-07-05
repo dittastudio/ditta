@@ -94,7 +94,6 @@ export default defineNuxtConfig({
   runtimeConfig: {
     private: {},
     public: {
-      SSR: process.env.NUXT_SSR,
       STORYBLOK_TOKEN: process.env.NUXT_STORYBLOK_TOKEN,
       STORYBLOK_VERSION: process.env.NUXT_STORYBLOK_VERSION,
       WEATHER_API_KEY: process.env.NUXT_WEATHER_API_KEY,
