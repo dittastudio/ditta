@@ -46,11 +46,11 @@ class Circle {
     this.y += this.dy
 
     // Bounce off the walls
-    if (this.x - this.radius < 0 || this.x + this.radius > canvas.value.width) {
+    if (this.x - this.radius < 0 || this.x + this.radius > this.canvas.width) {
       this.dx = -this.dx
     }
 
-    if (this.y - this.radius < 0 || this.y + this.radius > canvas.value.height) {
+    if (this.y - this.radius < 0 || this.y + this.radius > this.canvas.height) {
       this.dy = -this.dy
     }
 
@@ -62,6 +62,10 @@ class Circle {
     }
 
     this.draw()
+  }
+
+  updateCanvas(canvas: HTMLCanvasElement) {
+    this.canvas = canvas
   }
 
   isCollidingWith(circle: Circle): boolean {
@@ -165,6 +169,10 @@ const setCanvasSize = () => {
 
   canvas.value.width = width
   canvas.value.height = height
+
+  for (const circle of circles) {
+    circle.updateCanvas(canvas.value)
+  }
 }
 
 onMounted(() => {
