@@ -45,16 +45,17 @@ class Circle {
     this.x += this.dx
     this.y += this.dy
 
-    // Bounce off the walls
+    // Collision detection with horizontal walls.
     if (this.x - this.radius < 0 || this.x + this.radius > this.canvas.width) {
       this.dx = -this.dx
     }
 
+    // Collision detection with vertical walls.
     if (this.y - this.radius < 0 || this.y + this.radius > this.canvas.height) {
       this.dy = -this.dy
     }
 
-    // Collision detection
+    // Collision detection with other circles.
     for (const circle of circles) {
       if (this !== circle && this.isCollidingWith(circle)) {
         this.resolveCollision(circle)
@@ -89,8 +90,10 @@ class Circle {
       const v2 = { x: u2.x * (m1 - m2) / (m1 + m2) + u1.x * 2 * m1 / (m1 + m2), y: u2.y }
       const vFinal1 = this.rotate(v1.x, v1.y, -angle)
       const vFinal2 = this.rotate(v2.x, v2.y, -angle)
+
       this.dx = vFinal1.x
       this.dy = vFinal1.y
+
       circle.dx = vFinal2.x
       circle.dy = vFinal2.y
     }
