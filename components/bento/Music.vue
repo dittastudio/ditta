@@ -230,14 +230,14 @@ onUnmounted(() => {
         <IconCross class="size-16 @2xs:size-20 block text-white rotate-45" />
       </button>
 
-      <ul class="flex flex-col gap-4 @2xs:gap-0">
+      <ul class="flex flex-col gap-4 @xs:gap-0">
         <li
           v-for="item in playlist"
           :key="item.path"
         >
           <button
             type="button"
-            class="text-12 @2xs:text-16 flex items-center justify-start gap-8 hover:text-white focus:text-white transition-colors text-left"
+            class="text-12 @xs:text-16 flex items-center justify-start gap-8 hover:text-white focus:text-white transition-colors text-left"
             :class="`${track?.path === item.path ? 'text-white' : 'text-white/50'}`"
             @click="setTrack(item)"
           >
