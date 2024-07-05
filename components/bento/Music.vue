@@ -49,14 +49,13 @@ const createEqualizer = (analyser: AnalyserNode) => {
     context.fillRect(0, 0, canvas.width, canvas.height)
 
     const barWidth = (canvas.width / bufferLength) * 5
-
     let barHeight
     let x = 0
 
     for (let i = 0; i < bufferLength; i++) {
       barHeight = dataArray[i]
 
-      context.fillStyle = `rgb(253, 178, 104)` // `rgb(${barHeight + 100}, 0, 0)`
+      context.fillStyle = `rgb(253, 178, 104)` // orange-darker `rgb(${barHeight + 100}, 0, 0)`
       context.fillRect(x, canvas.height - barHeight / 2, barWidth, barHeight / 2)
 
       x += barWidth + 2
@@ -163,8 +162,10 @@ onUnmounted(() => {
   >
     <canvas
       ref="equalizer"
-      class="absolute inset-0 z-0 w-full h-full opacity-50 pointer-events-none"
+      class="absolute inset-0 z-0 w-full h-full pointer-events-none"
     />
+
+    <div class="absolute bottom-0 left-0 z-0 w-full h-1/2 pointer-events-none bg-gradient-to-t from-orange to-orange/0" />
 
     <button
       v-show="!playing"
