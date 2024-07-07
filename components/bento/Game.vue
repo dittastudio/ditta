@@ -45,13 +45,25 @@ class Circle {
     this.x += this.dx
     this.y += this.dy
 
+    // If the circle is out of bounds on the X axis.
+    if (this.x - this.radius < -1 || this.x + this.radius > (this.canvas.width + 1)) {
+      this.x = this.x < (this.canvas.width / 2) ? (this.radius + 1) : this.canvas.width - (this.radius + 1)
+      this.dx = -this.dx
+    }
+
+    // If the circle is out of bounds on the Y axis.
+    if (this.y - this.radius < -1 || this.y + this.radius > (this.canvas.height + 1)) {
+      this.y = this.y < (this.canvas.height / 2) ? (this.radius + 1) : this.canvas.height - (this.radius + 1)
+      this.dy = -this.dy
+    }
+
     // Collision detection with horizontal walls.
-    if (this.x - this.radius < 0 || this.x + this.radius > this.canvas.width) {
+    if (this.x - this.radius <= 0 || this.x + this.radius >= this.canvas.width) {
       this.dx = -this.dx
     }
 
     // Collision detection with vertical walls.
-    if (this.y - this.radius < 0 || this.y + this.radius > this.canvas.height) {
+    if (this.y - this.radius <= 0 || this.y + this.radius >= this.canvas.height) {
       this.dy = -this.dy
     }
 
@@ -191,7 +203,9 @@ onMounted(() => {
 
   setCanvasSize()
 
-  for (let i = 0; i < 5; i++) {
+  const amount = 5
+
+  for (let i = 0; i < amount; i++) {
     const radius = 20
     const x = Math.random() * (canvas.value.width - radius * 2) + radius
     const y = Math.random() * (canvas.value.height - radius * 2) + radius
