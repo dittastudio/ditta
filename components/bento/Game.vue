@@ -33,12 +33,35 @@ class Circle {
     this.dy = dy
   }
 
+  // calculateMaxFontSize(text: string, radius: number) {
+  //   let fontSize = radius
+  //   this.ctx.font = `${fontSize}px mono`
+
+  //   while (this.ctx.measureText(text).width > 2 * radius) {
+  //     fontSize--
+  //     this.ctx.font = `${fontSize}px Arial`
+  //   }
+
+  //   return fontSize
+  // }
+
   draw() {
     this.ctx.beginPath()
     this.ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2)
     this.ctx.fillStyle = this.color
     this.ctx.fill()
     this.ctx.closePath()
+
+    // this.ctx.save()
+    // this.ctx.translate(this.x, this.y)
+    // this.ctx.rotate(this.angle)
+    // const text = '🇮🇹'
+    // const maxFontSize = this.calculateMaxFontSize(text, this.radius)
+    // this.ctx.font = `${maxFontSize}px mono`
+    // this.ctx.fillText(text, this.x - (this.ctx.measureText(text).width / 2), this.y + (this.radius / 2))
+    // this.ctx.fillText(text, this.x - (this.radius / 2), this.y + (this.radius / 2))
+    // this.ctx.restore()
+    // console.log(this.ctx.measureText(text))
   }
 
   update(circles: Circle[]) {
@@ -86,6 +109,13 @@ class Circle {
     return dist - this.radius - circle.radius < 0
   }
 
+  rotate(dx: number, dy: number, angle: number) {
+    return {
+      x: dx * Math.cos(angle) - dy * Math.sin(angle),
+      y: dx * Math.sin(angle) + dy * Math.cos(angle),
+    }
+  }
+
   resolveCollision(circle: Circle) {
     const xVelocityDiff = this.dx - circle.dx
     const yVelocityDiff = this.dy - circle.dy
@@ -108,13 +138,6 @@ class Circle {
 
       circle.dx = vFinal2.x
       circle.dy = vFinal2.y
-    }
-  }
-
-  rotate(dx: number, dy: number, angle: number) {
-    return {
-      x: dx * Math.cos(angle) - dy * Math.sin(angle),
-      y: dx * Math.sin(angle) + dy * Math.cos(angle),
     }
   }
 }
