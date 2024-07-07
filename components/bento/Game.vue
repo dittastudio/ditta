@@ -22,7 +22,16 @@ class Circle {
   dx: number
   dy: number
 
-  constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, x: number, y: number, radius: number, color: string, dx: number, dy: number) {
+  constructor(
+    canvas: HTMLCanvasElement,
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    radius: number,
+    color: string,
+    dx: number,
+    dy: number,
+  ) {
     this.canvas = canvas
     this.ctx = ctx
     this.x = x
@@ -151,9 +160,9 @@ const onClick = (event: any) => {
     return
   }
 
-  const rect = canvas.value.getBoundingClientRect()
-  const mouseX = event.clientX - rect.left
-  const mouseY = event.clientY - rect.top
+  const { left, top } = canvas.value.getBoundingClientRect()
+  const mouseX = event.clientX - left
+  const mouseY = event.clientY - top
 
   for (let i = 0; i < circles.length; i++) {
     const circle = circles[i]
