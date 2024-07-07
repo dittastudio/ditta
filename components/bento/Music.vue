@@ -222,7 +222,7 @@ onUnmounted(() => {
     >
       <button
         type="button"
-        class="hover:opacity-100 focus:opacity-100 absolute top-0 left-0 z-50 p-20 transition-opacity duration-300 opacity-50"
+        class="hover:opacity-100 focus:opacity-100 absolute top-0 left-0 z-10 p-20 transition-opacity duration-300 opacity-50"
         @click="listingVisible = false"
       >
         <span class="sr-only">Close Playlist</span>
@@ -230,7 +230,7 @@ onUnmounted(() => {
         <IconCross class="size-16 @2xs:size-20 block text-white rotate-45" />
       </button>
 
-      <ul class="flex flex-col gap-4 @xs:gap-0">
+      <ul class="relative z-20 flex flex-col gap-4 @xs:gap-0">
         <li
           v-for="item in playlist"
           :key="item.path"
