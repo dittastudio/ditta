@@ -15,19 +15,19 @@
     "sb:types": "npm run sb:pull-components && storyblok-generate-ts source=./components.284609.json target=./types/storyblok"
   },
   "dependencies": {
-    "@netlify/functions": "^2.8.0",
+    "@netlify/functions": "^2.8.1",
     "@sendgrid/mail": "^8.1.3",
     "@storyblok/nuxt": "^6.0.10",
     "@tailwindcss/container-queries": "^0.1.1",
-    "@vee-validate/zod": "^4.13.1",
+    "@vee-validate/zod": "^4.13.2",
     "@vueuse/core": "^10.11.0",
     "gsap": "^3.12.5",
     "swiper": "^11.1.4",
-    "vee-validate": "^4.13.1",
+    "vee-validate": "^4.13.2",
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^2.21.2",
+    "@antfu/eslint-config": "^2.21.3",
     "@michaelpumo/screen": "^0.0.18",
     "@nuxt/eslint": "^0.3.13",
     "@nuxt/image": "^1.7.0",
