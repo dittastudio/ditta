@@ -1,3 +1,11 @@
+.is-storyblok-editor {
+  a,
+  button {
+    user-select: none;
+    pointer-events: none;
+  }
+}
+
 html {
   color: theme('colors.offwhite');
   background-color: theme('colors.offblack');
