@@ -1,4 +1,4 @@
-import { addComponent, defineNuxtModule } from '@nuxt/kit';
+import { addComponent, defineNuxtModule } from '@nuxt/kit'
 
 export default defineNuxtModule({
   setup() {
@@ -6,6 +6,6 @@ export default defineNuxtModule({
       name: 'Screen',
       filePath: '@michaelpumo/screen/vue',
       mode: 'client',
-    });
+    })
   },
-});
+})

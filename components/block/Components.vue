@@ -24,6 +24,11 @@ const { content } = defineProps<Props>()
         :block="block"
       />
 
+      <BlockHeroWork
+        v-else-if="block.component === 'block_hero_work' && !block.hidden"
+        :block="block"
+      />
+
       <BlockMarquees
         v-else-if="block.component === 'block_marquees' && !block.hidden"
         :block="block"

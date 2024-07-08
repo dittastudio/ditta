@@ -174,6 +174,18 @@ export interface BlockHeroTextStoryblok {
   [k: string]: any;
 }
 
+export interface BlockHeroWorkStoryblok {
+  title: string;
+  headline: string;
+  media?: AssetStoryblok;
+  colour: number | string;
+  background: number | string;
+  hidden?: boolean;
+  _uid: string;
+  component: "block_hero_work";
+  [k: string]: any;
+}
+
 export interface BlockMarqueesStoryblok {
   words?: WordStoryblok[];
   hidden?: boolean;
@@ -225,6 +237,7 @@ export interface PageStoryblok {
   blocks?: (
     | BlockBentoBoxStoryblok
     | BlockHeroTextStoryblok
+    | BlockHeroWorkStoryblok
     | BlockMarqueesStoryblok
     | BlockMediaStoryblok
     | BlockStudiosStoryblok

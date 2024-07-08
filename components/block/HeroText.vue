@@ -14,7 +14,7 @@ const classes = computed(() => [colourText[block.colour], colourBackground[block
 <template>
   <div
     v-editable="block"
-    class="block-hero-text"
+    class="block"
     :class="classes"
   >
     <div class="section wrapper">
@@ -28,7 +28,7 @@ const classes = computed(() => [colourText[block.colour], colourBackground[block
 </template>
 
 <style lang="postcss" scoped>
-.block-hero-text {
+.block {
   & :deep(p) {
     max-width: 30ch;
     text-wrap: balance;

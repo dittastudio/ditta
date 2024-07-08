@@ -456,6 +456,66 @@
       "component_group_name": "Blocks"
     },
     {
+      "name": "block_hero_work",
+      "display_name": "Hero Work",
+      "created_at": "2024-07-08T17:39:03.125Z",
+      "updated_at": "2024-07-08T17:43:14.862Z",
+      "id": 6025754,
+      "schema": {
+        "title": {
+          "type": "text",
+          "pos": 0,
+          "required": true
+        },
+        "headline": {
+          "type": "text",
+          "pos": 1,
+          "required": true
+        },
+        "media": {
+          "type": "asset",
+          "pos": 2
+        },
+        "colour": {
+          "type": "option",
+          "pos": 3,
+          "use_uuid": true,
+          "source": "internal",
+          "datasource_slug": "colours",
+          "exclude_empty_option": true,
+          "required": true
+        },
+        "background": {
+          "type": "option",
+          "pos": 4,
+          "use_uuid": true,
+          "source": "internal",
+          "datasource_slug": "colours",
+          "exclude_empty_option": true,
+          "required": true
+        },
+        "hidden": {
+          "type": "boolean",
+          "pos": 5
+        }
+      },
+      "image": null,
+      "preview_field": null,
+      "is_root": false,
+      "preview_tmpl": null,
+      "is_nestable": true,
+      "all_presets": [],
+      "preset_id": null,
+      "real_name": "Hero Work",
+      "component_group_uuid": "c56a9133-c409-488d-9f91-40d75d6e78cd",
+      "color": null,
+      "icon": null,
+      "internal_tags_list": [],
+      "internal_tag_ids": [],
+      "content_type_asset_preview": null,
+      "component_group_name": "Blocks"
+    },
+    {
       "name": "block_marquees",
       "display_name": "Marquees",
       "created_at": "2024-06-21T16:03:15.364Z",
@@ -617,7 +677,7 @@
       "name": "block_text",
       "display_name": "Text",
       "created_at": "2024-06-24T17:22:15.617Z",
-      "updated_at": "2024-07-05T13:49:01.462Z",
+      "updated_at": "2024-07-08T18:03:47.174Z",
       "id": 5970068,
       "schema": {
         "text": {
@@ -668,7 +728,6 @@
           "component_whitelist": [
             "button"
           ],
-          "minimum": 1,
           "maximum": 1,
           "display_name": "Link",
           "key": "button"
