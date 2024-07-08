@@ -248,6 +248,7 @@ export interface SeoStoryblok {
 
 export interface StudioStoryblok {
   name: string;
+  media?: AssetStoryblok;
   _uid: string;
   component: "studio";
   [k: string]: any;

@@ -825,13 +825,21 @@
       "name": "studio",
       "display_name": null,
       "created_at": "2024-06-18T20:24:20.193Z",
-      "updated_at": "2024-06-18T20:24:29.406Z",
+      "updated_at": "2024-07-08T11:04:50.673Z",
       "id": 5946094,
       "schema": {
         "name": {
           "type": "text",
           "pos": 0,
           "required": true
+        },
+        "media": {
+          "type": "asset",
+          "pos": 1,
+          "filetypes": [
+            "images",
+            "videos"
+          ]
         }
       },
       "image": null,

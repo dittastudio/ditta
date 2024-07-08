@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import type { BlockStudiosStoryblok } from '@/types/storyblok'
 import { storyblokRichTextContent } from '@/utilities/storyblok'
 import { colourBackground, colourText } from '@/utilities/maps'
+import type { BlockStudiosStoryblok } from '@/types/storyblok'
 
 interface Props {
   block: BlockStudiosStoryblok
@@ -10,6 +10,10 @@ interface Props {
 const { block } = defineProps<Props>()
 const itemRefs = ref<HTMLElement[]>([])
 const indexes = ref<number[]>([])
+const mediaPosition = ref({ x: 0, y: 0 })
+const mediaVisible = computed(() => indexes.value.length)
+
+let observerItems: IntersectionObserver
 
 const setIndex = (index: number) => {
   if (indexes.value.includes(index)) {
@@ -19,7 +23,7 @@ const setIndex = (index: number) => {
   indexes.value.push(index)
 }
 
-const callback: IntersectionObserverCallback = (entries: IntersectionObserverEntry[]) => {
+const callbackItems: IntersectionObserverCallback = (entries: IntersectionObserverEntry[]) => {
   entries.forEach((entry: IntersectionObserverEntry) => {
     const value = (entry.target as HTMLElement).dataset.index
 
@@ -34,33 +38,59 @@ const callback: IntersectionObserverCallback = (entries: IntersectionObserverEnt
   })
 }
 
-let observer: IntersectionObserver
+const getLatestIndex = computed(() => {
+  return indexes.value?.length ? indexes.value[indexes.value.length - 1] : -1
+})
+
+const selectedStudio = computed(() => {
+  return block.studios?.[getLatestIndex.value]
+})
+
+const setMediaPosition = (event: MouseEvent) => {
+  const x = event.pageX - window.scrollX
+  const y = event.pageY - window.scrollY
+
+  mediaPosition.value = { x: x + 50, y: y + 50 }
+}
+
+const mediaStyles = computed(() => {
+  const position = `translate3d(${mediaPosition.value.x}px, ${mediaPosition.value.y}px, 0)`
+  const scale = `${selectedStudio.value && mediaVisible.value ? 'scale(1)' : 'scale(0.9)'}`
+  const transformStyles = `${position} ${scale}`
+
+  return {
+    transform: transformStyles,
+    opacity: selectedStudio.value && mediaVisible.value ? 1 : 0,
+  }
+})
 
 onMounted(() => {
   if (!itemRefs.value.length) {
     return
   }
 
-  observer = new IntersectionObserver(callback, {
+  observerItems = new IntersectionObserver(callbackItems, {
     rootMargin: '-50% 0% -50% 0%',
     threshold: 0,
   })
 
-  itemRefs.value.forEach(item => observer.observe(item))
+  itemRefs.value.forEach(item => observerItems.observe(item))
+
+  window.addEventListener('mousemove', setMediaPosition)
 })
 
 onUnmounted(() => {
-  itemRefs.value?.forEach(item => observer?.unobserve(item))
+  itemRefs.value?.forEach(item => observerItems?.unobserve(item))
 })
 </script>
 
 <template>
   <div
     v-editable="block"
-    class="block-studios"
+    class="relative"
     :class="[colourText[block.colour], colourBackground[block.background]]"
   >
-    <div class="section wrapper grid gap-x-[var(--app-inner-gutter)] grid-cols-1 md:grid-cols-12">
+    <div class="relative z-1 section wrapper grid gap-x-[var(--app-inner-gutter)] grid-cols-1 md:grid-cols-12">
       <div class="md:col-start-4 md:-col-end-1 flex flex-col gap-40">
         <StoryblokRichText
           v-if="storyblokRichTextContent(block.text)"
@@ -80,11 +110,6 @@ onUnmounted(() => {
             class="text-40 overflow-hidden"
             tabindex="0"
           >
-            <!--
-            @mouseover="setIndex(index)"
-            @focus="setIndex(index)"
-            -->
-
             <span
               class="flex items-start gap-10 transition-transform ease-outSine"
               :class="[
@@ -99,15 +124,44 @@ onUnmounted(() => {
         </ul>
       </div>
     </div>
+
+    <div
+      class="fixed top-0 left-0 z-0 w-1/3 aspect-4/3 rounded-[20px] bg-white transition-all duration-1000 ease-outExpo overflow-hidden"
+      :style="mediaStyles"
+    >
+      <!-- <Transition
+        mode="out-in"
+        name="fade"
+      > -->
+      <div
+        v-if="selectedStudio && selectedStudio.media"
+        :key="selectedStudio._uid"
+      >
+        <img
+          :src="selectedStudio.media.filename"
+          :alt="selectedStudio.name"
+          class="block w-full h-full object-cover"
+        >
+      </div>
+      <!-- </Transition> -->
+    </div>
   </div>
 </template>
 
 <style lang="postcss" scoped>
-.block-studios {
-  .richtext {
-    & :deep(* + *) {
-      margin-block-start: 1lh;
-    }
+.richtext {
+  & :deep(* + *) {
+    margin-block-start: 1lh;
   }
+}
+
+.fade {
+  /* &-enter-active, &-leave-active {
+    transition: opacity 0.3s;
+  }
+
+  &-enter-from, &-leave-to {
+    opacity: 0;
+  } */
 }
 </style>
