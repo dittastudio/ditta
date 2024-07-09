@@ -27,8 +27,10 @@ const track = ref<Track | null>(null)
 
 const playlist: Track[] = [
   { name: 'Classical', path: '/audio/classical.mp3' },
-  { name: 'Hard Rock', path: '/audio/hard-rock.mp3' },
-  { name: 'Disco', path: '/audio/disco.mp3' },
+  { name: 'Gypsy Jazz', path: '/audio/gypsy-jazz.mp3' },
+  { name: 'Silent Movie', path: '/audio/silent-movie.mp3' },
+  // { name: 'Hard Rock', path: '/audio/hard-rock.mp3' },
+  // { name: 'Disco', path: '/audio/disco.mp3' },
 ]
 
 const createEqualizer = (analyser: AnalyserNode) => {
