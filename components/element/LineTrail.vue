@@ -1,0 +1,115 @@
+<script lang="ts" setup>
+interface Props {
+  thickness?: number
+}
+
+type Coord = 'x' | 'y'
+
+const { thickness = 100 } = defineProps<Props>()
+const { hex, setRandom } = useAccentColour()
+const svg = ref<SVGSVGElement | null>(null)
+const path = ref<SVGPathElement | null>(null)
+const segments = 500
+const speed = 0.2
+const points: Record<Coord, number>[] = []
+const position: Record<Coord, number> = {
+  x: 0,
+  y: 0,
+}
+
+const move = (event: MouseEvent) => {
+  const rect = svg.value?.getBoundingClientRect()
+  const offsetLeft = rect?.left ?? 0
+  const offsetTop = rect?.top ?? 0
+  const x = event.clientX - offsetLeft
+  const y = event.clientY - offsetTop
+
+  position.x = x
+  position.y = y
+
+  if (points.length) {
+    return
+  }
+
+  for (let i = 0; i < segments; i++) {
+    points.push({
+      x,
+      y,
+    })
+  }
+}
+
+const animate = () => {
+  let px = position.x
+  let py = position.y
+
+  points.forEach((point, index) => {
+    point.x = px
+    point.y = py
+
+    const n: Record<'x' | 'y', number> | undefined = points[index + 1]
+
+    if (n) {
+      px = px - (point.x - n.x) * speed
+      py = py - (point.y - n.y) * speed
+    }
+  })
+
+  if (path.value && points.length) {
+    path.value.setAttribute('d', `M ${points.map(point => `${point.x} ${point.y}`).join(' L ')}`)
+  }
+
+  requestAnimationFrame(animate)
+}
+
+const setSize = () => {
+  if (!svg.value) {
+    return
+  }
+
+  const parent = svg.value.parentElement
+  const rect = parent?.getBoundingClientRect()
+  const width = rect?.width ?? window.innerWidth
+  const height = rect?.height ?? window.innerHeight
+
+  svg.value.style.width = `${width}px`
+  svg.value.style.height = `${height}px`
+  svg.value.setAttribute('viewBox', `0 0 ${width} ${height}`)
+}
+
+onMounted(() => {
+  if (!svg.value || !path.value) {
+    return
+  }
+
+  setSize()
+  animate()
+
+  window.addEventListener('click', setRandom)
+  window.addEventListener('mousemove', move)
+  window.addEventListener('resize', setSize)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('mousemove', move)
+  window.removeEventListener('resize', setSize)
+})
+</script>
+
+<template>
+  <svg
+    ref="svg"
+    viewBox="0 0 1 1"
+    class="h-full w-full"
+  >
+    <path
+      ref="path"
+      d=""
+      fill="none"
+      :stroke="hex"
+      :stroke-width="thickness"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+</template>

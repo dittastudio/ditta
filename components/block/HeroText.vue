@@ -17,11 +17,13 @@ const classes = computed(() => [colourText[block.colour], colourBackground[block
     class="block"
     :class="classes"
   >
-    <div class="section wrapper">
+    <ElementLineTrail class="absolute inset-0 z-0 h-full w-full pointer-events-none" />
+
+    <div class="section wrapper relative z-1">
       <StoryblokRichText
         v-if="storyblokRichTextContent(block.text)"
         :content="block.text"
-        class="prose-p:text-fluid-md prose-dark"
+        class="prose-p:text-fluid-md prose-dark select-none"
       />
     </div>
   </div>

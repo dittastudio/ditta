@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import IconDitta from '@/assets/icons/ditta.svg'
+
+const { hex } = useAccentColour()
 </script>
 
 <template>
@@ -8,7 +10,10 @@ import IconDitta from '@/assets/icons/ditta.svg'
       to="/"
       class="block"
     >
-      <IconDitta class="w-full max-w-[100px] h-auto text-pink" />
+      <IconDitta
+        class="w-full max-w-[100px] h-auto"
+        :style="{ color: hex }"
+      />
 
       <h1 class="sr-only">
         ditta
@@ -16,10 +21,3 @@ import IconDitta from '@/assets/icons/ditta.svg'
     </NuxtLink>
   </div>
 </template>
-
-<style lang="postcss" scoped>
-.app-header {
-  /* margin-block-end: calc(-1 * (var(--app-vertical-rhythm) / 2)); */
-  /* pt-[var(--app-outer-gutter)] */
-}
-</style>
