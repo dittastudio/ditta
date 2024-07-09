@@ -61,7 +61,7 @@ export const colours = {
   'white': '#ffffff',
   'black': '#000000',
   'offwhite': '#F5F4EA',
-  'offblack': '#232323',
+  'offblack': '#1c1c1c',
   'body': '#555',
   'grey': '#F0F1F4',
   'blue': '#B8F2FE',
