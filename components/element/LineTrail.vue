@@ -42,6 +42,7 @@ const move = (event: MouseEvent) => {
   clearTimeout(timer)
   timer = setTimeout(() => lineHidden.value = true, 1000)
 
+  // If we already have the points array filled up, exit.
   if (points.length) {
     return
   }
@@ -62,11 +63,11 @@ const animate = () => {
     point.x = px
     point.y = py
 
-    const n: Record<'x' | 'y', number> | undefined = points[index + 1]
+    const nextPoint: Record<Coord, number> | undefined = points[index + 1]
 
-    if (n) {
-      px = px - (point.x - n.x) * speed
-      py = py - (point.y - n.y) * speed
+    if (nextPoint) {
+      px = px - (point.x - nextPoint.x) * speed
+      py = py - (point.y - nextPoint.y) * speed
     }
   })
 
