@@ -91,6 +91,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  window.removeEventListener('click', setRandom)
   window.removeEventListener('mousemove', move)
   window.removeEventListener('resize', setSize)
 })
@@ -106,6 +107,7 @@ onUnmounted(() => {
       ref="path"
       d=""
       fill="none"
+      class="transition-colors duration-300"
       :stroke="hex"
       :stroke-width="thickness"
       stroke-linecap="round"

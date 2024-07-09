@@ -11,7 +11,7 @@ const { hex } = useAccentColour()
       class="block"
     >
       <IconDitta
-        class="w-full max-w-[100px] h-auto"
+        class="w-full max-w-[100px] h-auto transition-colors duration-300"
         :style="{ color: hex }"
       />
 
