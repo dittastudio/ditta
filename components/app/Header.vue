@@ -1,19 +1,14 @@
 <script lang="ts" setup>
 import IconDitta from '@/assets/icons/ditta.svg'
-
-const { hex } = useAccentColour()
 </script>
 
 <template>
-  <div class="absolute top-0 left-0 z-0 wrapper py-[var(--app-outer-gutter)]">
+  <div class="absolute top-0 left-0 z-10 wrapper py-[var(--app-outer-gutter)]">
     <NuxtLink
       to="/"
-      class="block"
+      class="block text-[#111] hover:text-white"
     >
-      <IconDitta
-        class="w-full max-w-[100px] h-auto transition-colors duration-300"
-        :style="{ color: hex }"
-      />
+      <IconDitta class="w-full max-w-[100px] h-auto transition-colors duration-300" />
 
       <h1 class="sr-only">
         ditta

@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { colours } from '@/tailwind.config'
+
 interface Props {
   thickness?: number
 }
@@ -6,7 +8,6 @@ interface Props {
 type Coord = 'x' | 'y'
 
 const { thickness = 100 } = defineProps<Props>()
-const { hex, setRandom } = useAccentColour()
 const svg = ref<SVGSVGElement | null>(null)
 const path = ref<SVGPathElement | null>(null)
 const segments = 500
@@ -17,6 +18,16 @@ const position: Record<Coord, number> = {
   y: 0,
 }
 
+const lineHidden = ref(false)
+const colourStops = [
+  colours['blue-darker'],
+  colours['purple-darker'],
+  colours['orange-darker'],
+  colours['pink-darker'],
+]
+
+let timer: NodeJS.Timeout
+
 const move = (event: MouseEvent) => {
   const rect = svg.value?.getBoundingClientRect()
   const offsetLeft = rect?.left ?? 0
@@ -26,6 +37,10 @@ const move = (event: MouseEvent) => {
 
   position.x = x
   position.y = y
+
+  lineHidden.value = false
+  clearTimeout(timer)
+  timer = setTimeout(() => lineHidden.value = true, 1000)
 
   if (points.length) {
     return
@@ -85,13 +100,11 @@ onMounted(() => {
   setSize()
   animate()
 
-  window.addEventListener('click', setRandom)
   window.addEventListener('mousemove', move)
   window.addEventListener('resize', setSize)
 })
 
 onUnmounted(() => {
-  window.removeEventListener('click', setRandom)
   window.removeEventListener('mousemove', move)
   window.removeEventListener('resize', setSize)
 })
@@ -101,14 +114,26 @@ onUnmounted(() => {
   <svg
     ref="svg"
     viewBox="0 0 1 1"
-    class="h-full w-full"
+    class="h-full w-full transition-opacity duration-300"
+    :class="lineHidden ? 'opacity-0' : ''"
   >
+    <defs>
+      <linearGradient id="tail-gradient">
+        <stop
+          v-for="(colour, index) in colourStops"
+          :key="index"
+          :offset="(index / (colourStops.length - 1)).toFixed(2)"
+          :stop-color="colour"
+        />
+      </linearGradient>
+    </defs>
+
     <path
       ref="path"
       d=""
       fill="none"
       class="transition-colors duration-300"
-      :stroke="hex"
+      stroke="url(#tail-gradient)"
       :stroke-width="thickness"
       stroke-linecap="round"
       stroke-linejoin="round"

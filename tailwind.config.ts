@@ -65,6 +65,7 @@ export const colours = {
   'body': '#555',
   'grey': '#F0F1F4',
   'blue': '#B8F2FE',
+  'blue-darker': '#04D2FB',
   'pink': '#F8BFBE',
   'pink-darker': '#ED615E',
   'orange': '#FEDBB8',
@@ -74,6 +75,8 @@ export const colours = {
   'green-darker': '#0EC32C',
   'purple': '#BEB8FE',
   'purple-darker': '#A38EF0',
+  'yellow': '#FEFBB8',
+  'yellow-darker': '#FCF54A',
 }
 
 export default {
