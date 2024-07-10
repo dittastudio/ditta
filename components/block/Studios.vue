@@ -10,9 +10,6 @@ interface Props {
 const { block } = defineProps<Props>()
 const itemRefs = ref<HTMLElement[]>([])
 const indexes = ref<number[]>([])
-const mediaPosition = ref({ x: 0, y: 0 })
-const mediaVisible = computed(() => indexes.value.length)
-
 let observerItems: IntersectionObserver
 
 const setIndex = (index: number) => {
@@ -46,24 +43,6 @@ const selectedStudio = computed(() => {
   return block.studios?.[getLatestIndex.value]
 })
 
-const setMediaPosition = (event: MouseEvent) => {
-  const x = event.pageX - window.scrollX
-  const y = event.pageY - window.scrollY
-
-  mediaPosition.value = { x: x + 50, y: y + 50 }
-}
-
-const mediaStyles = computed(() => {
-  const position = `translate3d(${mediaPosition.value.x}px, ${mediaPosition.value.y}px, 0)`
-  const scale = `${selectedStudio.value && mediaVisible.value ? 'scale(1)' : 'scale(0.9)'}`
-  const transformStyles = `${position} ${scale}`
-
-  return {
-    transform: transformStyles,
-    opacity: selectedStudio.value && mediaVisible.value ? 1 : 0,
-  }
-})
-
 onMounted(() => {
   if (!itemRefs.value.length) {
     return
@@ -75,8 +54,6 @@ onMounted(() => {
   })
 
   itemRefs.value.forEach(item => observerItems.observe(item))
-
-  window.addEventListener('mousemove', setMediaPosition)
 })
 
 onUnmounted(() => {
@@ -91,7 +68,7 @@ onUnmounted(() => {
     :class="[colourText[block.colour], colourBackground[block.background]]"
   >
     <div class="relative z-1 section wrapper grid gap-x-[var(--app-inner-gutter)] grid-cols-1 md:grid-cols-12">
-      <div class="md:col-start-4 md:-col-end-1 flex flex-col gap-40">
+      <div class="md:col-start-4 md:-col-end-1 flex flex-col gap-[var(--app-vertical-rhythm)]">
         <StoryblokRichText
           v-if="storyblokRichTextContent(block.text)"
           :content="block.text"
@@ -125,25 +102,24 @@ onUnmounted(() => {
       </div>
     </div>
 
-    <div
-      class="fixed top-0 left-0 z-0 w-1/3 aspect-4/3 rounded-[20px] bg-white transition-all duration-1000 ease-outExpo overflow-hidden"
-      :style="mediaStyles"
-    >
-      <!-- <Transition
-        mode="out-in"
-        name="fade"
-      > -->
-      <div
-        v-if="selectedStudio && selectedStudio.media"
-        :key="selectedStudio._uid"
-      >
-        <img
-          :src="selectedStudio.media.filename"
-          :alt="selectedStudio.name"
-          class="block w-full h-full object-cover"
+    <div class="absolute inset-0">
+      <div class="sticky inset-0 mx-auto w-full h-screen flex flex-col items-end justify-center px-[var(--app-outer-gutter)]">
+        <div
+          class="w-2/3 md:w-1/2 aspect-4/3 rounded-[20px] overflow-hidden transition-all duration-300"
+          :class="indexes.length ? 'opacity-100' : 'opacity-0'"
         >
+          <div
+            v-if="selectedStudio && selectedStudio.media"
+            :key="selectedStudio._uid"
+          >
+            <img
+              :src="selectedStudio.media.filename"
+              :alt="selectedStudio.name"
+              class="block w-full aspect-4/3 object-cover"
+            >
+          </div>
+        </div>
       </div>
-      <!-- </Transition> -->
     </div>
   </div>
 </template>
@@ -153,15 +129,5 @@ onUnmounted(() => {
   & :deep(* + *) {
     margin-block-start: 1lh;
   }
-}
-
-.fade {
-  /* &-enter-active, &-leave-active {
-    transition: opacity 0.3s;
-  }
-
-  &-enter-from, &-leave-to {
-    opacity: 0;
-  } */
 }
 </style>

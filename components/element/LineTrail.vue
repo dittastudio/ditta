@@ -28,12 +28,29 @@ const colourStops = [
 
 let timer: NodeJS.Timeout
 
-const move = (event: MouseEvent) => {
+const move = (event: MouseEvent | TouchEvent) => {
+  console.log()
   const rect = svg.value?.getBoundingClientRect()
   const offsetLeft = rect?.left ?? 0
   const offsetTop = rect?.top ?? 0
-  const x = event.clientX - offsetLeft
-  const y = event.clientY - offsetTop
+
+  let x = 0
+  let y = 0
+
+  if (event.type === 'mousemove') {
+    const mouseEvent = event as MouseEvent
+
+    x = mouseEvent.clientX - offsetLeft
+    y = mouseEvent.clientY - offsetTop
+  }
+  else if (event.type === 'touchmove') {
+    const touchEvent = event as TouchEvent
+    const touch = touchEvent.touches[0]
+
+    x = touch.clientX - offsetLeft
+    y = touch.clientY - offsetTop
+    touchEvent.preventDefault()
+  }
 
   position.x = x
   position.y = y
@@ -102,11 +119,13 @@ onMounted(() => {
   animate()
 
   window.addEventListener('mousemove', move)
+  window.addEventListener('touchmove', move)
   window.addEventListener('resize', setSize)
 })
 
 onUnmounted(() => {
   window.removeEventListener('mousemove', move)
+  window.removeEventListener('touchmove', move)
   window.removeEventListener('resize', setSize)
 })
 </script>

@@ -6,7 +6,7 @@ import IconDitta from '@/assets/icons/ditta.svg'
   <div class="absolute top-0 left-0 z-10 wrapper py-[var(--app-outer-gutter)]">
     <NuxtLink
       to="/"
-      class="inline-block text-[#111] hover:text-white"
+      class="inline-block text-white"
     >
       <IconDitta class="w-full max-w-[100px] h-auto transition-colors duration-300" />
 
