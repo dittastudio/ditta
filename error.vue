@@ -35,7 +35,7 @@ useHead({
       </h1>
 
       <p class="text-24 text-balance">
-        Uh oh, the page you were looking for couldn't be found.
+        Uh oh, there was a problem loading up this page.
       </p>
 
       <p>

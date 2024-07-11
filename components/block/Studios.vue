@@ -68,11 +68,22 @@ onUnmounted(() => {
     :class="[colourText[block.colour], colourBackground[block.background]]"
   >
     <div class="relative z-1 section wrapper grid gap-x-[var(--app-inner-gutter)] grid-cols-1 md:grid-cols-12">
-      <div class="md:col-start-4 md:-col-end-1 flex flex-col gap-[var(--app-vertical-rhythm)]">
+      <div class="md:col-start-4 md:-col-end-1 flex flex-col gap-[calc(var(--app-vertical-rhythm)/2)]">
         <StoryblokRichText
           v-if="storyblokRichTextContent(block.text)"
           :content="block.text"
-          class="richtext prose-light prose-headings:max-w-[60ch] prose-headings:text-balance prose-h1:text-fluid-md prose-p:opacity-50 prose-p:text-18 prose-p:md:text-24 prose-p:max-w-[35ch] prose-p:text-pretty"
+          class="
+            max-w-none
+            prose
+            prose-ditta
+            prose-headings:max-w-[60ch]
+            prose-headings:text-balance
+            prose-h1:text-fluid-md
+            prose-h2:text-fluid-sm
+            prose-p:text-18
+            prose-p:md:text-24
+            prose-p:max-w-[35ch]
+            prose-p:text-pretty"
         />
 
         <ul
@@ -105,7 +116,7 @@ onUnmounted(() => {
     <div class="absolute inset-0">
       <div class="sticky inset-0 mx-auto w-full h-screen flex flex-col items-end justify-center px-[var(--app-outer-gutter)]">
         <div
-          class="w-2/3 md:w-1/2 aspect-4/3 rounded-[20px] overflow-hidden transition-all duration-300"
+          class="w-2/3 md:w-1/2 max-w-[70vh] aspect-4/3 rounded-[20px] overflow-hidden transition-all duration-300"
           :class="indexes.length ? 'opacity-100' : 'opacity-0'"
         >
           <div
@@ -123,11 +134,3 @@ onUnmounted(() => {
     </div>
   </div>
 </template>
-
-<style lang="postcss" scoped>
-.richtext {
-  & :deep(* + *) {
-    margin-block-start: 1lh;
-  }
-}
-</style>

@@ -19,7 +19,9 @@ const classes = computed(() => [colourText[block.colour], colourBackground[block
   >
     <ElementLineTrail class="absolute inset-0 z-0 h-full w-full pointer-events-none" />
 
-    <div class="section wrapper relative z-1">
+    <div class="section wrapper pt-0 relative z-1">
+      <AppHeader class="my-[var(--app-outer-gutter)]" />
+
       <StoryblokRichText
         v-if="storyblokRichTextContent(block.text)"
         :content="block.text"

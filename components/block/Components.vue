@@ -39,13 +39,13 @@ const { content } = defineProps<Props>()
         :block="block"
       />
 
-      <BlockStudios
-        v-else-if="block.component === 'block_studios' && !block.hidden"
+      <BlockServices
+        v-else-if="block.component === 'block_services' && !block.hidden"
         :block="block"
       />
 
-      <BlockText
-        v-else-if="block.component === 'block_text' && !block.hidden"
+      <BlockStudios
+        v-else-if="block.component === 'block_studios' && !block.hidden"
         :block="block"
       />
     </section>

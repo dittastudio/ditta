@@ -203,6 +203,17 @@ export interface BlockMediaStoryblok {
   [k: string]: any;
 }
 
+export interface BlockServicesStoryblok {
+  text: RichtextStoryblok;
+  colour: number | string;
+  background: number | string;
+  services?: ServiceStoryblok[];
+  hidden?: boolean;
+  _uid: string;
+  component: "block_services";
+  [k: string]: any;
+}
+
 export interface BlockStudiosStoryblok {
   text: RichtextStoryblok;
   studios?: StudioStoryblok[];
@@ -211,17 +222,6 @@ export interface BlockStudiosStoryblok {
   hidden?: boolean;
   _uid: string;
   component: "block_studios";
-  [k: string]: any;
-}
-
-export interface BlockTextStoryblok {
-  text: RichtextStoryblok;
-  colour: number | string;
-  background: number | string;
-  link?: ButtonStoryblok[];
-  hidden?: boolean;
-  _uid: string;
-  component: "block_text";
   [k: string]: any;
 }
 
@@ -240,8 +240,8 @@ export interface PageStoryblok {
     | BlockHeroWorkStoryblok
     | BlockMarqueesStoryblok
     | BlockMediaStoryblok
+    | BlockServicesStoryblok
     | BlockStudiosStoryblok
-    | BlockTextStoryblok
   )[];
   seo: SeoStoryblok[];
   _uid: string;
@@ -256,6 +256,15 @@ export interface SeoStoryblok {
   seo_image: AssetStoryblok;
   _uid: string;
   component: "seo";
+  [k: string]: any;
+}
+
+export interface ServiceStoryblok {
+  title: string;
+  description: string;
+  service: "development" | "ecommerce" | "cms";
+  _uid: string;
+  component: "service";
   [k: string]: any;
 }
 

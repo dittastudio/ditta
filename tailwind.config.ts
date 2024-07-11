@@ -62,7 +62,7 @@ export const colours = {
   'black': '#000000',
   'offwhite': '#F5F4EA',
   'offblack': '#1c1c1c',
-  'body': '#555',
+  'body': '#777',
   'grey': '#F0F1F4',
   'blue': '#B8F2FE',
   'blue-darker': '#04D2FB',
@@ -110,6 +110,15 @@ export default {
       '40': ['2.5rem', { lineHeight: '1.3', letterSpacing: '-0.01em' }],
       '50': ['3.125rem', { lineHeight: '1.1', letterSpacing: '-0.01em' }],
       '65': ['4.0625rem', { lineHeight: '1.1', letterSpacing: '-0.01em' }],
+      'fluid-sm': [
+        clamp({
+          minPixels: 40,
+          minViewportWidthPixels: screenSizes.xs,
+          maxPixels: 50,
+          maxViewportWidthPixels: screenSizes['2xl'],
+        }),
+        { lineHeight: '1.1', letterSpacing: '-0.01em', fontWeight: '500' },
+      ],
       'fluid-md': [
         clamp({
           minPixels: 40,

@@ -29,7 +29,6 @@ const colourStops = [
 let timer: NodeJS.Timeout
 
 const move = (event: MouseEvent | TouchEvent) => {
-  console.log()
   const rect = svg.value?.getBoundingClientRect()
   const offsetLeft = rect?.left ?? 0
   const offsetTop = rect?.top ?? 0

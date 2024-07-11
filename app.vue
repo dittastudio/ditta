@@ -22,8 +22,6 @@ useSeoMeta({
 
 <template>
   <div>
-    <AppHeader />
-
     <main>
       <NuxtPage />
     </main>

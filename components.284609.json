@@ -600,6 +600,86 @@
       "component_group_name": "Blocks"
     },
     {
+      "name": "block_services",
+      "display_name": "Services",
+      "created_at": "2024-06-24T17:22:15.617Z",
+      "updated_at": "2024-07-11T15:34:28.176Z",
+      "id": 5970068,
+      "schema": {
+        "text": {
+          "type": "richtext",
+          "pos": 0,
+          "required": true,
+          "customize_toolbar": true,
+          "toolbar": [
+            "bold",
+            "h1",
+            "h2",
+            "h3",
+            "h4",
+            "h5",
+            "h6",
+            "link",
+            "italic",
+            "anchor",
+            "paragraph"
+          ],
+          "key": "text"
+        },
+        "colour": {
+          "type": "option",
+          "pos": 1,
+          "use_uuid": true,
+          "required": true,
+          "source": "internal",
+          "datasource_slug": "colours",
+          "exclude_empty_option": true,
+          "key": "colour"
+        },
+        "background": {
+          "type": "option",
+          "pos": 2,
+          "use_uuid": true,
+          "required": true,
+          "source": "internal",
+          "datasource_slug": "colours",
+          "exclude_empty_option": true,
+          "key": "background"
+        },
+        "services": {
+          "type": "bloks",
+          "pos": 3,
+          "restrict_type": "",
+          "restrict_components": true,
+          "component_whitelist": [
+            "service"
+          ],
+          "display_name": "Services",
+          "key": "button"
+        },
+        "hidden": {
+          "type": "boolean",
+          "pos": 4,
+          "key": "hidden"
+        }
+      },
+      "image": null,
+      "preview_field": null,
+      "is_root": false,
+      "preview_tmpl": null,
+      "is_nestable": true,
+      "all_presets": [],
+      "preset_id": null,
+      "real_name": "Services",
+      "component_group_uuid": "c56a9133-c409-488d-9f91-40d75d6e78cd",
+      "color": null,
+      "icon": null,
+      "internal_tags_list": [],
+      "internal_tag_ids": [],
+      "content_type_asset_preview": null,
+      "component_group_name": "Blocks"
+    },
+    {
       "name": "block_studios",
       "display_name": "Studios",
       "created_at": "2024-06-18T20:21:45.347Z",
@@ -665,86 +745,6 @@
       "all_presets": [],
       "preset_id": null,
       "real_name": "Studios",
-      "component_group_uuid": "c56a9133-c409-488d-9f91-40d75d6e78cd",
-      "color": null,
-      "icon": null,
-      "internal_tags_list": [],
-      "internal_tag_ids": [],
-      "content_type_asset_preview": null,
-      "component_group_name": "Blocks"
-    },
-    {
-      "name": "block_text",
-      "display_name": "Text",
-      "created_at": "2024-06-24T17:22:15.617Z",
-      "updated_at": "2024-07-08T18:03:47.174Z",
-      "id": 5970068,
-      "schema": {
-        "text": {
-          "type": "richtext",
-          "pos": 0,
-          "required": true,
-          "customize_toolbar": true,
-          "toolbar": [
-            "bold",
-            "h1",
-            "h2",
-            "h3",
-            "h4",
-            "h5",
-            "h6",
-            "link",
-            "italic",
-            "anchor",
-            "paragraph"
-          ],
-          "key": "text"
-        },
-        "colour": {
-          "type": "option",
-          "pos": 1,
-          "use_uuid": true,
-          "required": true,
-          "source": "internal",
-          "datasource_slug": "colours",
-          "exclude_empty_option": true,
-          "key": "colour"
-        },
-        "background": {
-          "type": "option",
-          "pos": 2,
-          "use_uuid": true,
-          "required": true,
-          "source": "internal",
-          "datasource_slug": "colours",
-          "exclude_empty_option": true,
-          "key": "background"
-        },
-        "link": {
-          "type": "bloks",
-          "pos": 3,
-          "restrict_type": "",
-          "restrict_components": true,
-          "component_whitelist": [
-            "button"
-          ],
-          "maximum": 1,
-          "display_name": "Link",
-          "key": "button"
-        },
-        "hidden": {
-          "type": "boolean",
-          "pos": 4
-        }
-      },
-      "image": null,
-      "preview_field": null,
-      "is_root": false,
-      "preview_tmpl": null,
-      "is_nestable": true,
-      "all_presets": [],
-      "preset_id": null,
-      "real_name": "Text",
       "component_group_uuid": "c56a9133-c409-488d-9f91-40d75d6e78cd",
       "color": null,
       "icon": null,
@@ -879,6 +879,64 @@
       "internal_tags_list": [],
       "internal_tag_ids": [],
       "content_type_asset_preview": null
+    },
+    {
+      "name": "service",
+      "display_name": null,
+      "created_at": "2024-07-11T15:28:26.961Z",
+      "updated_at": "2024-07-11T15:35:59.979Z",
+      "id": 6039490,
+      "schema": {
+        "title": {
+          "type": "text",
+          "pos": 0,
+          "required": true
+        },
+        "description": {
+          "type": "text",
+          "pos": 1,
+          "required": true
+        },
+        "service": {
+          "type": "option",
+          "pos": 2,
+          "required": true,
+          "use_uuid": true,
+          "options": [
+            {
+              "_uid": "48642525-c1c2-4465-9864-4398144c387e",
+              "name": "Development",
+              "value": "development"
+            },
+            {
+              "_uid": "6cdfe08e-036b-4da7-9295-4c84dde13560",
+              "value": "ecommerce",
+              "name": "Ecommerce"
+            },
+            {
+              "_uid": "16d9f764-db04-4e62-9f7b-ee59a717b797",
+              "value": "cms",
+              "name": "CMS"
+            }
+          ],
+          "exclude_empty_option": true
+        }
+      },
+      "image": null,
+      "preview_field": null,
+      "is_root": false,
+      "preview_tmpl": null,
+      "is_nestable": true,
+      "all_presets": [],
+      "preset_id": null,
+      "real_name": "service",
+      "component_group_uuid": "a4bb317a-f2a8-450c-95ee-324278de45c2",
+      "color": null,
+      "icon": null,
+      "internal_tags_list": [],
+      "internal_tag_ids": [],
+      "content_type_asset_preview": null,
+      "component_group_name": "Elements"
     },
     {
       "name": "studio",
