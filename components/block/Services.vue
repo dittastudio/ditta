@@ -63,7 +63,7 @@ const icons = {
 
               <p
                 v-if="service.description"
-                class="text-18 text-body max-w-[35ch]"
+                class="text-18 text-pretty text-body max-w-[35ch]"
               >
                 {{ service.description }}
               </p>
