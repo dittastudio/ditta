@@ -178,7 +178,11 @@ onUnmounted(() => {
     </template>
 
     <template v-else-if="error || !data">
-      <p>Oh no, there was a problem getting the weather</p>
+      <div class="grid grid-cols-1 gap-8 items-center overflow-hidden row-span-2">
+        <p class="font-medium">
+          Minchia! There was a problem getting the weather. Maybe you're offline?
+        </p>
+      </div>
     </template>
   </div>
 </template>
