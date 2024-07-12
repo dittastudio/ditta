@@ -83,7 +83,9 @@ onUnmounted(() => {
             prose-p:text-18
             prose-p:md:text-24
             prose-p:max-w-[35ch]
-            prose-p:text-pretty"
+            prose-p:text-pretty
+            [&_b]:font-extrabold
+          "
         />
 
         <ul
@@ -95,17 +97,23 @@ onUnmounted(() => {
             ref="itemRefs"
             :key="studio._uid"
             :data-index="index"
-            class="text-40 overflow-hidden"
+            class="text-40"
             tabindex="0"
           >
             <span
-              class="flex items-start gap-10 transition-transform ease-outSine"
+              class="flex items-start gap-10 transition-transform"
               :class="[
-                { 'translate-x-0 duration-300': indexes.includes(index) },
-                { '-translate-x-[48px] duration-1000': !indexes.includes(index) },
+                { 'translate-x-0 duration-300 ease-smooth': indexes.includes(index) },
+                { '-translate-x-24 duration-400 ease-out': !indexes.includes(index) },
               ]"
             >
-              <span class="select-none">&rarr;</span>
+              <span
+                class="select-none"
+                :class="[
+                  { 'opacity-100 duration-300 ease-smooth': indexes.includes(index) },
+                  { 'opacity-0 duration-400 ease-out': !indexes.includes(index) },
+                ]"
+              >&rarr;</span>
               {{ studio.name }}
             </span>
           </li>
@@ -116,7 +124,7 @@ onUnmounted(() => {
     <div class="absolute inset-0">
       <div class="sticky inset-0 mx-auto w-full h-screen flex flex-col items-end justify-center px-[var(--app-outer-gutter)]">
         <div
-          class="w-2/3 md:w-1/2 max-w-[70vh] aspect-4/3 rounded-[20px] overflow-hidden transition-all duration-300"
+          class="w-2/3 md:w-1/2 max-w-[70vh] aspect-4/3 rounded-[20px] overflow-hidden transition-opacity duration-300"
           :class="indexes.length ? 'opacity-100' : 'opacity-0'"
         >
           <div
