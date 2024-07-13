@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useIntersectionObserver } from '@vueuse/core'
 import { colourBackground, colourText } from '@/utilities/maps'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -23,9 +24,20 @@ const {
   duration = '60s',
 } = defineProps<Props>()
 
-const container = ref()
+const isVisible = ref(false)
+const el = ref<HTMLDivElement | null>(null)
+const container = ref<HTMLDivElement | null>(null)
 
-onMounted(() => {
+useIntersectionObserver(
+  el,
+  ([{ isIntersecting }]) => {
+    console.log('isVisible', isVisible.value)
+    isVisible.value = isIntersecting
+  },
+  { rootMargin: '0px 0px 0px 0px', threshold: 0.5 },
+)
+
+const triggerSkew = () => {
   const proxy = { skew: 0 }
   const skewSetter = gsap.quickSetter(container.value, 'skewX', 'deg') // fast
   const clamp = gsap.utils.clamp(-20, 20)
@@ -42,7 +54,17 @@ onMounted(() => {
   })
 
   gsap.set(container.value, { transformOrigin: 'right center', force3D: true })
+}
+
+watch(isVisible, () => {
+  if (isVisible.value)
+    triggerSkew()
 })
+
+// onMounted(() => {
+//   if (isVisible.value)
+//     triggerSkew()
+// })
 
 const multipleWords: string[] = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy, ...copy, ...copy, ...copy]
 </script>
@@ -50,8 +72,9 @@ const multipleWords: string[] = [...copy, ...copy, ...copy, ...copy, ...copy, ..
 <template>
   <div
     v-if="copy"
+    ref="el"
     class="block-marquee transform-gpu backface-hidden contain-paint block w-full"
-    :class="[colourBackground[backgroundColor], colourText[textColor]]"
+    :class="[colourBackground[backgroundColor], colourText[textColor], { 'is-visible': isVisible }]"
   >
     <div
       ref="container"
@@ -99,6 +122,7 @@ const multipleWords: string[] = [...copy, ...copy, ...copy, ...copy, ...copy, ..
 
   &--left {
     animation: auto linear scroll-left both;
+    animation-play-state: paused;
     animation-timeline: view();
 
     animation-range: entry 0% cover 100%;
@@ -106,10 +130,18 @@ const multipleWords: string[] = [...copy, ...copy, ...copy, ...copy, ...copy, ..
 
   &--right {
     justify-content: flex-end;
+
     animation: auto linear scroll-right both;
+    animation-play-state: paused;
     animation-timeline: view();
 
     animation-range: entry 0% cover 100%;
+  }
+
+  @media not (prefers-reduced-motion: reduce) {
+    .block-marquee.is-visible & {
+      animation-play-state: running;
+    }
   }
 }
 
@@ -118,14 +150,18 @@ const multipleWords: string[] = [...copy, ...copy, ...copy, ...copy, ...copy, ..
 
   .block-marquee__words--left & {
     animation: ticker-left var(--duration) linear infinite;
+    animation-play-state: paused;
   }
 
   .block-marquee__words--right & {
     animation: ticker-right var(--duration) linear infinite;
+    animation-play-state: paused;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    animation-play-state: paused;
+  @media not (prefers-reduced-motion: reduce) {
+    .block-marquee.is-visible & {
+      animation-play-state: running;
+    }
   }
 }
 
