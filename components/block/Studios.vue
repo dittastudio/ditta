@@ -90,7 +90,7 @@ onUnmounted(() => {
 
         <ul
           v-if="block.studios?.length"
-          class="flex flex-col"
+          class="flex flex-col items-start"
         >
           <li
             v-for="(studio, index) in block.studios"
@@ -101,28 +101,31 @@ onUnmounted(() => {
             tabindex="0"
           >
             <span
-              class="flex items-start gap-10 transition-transform transform-gpu"
+              class="relative block transition-transform transform-gpu"
               :class="[
-                { 'translate-x-0 duration-300 ease-smooth': indexes.includes(index) },
-                { '-translate-x-24 duration-300 ease-out': !indexes.includes(index) },
+                { 'translate-x-24 duration-300 ease-smooth': indexes.includes(index) },
+                { 'translate-x-0 duration-300 ease-out': !indexes.includes(index) },
               ]"
             >
               <span
-                class="select-none"
+                class="absolute right-[calc(100%_+_10px)]"
                 :class="[
                   { 'opacity-100 duration-300 ease-smooth': indexes.includes(index) },
                   { 'opacity-0 duration-100 ease-out': !indexes.includes(index) },
                 ]"
-              >&rarr;</span>
+              >
+                &rarr;
+              </span>
+
               {{ studio.name }}
             </span>
           </li>
         </ul>
 
-        <div class="absolute inset-x-0 -inset-y-[50vh]">
+        <div class="absolute inset-x-0 -inset-y-[50vh] pointer-events-none">
           <div class="sticky top-0 mx-auto w-full h-screen flex flex-col items-end justify-center px-[var(--app-outer-gutter)]">
             <div
-              class="w-2/3 md:w-1/2 max-w-[70vh] aspect-4/3 rounded-[20px] overflow-hidden transition-opacity duration-300"
+              class="w-2/3 md:w-1/2 max-w-[70vh] aspect-4/3 rounded-2xl overflow-hidden transition-opacity duration-300"
               :class="indexes.length ? 'opacity-100' : 'opacity-0'"
             >
               <div
@@ -132,7 +135,7 @@ onUnmounted(() => {
                 <img
                   :src="selectedStudio.media.filename"
                   :alt="selectedStudio.name"
-                  class="block w-full aspect-4/3 object-cover"
+                  class="block w-full aspect-4/3 object-cover pointer-events-auto"
                 >
               </div>
             </div>
