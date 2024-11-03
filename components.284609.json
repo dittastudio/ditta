@@ -1003,5 +1003,35 @@
       "content_type_asset_preview": null,
       "component_group_name": "Elements"
     }
+  ],
+  "component_groups": [
+    {
+      "name": "Bento",
+      "id": 356860,
+      "uuid": "e0d6c480-2561-4bde-97c4-d0439a7f16b7",
+      "parent_id": null,
+      "parent_uuid": null
+    },
+    {
+      "name": "Blocks",
+      "id": 356652,
+      "uuid": "c56a9133-c409-488d-9f91-40d75d6e78cd",
+      "parent_id": null,
+      "parent_uuid": null
+    },
+    {
+      "name": "Elements",
+      "id": 356930,
+      "uuid": "a4bb317a-f2a8-450c-95ee-324278de45c2",
+      "parent_id": null,
+      "parent_uuid": null
+    },
+    {
+      "name": "Types",
+      "id": 356867,
+      "uuid": "67a899e1-7a4c-4a22-ad69-551d9227880c",
+      "parent_id": null,
+      "parent_uuid": null
+    }
   ]
 }
