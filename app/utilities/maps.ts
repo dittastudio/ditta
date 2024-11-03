@@ -1,4 +1,4 @@
-// import { colours } from '@/tailwind.config'
+// import { colours } from '@@/tailwind.config'
 
 // type ColourKey = keyof typeof colours
 

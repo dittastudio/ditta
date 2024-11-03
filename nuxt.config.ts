@@ -2,7 +2,6 @@ import svgLoader from 'vite-svg-loader'
 
 export default defineNuxtConfig({
   devtools: { enabled: true },
-
   app: {
     head: {
       htmlAttrs: {
@@ -43,24 +42,22 @@ export default defineNuxtConfig({
     pageTransition: { name: 'page', mode: 'out-in' },
     layoutTransition: false,
   },
-
   css: process.env.LOCAL === 'true' ? ['@michaelpumo/screen/app.css'] : [],
-
   build: {
     transpile: ['gsap'],
   },
-
   eslint: {
     config: {
       standalone: false,
       stylistic: true,
     },
   },
-
+  future: {
+    compatibilityVersion: 4,
+  },
   gtag: {
     id: 'G-VPGVW7ZKGD',
   },
-
   image: {
     provider: 'storyblok',
     storyblok: {
@@ -78,7 +75,6 @@ export default defineNuxtConfig({
       '3xl': 1920,
     },
   },
-
   modules: [
     '@nuxt/eslint',
     '@nuxt/image',
@@ -87,11 +83,9 @@ export default defineNuxtConfig({
     '@storyblok/nuxt',
     'nuxt-gtag',
   ],
-
   storyblok: {
     accessToken: process.env.NUXT_STORYBLOK_TOKEN,
   },
-
   postcss: {
     plugins: {
       'postcss-import': {},
@@ -100,7 +94,6 @@ export default defineNuxtConfig({
       'autoprefixer': {},
     },
   },
-
   runtimeConfig: {
     private: {},
     public: {
@@ -109,21 +102,16 @@ export default defineNuxtConfig({
       WEATHER_API_KEY: process.env.NUXT_WEATHER_API_KEY,
     },
   },
-
   site: {
     url: 'https://ditta.studio',
   },
-
   ssr: true,
-
   tailwindcss: {
     cssPath: '@/assets/css/app.css',
   },
-
   typescript: {
     strict: true,
   },
-
   vite: {
     plugins: [
       svgLoader({
@@ -137,6 +125,5 @@ export default defineNuxtConfig({
       },
     },
   },
-
   compatibilityDate: '2024-07-05',
 })

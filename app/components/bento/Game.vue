@@ -1,6 +1,6 @@
 <script lang="ts" setup>
+import { colours } from '@@/tailwind.config'
 import type { BentoGameStoryblok } from '@/types/storyblok'
-import { colours } from '@/tailwind.config'
 
 interface Props {
   block: BentoGameStoryblok

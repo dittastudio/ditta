@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { colours } from '@/tailwind.config'
+import { colours } from '@@/tailwind.config'
 
 interface Props {
   thickness?: number

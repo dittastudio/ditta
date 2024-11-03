@@ -1,6 +1,6 @@
 <script lang="ts" setup>
+import type { colours } from '@@/tailwind.config'
 import { colourBackground, colourText } from '@/utilities/maps'
-import type { colours } from '@/tailwind.config'
 
 export interface Props {
   backgroundColor?: keyof typeof colours
