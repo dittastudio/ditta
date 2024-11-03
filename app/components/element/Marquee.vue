@@ -2,7 +2,6 @@
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useIntersectionObserver } from '@vueuse/core'
-import { colourBackground, colourText } from '@/utilities/maps'
 
 gsap.registerPlugin(ScrollTrigger)
 

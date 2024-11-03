@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { BlockBentoBoxStoryblok } from '@/types/storyblok'
-import { colourBackground, colourText } from '@/utilities/maps'
 
 interface Props {
   block: BlockBentoBoxStoryblok

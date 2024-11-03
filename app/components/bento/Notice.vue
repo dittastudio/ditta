@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { BentoNoticeStoryblok } from '@/types/storyblok'
-import { storyblokRichTextContent } from '@/utilities/storyblok'
 
 interface Props {
   block: BentoNoticeStoryblok

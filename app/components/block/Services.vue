@@ -1,7 +1,5 @@
 <script lang="ts" setup>
 import type { BlockServicesStoryblok } from '@/types/storyblok'
-import { storyblokRichTextContent } from '@/utilities/storyblok'
-import { colourBackground, colourText } from '@/utilities/maps'
 
 interface Props {
   block: BlockServicesStoryblok
