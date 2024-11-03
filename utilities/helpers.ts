@@ -13,7 +13,11 @@ const arrayToTuples = (items: unknown[]) => {
   return tuples
 }
 
-const calculateAspectRatio = (width: number, height: number, newWidth: number = 100): string => {
+const calculateAspectRatio = (
+  width: number,
+  height: number,
+  newWidth: number = 100,
+): string => {
   const aspectRatioWidth = newWidth
   const aspectRatioHeight = Math.round((height / width) * aspectRatioWidth)
 
@@ -23,7 +27,10 @@ const calculateAspectRatio = (width: number, height: number, newWidth: number = 
 const ratioDimensions = (
   ratio: ditta.TAspectRatios | string | number,
 ): ditta.ImageDimensions => {
-  const parts = ratio.toString().split(':').map((num: string): number => Number(num))
+  const parts = ratio
+    .toString()
+    .split(':')
+    .map((num: string): number => Number(num))
 
   return {
     width: parts[0],
@@ -31,7 +38,8 @@ const ratioDimensions = (
   }
 }
 
-const wait = (ms: number = 0) => new Promise(resolve => setTimeout(resolve, ms))
+const wait = (ms: number = 0) =>
+  new Promise(resolve => setTimeout(resolve, ms))
 
 const validAspectRatio = (ratio: string | number = '') => {
   const pattern = /[0-9.]+:[0-9.]+/g

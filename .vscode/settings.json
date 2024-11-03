@@ -1,4 +1,8 @@
 {
+  "editor.fontSize": 13,
+  "editor.fontFamily": "Geist Mono, Menlo, Monaco, 'Courier New', monospace",
+  "typescript.suggest.autoImports": false,
+  "javascript.suggest.autoImports": false,
   "files.associations": {
     "*.css": "tailwindcss"
   },
@@ -7,9 +11,13 @@
   },
   "tailwindCSS.includeLanguages": {
     "vue": "html",
-    "vue-html": "html",
+    "vue-html": "html"
   },
   "editor.quickSuggestions": {
     "strings": "on"
+  },
+  "editor.formatOnSave": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "always"
   }
 }
