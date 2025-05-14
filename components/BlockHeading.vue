@@ -56,7 +56,7 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
             v-for="(word, index) in multipleWords"
             :key="word"
             :aria-hidden="index > 0 ? true : undefined"
-            class="block-heading__copy block"
+            class="block-heading__copy block font-[inherit]"
           >
             {{ word }}
           </p>
@@ -69,7 +69,7 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
           <p
             v-for="word in multipleWords"
             :key="word"
-            class="block-heading__copy block"
+            class="block-heading__copy block font-[inherit]"
           >
             {{ word }}
           </p>
@@ -204,6 +204,5 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
 
 .block-heading__copy {
   margin-block: -0.147em -0.013em;
-  line-height: 1.1;
 }
 </style>
