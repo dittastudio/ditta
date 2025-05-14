@@ -21,13 +21,13 @@ onMounted(() => {
   tl.fromTo(
     iconRef.value,
     {
-      x: '100%',
-      rotation: 180,
+      x: '50%',
+      rotation: 90,
     },
     {
       x: 0,
       rotation: 0,
-      ease: 'back.out(1.7)',
+      ease: 'power2.out',
     },
   )
 })
