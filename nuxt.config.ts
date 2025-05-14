@@ -26,6 +26,8 @@ export default defineNuxtConfig({
         { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' },
         { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
         { rel: 'manifest', href: '/site.webmanifest' },
+        { rel: 'preload', type: 'font/woff2', href: '/fonts/SaansRegular.woff2', as: 'font', crossorigin: '' },
+        { rel: 'preload', type: 'font/woff2', href: '/fonts/SaansSemiBold.woff2', as: 'font', crossorigin: '' },
       ],
     },
   },

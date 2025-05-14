@@ -2,9 +2,7 @@
 .type-h1,
 .type-h2,
 .type-h3 {
-  font-weight: bold;
   line-height: theme('lineHeight.tight');
-  text-transform: uppercase;
 }
 
 .type-h4,

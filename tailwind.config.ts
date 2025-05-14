@@ -70,7 +70,7 @@ export default {
       ...colours,
     },
     fontFamily: {
-      body: ['Greycliff CF', 'system-ui', 'sans-serif'],
+      body: ['Saans', 'system-ui', 'sans-serif'],
     },
     fontSize: {
       10: '0.625rem',

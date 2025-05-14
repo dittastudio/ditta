@@ -79,7 +79,7 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
       class="block-heading__wrapper"
     >
       <div
-        class="block-heading__marquee type-fluid-lg"
+        class="block-heading__marquee type-fluid-lg lowercase"
         :class="{ [`block-heading__marquee--${direction}`]: direction }"
       >
         <div class="block-heading__group">
@@ -121,7 +121,7 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
   gap: var(--gap);
 
   min-width: 100%;
-  padding: 0.15em;
+  padding: 0.2em 0.15em 0.25em;
 
   &--left {
     animation: auto linear scroll-left both;
