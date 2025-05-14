@@ -135,3 +135,25 @@ const headings = [
     />
   </div>
 </template>
+
+<style>
+:root {
+  --start-color: theme('colors.pink'); /* Pink */
+  --middle-color: theme('colors.beige'); /* Beige */
+  --end-color: theme('colors.lightgrey'); /* Light grey */
+  --scroll-progress: 0;
+}
+
+html {
+  background-color: color-mix(
+    in srgb,
+    var(--start-color) calc((1 - min(var(--scroll-progress) * 2, 1)) * 100%),
+    color-mix(
+      in srgb,
+      var(--middle-color) calc((1 - min(max((var(--scroll-progress) - 0.5) * 2, 0), 1)) * 100%),
+      var(--end-color) calc(min(max((var(--scroll-progress) - 0.5) * 2, 0), 1) * 200%)
+    )
+  );
+  transition: background-color 0.1s ease-out;
+}
+</style>
