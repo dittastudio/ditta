@@ -61,68 +61,68 @@ onMounted(() => {
 
 const headings = [
   {
-    backgroundColor: 'offblack',
+    backgroundColor: 'black',
     textColor: 'offwhite',
     copy: ['Obey'],
     duration: '60s',
   },
   {
     backgroundColor: 'offwhite',
-    textColor: 'offblack',
+    textColor: 'black',
     copy: ['Consume'],
     duration: '80s',
   },
   {
-    backgroundColor: 'offblack',
+    backgroundColor: 'black',
     textColor: 'pink',
     copy: ['Like'],
     duration: '70s',
   },
   {
     backgroundColor: 'pink',
-    textColor: 'offblack',
+    textColor: 'black',
     copy: ['Subscribe'],
     duration: '65s',
   },
   {
-    backgroundColor: 'offblack',
+    backgroundColor: 'black',
     textColor: 'offwhite',
     copy: ['Upgrade'],
     duration: '85s',
   },
   {
     backgroundColor: 'offwhite',
-    textColor: 'offblack',
+    textColor: 'black',
     copy: ['Conform'],
     duration: '75s',
   },
   {
-    backgroundColor: 'offblack',
+    backgroundColor: 'black',
     textColor: 'pink',
     copy: ['Hire us'],
     duration: '60s',
   },
   {
     backgroundColor: 'pink',
-    textColor: 'offblack',
+    textColor: 'black',
     copy: ['Sleep'],
     duration: '80s',
   },
   {
     backgroundColor: 'offwhite',
-    textColor: 'offblack',
+    textColor: 'black',
     copy: ['Wake up'],
     duration: '70s',
   },
   {
-    backgroundColor: 'offblack',
+    backgroundColor: 'black',
     textColor: 'offwhite',
     copy: ['Pay up'],
     duration: '65s',
   },
   {
     backgroundColor: 'pink',
-    textColor: 'offblack',
+    textColor: 'black',
     copy: ['Repeat'],
     duration: '85s',
   },
@@ -131,19 +131,12 @@ const headings = [
 
 <template>
   <div>
-    <div class="wrapper flex flex-col items-center justify-center min-h-[100vh]">
-      <IconDitta class="w-[27%] min-w-200 h-auto" />
+    <div class="wrapper flex flex-col items-center justify-end min-h-[100svh] pb-[var(--app-outer-gutter)]">
+      <IconDitta class="w-full h-auto" />
 
       <h1 class="sr-only">
         ditta
       </h1>
-
-      <a
-        class="text-offwhite type-fluid-sm font-bold p-[1em] transition-opacity duration-200 ease-smooth hover:opacity-70"
-        href="mailto:hello@ditta.studio"
-      >
-        hello@ditta.studio
-      </a>
     </div>
 
     <!-- <BlockScrollTest />
@@ -169,7 +162,7 @@ const headings = [
 
         <div
           v-else
-          class="aspect-[3/2] w-full h-full flex items-center justify-center bg-offblack"
+          class="aspect-[3/2] w-full h-full flex items-center justify-center bg-black"
         >
           <div class="relative z-2 w-[25%]">
             <IconDitta class="w-full h-auto mx-auto" />

@@ -1,12 +1,11 @@
 :root {
   --app-max-width: 1920px;
   --app-inner-gutter: theme('spacing.16');
-  --app-outer-gutter: theme('spacing.24');
+  --app-outer-gutter: clamp(theme('spacing.24'), 9.9155px + 3.7559vw, theme('spacing.64'));
   --app-header-height: 96px;
 
   @screen md {
     --app-inner-gutter: theme('spacing.24');
-    --app-outer-gutter: theme('spacing.64');
     --app-header-height: 144px;
   }
 }

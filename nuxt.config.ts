@@ -3,6 +3,8 @@ import svgLoader from 'vite-svg-loader'
 export default defineNuxtConfig({
   devtools: { enabled: true },
   app: {
+    pageTransition: { name: 'page', mode: 'out-in' },
+    layoutTransition: false,
     head: {
       htmlAttrs: {
         lang: 'en-GB',
@@ -12,35 +14,20 @@ export default defineNuxtConfig({
       meta: [
         { name: 'author', content: 'ditta' },
         { name: 'revisit-after', content: '1 day' },
-        { name: 'msapplication-TileColor', content: '#ffb9b9' },
-        { name: 'theme-color', content: '#ffb9b9' },
+        { name: 'msapplication-TileColor', content: '#ffa4d2' },
+        { name: 'theme-color', content: '#ffa4d2' },
+        { name: 'apple-mobile-web-app-title', content: 'ditta' },
         { name: 'google', content: 'notranslate' },
-        { 'http-equiv': 'content-language', content: 'en-GB' },
+        { 'http-equiv': 'content-language', 'content': 'en-GB' },
       ],
       link: [
         { rel: 'preconnect', href: 'https://a2.storyblok.com' },
-        {
-          rel: 'apple-touch-icon',
-          sizes: '180x180',
-          href: '/apple-touch-icon.png',
-        },
-        {
-          rel: 'icon',
-          type: 'image/png',
-          sizes: '32x32',
-          href: '/favicon-32x32.png',
-        },
-        {
-          rel: 'icon',
-          type: 'image/png',
-          sizes: '16x16',
-          href: '/favicon-16x16.png',
-        },
+        { rel: 'icon', href: '/favicon.ico', sizes: '32x32' },
+        { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' },
+        { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
         { rel: 'manifest', href: '/site.webmanifest' },
       ],
     },
-    pageTransition: { name: 'page', mode: 'out-in' },
-    layoutTransition: false,
   },
   css: process.env.LOCAL === 'true' ? ['@michaelpumo/screen/app.css'] : [],
   build: {
@@ -86,7 +73,7 @@ export default defineNuxtConfig({
   site: {
     url: 'https://ditta.studio',
   },
-  ssr: process.env.NUXT_SSR === 'true' ? true : false,
+  ssr: process.env.NUXT_SSR === 'true',
   tailwindcss: {
     cssPath: '@/assets/css/app.css',
   },
