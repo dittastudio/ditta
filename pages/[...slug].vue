@@ -154,6 +154,7 @@ html {
   --middle-to-end: calc((1 - var(--second-phase-progress)) * 100%);
   --end-color-mix: calc(var(--second-phase-progress) * 200%);
 
+  /* Fallback color */
   background-color: var(--start-color);
   background-color: color-mix(
     in srgb,

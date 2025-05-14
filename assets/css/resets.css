@@ -1,17 +1,14 @@
-a,
 button {
   touch-action: manipulation;
   cursor: pointer;
   user-select: none;
 
+  text-transform: inherit;
+  letter-spacing: inherit;
+
   &:disabled {
     cursor: not-allowed;
   }
-}
-
-button {
-  text-transform: inherit;
-  letter-spacing: inherit;
 }
 
 svg {
