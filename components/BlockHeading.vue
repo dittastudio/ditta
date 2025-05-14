@@ -4,8 +4,15 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
+// Constants
+const REPEAT_COUNT = 9
+const SKEW_CLAMP_MIN = -20
+const SKEW_CLAMP_MAX = 20
+const VELOCITY_DIVISOR = -250
+const SKEW_DURATION = 1
+
 export interface Props {
-  copy: any[]
+  copy: string[]
   duration?: string
   direction?: 'left' | 'right'
   isLast?: boolean
@@ -13,66 +20,109 @@ export interface Props {
 
 const { copy, direction = 'left', duration = '60s', isLast = false } = defineProps<Props>()
 
-const container = ref()
+const container = ref<HTMLElement | null>(null)
+const wrappers = ref<HTMLElement[]>([])
+const lists = ref<HTMLElement[]>([])
+let scrollTrigger: ScrollTrigger | null = null
+
+// Optimize array creation
+const multipleWords = computed(() => {
+  return Array(REPEAT_COUNT).fill(copy).flat()
+})
 
 onMounted(() => {
-  const proxy = { skew: 0 }
-  const skewSetter = gsap.quickSetter(container.value, 'skewX', 'deg') // fast
-  const clamp = gsap.utils.clamp(-20, 20)
+  if (!container.value)
+    return
 
-  ScrollTrigger.create({
+  const proxy = { skew: 0 }
+  const skewSetter = gsap.quickSetter(container.value, 'skewX', 'deg')
+  const clamp = gsap.utils.clamp(SKEW_CLAMP_MIN, SKEW_CLAMP_MAX)
+  let lastProgress = 0
+
+  scrollTrigger = ScrollTrigger.create({
     onUpdate: (self) => {
-      const skew = clamp(self.getVelocity() / -250)
+      if (!container.value)
+        return
+
+      const skew = clamp(self.getVelocity() / VELOCITY_DIVISOR)
 
       if (Math.abs(skew) > Math.abs(proxy.skew)) {
         proxy.skew = skew
-        gsap.to(proxy, { skew: 0, duration: 1, ease: 'power3', overwrite: true, onUpdate: () => skewSetter(proxy.skew) })
+        gsap.to(proxy, {
+          skew: 0,
+          duration: SKEW_DURATION,
+          ease: 'power3',
+          overwrite: true,
+          onUpdate: () => skewSetter(proxy.skew),
+        })
       }
+
+      const progress = self.progress
+      const isScrollingUp = progress < lastProgress
+
+      // Update animation states
+      wrappers.value.forEach((wrapper) => {
+        wrapper.style.animationPlayState = isScrollingUp
+          ? (direction === 'left' ? 'running' : 'paused')
+          : (direction === 'left' ? 'paused' : 'running')
+      })
+
+      lists.value.forEach((list) => {
+        list.style.animationPlayState = isScrollingUp
+          ? (direction === 'left' ? 'paused' : 'running')
+          : (direction === 'left' ? 'running' : 'paused')
+      })
+
+      lastProgress = progress
+
+      gsap.to(container.value, {
+        x: direction === 'left'
+          ? -container.value.clientWidth * progress + 1
+          : container.value.clientWidth * progress - 1,
+      })
     },
   })
-
-  gsap.set(container.value, { transformOrigin: 'right center', force3D: true })
 })
 
-const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy, ...copy, ...copy, ...copy]
+onUnmounted(() => {
+  if (scrollTrigger) {
+    scrollTrigger.kill()
+    scrollTrigger = null
+  }
+})
 </script>
 
 <template>
   <div
     v-if="copy"
-    class="block-heading w-full transform-gpu backface-hidden contain-paint"
+    class="block-heading contain-layout"
     :class="{ 'block-heading--last': isLast }"
   >
     <div
       ref="container"
-      class="block-heading__wrapper"
+      class="flex justify-center transform-gpu"
     >
       <div
-        class="block-heading__marquee type-fluid-lg lowercase"
-        :class="{ [`block-heading__marquee--${direction}`]: direction }"
+        v-for="i in 4"
+        :key="i"
+        ref="wrappers"
+        class="block-heading__wrapper type-fluid-lg lowercase min-w-full shrink-0 transform-gpu"
       >
-        <div class="block-heading__group">
-          <p
-            v-for="(word, index) in multipleWords"
-            :key="word"
-            :aria-hidden="index > 0 ? true : undefined"
-            class="block-heading__copy block font-[inherit]"
-          >
-            {{ word }}
-          </p>
-        </div>
-
         <div
-          aria-hidden="true"
-          class="block-heading__group"
+          ref="lists"
+          class="block-heading__list select-none flex justify-center shrink-0 min-w-full transform-gpu"
         >
-          <p
-            v-for="word in multipleWords"
-            :key="word"
-            class="block-heading__copy block font-[inherit]"
+          <div
+            class="block-heading__words flex shrink-0 items-center justify-around min-w-full"
           >
-            {{ word }}
-          </p>
+            <p
+              v-for="word in multipleWords"
+              :key="word"
+              class="block-heading__copy block font-[inherit]"
+            >
+              {{ word }}
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -81,6 +131,8 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
 
 <style lang="postcss" scoped>
 .block-heading {
+  --duration: v-bind(duration);
+
   position: relative;
 
   &::before,
@@ -110,76 +162,23 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
   }
 }
 
-.block-heading__marquee {
-  --duration: v-bind(duration);
-  --gap: 0.3em;
+.block-heading__wrapper {
+  animation: ticker-right var(--duration) linear infinite paused;
+}
 
-  user-select: none;
+.block-heading__list {
+  animation: ticker-left var(--duration) linear infinite paused;
+}
 
+.block-heading__words {
   display: flex;
-  gap: var(--gap);
-
-  min-width: 100%;
+  flex-wrap: wrap;
+  gap: 0.3em;
   padding: 0.2em 0.15em;
-
-  &--left {
-    animation: auto linear scroll-left both;
-    animation-timeline: view();
-
-    animation-range: entry 0% cover 100%;
-  }
-
-  &--right {
-    justify-content: flex-end;
-    animation: auto linear scroll-right both;
-    animation-timeline: view();
-
-    animation-range: entry 0% cover 100%;
-  }
 }
 
-.block-heading__group {
-  will-change: translate;
-
-  display: flex;
-  flex-shrink: 0;
-  gap: var(--gap);
-  align-items: center;
-  justify-content: space-around;
-
-  min-width: 100%;
-
-  .block-heading__marquee--left & {
-    animation: ticker-left var(--duration) linear infinite;
-  }
-
-  .block-heading__marquee--right & {
-    animation: ticker-right var(--duration) linear infinite;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    animation-play-state: paused;
-  }
-}
-
-@keyframes scroll-left {
-  from {
-    translate: 0% 0 0;
-  }
-
-  to {
-    translate: -25% 0 0;
-  }
-}
-
-@keyframes scroll-right {
-  from {
-    translate: 0% 0 0;
-  }
-
-  to {
-    translate: 25% 0 0;
-  }
+.block-heading__copy {
+  margin-block: -0.147em -0.013em;
 }
 
 @keyframes ticker-left {
@@ -188,7 +187,7 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
   }
 
   100% {
-    translate: calc(-100% - var(--gap)) 0 0;
+    translate: -100% 0 0;
   }
 }
 
@@ -198,11 +197,7 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
   }
 
   100% {
-    translate: calc(100% + var(--gap)) 0 0;
+    translate: 100% 0 0;
   }
-}
-
-.block-heading__copy {
-  margin-block: -0.147em -0.013em;
 }
 </style>
