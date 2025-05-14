@@ -25,14 +25,14 @@ export interface BentoGameStoryblok {
 
 export interface AssetStoryblok {
   _uid?: string;
-  id: number;
-  alt?: string;
+  id: number | null;
+  alt: string | null;
   name: string;
-  focus?: string;
-  source?: string;
-  title?: string;
+  focus: string | null;
+  source: string | null;
+  title: string | null;
   filename: string;
-  copyright?: string;
+  copyright: string | null;
   fieldtype?: string;
   meta_data?: null | {
     [k: string]: any;
@@ -158,7 +158,7 @@ export interface BlockBentoBoxStoryblok {
   )[];
   colour: number | string;
   background: number | string;
-  hidden?: boolean;
+  hidden: boolean;
   _uid: string;
   component: "block_bento_box";
   [k: string]: any;
@@ -168,7 +168,7 @@ export interface BlockHeroTextStoryblok {
   text: RichtextStoryblok;
   colour: number | string;
   background: number | string;
-  hidden?: boolean;
+  hidden: boolean;
   _uid: string;
   component: "block_hero_text";
   [k: string]: any;
@@ -180,7 +180,7 @@ export interface BlockHeroWorkStoryblok {
   media?: AssetStoryblok;
   colour: number | string;
   background: number | string;
-  hidden?: boolean;
+  hidden: boolean;
   _uid: string;
   component: "block_hero_work";
   [k: string]: any;
@@ -188,7 +188,7 @@ export interface BlockHeroWorkStoryblok {
 
 export interface BlockMarqueesStoryblok {
   words?: WordStoryblok[];
-  hidden?: boolean;
+  hidden: boolean;
   _uid: string;
   component: "block_marquees";
   [k: string]: any;
@@ -197,7 +197,7 @@ export interface BlockMarqueesStoryblok {
 export interface BlockMediaStoryblok {
   media: AssetStoryblok;
   ratio: number | string;
-  hidden?: boolean;
+  hidden: boolean;
   _uid: string;
   component: "block_media";
   [k: string]: any;
@@ -208,7 +208,7 @@ export interface BlockServicesStoryblok {
   colour: number | string;
   background: number | string;
   services?: ServiceStoryblok[];
-  hidden?: boolean;
+  hidden: boolean;
   _uid: string;
   component: "block_services";
   [k: string]: any;
@@ -219,7 +219,7 @@ export interface BlockStudiosStoryblok {
   studios?: StudioStoryblok[];
   colour: number | string;
   background: number | string;
-  hidden?: boolean;
+  hidden: boolean;
   _uid: string;
   component: "block_studios";
   [k: string]: any;

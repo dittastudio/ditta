@@ -1,5 +1,36 @@
 <script lang="ts" setup>
-import IconDittaIcon from '@/assets/icons/ditta-icon-dark.svg'
+import gsap from 'gsap'
+import ScrollTrigger from 'gsap/ScrollTrigger'
+import IconDittaMark from '@/assets/icons/ditta-icon-dark.svg'
+
+gsap.registerPlugin(ScrollTrigger)
+
+const iconRef = ref<HTMLElement | null>(null)
+
+onMounted(() => {
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: iconRef.value,
+      start: 'top bottom',
+      end: 'bottom 90%',
+      scrub: true,
+      markers: false,
+    },
+  })
+
+  tl.fromTo(
+    iconRef.value,
+    {
+      x: '100%',
+      rotation: 180,
+    },
+    {
+      x: 0,
+      rotation: 0,
+      ease: 'back.out(1.7)',
+    },
+  )
+})
 </script>
 
 <template>
@@ -11,7 +42,7 @@ import IconDittaIcon from '@/assets/icons/ditta-icon-dark.svg'
       is-last
     />
 
-    <div class="w-full wrapper py-[var(--app-outer-gutter)] [&_*+p]:mt-[1lh]">
+    <div class="w-full wrapper py-[var(--app-outer-gutter)] [&_*+p]:mt-[1.3em]">
       <h2 class="type-fluid-sm max-w-[40ch] text-balance">
         We’re a digital agency that focuses on crafting websites that work as well as they look.
       </h2>
@@ -29,7 +60,12 @@ import IconDittaIcon from '@/assets/icons/ditta-icon-dark.svg'
         </a>
       </p>
 
-      <IconDittaIcon class="block size-[40px] mb-8" />
+      <div
+        ref="iconRef"
+        class="inline-block"
+      >
+        <IconDittaMark class="block size-[40px] mb-8" />
+      </div>
 
       <p class="text-10 font-bold max-w-[40ch] text-balance opacity-20">
         ditta ltd. is a company registered in England and Wales with company number 15648076.
