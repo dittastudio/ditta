@@ -14,78 +14,12 @@
 
 .type-fluid-lg {
   font-size: utopia.clamp(80, 120);
-  letter-spacing: theme('lineHeight.tight');
+  letter-spacing: theme('letterSpacing.tight');
 }
 
 .type-fluid-sm {
   font-size: utopia.clamp(20, 32);
-  letter-spacing: -0.01em;
+  letter-spacing: theme('letterSpacing.tight');
 }
-
-.type-h1 {
-  font-size: theme('fontSize.52');
-  letter-spacing: theme('lineHeight.tight');
-
-  @screen md {
-    font-size: theme('fontSize.104');
-  }
-}
-
-.type-h2 {
-  font-size: theme('fontSize.44');
-  letter-spacing: theme('lineHeight.tight');
-
-  @screen md {
-    font-size: theme('fontSize.80');
-  }
-}
-
-.type-h3 {
-  font-size: theme('fontSize.38');
-  letter-spacing: theme('lineHeight.tight');
-
-  @screen md {
-    font-size: theme('fontSize.64');
-  }
-}
-
-.type-h4 {
-  font-size: theme('fontSize.32');
-
-  @screen md {
-    font-size: theme('fontSize.44');
-  }
-}
-
-.type-h5 {
-  font-size: theme('fontSize.24');
-
-  @screen md {
-    font-size: theme('fontSize.32');
-  }
-}
-
-.type-h6 {
-  font-size: theme('fontSize.20');
-
-  @screen md {
-    font-size: theme('fontSize.24');
-  }
-}
-
-/* Body */
-.type-body {
-  font-size: theme('fontSize.14');
-
-  & b,
-  & strong {
-    font-weight: 500;
-  }
-
-  @screen md {
-    font-size: theme('fontSize.16');
-  }
-}
-
 
 

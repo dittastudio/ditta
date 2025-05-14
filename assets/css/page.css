@@ -1,11 +1,21 @@
 html {
+  --scroll-progress: 0;
+  --start-color: theme('colors.pink');
+  --middle-color: theme('colors.beige');
+  --end-color: theme('colors.lightgrey');
+
   color: theme('colors.black');
   background-color: theme('colors.pink');
-
-  @media (prefers-color-scheme: dark) {
-    color: theme('colors.pink');
-    background-color: theme('colors.black');
-  }
+  background-color: color-mix(
+    in srgb,
+    var(--start-color) calc((1 - var(--scroll-progress)) * 100%),
+    color-mix(
+      in srgb,
+      var(--middle-color) calc((1 - var(--scroll-progress)) * 100%),
+      var(--end-color) calc(var(--scroll-progress) * 100%)
+    )
+  );
+  transition: background-color 0.1s theme('transitionTimingFunction.out');
 }
 
 body {

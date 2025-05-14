@@ -29,7 +29,6 @@ useSeoMeta({
   twitterImage: storyblokImage(seo_image?.filename, { width: 1230, height: 630 }) || null,
 })
 
-// Add scroll handling logic with RAF
 const scrollProgress = ref(0)
 let ticking = false
 let rafId: number | null = null
@@ -39,7 +38,6 @@ const updateScrollProgress = () => {
   const maxScroll = document.documentElement.scrollHeight - window.innerHeight
   scrollProgress.value = Math.min(scrollPosition / maxScroll, 1)
 
-  // Update CSS custom property
   document.documentElement.style.setProperty('--scroll-progress', scrollProgress.value.toString())
 
   ticking = false
@@ -138,25 +136,3 @@ const headings = [
     />
   </div>
 </template>
-
-<style>
-:root {
-  --start-color: theme('colors.pink'); /* Pink */
-  --middle-color: theme('colors.beige'); /* Beige */
-  --end-color: theme('colors.lightgrey'); /* Black */
-  --scroll-progress: 0;
-}
-
-html {
-  background-color: color-mix(
-    in srgb,
-    var(--start-color) calc((1 - var(--scroll-progress)) * 100%),
-    color-mix(
-      in srgb,
-      var(--middle-color) calc((1 - var(--scroll-progress)) * 100%),
-      var(--end-color) calc(var(--scroll-progress) * 100%)
-    )
-  );
-  transition: background-color 0.1s ease-out;
-}
-</style>
