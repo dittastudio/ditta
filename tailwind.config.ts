@@ -29,19 +29,11 @@ export const screens = {
 }
 
 export const colours = {
-  'white': '#ffffff',
-  'black': '#000000',
-  'offwhite': '#f5f4ea',
-  'offblack': '#232323',
-  'grey': '#474747',
-  'blue': '#676EF6',
-  'blue-light': '#9ed5ff',
-  'pink': '#ffa4d2',
-  'orange': '#F3AF4C',
-  'yellow': '#ffdb66',
-  'yellow-light': '#F3ECD7',
-  'red': '#ff627e',
-  'green': '#00674e',
+  white: '#ffffff',
+  black: '#000000',
+  lightgrey: '#CDC9C5',
+  beige: '#CCB496',
+  pink: '#ffa4d2',
 }
 
 export default {

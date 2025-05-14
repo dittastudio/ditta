@@ -4,6 +4,11 @@
   --app-outer-gutter: clamp(theme('spacing.24'), 9.9155px + 3.7559vw, theme('spacing.64'));
   --app-header-height: 96px;
 
+  /* Color variables */
+  --pink: #ffa4d2;
+  --beige: #CCB496;
+  --lightgrey: #CDC9C5;
+
   @screen md {
     --app-inner-gutter: theme('spacing.24');
     --app-header-height: 144px;

@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { onMounted, onUnmounted, ref } from 'vue'
 import { storyblokImage } from '@/utilities/helpers'
 import type { PageStoryblok } from '@/types/storyblok'
 import IconDitta from '@/assets/icons/ditta.svg'
@@ -28,101 +29,90 @@ useSeoMeta({
   twitterImage: storyblokImage(seo_image?.filename, { width: 1230, height: 630 }) || null,
 })
 
+// Add scroll handling logic with RAF
+const scrollProgress = ref(0)
+let ticking = false
+let rafId: number | null = null
+
+const updateScrollProgress = () => {
+  const scrollPosition = window.scrollY
+  const maxScroll = document.documentElement.scrollHeight - window.innerHeight
+  scrollProgress.value = Math.min(scrollPosition / maxScroll, 1)
+
+  // Update CSS custom property
+  document.documentElement.style.setProperty('--scroll-progress', scrollProgress.value.toString())
+
+  ticking = false
+}
+
+const handleScroll = () => {
+  if (!ticking) {
+    ticking = true
+    rafId = requestAnimationFrame(updateScrollProgress)
+  }
+}
+
 onMounted(() => {
   if (story.value) {
     useStoryblokBridge(story.value.id, (evStory: any) => (story.value = evStory), {
       preventClicks: true,
     })
   }
+
+  window.addEventListener('scroll', handleScroll, { passive: true })
+  // Initial call to set initial state
+  updateScrollProgress()
 })
 
-// const slides = [
-//   {
-//     src: '/imgs/luca-test-2.jpg',
-//     alt: 'Ditta Studio',
-//     type: 'image',
-//   },
-//   {
-//     src: '/videos/luca-test.mp4',
-//     alt: 'Ditta Studio',
-//     type: 'video',
-//   },
-//   {
-//     src: '',
-//     alt: 'Ditta Studio',
-//     type: 'image',
-//   },
-//   {
-//     src: '',
-//     alt: 'Ditta Studio',
-//     type: 'image',
-//   },
-// ]
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll)
+  if (rafId !== null) {
+    cancelAnimationFrame(rafId)
+  }
+})
 
 const headings = [
   {
-    backgroundColor: 'black',
-    textColor: 'offwhite',
     copy: ['Obey'],
     duration: '60s',
   },
   {
-    backgroundColor: 'offwhite',
-    textColor: 'black',
     copy: ['Consume'],
     duration: '80s',
   },
   {
-    backgroundColor: 'black',
-    textColor: 'pink',
     copy: ['Like'],
     duration: '70s',
   },
   {
-    backgroundColor: 'pink',
-    textColor: 'black',
     copy: ['Subscribe'],
     duration: '65s',
   },
   {
-    backgroundColor: 'black',
-    textColor: 'offwhite',
     copy: ['Upgrade'],
     duration: '85s',
   },
   {
-    backgroundColor: 'offwhite',
-    textColor: 'black',
     copy: ['Conform'],
     duration: '75s',
   },
   {
-    backgroundColor: 'black',
-    textColor: 'pink',
     copy: ['Hire us'],
     duration: '60s',
   },
   {
-    backgroundColor: 'pink',
-    textColor: 'black',
     copy: ['Sleep'],
     duration: '80s',
   },
   {
-    backgroundColor: 'offwhite',
-    textColor: 'black',
     copy: ['Wake up'],
     duration: '70s',
   },
   {
-    backgroundColor: 'black',
-    textColor: 'offwhite',
     copy: ['Pay up'],
     duration: '65s',
   },
   {
-    backgroundColor: 'pink',
-    textColor: 'black',
     copy: ['Repeat'],
     duration: '85s',
   },
@@ -139,46 +129,34 @@ const headings = [
       </h1>
     </div>
 
-    <!-- <BlockScrollTest />
-
-    <BlockCarousel :slides="slides">
-      <template #default="{ slide }">
-        <img
-          v-if="slide.src && slide.type === 'image'"
-          class="object-cover w-full h-full"
-          :src="slide.src"
-          :alt="slide.alt"
-        >
-
-        <video
-          v-else-if="slide.src && slide.type === 'video'"
-          class="object-cover w-full h-full"
-          :src="slide.src"
-          playsinline
-          autoplay
-          muted
-          loop
-        />
-
-        <div
-          v-else
-          class="aspect-[3/2] w-full h-full flex items-center justify-center bg-black"
-        >
-          <div class="relative z-2 w-[25%]">
-            <IconDitta class="w-full h-auto mx-auto" />
-          </div>
-        </div>
-      </template>
-    </BlockCarousel> -->
-
     <BlockHeading
       v-for="(heading, index) in headings"
       :key="index"
-      :background-color="heading.backgroundColor"
-      :text-color="heading.textColor"
       :copy="heading.copy"
       :duration="heading.duration"
       :direction="index % 2 ? 'right' : 'left'"
     />
   </div>
 </template>
+
+<style>
+:root {
+  --start-color: theme('colors.pink'); /* Pink */
+  --middle-color: theme('colors.beige'); /* Beige */
+  --end-color: theme('colors.lightgrey'); /* Black */
+  --scroll-progress: 0;
+}
+
+html {
+  background-color: color-mix(
+    in srgb,
+    var(--start-color) calc((1 - var(--scroll-progress)) * 100%),
+    color-mix(
+      in srgb,
+      var(--middle-color) calc((1 - var(--scroll-progress)) * 100%),
+      var(--end-color) calc(var(--scroll-progress) * 100%)
+    )
+  );
+  transition: background-color 0.1s ease-out;
+}
+</style>

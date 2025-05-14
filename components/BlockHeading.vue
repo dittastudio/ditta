@@ -4,45 +4,14 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const backgroundColorMap: any = {
-  'black': 'bg-black',
-  'offblack': 'bg-offblack',
-  'white': 'bg-white',
-  'offwhite': 'bg-offwhite',
-  'grey': 'bg-grey',
-  'blue': 'bg-blue',
-  'blue-light': 'bg-blue-light',
-  'pink': 'bg-pink',
-  'orange': 'bg-orange',
-  'yellow': 'bg-yellow',
-  'red': 'bg-red',
-  'green': 'bg-green',
-}
-
-const textColorMap: any = {
-  'black': 'text-black',
-  'offblack': 'text-offblack',
-  'white': 'text-white',
-  'offwhite': 'text-offwhite',
-  'grey': 'text-grey',
-  'blue': 'text-blue',
-  'blue-light': 'text-blue-light',
-  'pink': 'text-pink',
-  'orange': 'text-orange',
-  'yellow': 'text-yellow',
-  'red': 'text-red',
-  'green': 'text-green',
-}
-
 export interface Props {
-  backgroundColor?: string
-  textColor?: string
   copy: any[]
   duration?: string
   direction?: 'left' | 'right'
+  isLast?: boolean
 }
 
-const { backgroundColor = 'offwhite', textColor = 'offblack', copy, direction = 'left', duration = '60s' } = defineProps<Props>()
+const { copy, direction = 'left', duration = '60s', isLast = false } = defineProps<Props>()
 
 const container = ref()
 
@@ -71,8 +40,8 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
 <template>
   <div
     v-if="copy"
-    class="block w-full block-heading transform-gpu backface-hidden contain-paint"
-    :class="[backgroundColorMap[backgroundColor], textColorMap[textColor]]"
+    class="block-heading w-full transform-gpu backface-hidden contain-paint"
+    :class="{ 'block-heading--last': isLast }"
   >
     <div
       ref="container"
@@ -87,7 +56,7 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
             v-for="(word, index) in multipleWords"
             :key="word"
             :aria-hidden="index > 0 ? true : undefined"
-            class="block type-fluid-lg-trim"
+            class="block-heading__copy block"
           >
             {{ word }}
           </p>
@@ -100,7 +69,7 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
           <p
             v-for="word in multipleWords"
             :key="word"
-            class="block type-fluid-lg-trim"
+            class="block-heading__copy block"
           >
             {{ word }}
           </p>
@@ -111,9 +80,39 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
 </template>
 
 <style lang="postcss" scoped>
+.block-heading {
+  position: relative;
+
+  &::before,
+  &::after {
+    position: absolute;
+    right: 0;
+    left: 0;
+
+    width: calc(100% - (var(--app-outer-gutter) * 2));
+    height: 1px;
+    margin-inline: auto;
+
+    opacity: 0.2;
+    background-color: currentColor;
+  }
+
+  &::before {
+    content: '';
+    top: 0;
+  }
+
+  &--last {
+    &::after {
+      content: '';
+      bottom: 0;
+    }
+  }
+}
+
 .block-heading__marquee {
   --duration: v-bind(duration);
-  --gap: 0.5em;
+  --gap: 0.3em;
 
   user-select: none;
 
@@ -121,7 +120,7 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
   gap: var(--gap);
 
   min-width: 100%;
-  padding: 0.2em 0.15em 0.25em;
+  padding: 0.2em 0.15em;
 
   &--left {
     animation: auto linear scroll-left both;
@@ -201,5 +200,10 @@ const multipleWords: any = [...copy, ...copy, ...copy, ...copy, ...copy, ...copy
   100% {
     translate: calc(100% + var(--gap)) 0 0;
   }
+}
+
+.block-heading__copy {
+  margin-block: -0.147em -0.013em;
+  line-height: 1.1;
 }
 </style>
