@@ -137,23 +137,33 @@ const headings = [
 </template>
 
 <style>
-:root {
-  --start-color: theme('colors.pink'); /* Pink */
-  --middle-color: theme('colors.beige'); /* Beige */
-  --end-color: theme('colors.lightgrey'); /* Light grey */
-  --scroll-progress: 0;
-}
-
 html {
+  --start-color: theme('colors.pink');
+  --middle-color: theme('colors.beige');
+  --end-color: theme('colors.lightgrey');
+
+  /* Scroll progress (0 to 1) */
+  --scroll-progress: 0;
+
+  /* Calculate transition phases */
+  --first-phase-progress: min(var(--scroll-progress) * 2, 1);
+  --second-phase-progress: min(max((var(--scroll-progress) - 0.5) * 2, 0), 1);
+
+  /* Calculate color mix percentages */
+  --start-to-middle: calc((1 - var(--first-phase-progress)) * 100%);
+  --middle-to-end: calc((1 - var(--second-phase-progress)) * 100%);
+  --end-color-mix: calc(var(--second-phase-progress) * 200%);
+
+  background-color: var(--start-color);
   background-color: color-mix(
     in srgb,
-    var(--start-color) calc((1 - min(var(--scroll-progress) * 2, 1)) * 100%),
+    var(--start-color) var(--start-to-middle),
     color-mix(
       in srgb,
-      var(--middle-color) calc((1 - min(max((var(--scroll-progress) - 0.5) * 2, 0), 1)) * 100%),
-      var(--end-color) calc(min(max((var(--scroll-progress) - 0.5) * 2, 0), 1) * 200%)
+      var(--middle-color) var(--middle-to-end),
+      var(--end-color) var(--end-color-mix)
     )
   );
-  transition: background-color 0.1s ease-out;
+  transition: background-color 0.1s theme('transitionTimingFunction.out');
 }
 </style>
