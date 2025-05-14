@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref } from 'vue'
 import { storyblokImage } from '@/utilities/helpers'
 import type { PageStoryblok } from '@/types/storyblok'
 import IconDitta from '@/assets/icons/ditta.svg'
