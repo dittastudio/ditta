@@ -36,7 +36,8 @@ useSeoMeta({
 const scrollProgress = ref(0)
 let ticking = false
 let rafId: number | null = null
-const logoRef = ref<HTMLElement | null>(null)
+const logoRefs = ref<HTMLElement[]>([])
+
 const updateScrollProgress = () => {
   const scrollPosition = window.scrollY
   const maxScroll = document.documentElement.scrollHeight - window.innerHeight
@@ -60,16 +61,19 @@ onMounted(() => {
   }
 
   if (stickyRef.value) {
-    gsap.to(logoRef.value, {
+    gsap.to(logoRefs.value, {
       scrollTrigger: {
         trigger: stickyRef.value,
         start: 'top top',
-        end: '50% top',
+        end: 'center top',
         scrub: true,
-        markers: false,
+        markers: true,
       },
-      opacity: 0,
-      ease: 'power2.out',
+      y: index => `-${10 * (index + 1)}%`,
+      opacity: index => (index + 1) / -5,
+      scale: index => 1 - (index + 1) / 5,
+      rotation: index => (index + 1) * 10,
+      ease: 'power2.inOut',
     })
   }
 
@@ -136,17 +140,19 @@ const headings = [
   <div>
     <div
       ref="stickyRef"
-      class="sticky top-0 wrapper flex flex-col items-center justify-end min-h-[100svh] pb-[var(--app-outer-gutter)]"
+      class="page-header wrapper flex flex-col items-center justify-end py-[var(--app-outer-gutter)]"
     >
       <div class="relative w-full">
-        <div
-          ref="logoRef"
-          class="w-full"
-        >
-          <IconDitta class="w-full h-auto" />
-        </div>
+        <IconDitta class="page-header__logo w-full h-auto" />
 
-        <IconDitta class="logo absolute top-0 left-0 -z-1 w-full h-auto opacity-20" />
+        <div
+          v-for="i in 10"
+          :key="i"
+          ref="logoRefs"
+          class="w-full absolute top-0 left-0 -z-1"
+        >
+          <IconDitta class="page-header__logo-mask text-black w-full h-auto" />
+        </div>
       </div>
 
       <h1 class="sr-only">
@@ -165,8 +171,14 @@ const headings = [
 </template>
 
 <style lang="postcss" scoped>
-.logo {
-  mask-image: linear-gradient(to top, transparent 25%, black 100%);
+.page-header {
+  min-height: 100vh;
+  min-height: 100svh;
+}
+
+.page-header__logo,
+.page-header__logo-mask {
+  max-height: calc(100svh - (var(--app-outer-gutter) * 2));
 }
 </style>
 
