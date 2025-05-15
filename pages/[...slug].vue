@@ -69,7 +69,7 @@ onMounted(() => {
         scrub: true,
         markers: false,
       },
-      y: index => `-${100 * (index + 1)}%`,
+      y: index => `-${100 * index}%`,
       ease: 'power2.inOut',
     })
   }
@@ -140,16 +140,14 @@ const headings = [
       class="page-header"
     >
       <div class="page-header__sticky sticky top-0 wrapper flex flex-col items-center justify-end">
-        <div class="relative w-full contain-layout py-[var(--app-outer-gutter)]">
-          <IconDitta class="page-header__logo w-full h-auto" />
-
+        <div class="page-header__grid relative w-full contain-layout">
           <div
-            v-for="i in 4"
+            v-for="i in 5"
             :key="i"
             ref="logoRefs"
-            class="w-full absolute top-0 left-0 -z-1 pt-[var(--app-outer-gutter)]"
+            class="page-header__grid-item w-full pb-[var(--app-outer-gutter)]"
           >
-            <IconDitta class="page-header__logo-mask text-black w-full h-auto" />
+            <IconDitta class="page-header__logo w-full h-auto" />
           </div>
         </div>
 
@@ -180,8 +178,16 @@ const headings = [
   min-height: 100svh;
 }
 
-.page-header__logo,
-.page-header__logo-mask {
+.page-header__grid {
+  display: grid;
+  grid-template-areas: "stack";
+}
+
+.page-header__grid-item {
+  grid-area: stack;
+}
+
+.page-header__logo {
   max-height: calc(100svh - (var(--app-outer-gutter) * 2));
 }
 </style>
