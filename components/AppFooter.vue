@@ -1,40 +1,9 @@
 <script lang="ts" setup>
-import gsap from 'gsap'
-import ScrollTrigger from 'gsap/ScrollTrigger'
-import IconDittaMark from '@/assets/icons/ditta-icon-dark.svg'
-
-gsap.registerPlugin(ScrollTrigger)
-
-const iconRef = ref<HTMLElement | null>(null)
-
-onMounted(() => {
-  const tl = gsap.timeline({
-    scrollTrigger: {
-      trigger: iconRef.value,
-      start: 'top bottom',
-      end: 'bottom 90%',
-      scrub: true,
-      markers: false,
-    },
-  })
-
-  tl.fromTo(
-    iconRef.value,
-    {
-      x: '50%',
-      rotation: 90,
-    },
-    {
-      x: 0,
-      rotation: 0,
-      ease: 'power2.out',
-    },
-  )
-})
+import IconDitta from '@/assets/icons/ditta.svg'
 </script>
 
 <template>
-  <div class="flex flex-col justify-between min-h-screen">
+  <div class="flex flex-col items-start justify-between min-h-screen">
     <BlockHeading
       :copy="['Say Hello']"
       duration="65s"
@@ -42,30 +11,27 @@ onMounted(() => {
       is-last
     />
 
-    <div class="w-full wrapper py-[var(--app-outer-gutter)] [&_*+p]:mt-[1.3em]">
-      <h2 class="type-fluid-sm max-w-[40ch] text-balance">
-        We’re a digital agency that focuses on crafting websites that work as well as they look.
-      </h2>
+    <div class="wrapper py-[var(--app-outer-gutter)]">
+      <div class="type-fluid-sm max-w-[40ch] text-balance [&_*+p]:mt-[1.3em]">
+        <h2>
+          We’re a digital agency that focuses on crafting websites that work as well as they look.
+        </h2>
 
-      <p class="type-fluid-sm max-w-[40ch] text-balance">
-        If you would like to discuss a project or find out more about us, please get in touch.
-      </p>
+        <p>
+          If you would like to discuss a project or find out more about us, please get in touch.
+        </p>
 
-      <p class="type-fluid-sm mb-64">
-        <a
-          class="transition-opacity duration-300 ease-out hover:opacity-60"
-          href="mailto:hello@ditta.studio"
-        >
-          hello@ditta.studio
-        </a>
-      </p>
-
-      <div
-        ref="iconRef"
-        class="inline-block"
-      >
-        <IconDittaMark class="block size-[40px] mb-8" />
+        <p class="mb-64">
+          <a
+            class="transition-opacity duration-300 ease-out hover:opacity-60"
+            href="mailto:hello@ditta.studio"
+          >
+            hello@ditta.studio
+          </a>
+        </p>
       </div>
+
+      <IconDitta class="block w-[40px] h-auto mb-8 " />
 
       <p class="text-10 font-bold max-w-[40ch] text-balance opacity-20">
         ditta ltd. is a company registered in England and Wales with company number 15648076.

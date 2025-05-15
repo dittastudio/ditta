@@ -1,10 +1,15 @@
 <script lang="ts" setup>
+import gsap from 'gsap'
+import ScrollTrigger from 'gsap/ScrollTrigger'
 import { storyblokImage } from '@/utilities/helpers'
 import type { PageStoryblok } from '@/types/storyblok'
 import IconDitta from '@/assets/icons/ditta.svg'
 
+gsap.registerPlugin(ScrollTrigger)
+
 const route = useRoute()
 const story = await useStory<PageStoryblok>(route.path)
+const stickyRef = ref<HTMLElement | null>(null)
 
 if (!story.value) {
   throw createError({
@@ -31,14 +36,12 @@ useSeoMeta({
 const scrollProgress = ref(0)
 let ticking = false
 let rafId: number | null = null
-
+const logoRef = ref<HTMLElement | null>(null)
 const updateScrollProgress = () => {
   const scrollPosition = window.scrollY
   const maxScroll = document.documentElement.scrollHeight - window.innerHeight
   scrollProgress.value = Math.min(scrollPosition / maxScroll, 1)
-
   document.documentElement.style.setProperty('--scroll-progress', scrollProgress.value.toString())
-
   ticking = false
 }
 
@@ -56,8 +59,21 @@ onMounted(() => {
     })
   }
 
+  if (stickyRef.value) {
+    gsap.to(logoRef.value, {
+      scrollTrigger: {
+        trigger: stickyRef.value,
+        start: 'top top',
+        end: '50% top',
+        scrub: true,
+        markers: false,
+      },
+      opacity: 0,
+      ease: 'power2.out',
+    })
+  }
+
   window.addEventListener('scroll', handleScroll, { passive: true })
-  // Initial call to set initial state
   updateScrollProgress()
 })
 
@@ -118,8 +134,20 @@ const headings = [
 
 <template>
   <div>
-    <div class="wrapper flex flex-col items-center justify-end min-h-[100svh] pb-[var(--app-outer-gutter)]">
-      <IconDitta class="w-full h-auto" />
+    <div
+      ref="stickyRef"
+      class="sticky top-0 wrapper flex flex-col items-center justify-end min-h-[100svh] pb-[var(--app-outer-gutter)]"
+    >
+      <div class="relative w-full">
+        <div
+          ref="logoRef"
+          class="w-full"
+        >
+          <IconDitta class="w-full h-auto" />
+        </div>
+
+        <IconDitta class="logo absolute top-0 left-0 -z-1 w-full h-auto opacity-20" />
+      </div>
 
       <h1 class="sr-only">
         ditta
@@ -135,6 +163,12 @@ const headings = [
     />
   </div>
 </template>
+
+<style lang="postcss" scoped>
+.logo {
+  mask-image: linear-gradient(to top, transparent 25%, black 100%);
+}
+</style>
 
 <style>
 html {

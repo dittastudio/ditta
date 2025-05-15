@@ -95,7 +95,7 @@ onUnmounted(() => {
 <template>
   <div
     v-if="copy"
-    class="block-heading contain-layout"
+    class="block-heading contain-layout w-full"
     :class="{ 'block-heading--last': isLast }"
   >
     <div
