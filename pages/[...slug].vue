@@ -67,7 +67,7 @@ onMounted(() => {
         start: 'top top',
         end: 'center top',
         scrub: true,
-        markers: true,
+        markers: false,
       },
       y: index => `-${10 * (index + 1)}%`,
       opacity: index => (index + 1) / -5,
