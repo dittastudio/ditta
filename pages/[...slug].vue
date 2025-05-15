@@ -65,14 +65,13 @@ onMounted(() => {
       scrollTrigger: {
         trigger: stickyRef.value,
         start: 'top top',
-        end: 'center top',
+        end: 'bottom top',
         scrub: true,
         markers: false,
       },
-      y: index => `-${10 * (index + 1)}%`,
-      opacity: index => (index + 1) / -5,
-      scale: index => 1 - (index + 1) / 5,
-      rotation: index => (index + 1) * 10,
+      y: index => `-${20 * (index + 1)}%`,
+      opacity: index => (index + 1) / -2.5,
+      scale: index => 1 - (index + 1) / 2.5,
       ease: 'power2.inOut',
     })
   }
@@ -142,8 +141,8 @@ const headings = [
       ref="stickyRef"
       class="page-header wrapper flex flex-col items-center justify-end py-[var(--app-outer-gutter)]"
     >
-      <div class="relative w-full">
-        <IconDitta class="page-header__logo w-full h-auto" />
+      <div class="relative w-full overflow-hidden">
+        <IconDitta class="page-header__logo w-full h-auto opacity-0" />
 
         <div
           v-for="i in 10"
