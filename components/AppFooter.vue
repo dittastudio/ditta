@@ -31,7 +31,7 @@ import IconDitta from '@/assets/icons/ditta.svg'
         </p>
       </div>
 
-      <IconDitta class="block w-[40px] h-auto mb-8 " />
+      <IconDitta class="block w-[40px] h-[14px] mb-8" />
 
       <p class="text-10 font-bold max-w-[40ch] text-balance opacity-20">
         ditta ltd. is a company registered in England and Wales with company number 15648076.
