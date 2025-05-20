@@ -44,13 +44,7 @@ export default defineNuxtConfig({
   gtag: {
     id: 'G-VPGVW7ZKGD',
   },
-  modules: [
-    '@nuxt/eslint',
-    '@nuxtjs/sitemap',
-    '@nuxtjs/tailwindcss',
-    '@storyblok/nuxt',
-    'nuxt-gtag',
-  ],
+  modules: ['@nuxt/eslint', '@nuxtjs/sitemap', '@nuxtjs/tailwindcss', '@storyblok/nuxt', 'nuxt-gtag', '@nuxt/scripts'],
   storyblok: {
     accessToken: process.env.NUXT_STORYBLOK_TOKEN,
   },
