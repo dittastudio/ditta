@@ -21,7 +21,6 @@ useSeoMeta({
 const { onLoaded } = useAnalytics()
 
 onLoaded(() => {
-  console.log('Analytics loaded', window.plausible)
   window.plausible = window.plausible || function () {
     (window.plausible.q = window.plausible.q || []).push(arguments)
   }
