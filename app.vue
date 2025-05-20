@@ -18,12 +18,9 @@ useSeoMeta({
   robots: 'index, follow',
 })
 
-const { onLoaded } = useAnalytics()
-
-onLoaded(() => {
-  window.plausible = window.plausible || function () {
-    (window.plausible.q = window.plausible.q || []).push(arguments)
-  }
+useScriptPlausibleAnalytics({
+  domain: 'ditta.studio',
+  extension: ['file-downloads', 'outbound-links'],
 })
 </script>
 
