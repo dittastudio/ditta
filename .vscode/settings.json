@@ -1,15 +1,36 @@
 {
+  "eslint.useFlatConfig": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "typescript.suggest.autoImports": false,
+  "javascript.suggest.autoImports": false,
   "files.associations": {
     "*.css": "tailwindcss"
   },
-  "[vue]": {
-    "editor.defaultFormatter": "Vue.volar"
+  // Disable the default formatter, use eslint instead
+  "prettier.enable": false,
+  "editor.formatOnSave": false,
+  // Auto fix
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "never"
   },
-  "tailwindCSS.includeLanguages": {
-    "vue": "html",
-    "vue-html": "html",
-  },
-  "editor.quickSuggestions": {
-    "strings": "on"
+  // Enable eslint for all supported languages
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "vue",
+    "html",
+    "markdown",
+    "json",
+    "jsonc",
+    "yaml",
+    "toml",
+    "gql",
+    "graphql"
+  ],
+  "[tailwindcss]": {
+    "editor.defaultFormatter": "stylelint.vscode-stylelint"
   }
 }

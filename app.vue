@@ -17,6 +17,15 @@ useSeoMeta({
   titleTemplate: title => (title ? `${title} - ditta` : 'ditta'),
   robots: 'index, follow',
 })
+
+const { onLoaded } = useAnalytics()
+
+onLoaded(() => {
+  console.log('Analytics loaded', window.plausible)
+  window.plausible = window.plausible || function () {
+    (window.plausible.q = window.plausible.q || []).push(arguments)
+  }
+})
 </script>
 
 <template>
