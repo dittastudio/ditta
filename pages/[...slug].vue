@@ -10,6 +10,9 @@ gsap.registerPlugin(ScrollTrigger)
 const route = useRoute()
 const story = await useStory<PageStoryblok>(route.path)
 const stickyRef = ref<HTMLElement | null>(null)
+const logoRefs = ref<HTMLElement[]>([])
+let rafId: number | null = null
+let logoTrigger: ScrollTrigger | null = null
 
 if (!story.value) {
   throw createError({
@@ -33,22 +36,16 @@ useSeoMeta({
   twitterImage: storyblokImage(seo_image?.filename, { width: 1230, height: 630 }) || null,
 })
 
-const scrollProgress = ref(0)
-let ticking = false
-let rafId: number | null = null
-const logoRefs = ref<HTMLElement[]>([])
-
 const updateScrollProgress = () => {
   const scrollPosition = window.scrollY
   const maxScroll = document.documentElement.scrollHeight - window.innerHeight
-  scrollProgress.value = Math.min(scrollPosition / maxScroll, 1)
-  document.documentElement.style.setProperty('--scroll-progress', scrollProgress.value.toString())
-  ticking = false
+  const progress = Math.min(scrollPosition / maxScroll, 1)
+  document.documentElement.style.setProperty('--scroll-progress', progress.toFixed(2))
+  rafId = null
 }
 
 const handleScroll = () => {
-  if (!ticking) {
-    ticking = true
+  if (!rafId) {
     rafId = requestAnimationFrame(updateScrollProgress)
   }
 }
@@ -60,28 +57,31 @@ onMounted(() => {
     })
   }
 
-  if (stickyRef.value) {
-    gsap.to(logoRefs.value, {
-      scrollTrigger: {
-        trigger: stickyRef.value,
-        start: 'top top',
-        end: 'center top',
-        scrub: true,
-        markers: false,
-      },
-      y: index => `-${100 * index}%`,
-      ease: 'power2.inOut',
-    })
-  }
-
   window.addEventListener('scroll', handleScroll, { passive: true })
   updateScrollProgress()
+
+  if (stickyRef.value) {
+    logoTrigger = ScrollTrigger.create({
+      trigger: stickyRef.value,
+      start: 'top top',
+      end: 'center top',
+      scrub: true,
+      markers: false,
+      animation: gsap.to(logoRefs.value, {
+        y: index => `-${100 * index}%`,
+        ease: 'power2.inOut',
+      }),
+    })
+  }
 })
 
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll)
   if (rafId !== null) {
     cancelAnimationFrame(rafId)
+  }
+  if (logoTrigger) {
+    logoTrigger.kill()
   }
 })
 
@@ -202,8 +202,8 @@ html {
   --scroll-progress: 0;
 
   /* Calculate transition phases */
-  --first-phase-progress: min(var(--scroll-progress) * 2, 1);
-  --second-phase-progress: min(max((var(--scroll-progress) - 0.5) * 2, 0), 1);
+  --first-phase-progress: clamp(0, var(--scroll-progress) * 2, 1);
+  --second-phase-progress: clamp(0, (var(--scroll-progress) - 0.5) * 2, 1);
 
   /* Calculate color mix percentages */
   --start-to-middle: calc((1 - var(--first-phase-progress)) * 100%);
