@@ -3,7 +3,7 @@ import IconDitta from '@/assets/icons/ditta.svg'
 </script>
 
 <template>
-  <div class="flex flex-col items-start justify-between min-h-screen">
+  <footer class="flex flex-col items-start justify-between min-h-screen">
     <BlockHeading
       :copy="['Say Hello']"
       duration="65s"
@@ -37,5 +37,5 @@ import IconDitta from '@/assets/icons/ditta.svg'
         ditta ltd. is a company registered in England and Wales with company number 15648076.
       </p>
     </div>
-  </div>
+  </footer>
 </template>

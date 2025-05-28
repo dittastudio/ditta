@@ -26,6 +26,8 @@ useScriptPlausibleAnalytics({
 
 <template>
   <div data-component="App">
+    <AppHeader />
+
     <NuxtPage />
 
     <AppFooter />
