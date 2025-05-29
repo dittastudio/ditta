@@ -159,6 +159,11 @@ const headings = [
       </div>
     </div>
 
+    <AppComponents
+      v-if="content"
+      :content="content"
+    />
+
     <UiTicker
       v-for="(heading, index) in headings"
       :key="index"

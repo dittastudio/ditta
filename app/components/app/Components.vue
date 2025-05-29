@@ -11,15 +11,15 @@ const { content } = defineProps<Props>()
 <template>
   <div>
     <section
-      v-for="(block, index) in content.blocks"
+      v-for="(block) in content.blocks"
       :key="block._uid"
       class="content-blocks__item"
       :class="[
         `content-blocks__item--${block.component}`,
       ]"
     >
-      <BlockMedia
-        v-if="block.component === 'block_media'"
+      <BlockImage
+        v-if="block.component === 'block_image'"
         :block="block"
       />
 

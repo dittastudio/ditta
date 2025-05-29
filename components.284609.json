@@ -1,6 +1,59 @@
 {
   "components": [
     {
+      "name": "block_image",
+      "display_name": "Image",
+      "description": null,
+      "created_at": "2024-06-18T17:57:58.986Z",
+      "updated_at": "2025-05-29T13:25:28.901Z",
+      "id": 5945698,
+      "schema": {
+        "media": {
+          "type": "asset",
+          "pos": 0,
+          "required": true,
+          "filetypes": [
+            "images"
+          ],
+          "id": "2d7mjTH4Rsm1qZD3gIOFuA"
+        },
+        "ratio": {
+          "type": "option",
+          "pos": 1,
+          "use_uuid": true,
+          "required": true,
+          "source": "internal",
+          "datasource_slug": "ratios",
+          "exclude_empty_option": true,
+          "id": "dwqZWfC4QeqU5ru50mU7Yw",
+          "default_value": "9:16"
+        },
+        "ratio_desktop": {
+          "type": "option",
+          "pos": 2,
+          "use_uuid": true,
+          "id": "12HAneobRd2Nipvb1NX_5Q",
+          "default_value": "auto"
+        }
+      },
+      "image": null,
+      "preview_field": null,
+      "is_root": false,
+      "preview_tmpl": null,
+      "is_nestable": true,
+      "all_presets": [],
+      "preset_id": null,
+      "real_name": "Image",
+      "component_group_uuid": "c56a9133-c409-488d-9f91-40d75d6e78cd",
+      "color": null,
+      "icon": null,
+      "internal_tags_list": [],
+      "internal_tag_ids": [],
+      "content_type_asset_preview": null,
+      "metadata": {},
+      "component_group_name": "Blocks"
+    },
+    {
       "name": "block_marquees",
       "display_name": "Marquees",
       "description": null,
@@ -31,54 +84,6 @@
       "all_presets": [],
       "preset_id": null,
       "real_name": "Marquees",
-      "component_group_uuid": "c56a9133-c409-488d-9f91-40d75d6e78cd",
-      "color": null,
-      "icon": null,
-      "internal_tags_list": [],
-      "internal_tag_ids": [],
-      "content_type_asset_preview": null,
-      "metadata": {},
-      "component_group_name": "Blocks"
-    },
-    {
-      "name": "block_media",
-      "display_name": "Media",
-      "description": null,
-      "created_at": "2024-06-18T17:57:58.986Z",
-      "updated_at": "2024-07-05T13:48:41.534Z",
-      "id": 5945698,
-      "schema": {
-        "media": {
-          "type": "asset",
-          "pos": 0,
-          "required": true,
-          "filetypes": [
-            "images",
-            "videos"
-          ]
-        },
-        "ratio": {
-          "type": "option",
-          "pos": 1,
-          "use_uuid": true,
-          "required": true,
-          "source": "internal",
-          "datasource_slug": "ratios",
-          "exclude_empty_option": true
-        },
-        "hidden": {
-          "type": "boolean",
-          "pos": 2
-        }
-      },
-      "image": null,
-      "preview_field": null,
-      "is_root": false,
-      "preview_tmpl": null,
-      "is_nestable": true,
-      "all_presets": [],
-      "preset_id": null,
-      "real_name": "Media",
       "component_group_uuid": "c56a9133-c409-488d-9f91-40d75d6e78cd",
       "color": null,
       "icon": null,
