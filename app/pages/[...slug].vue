@@ -1,39 +1,34 @@
 <script lang="ts" setup>
-import gsap from 'gsap'
-import ScrollTrigger from 'gsap/ScrollTrigger'
 import type { PageStoryblok } from '@@/types/storyblok'
+import { gsap } from 'gsap'
+import ScrollTrigger from 'gsap/ScrollTrigger'
 import IconDitta from '@/assets/icons/ditta.svg'
 
 gsap.registerPlugin(ScrollTrigger)
 
 const route = useRoute()
-const story = await useStory<PageStoryblok>(route.path)
-const stickyRef = ref<HTMLElement | null>(null)
-const logoRefs = ref<HTMLElement[]>([])
-let rafId: number | null = null
-let logoTrigger: ScrollTrigger | null = null
+const story = await useStory(route.path)
 
-if (!story.value) {
-  throw createError({
-    statusCode: 404,
-    statusMessage: `Page not found`,
-    fatal: false,
-  })
-}
-
-const { seo_title, seo_description, seo_image } = story.value.content?.seo[0]
+const content = story.value.content as PageStoryblok
+const { seo_title, seo_description, seo_image } = content
+const imageOptions = { width: 1200, height: 630, format: 'jpg', smart: true, quality: 90 }
 
 useSeoMeta({
   title: seo_title ?? story.value.name,
   description: seo_description,
   ogTitle: seo_title ?? story.value.name,
   ogDescription: seo_description,
-  ogImage: storyblokImage(seo_image?.filename, { width: 1230, height: 630 }) || null,
+  ogImage: storyblokImage(seo_image?.filename, imageOptions) || null,
   ogType: 'website',
   twitterTitle: seo_title ?? story.value.name,
   twitterCard: 'summary_large_image',
-  twitterImage: storyblokImage(seo_image?.filename, { width: 1230, height: 630 }) || null,
+  twitterImage: storyblokImage(seo_image?.filename, imageOptions) || null,
 })
+
+const stickyRef = ref<HTMLElement | null>(null)
+const logoRefs = ref<HTMLElement[]>([])
+let rafId: number | null = null
+let logoTrigger: ScrollTrigger | null = null
 
 const updateScrollProgress = () => {
   const scrollPosition = window.scrollY
@@ -50,12 +45,6 @@ const handleScroll = () => {
 }
 
 onMounted(() => {
-  if (story.value) {
-    useStoryblokBridge(story.value.id, (evStory: any) => (story.value = evStory), {
-      preventClicks: true,
-    })
-  }
-
   window.addEventListener('scroll', handleScroll, { passive: true })
   updateScrollProgress()
 
@@ -83,53 +72,6 @@ onUnmounted(() => {
     logoTrigger.kill()
   }
 })
-
-const headings = [
-  {
-    copy: ['Obey'],
-    duration: '60s',
-  },
-  {
-    copy: ['Consume'],
-    duration: '80s',
-  },
-  {
-    copy: ['Like'],
-    duration: '70s',
-  },
-  {
-    copy: ['Subscribe'],
-    duration: '65s',
-  },
-  {
-    copy: ['Upgrade'],
-    duration: '85s',
-  },
-  {
-    copy: ['Conform'],
-    duration: '75s',
-  },
-  {
-    copy: ['Hire us'],
-    duration: '60s',
-  },
-  {
-    copy: ['Sleep'],
-    duration: '80s',
-  },
-  {
-    copy: ['Wake up'],
-    duration: '70s',
-  },
-  {
-    copy: ['Pay up'],
-    duration: '65s',
-  },
-  {
-    copy: ['Repeat'],
-    duration: '85s',
-  },
-]
 </script>
 
 <template>
@@ -156,12 +98,9 @@ const headings = [
       </div>
     </div>
 
-    <UiTicker
-      v-for="(heading, index) in headings"
-      :key="index"
-      :copy="heading.copy"
-      :duration="heading.duration"
-      :direction="index % 2 ? 'right' : 'left'"
+    <AppComponents
+      v-if="content"
+      :content="content"
     />
   </div>
 </template>

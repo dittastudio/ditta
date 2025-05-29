@@ -1,10 +1,10 @@
 {
   "name": "nuxt-app",
-  "private": true,
   "type": "module",
+  "private": true,
   "scripts": {
-    "sb:components": "storyblok pull-components --space 332344",
-    "sb:types": "npm run sb:components && storyblok generate-typescript-typedefs --sourceFilePaths ./components.332344.json --destinationFilePath ./types/storyblok.d.ts",
+    "sb:components": "storyblok pull-components --space 284609",
+    "sb:types": "npm run sb:components && storyblok generate-typescript-typedefs --sourceFilePaths ./components.284609.json --destinationFilePath ./types/storyblok.d.ts",
     "dev": "npm run sb:types && nuxt dev --host",
     "dev:ssl": "local-ssl-proxy --source 3010 --target 3000 --cert localhost.pem --key localhost-key.pem",
     "build": "nuxt build",
@@ -34,10 +34,10 @@
     "@nuxt/image": "^1.10.0",
     "@nuxtjs/sitemap": "^7.3.0",
     "@types/lodash-es": "^4.17.12",
+    "del-cli": "^6.0.0",
     "postcss-nested": "^7.0.2",
     "postcss-utopia": "^1.1.0",
     "typescript": "^5.8.3",
-    "vite-svg-loader": "^5.1.0",
-    "vue-tsc": "^2.2.10"
+    "vite-svg-loader": "^5.1.0"
   }
 }

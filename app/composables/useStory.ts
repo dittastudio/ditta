@@ -1,6 +1,6 @@
-import type { ISbStoriesParams, ISbStoryData } from 'storyblok-js-client'
+import type { ISbStoriesParams } from 'storyblok-js-client'
 
-export const useStory = async <T = any>(
+export const useStory = async (
   slug: string = '',
   options: ISbStoriesParams = {},
 ) => {
@@ -8,7 +8,7 @@ export const useStory = async <T = any>(
   const route = useRoute()
 
   const defaultOptions: ISbStoriesParams = {
-    version: runtimeConfig.public.NUXT_STORYBLOK_VERSION === 'published' ? 'published' : 'draft',
+    version: runtimeConfig.public.STORYBLOK_VERSION === 'published' ? 'published' : 'draft',
     from_release: String(route.query?._storyblok_release) || undefined,
     resolve_relations: [],
   }
@@ -26,5 +26,5 @@ export const useStory = async <T = any>(
     })
   }
 
-  return story as unknown as Ref<ISbStoryData<T>>
+  return story
 }

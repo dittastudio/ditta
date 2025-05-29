@@ -1,8 +1,24 @@
-import tailwindcss from "@tailwindcss/vite";
+import tailwindcss from '@tailwindcss/vite'
 import svgLoader from 'vite-svg-loader'
 
-// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  modules: [
+    '@nuxt/eslint',
+    '@nuxt/image',
+    '@nuxt/scripts',
+    '@nuxtjs/sitemap',
+    [
+      '@storyblok/nuxt',
+      {
+        accessToken: process.env.STORYBLOK_TOKEN,
+      },
+    ],
+  ],
+
+  ssr: true,
+
+  devtools: { enabled: true },
+
   app: {
     pageTransition: { name: 'fade', mode: 'out-in' },
     layoutTransition: false,
@@ -32,11 +48,69 @@ export default defineNuxtConfig({
     },
   },
 
-  compatibilityDate: '2025-05-15',
-
   css: ['~/assets/css/main.css'],
 
-  devtools: { enabled: true },
+  site: {
+    url: 'https://ditta.studio',
+    name: 'ditta',
+  },
+
+  runtimeConfig: {
+    public: {
+      STORYBLOK_TOKEN: process.env.STORYBLOK_TOKEN,
+      STORYBLOK_VERSION: process.env.STORYBLOK_VERSION,
+    },
+  },
+
+  routeRules: {
+    '/**': { prerender: process.env.PRERENDER === 'true' },
+  },
+
+  future: {
+    compatibilityVersion: 4,
+  },
+
+  features: {
+    noScripts: false,
+  },
+
+  compatibilityDate: '2025-05-15',
+
+  nitro: {
+    prerender: {
+      crawlLinks: true,
+      routes: ['/'],
+    },
+  },
+
+  vite: {
+    plugins: [
+      tailwindcss(),
+      svgLoader({
+        svgo: false,
+      }),
+    ],
+    vue: {
+      script: {
+        defineModel: true,
+        propsDestructure: true,
+      },
+    },
+  },
+
+  typescript: {
+    strict: true,
+  },
+
+  postcss: {
+    plugins: {
+      'postcss-nested': {},
+      'postcss-utopia': {
+        minWidth: 375,
+        maxWidth: 1440,
+      },
+    },
+  },
 
   eslint: {
     config: {
@@ -44,14 +118,6 @@ export default defineNuxtConfig({
       stylistic: true,
       autoInit: false,
     },
-  },
-
-  features: {
-    noScripts: false,
-  },
-
-  future: {
-    compatibilityVersion: 4,
   },
 
   image: {
@@ -72,74 +138,7 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: [
-    '@nuxt/eslint',
-    '@nuxt/image',
-    '@nuxt/scripts',
-    '@nuxtjs/sitemap',
-    [
-      '@storyblok/nuxt',
-      {
-        accessToken: process.env.NUXT_STORYBLOK_TOKEN,
-      },
-    ],
-  ],
-
-  nitro: {
-    prerender: {
-      crawlLinks: true,
-      routes: ['/'],
-    },
-  },
-
-  postcss: {
-    plugins: {
-      'postcss-nested': {},
-      'postcss-utopia': {
-        minWidth: 375,
-        maxWidth: 1440,
-      },
-    },
-  },
-
-  routeRules: {
-    '/**': { prerender: process.env.NUXT_SSR === 'true' },
-  },
-
-  runtimeConfig: {
-    public: {
-      STORYBLOK_TOKEN: process.env.NUXT_STORYBLOK_TOKEN,
-      STORYBLOK_VERSION: process.env.NUXT_STORYBLOK_VERSION,
-    },
-  },
-
-  site: {
-    url: 'https://ditta.studio',
-    name: 'ditta',
-  },
-
   sitemap: {
     sources: ['/api/sitemap'],
-  },
-
-  ssr: true,
-
-  typescript: {
-    typeCheck: true
-  },
-
-  vite: {
-    plugins: [
-      tailwindcss(),
-      svgLoader({
-        svgo: false,
-      }),
-    ],
-    vue: {
-      script: {
-        defineModel: true,
-        propsDestructure: true,
-      },
-    },
   },
 })

@@ -2,6 +2,7 @@
 @import "./page.css";
 @import "./fonts.css";
 @import "./type.css";
+@import "./prose.css";
 @import "tailwindcss";
 
 /* Safelist */
