@@ -11,6 +11,7 @@ const story = await useStory<PageStoryblok>(route.path)
 
 const content = story.value.content as PageStoryblok
 const { seo_title, seo_description, seo_image } = content
+const imageOptions = { width: 1200, height: 630, format: 'jpg', smart: true, quality: 90 }
 
 if (!story.value) {
   throw createError({
@@ -25,11 +26,11 @@ useSeoMeta({
   description: seo_description,
   ogTitle: seo_title ?? story.value.name,
   ogDescription: seo_description,
-  ogImage: storyblokImage(seo_image?.filename, { width: 1230, height: 630, format: 'jpg' }) || null,
+  ogImage: storyblokImage(seo_image?.filename, imageOptions) || null,
   ogType: 'website',
   twitterTitle: seo_title ?? story.value.name,
   twitterCard: 'summary_large_image',
-  twitterImage: storyblokImage(seo_image?.filename, { width: 1230, height: 630, format: 'jpg' }) || null,
+  twitterImage: storyblokImage(seo_image?.filename, imageOptions) || null,
 })
 
 const stickyRef = ref<HTMLElement | null>(null)
