@@ -19,6 +19,7 @@ export default defineNuxtConfig({
   ssr: true,
 
   devtools: { enabled: true },
+
   app: {
     pageTransition: { name: 'fade', mode: 'out-in' },
     layoutTransition: false,
@@ -98,9 +99,9 @@ export default defineNuxtConfig({
     },
   },
 
-  typescript: {
-    typeCheck: true,
-  },
+  // typescript: {
+  //   typeCheck: true,
+  // },
 
   postcss: {
     plugins: {

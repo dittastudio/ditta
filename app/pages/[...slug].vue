@@ -13,14 +13,6 @@ const content = story.value.content as PageStoryblok
 const { seo_title, seo_description, seo_image } = content
 const imageOptions = { width: 1200, height: 630, format: 'jpg', smart: true, quality: 90 }
 
-if (!story.value) {
-  throw createError({
-    statusCode: 404,
-    statusMessage: `Page not found`,
-    fatal: false,
-  })
-}
-
 useSeoMeta({
   title: seo_title ?? story.value.name,
   description: seo_description,
@@ -53,12 +45,6 @@ const handleScroll = () => {
 }
 
 onMounted(() => {
-  if (story.value) {
-    useStoryblokBridge(story.value.id, (evStory: any) => (story.value = evStory), {
-      preventClicks: true,
-    })
-  }
-
   window.addEventListener('scroll', handleScroll, { passive: true })
   updateScrollProgress()
 
@@ -112,10 +98,10 @@ onUnmounted(() => {
       </div>
     </div>
 
-    <AppComponents
+    <!-- <AppComponents
       v-if="content"
       :content="content"
-    />
+    /> -->
   </div>
 </template>
 
