@@ -98,9 +98,9 @@ export default defineNuxtConfig({
     },
   },
 
-  // typescript: {
-  //   typeCheck: true,
-  // },
+  typescript: {
+    strict: true,
+  },
 
   postcss: {
     plugins: {

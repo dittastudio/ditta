@@ -34,10 +34,10 @@
     "@nuxt/image": "^1.10.0",
     "@nuxtjs/sitemap": "^7.3.0",
     "@types/lodash-es": "^4.17.12",
+    "del-cli": "^6.0.0",
     "postcss-nested": "^7.0.2",
     "postcss-utopia": "^1.1.0",
     "typescript": "^5.8.3",
-    "vite-svg-loader": "^5.1.0",
-    "vue-tsc": "^2.2.10"
+    "vite-svg-loader": "^5.1.0"
   }
 }
