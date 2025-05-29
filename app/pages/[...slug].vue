@@ -25,11 +25,11 @@ useSeoMeta({
   description: seo_description,
   ogTitle: seo_title ?? story.value.name,
   ogDescription: seo_description,
-  ogImage: storyblokImage(seo_image?.filename, { width: 1230, height: 630 }) || null,
+  ogImage: storyblokImage(seo_image?.filename, { width: 1230, height: 630, format: 'jpg' }) || null,
   ogType: 'website',
   twitterTitle: seo_title ?? story.value.name,
   twitterCard: 'summary_large_image',
-  twitterImage: storyblokImage(seo_image?.filename, { width: 1230, height: 630 }) || null,
+  twitterImage: storyblokImage(seo_image?.filename, { width: 1230, height: 630, format: 'jpg' }) || null,
 })
 
 const stickyRef = ref<HTMLElement | null>(null)
