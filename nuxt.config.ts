@@ -124,9 +124,9 @@ export default defineNuxtConfig({
 
   ssr: true,
 
-  // typescript: {
-  //   typeCheck: true,
-  // },
+  typescript: {
+    typeCheck: true,
+  },
 
   vite: {
     plugins: [

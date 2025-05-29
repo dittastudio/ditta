@@ -1,0 +1,21 @@
+@utility prose {
+  p {
+    font-size: utopia.clamp(20, 32);
+    line-height: var(--leading-normal);
+    letter-spacing: var(--tracking-tight);
+    text-wrap: balance;
+  }
+
+  & p + p {
+    margin-block-start: 1.3em;
+    margin-block-start: 1lh;
+  }
+
+  & p a {
+    transition: opacity 0.3s var(--ease-in-out);
+
+    &:hover {
+      opacity: 0.6;
+    }
+  }
+}

@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "sb:components": "storyblok pull-components --space 284609",
-    "sb:types": "npm run sb:components && storyblok generate-typescript-typedefs --sourceFilePaths ./components.332344.json --destinationFilePath ./types/storyblok.d.ts",
+    "sb:types": "npm run sb:components && storyblok generate-typescript-typedefs --sourceFilePaths ./components.284609.json --destinationFilePath ./types/storyblok.d.ts",
     "dev": "npm run sb:types && nuxt dev --host",
     "dev:ssl": "local-ssl-proxy --source 3010 --target 3000 --cert localhost.pem --key localhost-key.pem",
     "build": "nuxt build",

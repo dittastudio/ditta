@@ -8,10 +8,9 @@ gsap.registerPlugin(ScrollTrigger)
 
 const route = useRoute()
 const story = await useStory<PageStoryblok>(route.path)
-const stickyRef = ref<HTMLElement | null>(null)
-const logoRefs = ref<HTMLElement[]>([])
-let rafId: number | null = null
-let logoTrigger: ScrollTrigger | null = null
+
+const content = story.value.content as PageStoryblok
+const { seo_title, seo_description, seo_image } = content
 
 if (!story.value) {
   throw createError({
@@ -20,8 +19,6 @@ if (!story.value) {
     fatal: false,
   })
 }
-
-const { seo_title, seo_description, seo_image } = story.value.content?.seo[0]
 
 useSeoMeta({
   title: seo_title ?? story.value.name,
@@ -34,6 +31,11 @@ useSeoMeta({
   twitterCard: 'summary_large_image',
   twitterImage: storyblokImage(seo_image?.filename, { width: 1230, height: 630 }) || null,
 })
+
+const stickyRef = ref<HTMLElement | null>(null)
+const logoRefs = ref<HTMLElement[]>([])
+let rafId: number | null = null
+let logoTrigger: ScrollTrigger | null = null
 
 const updateScrollProgress = () => {
   const scrollPosition = window.scrollY
