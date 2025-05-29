@@ -8,7 +8,7 @@ export const useStory = async <T = any>(
   const route = useRoute()
 
   const defaultOptions: ISbStoriesParams = {
-    version: runtimeConfig.public.NUXT_STORYBLOK_VERSION === 'published' ? 'published' : 'draft',
+    version: runtimeConfig.public.STORYBLOK_VERSION === 'published' ? 'published' : 'draft',
     from_release: String(route.query?._storyblok_release) || undefined,
     resolve_relations: [],
   }

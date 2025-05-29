@@ -63,7 +63,7 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
-    '/**': { prerender: process.env.NUXT_SSR === 'true' },
+    '/**': { prerender: process.env.PRERENDER === 'true' },
   },
 
   future: {
