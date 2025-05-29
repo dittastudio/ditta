@@ -1,6 +1,6 @@
-import type { ISbStoriesParams, ISbStoryData } from 'storyblok-js-client'
+import type { ISbStoriesParams } from 'storyblok-js-client'
 
-export const useStory = async <T = any>(
+export const useStory = async (
   slug: string = '',
   options: ISbStoriesParams = {},
 ) => {
@@ -26,5 +26,5 @@ export const useStory = async <T = any>(
     })
   }
 
-  return story as unknown as Ref<ISbStoryData<T>>
+  return story
 }
