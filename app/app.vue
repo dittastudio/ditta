@@ -1,10 +1,8 @@
 <script lang="ts" setup>
-import { isStoryblokEditor } from '@/utilities/helpers'
-
 const route = useRoute()
 
 const globalClasses = computed(() => ({
-  'is-storyblok-editor': isStoryblokEditor(route.query),
+  'is-storyblok-editor': storyblokEditor(route.query),
 }))
 
 useHead({
@@ -25,7 +23,7 @@ useScriptPlausibleAnalytics({
 </script>
 
 <template>
-  <div data-component="App">
+  <div>
     <NuxtPage />
 
     <AppFooter />

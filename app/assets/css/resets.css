@@ -1,0 +1,18 @@
+@layer base {
+  button {
+    text-transform: inherit;
+    letter-spacing: inherit;
+    touch-action: manipulation;
+    user-select: none;
+    cursor: pointer;
+
+    &:disabled {
+      cursor: not-allowed;
+    }
+  }
+
+  svg {
+    display: block;
+    fill: currentcolor;
+  }
+}

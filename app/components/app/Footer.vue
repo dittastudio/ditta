@@ -4,7 +4,7 @@ import IconDitta from '@/assets/icons/ditta.svg'
 
 <template>
   <div class="flex flex-col items-start justify-between min-h-screen">
-    <BlockHeading
+    <UiTicker
       :copy="['Say Hello']"
       duration="65s"
       direction="right"
@@ -21,7 +21,7 @@ import IconDitta from '@/assets/icons/ditta.svg'
           If you would like to discuss a project or find out more about us, please get in touch.
         </p>
 
-        <p class="mb-64">
+        <p class="mb-18">
           <a
             class="transition-opacity duration-300 ease-out hover:opacity-60"
             href="mailto:hello@ditta.studio"
@@ -31,7 +31,7 @@ import IconDitta from '@/assets/icons/ditta.svg'
         </p>
       </div>
 
-      <IconDitta class="block w-[40px] h-[14px] mb-8" />
+      <IconDitta class="block w-10 h-3.5 mb-4" />
 
       <p class="text-10 font-bold max-w-[40ch] text-balance opacity-20">
         ditta ltd. is a company registered in England and Wales with company number 15648076.

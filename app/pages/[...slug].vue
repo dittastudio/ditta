@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
-import { storyblokImage } from '@/utilities/helpers'
-import type { PageStoryblok } from '@/types/storyblok'
+import type { PageStoryblok } from '@@/types/storyblok'
 import IconDitta from '@/assets/icons/ditta.svg'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -139,7 +138,7 @@ const headings = [
       ref="stickyRef"
       class="page-header"
     >
-      <div class="page-header__sticky sticky top-0 wrapper flex flex-col items-center justify-end">
+      <div class="page-header__sticky wrapper sticky top-0 flex flex-col items-center justify-end">
         <div class="page-header__grid relative w-full contain-layout">
           <div
             v-for="i in 5"
@@ -157,7 +156,7 @@ const headings = [
       </div>
     </div>
 
-    <BlockHeading
+    <UiTicker
       v-for="(heading, index) in headings"
       :key="index"
       :copy="heading.copy"
@@ -194,9 +193,9 @@ const headings = [
 
 <style>
 html {
-  --start-color: theme('colors.pink');
-  --middle-color: theme('colors.beige');
-  --end-color: theme('colors.lightgrey');
+  --start-color: var(--color-pink);
+  --middle-color: var(--color-beige);
+  --end-color: var(--color-lightgrey);
 
   /* Scroll progress (0 to 1) */
   --scroll-progress: 0;
@@ -221,6 +220,6 @@ html {
       var(--end-color) var(--end-color-mix)
     )
   );
-  transition: background-color 0.1s theme('transitionTimingFunction.out');
+  transition: background-color 0.1s var(--ease-out);
 }
 </style>

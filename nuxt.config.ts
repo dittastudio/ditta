@@ -1,9 +1,10 @@
+import tailwindcss from "@tailwindcss/vite";
 import svgLoader from 'vite-svg-loader'
 
+// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  devtools: { enabled: true },
   app: {
-    pageTransition: { name: 'page', mode: 'out-in' },
+    pageTransition: { name: 'fade', mode: 'out-in' },
     layoutTransition: false,
     head: {
       htmlAttrs: {
@@ -13,7 +14,6 @@ export default defineNuxtConfig({
       viewport: 'width=device-width, initial-scale=1',
       meta: [
         { name: 'author', content: 'ditta' },
-        { name: 'revisit-after', content: '1 day' },
         { name: 'msapplication-TileColor', content: '#ffa4d2' },
         { name: 'theme-color', content: '#ffa4d2' },
         { name: 'apple-mobile-web-app-title', content: 'ditta' },
@@ -31,53 +31,106 @@ export default defineNuxtConfig({
       ],
     },
   },
-  css: process.env.LOCAL === 'true' ? ['@michaelpumo/screen/app.css'] : [],
-  build: {
-    transpile: ['gsap'],
-  },
+
+  compatibilityDate: '2025-05-15',
+
+  css: ['~/assets/css/main.css'],
+
+  devtools: { enabled: true },
+
   eslint: {
     config: {
       standalone: false,
       stylistic: true,
+      autoInit: false,
     },
   },
-  gtag: {
-    id: 'G-VPGVW7ZKGD',
+
+  features: {
+    noScripts: false,
   },
-  modules: ['@nuxt/eslint', '@nuxtjs/sitemap', '@nuxtjs/tailwindcss', '@storyblok/nuxt', 'nuxt-gtag', '@nuxt/scripts'],
-  storyblok: {
-    accessToken: process.env.NUXT_STORYBLOK_TOKEN,
+
+  future: {
+    compatibilityVersion: 4,
   },
+
+  image: {
+    provider: 'storyblok',
+    storyblok: {
+      baseURL: 'https://a2.storyblok.com',
+    },
+    domains: ['storyblok.com', 'ditta.studio'],
+    quality: 80,
+    screens: {
+      '2xs': 375,
+      'xs': 480,
+      'sm': 600,
+      'md': 800,
+      'lg': 1200,
+      'xl': 1440,
+      '2xl': 1800,
+    },
+  },
+
+  modules: [
+    '@nuxt/eslint',
+    '@nuxt/image',
+    '@nuxt/scripts',
+    '@nuxtjs/sitemap',
+    [
+      '@storyblok/nuxt',
+      {
+        accessToken: process.env.NUXT_STORYBLOK_TOKEN,
+      },
+    ],
+  ],
+
+  nitro: {
+    prerender: {
+      crawlLinks: true,
+      routes: ['/'],
+    },
+  },
+
   postcss: {
     plugins: {
-      'tailwindcss/nesting': {},
-      'tailwindcss': {},
+      'postcss-nested': {},
       'postcss-utopia': {
         minWidth: 375,
         maxWidth: 1440,
       },
     },
   },
+
+  routeRules: {
+    '/**': { prerender: process.env.NUXT_SSR === 'true' },
+  },
+
   runtimeConfig: {
-    private: {},
     public: {
-      SSR: process.env.NUXT_SSR,
       STORYBLOK_TOKEN: process.env.NUXT_STORYBLOK_TOKEN,
       STORYBLOK_VERSION: process.env.NUXT_STORYBLOK_VERSION,
     },
   },
+
   site: {
     url: 'https://ditta.studio',
+    name: 'ditta',
   },
-  ssr: process.env.NUXT_SSR === 'true',
-  tailwindcss: {
-    cssPath: '@/assets/css/app.css',
+
+  sitemap: {
+    sources: ['/api/sitemap'],
   },
+
+  ssr: true,
+
   typescript: {
-    strict: true,
+    typeCheck: true
   },
+
   vite: {
     plugins: [
+      tailwindcss(),
       svgLoader({
         svgo: false,
       }),

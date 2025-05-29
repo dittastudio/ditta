@@ -1,0 +1,13 @@
+@layer base {
+  .type-fluid-lg {
+    font-size: utopia.clamp(80, 120);
+    line-height: var(--leading-snug);
+    letter-spacing: var(--tracking-tight);
+  }
+
+  .type-fluid-sm {
+    font-size: utopia.clamp(20, 32);
+    line-height: var(--leading-normal);
+    letter-spacing: var(--tracking-tight);
+  }
+}

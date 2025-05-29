@@ -95,8 +95,8 @@ onUnmounted(() => {
 <template>
   <div
     v-if="copy"
-    class="block-heading contain-layout w-full isolate"
-    :class="{ 'block-heading--last': isLast }"
+    class="ui-ticker contain-layout w-full isolate"
+    :class="{ 'ui-ticker--last': isLast }"
   >
     <div
       ref="container"
@@ -106,19 +106,19 @@ onUnmounted(() => {
         v-for="i in 4"
         :key="i"
         ref="wrappers"
-        class="block-heading__wrapper type-fluid-lg lowercase min-w-full shrink-0 transform-gpu"
+        class="ui-ticker__wrapper type-fluid-lg lowercase min-w-full shrink-0 transform-gpu"
       >
         <div
           ref="lists"
-          class="block-heading__list select-none flex justify-center shrink-0 min-w-full transform-gpu"
+          class="ui-ticker__list select-none flex justify-center shrink-0 min-w-full transform-gpu"
         >
           <div
-            class="block-heading__words flex shrink-0 items-center justify-around min-w-full"
+            class="ui-ticker__words flex shrink-0 items-center justify-around min-w-full"
           >
             <p
               v-for="word in multipleWords"
               :key="word"
-              class="block-heading__copy block font-[inherit]"
+              class="ui-ticker__copy block font-[inherit]"
             >
               {{ word }}
             </p>
@@ -130,7 +130,7 @@ onUnmounted(() => {
 </template>
 
 <style lang="postcss" scoped>
-.block-heading {
+.ui-ticker {
   --duration: v-bind(duration);
 
   position: relative;
@@ -162,22 +162,22 @@ onUnmounted(() => {
   }
 }
 
-.block-heading__wrapper {
+.ui-ticker__wrapper {
   animation: ticker-right var(--duration) linear infinite paused;
 }
 
-.block-heading__list {
+.ui-ticker__list {
   animation: ticker-left var(--duration) linear infinite paused;
 }
 
-.block-heading__words {
+.ui-ticker__words {
   display: flex;
   flex-wrap: wrap;
   gap: 0.3em;
   padding: 0.2em 0.15em;
 }
 
-.block-heading__copy {
+.ui-ticker__copy {
   margin-block: -0.147em -0.013em;
 }
 
