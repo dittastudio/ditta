@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import type { PageStoryblok } from '@@/types/storyblok'
-import gsap from 'gsap'
+import { gsap } from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
 import IconDitta from '@/assets/icons/ditta.svg'
 
 gsap.registerPlugin(ScrollTrigger)
 
 const route = useRoute()
-const story = await useStory<PageStoryblok>(route.path)
+const story = await useStory(route.path)
 
 const content = story.value.content as PageStoryblok
 const { seo_title, seo_description, seo_image } = content
@@ -98,10 +98,10 @@ onUnmounted(() => {
       </div>
     </div>
 
-    <!-- <AppComponents
+    <AppComponents
       v-if="content"
       :content="content"
-    /> -->
+    />
   </div>
 </template>
 

@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import gsap from 'gsap'
+import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
-// Constants
 const REPEAT_COUNT = 9
 const SKEW_CLAMP_MIN = -20
 const SKEW_CLAMP_MAX = 20
@@ -27,7 +26,7 @@ let scrollTrigger: ScrollTrigger | null = null
 
 // Optimize array creation
 const multipleWords = computed(() => {
-  return Array(REPEAT_COUNT).fill(copy).flat()
+  return Array.from({ length: REPEAT_COUNT }).fill(copy).flat()
 })
 
 onMounted(() => {
@@ -116,8 +115,8 @@ onUnmounted(() => {
             class="ui-ticker__words flex shrink-0 items-center justify-around min-w-full"
           >
             <p
-              v-for="word in multipleWords"
-              :key="word"
+              v-for="(word, index) in multipleWords"
+              :key="index"
               class="ui-ticker__copy block font-[inherit]"
             >
               {{ word }}
