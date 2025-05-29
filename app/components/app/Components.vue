@@ -23,10 +23,10 @@ const { content } = defineProps<Props>()
         :block="block"
       />
 
-      <!-- <BlockCarousel
-        v-else-if="block.component === 'block_carousel'"
+      <BlockMarquees
+        v-else-if="block.component === 'block_marquees'"
         :block="block"
-      /> -->
+      />
     </section>
   </div>
 </template>

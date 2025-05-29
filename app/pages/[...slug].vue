@@ -1,7 +1,7 @@
 <script lang="ts" setup>
+import type { PageStoryblok } from '@@/types/storyblok'
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
-import type { PageStoryblok } from '@@/types/storyblok'
 import IconDitta from '@/assets/icons/ditta.svg'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -86,53 +86,6 @@ onUnmounted(() => {
     logoTrigger.kill()
   }
 })
-
-const headings = [
-  {
-    copy: ['Obey'],
-    duration: '60s',
-  },
-  {
-    copy: ['Consume'],
-    duration: '80s',
-  },
-  {
-    copy: ['Like'],
-    duration: '70s',
-  },
-  {
-    copy: ['Subscribe'],
-    duration: '65s',
-  },
-  {
-    copy: ['Upgrade'],
-    duration: '85s',
-  },
-  {
-    copy: ['Conform'],
-    duration: '75s',
-  },
-  {
-    copy: ['Hire us'],
-    duration: '60s',
-  },
-  {
-    copy: ['Sleep'],
-    duration: '80s',
-  },
-  {
-    copy: ['Wake up'],
-    duration: '70s',
-  },
-  {
-    copy: ['Pay up'],
-    duration: '65s',
-  },
-  {
-    copy: ['Repeat'],
-    duration: '85s',
-  },
-]
 </script>
 
 <template>
@@ -162,14 +115,6 @@ const headings = [
     <AppComponents
       v-if="content"
       :content="content"
-    />
-
-    <UiTicker
-      v-for="(heading, index) in headings"
-      :key="index"
-      :copy="heading.copy"
-      :duration="heading.duration"
-      :direction="index % 2 ? 'right' : 'left'"
     />
   </div>
 </template>

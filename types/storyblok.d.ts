@@ -29,15 +29,14 @@ export interface AssetStoryblok {
 export interface BlockImageStoryblok {
   media: AssetStoryblok;
   ratio: number | string;
-  ratio_desktop?: any;
+  ratio_desktop?: number | string;
   component: "block_image";
   _uid: string;
   [k: string]: any;
 }
 
 export interface BlockMarqueesStoryblok {
-  words?: WordStoryblok[];
-  hidden?: boolean;
+  items?: MarqueeItemStoryblok[];
   component: "block_marquees";
   _uid: string;
   [k: string]: any;
@@ -125,6 +124,14 @@ export interface ButtonStoryblok {
   [k: string]: any;
 }
 
+export interface MarqueeItemStoryblok {
+  copy?: string;
+  duration?: string;
+  component: "marquee_item";
+  _uid: string;
+  [k: string]: any;
+}
+
 export interface PageStoryblok {
   blocks?: (BlockImageStoryblok | BlockMarqueesStoryblok)[];
   seo_title: string;
@@ -156,13 +163,6 @@ export interface RichtextStoryblok {
 export interface SettingsStoryblok {
   footer_copy?: RichtextStoryblok;
   component: "settings";
-  _uid: string;
-  [k: string]: any;
-}
-
-export interface WordStoryblok {
-  word?: string;
-  component: "word";
   _uid: string;
   [k: string]: any;
 }
