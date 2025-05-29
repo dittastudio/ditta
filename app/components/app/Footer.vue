@@ -16,7 +16,10 @@ const content = settings.value.content as SettingsStoryblok
     />
 
     <div class="wrapper py-[var(--app-outer-gutter)]">
-      <div class="prose mb-16 [&_p]:max-w-[40ch]">
+      <div
+        v-if="content"
+        class="prose mb-16 [&_p]:max-w-[40ch]"
+      >
         <StoryblokText :html="content.footer_copy" />
       </div>
 
