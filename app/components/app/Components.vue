@@ -23,6 +23,11 @@ const { content } = defineProps<Props>()
         :block="block"
       />
 
+      <BlockText
+        v-else-if="block.component === 'block_text'"
+        :block="block"
+      />
+
       <BlockMarquees
         v-else-if="block.component === 'block_marquees'"
         :block="block"

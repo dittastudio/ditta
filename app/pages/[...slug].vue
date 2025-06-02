@@ -9,8 +9,7 @@ gsap.registerPlugin(ScrollTrigger)
 const route = useRoute()
 const story = await useStory(route.path)
 
-const content = story.value.content as PageStoryblok
-const { seo_title, seo_description, seo_image } = content
+const { seo_title, seo_description, seo_image } = story.value.content
 const imageOptions = { width: 1200, height: 630, format: 'jpg', smart: true, quality: 90 }
 
 useSeoMeta({
@@ -99,8 +98,8 @@ onUnmounted(() => {
     </div>
 
     <AppComponents
-      v-if="content"
-      :content="content"
+      v-if="story.content"
+      :content="(story.content as PageStoryblok)"
     />
   </div>
 </template>

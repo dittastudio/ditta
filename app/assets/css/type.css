@@ -4,4 +4,10 @@
     line-height: var(--leading-snug);
     letter-spacing: var(--tracking-tight);
   }
+
+  .type-fluid-md {
+    font-size: utopia.clamp(40, 60);
+    line-height: var(--leading-snug);
+    letter-spacing: var(--tracking-tight);
+  }
 }

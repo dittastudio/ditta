@@ -42,6 +42,23 @@ export interface BlockMarqueesStoryblok {
   [k: string]: any;
 }
 
+export interface RichtextStoryblok {
+  type: string;
+  content?: RichtextStoryblok[];
+  marks?: RichtextStoryblok[];
+  attrs?: any;
+  text?: string;
+  [k: string]: any;
+}
+
+export interface BlockTextStoryblok {
+  title?: string;
+  copy?: RichtextStoryblok;
+  component: "block_text";
+  _uid: string;
+  [k: string]: any;
+}
+
 export type MultilinkStoryblok =
   | {
       fieldtype: "multilink";
@@ -133,7 +150,7 @@ export interface MarqueeItemStoryblok {
 }
 
 export interface PageStoryblok {
-  blocks?: (BlockImageStoryblok | BlockMarqueesStoryblok)[];
+  blocks?: (BlockImageStoryblok | BlockMarqueesStoryblok | BlockTextStoryblok)[];
   seo_title: string;
   seo_description: string;
   seo_image: AssetStoryblok;
@@ -148,15 +165,6 @@ export interface SeoStoryblok {
   seo_image: AssetStoryblok;
   component: "seo";
   _uid: string;
-  [k: string]: any;
-}
-
-export interface RichtextStoryblok {
-  type: string;
-  content?: RichtextStoryblok[];
-  marks?: RichtextStoryblok[];
-  attrs?: any;
-  text?: string;
   [k: string]: any;
 }
 

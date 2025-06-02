@@ -95,6 +95,56 @@
       "component_group_name": "Blocks"
     },
     {
+      "name": "block_text",
+      "display_name": "Text",
+      "description": "",
+      "created_at": "2025-06-02T14:18:56.373Z",
+      "updated_at": "2025-06-02T14:21:16.197Z",
+      "id": 7408651,
+      "schema": {
+        "title": {
+          "type": "text",
+          "pos": 0,
+          "id": "m2W0QKCAQVe4wxby3QpO4w"
+        },
+        "copy": {
+          "type": "richtext",
+          "pos": 1,
+          "customize_toolbar": true,
+          "toolbar": [
+            "paragraph",
+            "link",
+            "h1",
+            "h2",
+            "h3",
+            "h4",
+            "h5",
+            "h6",
+            "bold",
+            "italic",
+            "unset"
+          ],
+          "id": "NI04FkteSoOmi2dGs31MiQ"
+        }
+      },
+      "image": null,
+      "preview_field": null,
+      "is_root": false,
+      "preview_tmpl": null,
+      "is_nestable": true,
+      "all_presets": [],
+      "preset_id": null,
+      "real_name": "Text",
+      "component_group_uuid": "c56a9133-c409-488d-9f91-40d75d6e78cd",
+      "color": null,
+      "icon": null,
+      "internal_tags_list": [],
+      "internal_tag_ids": [],
+      "content_type_asset_preview": null,
+      "metadata": {},
+      "component_group_name": "Blocks"
+    },
+    {
       "name": "button",
       "display_name": null,
       "description": null,
