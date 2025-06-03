@@ -52,8 +52,7 @@ export interface RichtextStoryblok {
 }
 
 export interface BlockTextStoryblok {
-  title?: string;
-  copy?: RichtextStoryblok;
+  text?: RichtextStoryblok;
   component: "block_text";
   _uid: string;
   [k: string]: any;

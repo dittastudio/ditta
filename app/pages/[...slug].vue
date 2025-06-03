@@ -53,7 +53,7 @@ onMounted(() => {
       start: 'top top',
       end: 'center top',
       scrub: true,
-      markers: false,
+      markers: true,
       animation: gsap.to(logoRefs.value, {
         y: index => `-${100 * index}%`,
         ease: 'power2.inOut',
@@ -75,11 +75,11 @@ onUnmounted(() => {
 
 <template>
   <div>
-    <div
+    <!-- <div
       ref="stickyRef"
-      class="page-header"
+      class="page-header absolute inset-0"
     >
-      <div class="page-header__sticky wrapper sticky top-0 flex flex-col items-center justify-end">
+      <div class="page-header__sticky wrapper sticky top-0 min-h-screen flex flex-col items-center justify-end">
         <div class="page-header__grid relative w-full contain-layout">
           <div
             v-for="i in 5"
@@ -87,15 +87,50 @@ onUnmounted(() => {
             ref="logoRefs"
             class="page-header__grid-item w-full pb-[var(--app-outer-gutter)]"
           >
-            <IconDitta class="page-header__logo w-full h-auto" />
+            <IconDitta
+              :class="i === 1 && 'opacity-0'"
+              class="page-header__logo w-full h-auto"
+            />
           </div>
         </div>
 
         <h1 class="sr-only">
           ditta
         </h1>
+      </div> -->
+
+    <!-- <div class="wrapper">
+        <IconDitta
+          class="page-header__logo w-full h-auto"
+        />
+      </div> -->
+    <!-- </div> -->
+
+    <div class="">
+      <div class="p-[var(--app-outer-gutter)] sticky top-0 min-h-screen flex items-end justify-center">
+        <IconDitta
+          class="page-header__logo w-full h-auto"
+        />
+      </div>
+
+      <div class="p-[var(--app-outer-gutter)] relative z-1">
+        <img
+          src="/imgs/luca-test.jpg"
+          alt="Luca"
+          class="w-[65%] h-auto mx-auto"
+        >
+      </div>
+
+      <div class="p-[var(--app-outer-gutter)] relative z-1">
+        <img
+          src="/imgs/luca-test-2.jpg"
+          alt="Luca"
+          class="w-[65%] h-auto mx-auto"
+        >
       </div>
     </div>
+
+    <!-- <div class="min-h-[200vh]" /> -->
 
     <AppComponents
       v-if="story.content"
@@ -106,13 +141,13 @@ onUnmounted(() => {
 
 <style lang="postcss" scoped>
 .page-header {
-  min-height: 150vh;
-  min-height: 150svh;
+  /* min-height: 200vh; */
+  /* min-height: 200svh; */
 }
 
 .page-header__sticky {
-  min-height: 100vh;
-  min-height: 100svh;
+  /* min-height: 100vh; */
+  /* min-height: 100svh; */
 }
 
 .page-header__grid {
@@ -125,7 +160,7 @@ onUnmounted(() => {
 }
 
 .page-header__logo {
-  max-height: calc(100svh - (var(--app-outer-gutter) * 2));
+  /* max-height: calc(100svh - (var(--app-outer-gutter) * 2)); */
 }
 </style>
 
