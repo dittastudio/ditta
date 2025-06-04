@@ -24,10 +24,12 @@ useSeoMeta({
   twitterImage: storyblokImage(seo_image?.filename, imageOptions) || null,
 })
 
-const stickyRef = ref<HTMLElement | null>(null)
 const logoRefs = ref<HTMLElement[]>([])
+const logoRefTop = ref<HTMLElement | null>(null)
+const logoRefBottom = ref<HTMLElement | null>(null)
+const contentRef = ref<HTMLElement | null>(null)
+
 let rafId: number | null = null
-let logoTrigger: ScrollTrigger | null = null
 
 const updateScrollProgress = () => {
   const scrollPosition = window.scrollY
@@ -47,19 +49,37 @@ onMounted(() => {
   window.addEventListener('scroll', handleScroll, { passive: true })
   updateScrollProgress()
 
-  if (stickyRef.value) {
-    logoTrigger = ScrollTrigger.create({
-      trigger: stickyRef.value,
-      start: 'top top',
-      end: 'center top',
+  const tlTop = gsap.timeline({
+    scrollTrigger: {
+      trigger: contentRef.value,
+      start: 'top bottom',
+      end: 'center bottom',
       scrub: true,
-      markers: true,
-      animation: gsap.to(logoRefs.value, {
-        y: index => `-${100 * index}%`,
-        ease: 'power2.inOut',
-      }),
-    })
-  }
+      // markers: true,
+      // toggleActions: 'play none none reverse',
+    },
+  })
+
+  tlTop.fromTo(logoRefTop.value, {
+    scale: 1,
+    opacity: 1,
+  }, {
+    scale: 0.9,
+    opacity: 0,
+    ease: 'power2.inOut',
+  }).fromTo(logoRefBottom.value, {
+    scale: 1,
+  }, {
+    scale: 0.9,
+    ease: 'power2.inOut',
+  }, '<').to(logoRefs.value, {
+    // y: index => `-${100 * index}%`,
+    // rotate: index => `${5 * index}deg`,
+    // scale: index => 1 - index * 0.1,
+    // opacity: index => 1 - index * 0.3,
+    // y: index => `-${5 * index}%`,
+    // ease: 'power2.inOut',
+  })
 })
 
 onUnmounted(() => {
@@ -67,66 +87,71 @@ onUnmounted(() => {
   if (rafId !== null) {
     cancelAnimationFrame(rafId)
   }
-  if (logoTrigger) {
-    logoTrigger.kill()
-  }
 })
 </script>
 
 <template>
   <div>
-    <!-- <div
-      ref="stickyRef"
-      class="page-header absolute inset-0"
-    >
-      <div class="page-header__sticky wrapper sticky top-0 min-h-screen flex flex-col items-center justify-end">
-        <div class="page-header__grid relative w-full contain-layout">
-          <div
-            v-for="i in 5"
-            :key="i"
-            ref="logoRefs"
-            class="page-header__grid-item w-full pb-[var(--app-outer-gutter)]"
+    <div>
+      <div
+        ref="logoRefTop"
+        class="sticky top-0 z-10 min-h-screen flex items-end justify-center p-[var(--app-outer-gutter)] pointer-events-none"
+      >
+        <IconDitta
+          class="page-header__logo w-full h-auto"
+        />
+      </div>
+
+      <div
+        ref="logoRefBottom"
+        class="-mt-[100vh] sticky top-0 min-h-screen flex items-end justify-center p-[var(--app-outer-gutter)]"
+      >
+        <IconDitta
+          class="page-header__logo w-full h-auto"
+        />
+      </div>
+
+      <div
+        ref="contentRef"
+        class="relative z-1 w-2/3 mx-auto wrapper py-[calc(var(--app-outer-gutter)*2)] flex flex-col gap-[20vh]"
+      >
+        <UiWork>
+          <img
+            src="/imgs/luca-test.jpg"
+            alt="Luca"
+            class="w-full h-full object-cover"
           >
-            <IconDitta
-              :class="i === 1 && 'opacity-0'"
-              class="page-header__logo w-full h-auto"
-            />
-          </div>
-        </div>
+        </UiWork>
 
-        <h1 class="sr-only">
-          ditta
-        </h1>
-      </div> -->
+        <UiWork>
+          <video
+            src="/videos/haven-vid.mp4"
+            class="w-full h-full object-cover"
+            autoplay
+            muted
+            loop
+            playsinline
+          />
+        </UiWork>
 
-    <!-- <div class="wrapper">
-        <IconDitta
-          class="page-header__logo w-full h-auto"
-        />
-      </div> -->
-    <!-- </div> -->
+        <UiWork>
+          <img
+            src="/imgs/haven.jpg"
+            alt="Luca"
+            class="w-full h-full object-cover"
+          >
+        </UiWork>
 
-    <div class="">
-      <div class="p-[var(--app-outer-gutter)] sticky top-0 min-h-screen flex items-end justify-center">
-        <IconDitta
-          class="page-header__logo w-full h-auto"
-        />
-      </div>
-
-      <div class="p-[var(--app-outer-gutter)] relative z-1">
-        <img
-          src="/imgs/luca-test.jpg"
-          alt="Luca"
-          class="w-[65%] h-auto mx-auto"
-        >
-      </div>
-
-      <div class="p-[var(--app-outer-gutter)] relative z-1">
-        <img
-          src="/imgs/luca-test-2.jpg"
-          alt="Luca"
-          class="w-[65%] h-auto mx-auto"
-        >
+        <UiWork>
+          <video
+            src="/videos/luca-test.mp4"
+            class="w-full h-full object-cover"
+            autoplay
+            muted
+            loop
+            playsinline
+          />
+        </UiWork>
       </div>
     </div>
 
