@@ -4,6 +4,18 @@ import ScrollTrigger from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
+type AspectRatio = `${number}/${number}`
+
+export interface Props {
+  index?: number
+  rotation?: number
+  ratio?: AspectRatio
+  colStart?: number
+  colEnd?: number
+}
+
+const { index = 0, rotation = 10, ratio = '3/2', colStart = 1, colEnd = 13 } = defineProps<Props>()
+
 const workRef = ref<HTMLElement | null>(null)
 const workInnerRef = ref<HTMLElement | null>(null)
 
@@ -14,14 +26,16 @@ onMounted(() => {
       start: 'top bottom',
       end: 'bottom top',
       scrub: true,
-      markers: true,
+      markers: false,
     },
   })
 
   tl.fromTo(workRef.value, {
-    rotate: 10,
+    y: (index: number) => index % 2 === 0 ? rotation * 8 : -rotation * 8,
+    rotate: rotation,
   }, {
-    rotate: -10,
+    y: (index: number) => index % 2 === 0 ? -rotation * 8 : rotation * 8,
+    rotate: -rotation,
     duration: 1,
     ease: 'linear',
   }).fromTo(workInnerRef.value, {
@@ -35,9 +49,18 @@ onMounted(() => {
 </script>
 
 <template>
-  <div ref="workRef">
+  <div
+    ref="workRef"
+    class="grid grid-cols-12 gap-x-[var(--app-inner-gutter)]"
+  >
     <div
-      class="relative aspect-[3/2] overflow-hidden"
+      class="relative overflow-hidden rounded-sm aspect-[var(--aspect-ratio)]"
+      :class="[
+        index % 2 === 0 ? 'col-start-1 col-end-11' : 'col-start-3 col-end-13',
+        colStartMap[colStart],
+        colEndMap[colEnd],
+      ]"
+      :style="`--aspect-ratio: ${ratio}`"
     >
       <div
         ref="workInnerRef"

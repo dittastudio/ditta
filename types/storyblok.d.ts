@@ -51,6 +51,16 @@ export interface RichtextStoryblok {
   [k: string]: any;
 }
 
+export interface BlockSplitStoryblok {
+  image?: AssetStoryblok;
+  ratio?: number | string;
+  ratio_desktop?: number | string;
+  text?: RichtextStoryblok;
+  component: "block_split";
+  _uid: string;
+  [k: string]: any;
+}
+
 export interface BlockTextStoryblok {
   text?: RichtextStoryblok;
   component: "block_text";
@@ -149,7 +159,7 @@ export interface MarqueeItemStoryblok {
 }
 
 export interface PageStoryblok {
-  blocks?: (BlockImageStoryblok | BlockMarqueesStoryblok | BlockTextStoryblok)[];
+  blocks?: (BlockImageStoryblok | BlockMarqueesStoryblok | BlockSplitStoryblok | BlockTextStoryblok)[];
   seo_title: string;
   seo_description: string;
   seo_image: AssetStoryblok;

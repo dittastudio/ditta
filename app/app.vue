@@ -27,5 +27,7 @@ useScriptPlausibleAnalytics({
     <NuxtPage />
 
     <AppFooter />
+
+    <DevGuide />
   </div>
 </template>

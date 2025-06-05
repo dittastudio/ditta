@@ -32,6 +32,11 @@ const { content } = defineProps<Props>()
         v-else-if="block.component === 'block_marquees'"
         :block="block"
       />
+
+      <BlockSplit
+        v-else-if="block.component === 'block_split'"
+        :block="block"
+      />
     </section>
   </div>
 </template>

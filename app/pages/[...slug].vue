@@ -24,7 +24,6 @@ useSeoMeta({
   twitterImage: storyblokImage(seo_image?.filename, imageOptions) || null,
 })
 
-const logoRefs = ref<HTMLElement[]>([])
 const logoRefTop = ref<HTMLElement | null>(null)
 const logoRefBottom = ref<HTMLElement | null>(null)
 const contentRef = ref<HTMLElement | null>(null)
@@ -53,10 +52,9 @@ onMounted(() => {
     scrollTrigger: {
       trigger: contentRef.value,
       start: 'top bottom',
-      end: 'center bottom',
+      end: '15% bottom',
       scrub: true,
-      // markers: true,
-      // toggleActions: 'play none none reverse',
+      markers: false,
     },
   })
 
@@ -72,14 +70,7 @@ onMounted(() => {
   }, {
     scale: 0.9,
     ease: 'power2.inOut',
-  }, '<').to(logoRefs.value, {
-    // y: index => `-${100 * index}%`,
-    // rotate: index => `${5 * index}deg`,
-    // scale: index => 1 - index * 0.1,
-    // opacity: index => 1 - index * 0.3,
-    // y: index => `-${5 * index}%`,
-    // ease: 'power2.inOut',
-  })
+  }, '<')
 })
 
 onUnmounted(() => {
@@ -113,9 +104,15 @@ onUnmounted(() => {
 
       <div
         ref="contentRef"
-        class="relative z-1 w-2/3 mx-auto wrapper py-[calc(var(--app-outer-gutter)*2)] flex flex-col gap-[20vh]"
+        class="relative z-1 overflow-hidden wrapper py-[calc(var(--app-outer-gutter)*4)] flex flex-col gap-[calc(var(--app-outer-gutter)*4)]"
       >
-        <UiWork>
+        <UiWork
+          :index="1"
+          ratio="1/1"
+          :rotation="3"
+          :col-start="2"
+          :col-end="6"
+        >
           <img
             src="/imgs/luca-test.jpg"
             alt="Luca"
@@ -123,7 +120,13 @@ onUnmounted(() => {
           >
         </UiWork>
 
-        <UiWork>
+        <UiWork
+          :index="2"
+          ratio="3/2"
+          :rotation="-6"
+          :col-start="5"
+          :col-end="12"
+        >
           <video
             src="/videos/haven-vid.mp4"
             class="w-full h-full object-cover"
@@ -134,7 +137,13 @@ onUnmounted(() => {
           />
         </UiWork>
 
-        <UiWork>
+        <UiWork
+          :index="3"
+          ratio="3/4"
+          :rotation="9"
+          :col-start="3"
+          :col-end="7"
+        >
           <img
             src="/imgs/haven.jpg"
             alt="Luca"
@@ -142,7 +151,13 @@ onUnmounted(() => {
           >
         </UiWork>
 
-        <UiWork>
+        <UiWork
+          :index="4"
+          ratio="16/9"
+          :rotation="-3"
+          :col-start="3"
+          :col-end="11"
+        >
           <video
             src="/videos/luca-test.mp4"
             class="w-full h-full object-cover"
@@ -155,9 +170,7 @@ onUnmounted(() => {
       </div>
     </div>
 
-    <!-- <div class="min-h-[200vh]" /> -->
-
-    <AppComponents
+    <BlockComponents
       v-if="story.content"
       :content="(story.content as PageStoryblok)"
     />
@@ -165,27 +178,17 @@ onUnmounted(() => {
 </template>
 
 <style lang="postcss" scoped>
-.page-header {
-  /* min-height: 200vh; */
-  /* min-height: 200svh; */
-}
-
-.page-header__sticky {
-  /* min-height: 100vh; */
-  /* min-height: 100svh; */
-}
-
-.page-header__grid {
+/* .page-header__grid {
   display: grid;
   grid-template-areas: "stack";
 }
 
 .page-header__grid-item {
   grid-area: stack;
-}
+} */
 
 .page-header__logo {
-  /* max-height: calc(100svh - (var(--app-outer-gutter) * 2)); */
+  max-height: calc(100svh - (var(--app-outer-gutter) * 2));
 }
 </style>
 
