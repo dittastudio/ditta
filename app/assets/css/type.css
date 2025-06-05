@@ -17,6 +17,12 @@
     letter-spacing: var(--tracking-tight);
   }
 
+  .type-fluid-xs {
+    font-size: utopia.clamp(16, 20);
+    line-height: var(--leading-normal);
+    letter-spacing: var(--tracking-tight);
+  }
+
   .type-inherit {
     font: inherit;
     letter-spacing: inherit;

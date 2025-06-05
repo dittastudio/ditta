@@ -24,9 +24,11 @@ useSeoMeta({
   twitterImage: storyblokImage(seo_image?.filename, imageOptions) || null,
 })
 
+const logoRefs = ref<HTMLElement[]>([])
 const logoRefTop = ref<HTMLElement | null>(null)
 const logoRefBottom = ref<HTMLElement | null>(null)
 const contentRef = ref<HTMLElement | null>(null)
+const bottomSectionRef = ref<HTMLElement | null>(null)
 
 let rafId: number | null = null
 
@@ -52,7 +54,7 @@ onMounted(() => {
     scrollTrigger: {
       trigger: contentRef.value,
       start: 'top bottom',
-      end: '15% bottom',
+      end: '20% bottom',
       scrub: true,
       markers: false,
     },
@@ -71,6 +73,33 @@ onMounted(() => {
     scale: 0.9,
     ease: 'power2.inOut',
   }, '<')
+
+  const tlBottom = gsap.timeline({
+    scrollTrigger: {
+      trigger: bottomSectionRef.value,
+      start: 'top bottom',
+      end: 'bottom bottom',
+      scrub: true,
+      markers: true,
+    },
+  })
+
+  tlBottom.fromTo(logoRefTop.value, {
+    scale: 0.9,
+    opacity: 0,
+  }, {
+    scale: 1,
+    opacity: 1,
+    ease: 'power2.inOut',
+  }).fromTo(logoRefBottom.value, {
+    scale: 0.9,
+  }, {
+    scale: 1,
+    ease: 'power2.inOut',
+  }, '<').to(logoRefs.value, {
+    y: index => `-${100 * index}%`,
+    ease: 'power2.inOut',
+  }, '<0.5')
 })
 
 onUnmounted(() => {
@@ -97,14 +126,25 @@ onUnmounted(() => {
         ref="logoRefBottom"
         class="-mt-[100vh] sticky top-0 min-h-screen flex items-end justify-center p-[var(--app-outer-gutter)]"
       >
-        <IconDitta
+        <div class="page-header__grid relative w-full contain-layout">
+          <div
+            v-for="i in 5"
+            :key="i"
+            ref="logoRefs"
+            class="page-header__grid-item w-full pt-[var(--app-outer-gutter)]"
+          >
+            <IconDitta class="page-header__logo w-full h-auto" />
+          </div>
+        </div>
+
+        <!-- <IconDitta
           class="page-header__logo w-full h-auto"
-        />
+        /> -->
       </div>
 
       <div
         ref="contentRef"
-        class="relative z-1 overflow-hidden wrapper py-[calc(var(--app-outer-gutter)*4)] flex flex-col gap-[calc(var(--app-outer-gutter)*4)]"
+        class="relative z-1 overflow-hidden wrapper pt-[calc(var(--app-outer-gutter)*4)] pb-[calc(var(--app-outer-gutter)*1)] flex flex-col gap-[calc(var(--app-outer-gutter)*4)]"
       >
         <UiWork
           :index="1"
@@ -168,6 +208,11 @@ onUnmounted(() => {
           />
         </UiWork>
       </div>
+
+      <div
+        ref="bottomSectionRef"
+        class="min-h-[200vh]"
+      />
     </div>
 
     <BlockComponents
@@ -178,14 +223,14 @@ onUnmounted(() => {
 </template>
 
 <style lang="postcss" scoped>
-/* .page-header__grid {
+.page-header__grid {
   display: grid;
   grid-template-areas: "stack";
 }
 
 .page-header__grid-item {
   grid-area: stack;
-} */
+}
 
 .page-header__logo {
   max-height: calc(100svh - (var(--app-outer-gutter) * 2));
