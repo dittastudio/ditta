@@ -28,7 +28,21 @@ const colEndMap: Record<string, string> = {
   13: 'md:col-end-13',
 } as const
 
+const aspectRatioMap: Record<App.TAspectRatios, string> = {
+  'auto': 'auto',
+  '16:9': 'aspect-[16/9]',
+  '9:16': 'aspect-[9/16]',
+  '16:10': 'aspect-[16/10]',
+  '10:16': 'aspect-[10/16]',
+  '3:2': 'aspect-[3/2]',
+  '2:3': 'aspect-[2/3]',
+  '4:3': 'aspect-[4/3]',
+  '3:4': 'aspect-[3/4]',
+  '1:1': 'aspect-[1/1]',
+} as const
+
 export {
+  aspectRatioMap,
   colEndMap,
   colStartMap,
 }

@@ -68,6 +68,18 @@ export interface BlockTextStoryblok {
   [k: string]: any;
 }
 
+export interface BlockWorkStoryblok {
+  media?: AssetStoryblok;
+  caption?: string;
+  rotation?: string;
+  ratio?: number | string;
+  column_start?: number | string;
+  column_end?: number | string;
+  component: "block_work";
+  _uid: string;
+  [k: string]: any;
+}
+
 export type MultilinkStoryblok =
   | {
       fieldtype: "multilink";
@@ -159,6 +171,7 @@ export interface MarqueeItemStoryblok {
 }
 
 export interface PageStoryblok {
+  work_items?: BlockWorkStoryblok[];
   blocks?: (BlockImageStoryblok | BlockMarqueesStoryblok | BlockSplitStoryblok | BlockTextStoryblok)[];
   seo_title: string;
   seo_description: string;

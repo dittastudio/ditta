@@ -208,6 +208,77 @@
       "component_group_name": "Blocks"
     },
     {
+      "name": "block_work",
+      "display_name": "Work",
+      "description": "",
+      "created_at": "2025-06-06T14:08:12.999Z",
+      "updated_at": "2025-06-06T14:22:22.547Z",
+      "id": 7427505,
+      "schema": {
+        "media": {
+          "type": "asset",
+          "pos": 0,
+          "filetypes": [
+            "videos",
+            "images"
+          ],
+          "id": "8yp5LemDQB2b17TFe4BY_A"
+        },
+        "caption": {
+          "type": "text",
+          "pos": 1,
+          "id": "qeDzRXUpSrig_VdFvE4kIQ"
+        },
+        "rotation": {
+          "type": "number",
+          "pos": 2,
+          "id": "GrqB81nMTfuhurNxlfV_rg",
+          "max_value": 12,
+          "min_value": 0
+        },
+        "ratio": {
+          "type": "option",
+          "pos": 3,
+          "use_uuid": true,
+          "source": "internal",
+          "datasource_slug": "ratios",
+          "id": "0YF2IIaZQDiXND_F1c6HJg"
+        },
+        "column_start": {
+          "type": "option",
+          "pos": 4,
+          "use_uuid": true,
+          "id": "5WgSlzFXQp6h5JUi1USWqg",
+          "source": "internal",
+          "datasource_slug": "column-start"
+        },
+        "column_end": {
+          "type": "option",
+          "pos": 5,
+          "use_uuid": true,
+          "id": "vRQFSnrcSA-oRoSzvddqPA",
+          "source": "internal",
+          "datasource_slug": "column-end"
+        }
+      },
+      "image": null,
+      "preview_field": null,
+      "is_root": false,
+      "preview_tmpl": null,
+      "is_nestable": true,
+      "all_presets": [],
+      "preset_id": null,
+      "real_name": "Work",
+      "component_group_uuid": "5f5a85f6-780e-4d4a-bf16-e61206665009",
+      "color": null,
+      "icon": null,
+      "internal_tags_list": [],
+      "internal_tag_ids": [],
+      "content_type_asset_preview": null,
+      "metadata": {},
+      "component_group_name": "Work Item"
+    },
+    {
       "name": "button",
       "display_name": null,
       "description": null,
@@ -284,12 +355,22 @@
       "display_name": null,
       "description": null,
       "created_at": "2024-04-12T15:16:30.902Z",
-      "updated_at": "2025-05-29T12:39:32.887Z",
+      "updated_at": "2025-06-06T14:10:12.530Z",
       "id": 5647533,
       "schema": {
-        "blocks": {
+        "work_items": {
           "type": "bloks",
           "pos": 0,
+          "restrict_type": "",
+          "restrict_components": true,
+          "id": "0sP3U1QdTDqX1ndalyddyg",
+          "component_whitelist": [
+            "block_work"
+          ]
+        },
+        "blocks": {
+          "type": "bloks",
+          "pos": 1,
           "restrict_type": "groups",
           "restrict_components": true,
           "component_whitelist": [],
@@ -311,21 +392,21 @@
         },
         "seo_title": {
           "type": "text",
-          "pos": 2,
+          "pos": 3,
           "id": "cOLSOMqqSKCsh7L2xWHwnA",
           "required": true,
           "display_name": "Title"
         },
         "seo_description": {
           "type": "text",
-          "pos": 3,
+          "pos": 4,
           "id": "qcOA9qamSeOqJl7K5u2oAw",
           "required": true,
           "display_name": "Description"
         },
         "seo_image": {
           "type": "asset",
-          "pos": 4,
+          "pos": 5,
           "required": true,
           "display_name": "Image",
           "description": "For best results, use an image size of 1200px by 630px.",
@@ -454,6 +535,13 @@
       "name": "Types",
       "id": 356867,
       "uuid": "67a899e1-7a4c-4a22-ad69-551d9227880c",
+      "parent_id": null,
+      "parent_uuid": null
+    },
+    {
+      "name": "Work Item",
+      "id": 561706,
+      "uuid": "5f5a85f6-780e-4d4a-bf16-e61206665009",
       "parent_id": null,
       "parent_uuid": null
     }

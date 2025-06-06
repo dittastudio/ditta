@@ -3,12 +3,12 @@ declare namespace App {
     'auto'
     | '16:9'
     | '9:16'
-    | '8:9'
+    | '16:10'
+    | '10:16'
     | '3:2'
     | '2:3'
     | '4:3'
     | '3:4'
-    | '1:1.414'
     | '1:1'
 
   export interface ImageDimensions {
