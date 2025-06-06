@@ -55,67 +55,6 @@ onUnmounted(() => {
         v-if="story.content"
         :content="(story.content as PageStoryblok)"
       />
-      <!-- <UiWork
-        :index="1"
-        ratio="16/9"
-        :rotation="3"
-        :col-start="4"
-        :col-end="10"
-      >
-        <img
-          src="/imgs/luca-test.jpg"
-          alt="Luca"
-          class="w-full h-full object-cover"
-        >
-      </UiWork>
-
-      <UiWork
-        :index="2"
-        ratio="1/1"
-        :rotation="-6"
-        :col-start="8"
-        :col-end="12"
-      >
-        <video
-          src="/videos/haven-vid.mp4"
-          class="w-full h-full object-cover"
-          autoplay
-          muted
-          loop
-          playsinline
-        />
-      </UiWork>
-
-      <UiWork
-        :index="3"
-        ratio="5/8"
-        :rotation="9"
-        :col-start="2"
-        :col-end="5"
-      >
-        <img
-          src="/imgs/haven.jpg"
-          alt="Luca"
-          class="w-full h-full object-cover"
-        >
-      </UiWork>
-
-      <UiWork
-        :index="4"
-        ratio="16/9"
-        :rotation="-3"
-        :col-start="4"
-        :col-end="11"
-      >
-        <video
-          src="/videos/luca-test.mp4"
-          class="w-full h-full object-cover"
-          autoplay
-          muted
-          loop
-          playsinline
-        />
-      </UiWork> -->
     </UiStickyLogo>
 
     <AppComponents

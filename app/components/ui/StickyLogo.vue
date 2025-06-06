@@ -64,7 +64,7 @@ onMounted(() => {
   <div>
     <div
       ref="logoRefTop"
-      class="sticky top-0 z-10 min-h-screen flex items-end justify-center p-[var(--app-outer-gutter)] pointer-events-none"
+      class="sticky top-0 z-10 min-h-svh flex items-end justify-center p-[var(--app-outer-gutter)] pointer-events-none"
     >
       <IconDitta
         class="page-header__logo w-full h-auto"
@@ -73,9 +73,9 @@ onMounted(() => {
 
     <div
       ref="logoRefBottom"
-      class="-mt-[100vh] sticky top-0 min-h-screen flex items-end justify-center pb-[var(--app-outer-gutter)] px-[var(--app-outer-gutter)]"
+      class="-mt-[100svh] sticky top-0 min-h-svh flex items-end justify-center pb-[var(--app-outer-gutter)] px-[var(--app-outer-gutter)]"
     >
-      <div class="page-header__grid relative w-full contain-layout">
+      <div class="page-header__grid contain-layout relative w-full">
         <div
           v-for="i in 5"
           :key="i"
@@ -96,7 +96,7 @@ onMounted(() => {
 
     <div
       ref="bottomSectionRef"
-      class="min-h-[200vh]"
+      class="min-h-[200svh]"
     />
   </div>
 </template>

@@ -8,6 +8,7 @@ interface Props {
 
 const { index, block } = defineProps<Props>()
 const assetType = computed(() => storyblokAssetType(block.media?.filename || ''))
+const columnSpan = computed(() => Number(block.column_end) - Number(block.column_start))
 </script>
 
 <template>
@@ -27,12 +28,15 @@ const assetType = computed(() => storyblokAssetType(block.media?.filename || '')
           :asset="block.media"
           :alt="block.media.alt || ''"
           :ratio="block.ratio"
-          sizes="
+          :sizes="`
             2xs:100vw
             xs:100vw
             sm:100vw
-            md:100vw
-          "
+            md:${Number(columnSpan) / 12 * 100}vw
+            lg:${Number(columnSpan) / 12 * 100}vw
+            xl:${Number(columnSpan) / 12 * 100}vw
+            xxl:${Number(columnSpan) / 12 * 1800}px
+          `"
           :lazy="false"
         />
       </template>

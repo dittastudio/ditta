@@ -8,7 +8,7 @@ gsap.registerPlugin(ScrollTrigger)
 export interface Props {
   index?: number
   rotation?: string | number
-  ratio?: App.TAspectRatios
+  ratio?: App.TAspectRatios | string | number
   colStart?: string | number
   colEnd?: string | number
 }
@@ -68,17 +68,19 @@ onMounted(() => {
       >
         <div
           ref="workInnerRef"
-          class="absolute top-0 left-0 size-full flex items-end"
+          class="size-full absolute top-0 left-0 flex items-end"
         >
           <div
             class="w-full h-[130%]"
           >
-            <slot name="media" />
+            <div class="w-full h-full">
+              <slot name="media" />
+            </div>
           </div>
         </div>
       </div>
 
-      <p class="inline-block type-fluid-xs px-3 pt-2 mt-2 -z-1 pb-2 bg-white/70 rounded-sm backdrop-blur-sm">
+      <p class="type-fluid-xs -z-1 bg-white/70 backdrop-blur-sm inline-block px-3 pt-2 pb-2 mt-2 rounded-sm">
         <slot name="caption" />
       </p>
     </div>
