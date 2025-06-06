@@ -42,7 +42,7 @@ onMounted(() => {
       start: 'top bottom',
       end: 'bottom bottom',
       scrub: true,
-      markers: true,
+      markers: false,
     },
   })
 
