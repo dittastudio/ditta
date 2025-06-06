@@ -41,7 +41,7 @@ onMounted(() => {
   }).fromTo(workInnerRef.value, {
     y: 0,
   }, {
-    y: '-16%',
+    y: '30%',
     duration: 1,
     ease: 'linear',
   }, '<')
@@ -61,16 +61,20 @@ onMounted(() => {
       ]"
       :style="`--aspect-ratio: ${ratio}`"
     >
-      <div class="relative z-1 overflow-hidden rounded-sm aspect-[var(--aspect-ratio)] size-full">
+      <div class="relative z-1 overflow-hidden rounded-sm aspect-[var(--aspect-ratio)] bg-[red]">
         <div
           ref="workInnerRef"
-          class="absolute top-0 left-0 w-full h-[120%]"
+          class="absolute top-0 left-0 size-full flex items-end"
         >
-          <slot />
+          <div
+            class="w-full h-[130%]"
+          >
+            <slot />
+          </div>
         </div>
       </div>
 
-      <p class="inline-block type-fluid-xs px-3 pt-2 mt-2 -z-1 pb-2 bg-lightgrey rounded-sm backdrop-blur-sm">
+      <p class="inline-block type-fluid-xs px-3 pt-2 mt-2 -z-1 pb-2 bg-white/70 rounded-sm backdrop-blur-sm">
         this is a caption
       </p>
     </div>

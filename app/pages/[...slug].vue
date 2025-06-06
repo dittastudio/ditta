@@ -84,16 +84,11 @@ onMounted(() => {
     },
   })
 
-  tlBottom.fromTo(logoRefTop.value, {
-    scale: 0.9,
-    opacity: 0,
-  }, {
+  tlBottom.to(logoRefTop.value, {
     scale: 1,
     opacity: 1,
     ease: 'power2.inOut',
-  }).fromTo(logoRefBottom.value, {
-    scale: 0.9,
-  }, {
+  }).to(logoRefBottom.value, {
     scale: 1,
     ease: 'power2.inOut',
   }, '<').to(logoRefs.value, {
@@ -124,7 +119,7 @@ onUnmounted(() => {
 
       <div
         ref="logoRefBottom"
-        class="-mt-[100vh] sticky top-0 min-h-screen flex items-end justify-center p-[var(--app-outer-gutter)]"
+        class="-mt-[100vh] sticky top-0 min-h-screen flex items-end justify-center pb-[var(--app-outer-gutter)] px-[var(--app-outer-gutter)]"
       >
         <div class="page-header__grid relative w-full contain-layout">
           <div
@@ -144,14 +139,14 @@ onUnmounted(() => {
 
       <div
         ref="contentRef"
-        class="relative z-1 overflow-hidden wrapper pt-[calc(var(--app-outer-gutter)*4)] pb-[calc(var(--app-outer-gutter)*1)] flex flex-col gap-[calc(var(--app-outer-gutter)*4)]"
+        class="relative z-1 overflow-hidden wrapper pt-[calc(var(--app-outer-gutter)*2)] pb-[calc(var(--app-outer-gutter)*1)] flex flex-col gap-[calc(var(--app-outer-gutter)*4)]"
       >
         <UiWork
           :index="1"
-          ratio="1/1"
+          ratio="16/9"
           :rotation="3"
-          :col-start="2"
-          :col-end="6"
+          :col-start="4"
+          :col-end="10"
         >
           <img
             src="/imgs/luca-test.jpg"
@@ -162,9 +157,9 @@ onUnmounted(() => {
 
         <UiWork
           :index="2"
-          ratio="3/2"
+          ratio="1/1"
           :rotation="-6"
-          :col-start="5"
+          :col-start="8"
           :col-end="12"
         >
           <video
@@ -179,10 +174,10 @@ onUnmounted(() => {
 
         <UiWork
           :index="3"
-          ratio="3/4"
+          ratio="5/8"
           :rotation="9"
-          :col-start="3"
-          :col-end="7"
+          :col-start="2"
+          :col-end="5"
         >
           <img
             src="/imgs/haven.jpg"
@@ -233,7 +228,7 @@ onUnmounted(() => {
 }
 
 .page-header__logo {
-  max-height: calc(100svh - (var(--app-outer-gutter) * 2));
+  max-height: calc(100svh - (var(--app-outer-gutter) * 4));
 }
 </style>
 
