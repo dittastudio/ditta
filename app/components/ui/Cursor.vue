@@ -127,17 +127,6 @@ watchEffect(() => {
     scale 0.2s var(--ease-out);
 }
 
-@keyframes pulse {
-  0%, 100% {
-    transform: translate(calc(var(--x) - 16px), calc(var(--y) - 16px)) scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: translate(calc(var(--x) - 16px), calc(var(--y) - 16px)) scale(1.1);
-    opacity: 0.7;
-  }
-}
-
 body {
   background-color: transparent;
   transition: background-color 0.5s var(--ease-inOut);
