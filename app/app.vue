@@ -29,5 +29,7 @@ useScriptPlausibleAnalytics({
     <AppFooter />
 
     <DevGuide />
+
+    <UiCursor />
   </div>
 </template>

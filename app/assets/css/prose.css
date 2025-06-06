@@ -6,16 +6,18 @@
     text-wrap: balance;
   }
 
-  & p + p {
+  p + p {
     margin-block-start: 1.3em;
     margin-block-start: 1lh;
   }
 
-  & p a {
-    transition: opacity 0.3s var(--ease-in-out);
+  p a {
+    display: inline-block;
+    font-variation-settings: "wght" 380, "ital" 0;
+    transition: font-variation-settings 0.3s var(--ease-in-out);
 
     &:hover {
-      opacity: 0.6;
+      font-variation-settings: "wght" 670, "ital" 0;
     }
   }
 }
