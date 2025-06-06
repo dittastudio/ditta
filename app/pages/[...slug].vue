@@ -190,7 +190,7 @@ onUnmounted(() => {
           :index="4"
           ratio="16/9"
           :rotation="-3"
-          :col-start="3"
+          :col-start="4"
           :col-end="11"
         >
           <video

@@ -42,7 +42,7 @@ const assetType = computed(() => storyblokAssetType(block.image?.filename || '')
       <div class="col-span-full md:col-span-7 md:flex items-end justify-end">
         <div
           v-if="storyblokRichTextContent(block.text)"
-          class="prose max-w-[26ch] type-fluid-sm"
+          class="prose max-w-[24ch] type-fluid-sm"
         >
           <StoryblokText :html="block.text" />
         </div>
