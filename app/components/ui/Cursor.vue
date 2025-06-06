@@ -136,7 +136,7 @@ body:has(a:hover, button:hover) {
   background-color: var(--color-pink);
 }
 
-body:has(p a:hover) .cursor {
+body:has(a:hover, button:hover) .cursor {
   scale: 2;
 }
 </style>
