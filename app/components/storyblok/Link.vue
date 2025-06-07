@@ -28,7 +28,17 @@ const attributes = {
 </script>
 
 <template>
-  <NuxtLink v-bind="attributes">
+  <NuxtLink
+    v-if="href"
+    v-bind="attributes"
+  >
     <slot />
   </NuxtLink>
+
+  <div
+    v-else
+    v-bind="attributes"
+  >
+    <slot />
+  </div>
 </template>

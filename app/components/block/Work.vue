@@ -34,6 +34,8 @@ const adjustedRatio = computed(() => {
     v-editable="block"
   >
     <UiWork
+      :link="block.link"
+      :hover-color="block.hover_color?.color"
       :index="index"
       :rotation="block.rotation"
       :ratio="block.ratio"
@@ -60,20 +62,9 @@ const adjustedRatio = computed(() => {
       </template>
 
       <template #caption>
-        <StoryblokLink
-          v-if="block.link?.cached_url"
-          :item="block.link"
-          class="block px-3 -mx-3 py-2 -my-2"
-          :data-hover-color="block.hover_color.color || 'var(--color-pink)'"
-        >
-          <UiTextLink :is-external="block.link.linktype === 'url'">
-            {{ block.caption }}
-          </UiTextLink>
-        </StoryblokLink>
-
-        <template v-else>
+        <UiTextLink :is-external="block.link?.linktype === 'url'">
           {{ block.caption }}
-        </template>
+        </UiTextLink>
       </template>
     </UiWork>
   </div>

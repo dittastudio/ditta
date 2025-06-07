@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { MultilinkStoryblok } from '@@/types/storyblok'
 import { gsap } from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
 import { aspectRatioMap, colEndMap, colStartMap } from '@/utils/maps'
@@ -6,6 +7,8 @@ import { aspectRatioMap, colEndMap, colStartMap } from '@/utils/maps'
 gsap.registerPlugin(ScrollTrigger)
 
 export interface Props {
+  link: MultilinkStoryblok
+  hoverColor?: string
   index?: number
   rotation?: string | number
   ratio?: App.TAspectRatios | string | number
@@ -13,7 +16,7 @@ export interface Props {
   colEnd?: string | number
 }
 
-const { index = 0, rotation = '10', ratio = '3/2', colStart = '1', colEnd = '13' } = defineProps<Props>()
+const { link, hoverColor = 'var(--color-pink)', index = 0, rotation = '10', ratio = '3/2', colStart = '1', colEnd = '13' } = defineProps<Props>()
 
 // Convert rotation to number for calculations
 const rotationNumber = computed(() => Number(rotation))
@@ -55,12 +58,14 @@ onMounted(() => {
     ref="workRef"
     class="w-full grid grid-cols-12 gap-x-[var(--app-inner-gutter)]"
   >
-    <div
+    <StoryblokLink
+      :item="link"
       :class="[
         index % 2 === 0 ? 'col-start-1 col-end-11' : 'col-start-3 col-end-13',
         colStartMap[String(colStart)],
         colEndMap[String(colEnd)],
       ]"
+      :data-hover-color="hoverColor"
     >
       <div
         :class="aspectRatioMap[ratio as App.TAspectRatios]"
@@ -80,9 +85,9 @@ onMounted(() => {
         </div>
       </div>
 
-      <p class="type-fluid-xs bg-white/70 backdrop-blur-sm inline-block px-3 py-2 mt-2 rounded-sm outline outline-solid outline-transparent hover:bg-white/100 transition-colors duration-300 ease-out">
+      <p class="type-fluid-xs bg-white/70 backdrop-blur-sm inline-block px-3 py-2 mt-2 rounded-sm outline outline-solid outline-transparent [a:hover_&]:bg-white/100 transition-colors duration-300 ease-out">
         <slot name="caption" />
       </p>
-    </div>
+    </StoryblokLink>
   </div>
 </template>
