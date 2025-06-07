@@ -8,6 +8,8 @@
 /* Safelist */
 /* @source inline("font-mix"); */
 
+@custom-variant touch (@media not (hover: hover));
+
 @theme {
   /* --*: initial; */
 
@@ -15,7 +17,10 @@
   --color-black: #000;
   --color-lightgrey: #cdc9c5;
   --color-beige: #ccb496;
+  --color-brown: #8F7C72;
   --color-pink: #ffa4d2;
+  --color-green: #002505;
+  --color-lightgreen: #8fad95;
 
   --breakpoint-2xs: 375px;
   --breakpoint-xs: 480px;

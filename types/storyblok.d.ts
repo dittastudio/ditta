@@ -42,6 +42,32 @@ export interface BlockMarqueesStoryblok {
   [k: string]: any;
 }
 
+export interface RichtextStoryblok {
+  type: string;
+  content?: RichtextStoryblok[];
+  marks?: RichtextStoryblok[];
+  attrs?: any;
+  text?: string;
+  [k: string]: any;
+}
+
+export interface BlockSplitStoryblok {
+  image?: AssetStoryblok;
+  ratio?: number | string;
+  ratio_desktop?: number | string;
+  text?: RichtextStoryblok;
+  component: "block_split";
+  _uid: string;
+  [k: string]: any;
+}
+
+export interface BlockTextStoryblok {
+  text?: RichtextStoryblok;
+  component: "block_text";
+  _uid: string;
+  [k: string]: any;
+}
+
 export type MultilinkStoryblok =
   | {
       fieldtype: "multilink";
@@ -116,6 +142,19 @@ export type MultilinkStoryblok =
       [k: string]: any;
     };
 
+export interface BlockWorkStoryblok {
+  media?: AssetStoryblok;
+  caption?: string;
+  link?: Exclude<MultilinkStoryblok, {linktype?: "email"} | {linktype?: "asset"}>;
+  rotation?: string;
+  ratio?: number | string;
+  column_start?: number | string;
+  column_end?: number | string;
+  component: "block_work";
+  _uid: string;
+  [k: string]: any;
+}
+
 export interface ButtonStoryblok {
   title?: string;
   link?: Exclude<MultilinkStoryblok, {linktype?: "email"} | {linktype?: "asset"}>;
@@ -133,7 +172,8 @@ export interface MarqueeItemStoryblok {
 }
 
 export interface PageStoryblok {
-  blocks?: (BlockImageStoryblok | BlockMarqueesStoryblok)[];
+  work_items?: BlockWorkStoryblok[];
+  blocks?: (BlockImageStoryblok | BlockMarqueesStoryblok | BlockSplitStoryblok | BlockTextStoryblok)[];
   seo_title: string;
   seo_description: string;
   seo_image: AssetStoryblok;
@@ -148,15 +188,6 @@ export interface SeoStoryblok {
   seo_image: AssetStoryblok;
   component: "seo";
   _uid: string;
-  [k: string]: any;
-}
-
-export interface RichtextStoryblok {
-  type: string;
-  content?: RichtextStoryblok[];
-  marks?: RichtextStoryblok[];
-  attrs?: any;
-  text?: string;
   [k: string]: any;
 }
 

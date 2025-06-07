@@ -1,16 +1,10 @@
 <script lang="ts" setup>
 import type { PageStoryblok } from '@@/types/storyblok'
-import { gsap } from 'gsap'
-import ScrollTrigger from 'gsap/ScrollTrigger'
-import IconDitta from '@/assets/icons/ditta.svg'
-
-gsap.registerPlugin(ScrollTrigger)
 
 const route = useRoute()
 const story = await useStory(route.path)
 
-const content = story.value.content as PageStoryblok
-const { seo_title, seo_description, seo_image } = content
+const { seo_title, seo_description, seo_image } = story.value.content
 const imageOptions = { width: 1200, height: 630, format: 'jpg', smart: true, quality: 90 }
 
 useSeoMeta({
@@ -25,10 +19,7 @@ useSeoMeta({
   twitterImage: storyblokImage(seo_image?.filename, imageOptions) || null,
 })
 
-const stickyRef = ref<HTMLElement | null>(null)
-const logoRefs = ref<HTMLElement[]>([])
 let rafId: number | null = null
-let logoTrigger: ScrollTrigger | null = null
 
 const updateScrollProgress = () => {
   const scrollPosition = window.scrollY
@@ -47,20 +38,6 @@ const handleScroll = () => {
 onMounted(() => {
   window.addEventListener('scroll', handleScroll, { passive: true })
   updateScrollProgress()
-
-  if (stickyRef.value) {
-    logoTrigger = ScrollTrigger.create({
-      trigger: stickyRef.value,
-      start: 'top top',
-      end: 'center top',
-      scrub: true,
-      markers: false,
-      animation: gsap.to(logoRefs.value, {
-        y: index => `-${100 * index}%`,
-        ease: 'power2.inOut',
-      }),
-    })
-  }
 })
 
 onUnmounted(() => {
@@ -68,67 +45,24 @@ onUnmounted(() => {
   if (rafId !== null) {
     cancelAnimationFrame(rafId)
   }
-  if (logoTrigger) {
-    logoTrigger.kill()
-  }
 })
 </script>
 
 <template>
   <div>
-    <div
-      ref="stickyRef"
-      class="page-header"
-    >
-      <div class="page-header__sticky wrapper sticky top-0 flex flex-col items-center justify-end">
-        <div class="page-header__grid relative w-full contain-layout">
-          <div
-            v-for="i in 5"
-            :key="i"
-            ref="logoRefs"
-            class="page-header__grid-item w-full pb-[var(--app-outer-gutter)]"
-          >
-            <IconDitta class="page-header__logo w-full h-auto" />
-          </div>
-        </div>
-
-        <h1 class="sr-only">
-          ditta
-        </h1>
-      </div>
-    </div>
+    <UiStickyLogo>
+      <AppWorkItems
+        v-if="story.content"
+        :content="(story.content as PageStoryblok)"
+      />
+    </UiStickyLogo>
 
     <AppComponents
-      v-if="content"
-      :content="content"
+      v-if="story.content"
+      :content="(story.content as PageStoryblok)"
     />
   </div>
 </template>
-
-<style lang="postcss" scoped>
-.page-header {
-  min-height: 150vh;
-  min-height: 150svh;
-}
-
-.page-header__sticky {
-  min-height: 100vh;
-  min-height: 100svh;
-}
-
-.page-header__grid {
-  display: grid;
-  grid-template-areas: "stack";
-}
-
-.page-header__grid-item {
-  grid-area: stack;
-}
-
-.page-header__logo {
-  max-height: calc(100svh - (var(--app-outer-gutter) * 2));
-}
-</style>
 
 <style>
 html {

@@ -186,6 +186,12 @@ useScriptPlausibleAnalytics({
     </div>
 
     <AppFooter />
+
+    <UiCursor />
+
+    <DevOnly>
+      <DevGuide />
+    </DevOnly>
   </div>
 </template>
 
