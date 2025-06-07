@@ -35,21 +35,23 @@ onMounted(() => {
     },
   })
 
-  tl.fromTo(workRef.value, {
-    y: (index: number) => index % 2 === 0 ? `${rotationNumber.value * 3}%` : `-${rotationNumber.value * 3}%`,
-    rotate: rotationNumber.value,
-  }, {
-    y: (index: number) => index % 2 === 0 ? `-${rotationNumber.value * 3}%` : `${rotationNumber.value * 3}%`,
-    rotate: -rotationNumber.value,
-    duration: 1,
-    ease: 'linear',
-  }).fromTo(workInnerRef.value, {
-    y: 0,
-  }, {
-    y: '30%',
-    duration: 1,
-    ease: 'linear',
-  }, '<')
+  tl
+    .fromTo(workRef.value, {
+      y: (index: number) => index % 2 === 0 ? `${rotationNumber.value * 3}%` : `-${rotationNumber.value * 3}%`,
+      rotate: rotationNumber.value,
+    }, {
+      y: (index: number) => index % 2 === 0 ? `-${rotationNumber.value * 3}%` : `${rotationNumber.value * 3}%`,
+      rotate: -rotationNumber.value,
+      duration: 1,
+      ease: 'linear',
+    })
+    .fromTo(workInnerRef.value, {
+      y: 0,
+    }, {
+      y: '30%',
+      duration: 1,
+      ease: 'linear',
+    }, '<')
 })
 </script>
 
