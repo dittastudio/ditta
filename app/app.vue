@@ -28,8 +28,10 @@ useScriptPlausibleAnalytics({
 
     <AppFooter />
 
-    <DevGuide />
-
     <UiCursor />
+
+    <DevOnly>
+      <DevGuide />
+    </DevOnly>
   </div>
 </template>

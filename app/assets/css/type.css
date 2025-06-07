@@ -1,6 +1,6 @@
 @layer base {
   .type-fluid-lg {
-    font-size: utopia.clamp(80, 120);
+    font-size: utopia.clamp(60, 120);
     line-height: var(--leading-snug);
     letter-spacing: var(--tracking-tight);
   }

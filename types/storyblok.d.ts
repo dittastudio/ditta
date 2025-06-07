@@ -68,18 +68,6 @@ export interface BlockTextStoryblok {
   [k: string]: any;
 }
 
-export interface BlockWorkStoryblok {
-  media?: AssetStoryblok;
-  caption?: string;
-  rotation?: string;
-  ratio?: number | string;
-  column_start?: number | string;
-  column_end?: number | string;
-  component: "block_work";
-  _uid: string;
-  [k: string]: any;
-}
-
 export type MultilinkStoryblok =
   | {
       fieldtype: "multilink";
@@ -153,6 +141,19 @@ export type MultilinkStoryblok =
       linktype: "asset";
       [k: string]: any;
     };
+
+export interface BlockWorkStoryblok {
+  media?: AssetStoryblok;
+  caption?: string;
+  link?: Exclude<MultilinkStoryblok, {linktype?: "email"} | {linktype?: "asset"}>;
+  rotation?: string;
+  ratio?: number | string;
+  column_start?: number | string;
+  column_end?: number | string;
+  component: "block_work";
+  _uid: string;
+  [k: string]: any;
+}
 
 export interface ButtonStoryblok {
   title?: string;

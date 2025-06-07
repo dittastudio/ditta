@@ -9,8 +9,12 @@ const currentPosition = reactive<Position>({ x: 0, y: 0 })
 const targetPosition = reactive<Position>({ x: 0, y: 0 })
 const isVisible = ref(false)
 
+// Use the hover color composable
+const { setupHoverElement } = useHoverColor()
+
 let rafId: number | null = null
 let isAnimating = false
+let cleanupFunctions: (() => void)[] = []
 
 const lerp = (start: number, end: number, factor: number): number => {
   return start + (end - start) * factor
@@ -66,12 +70,28 @@ const handleMouseLeave = () => {
   isVisible.value = false
 }
 
+const setupDynamicHoverElements = () => {
+  // Find all elements with data-hover-color attribute
+  const hoverElements = document.querySelectorAll<HTMLElement>('[data-hover-color]')
+
+  hoverElements.forEach((element) => {
+    const color = element.getAttribute('data-hover-color')
+    if (color) {
+      const cleanup = setupHoverElement(element, color)
+      cleanupFunctions.push(cleanup)
+    }
+  })
+}
+
 onMounted(() => {
   document.body.style.cursor = 'none'
 
   document.addEventListener('mousemove', handleMouseMove, { passive: true })
   document.addEventListener('mouseenter', handleMouseEnter)
   document.addEventListener('mouseleave', handleMouseLeave)
+
+  // Set up dynamic hover elements
+  setupDynamicHoverElements()
 })
 
 onUnmounted(() => {
@@ -80,6 +100,10 @@ onUnmounted(() => {
   document.removeEventListener('mousemove', handleMouseMove)
   document.removeEventListener('mouseenter', handleMouseEnter)
   document.removeEventListener('mouseleave', handleMouseLeave)
+
+  // Clean up hover element listeners
+  cleanupFunctions.forEach(cleanup => cleanup())
+  cleanupFunctions = []
 
   if (rafId) {
     cancelAnimationFrame(rafId)
@@ -97,7 +121,7 @@ watchEffect(() => {
 <template>
   <div
     ref="cursorRef"
-    class="cursor"
+    class="cursor fixed top-0 left-0 bg-pink rounded-full pointer-events-none z-50 opacity-0 will-change-translate mix-blend-difference touch:hidden"
     :style="{
       '--x': `${currentPosition.x}px`,
       '--y': `${currentPosition.y}px`,
@@ -109,19 +133,9 @@ watchEffect(() => {
 .cursor {
   --cursor-size: 24px;
 
-  position: fixed;
-  top: 0;
-  left: 0;
   width: var(--cursor-size);
   height: var(--cursor-size);
-  background-color: var(--color-pink);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 50;
-  opacity: 0;
-  will-change: translate;
   translate: calc(var(--x) - (var(--cursor-size) / 2)) calc(var(--y) - (var(--cursor-size) / 2)) 0;
-  mix-blend-mode: difference;
   transition:
     opacity 0.2s var(--ease-out),
     scale 0.2s var(--ease-out);
@@ -129,11 +143,12 @@ watchEffect(() => {
 
 body {
   background-color: transparent;
-  transition: background-color 0.5s var(--ease-inOut);
+  transition: background-color 0.3s var(--ease-out);
 }
 
-body:has(a:hover, button:hover) {
-  background-color: var(--color-pink);
+/* Dynamic hover color system */
+body.has-hover-color {
+  background-color: var(--dynamic-hover-color);
 }
 
 body:has(a:hover, button:hover) .cursor {

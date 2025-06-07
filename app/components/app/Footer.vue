@@ -19,6 +19,7 @@ onMounted(() => {
   // Split text into characters
   splitText = new SplitText(footerEmailRef.value, {
     type: 'chars',
+    smartWrap: true,
   })
 
   const chars = splitText.chars
@@ -42,20 +43,20 @@ onMounted(() => {
       let italic = 0
 
       if (distance === 0) {
-        weight = 900 // Direct hover
-        italic = 10 // Full italic
+        weight = 900
+        italic = 10
       }
       else if (distance === 1) {
-        weight = 790 // Adjacent
-        italic = 7 // Strong italic
+        weight = 790
+        italic = 7
       }
       else if (distance === 2) {
-        weight = 670 // Second adjacent
-        italic = 5 // Medium italic
+        weight = 670
+        italic = 5
       }
       else if (distance === 3) {
-        weight = 570 // Third adjacent
-        italic = 2 // Slight italic
+        weight = 570
+        italic = 2
       }
 
       gsap.to(char, {
@@ -70,7 +71,7 @@ onMounted(() => {
   const handleMouseLeave = () => {
     gsap.to(chars, {
       fontVariationSettings: '"wght" 380, "ital" 0',
-      duration: 0.4,
+      duration: 0.3,
       ease: 'power2.out',
     })
   }
@@ -109,6 +110,7 @@ onUnmounted(() => {
             ref="footerEmailRef"
             href="mailto:hello@ditta.studio"
             class="inline-block p-4 -m-4"
+            data-hover-color="var(--color-pink)"
           >
             hello@ditta.studio
           </a>

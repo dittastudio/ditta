@@ -64,7 +64,7 @@ onMounted(() => {
     >
       <div
         :class="aspectRatioMap[ratio as App.TAspectRatios]"
-        class="relative z-1 overflow-hidden rounded-sm bg-[red]"
+        class="relative z-1 overflow-hidden rounded-sm outline outline-solid outline-transparent"
       >
         <div
           ref="workInnerRef"
@@ -80,7 +80,7 @@ onMounted(() => {
         </div>
       </div>
 
-      <p class="type-fluid-xs -z-1 bg-white/70 backdrop-blur-sm inline-block px-3 pt-2 pb-2 mt-2 rounded-sm">
+      <p class="type-fluid-xs bg-white/70 backdrop-blur-sm inline-block px-3 py-2 mt-2 rounded-sm outline outline-solid outline-transparent hover:bg-white/100 transition-colors duration-300 ease-out">
         <slot name="caption" />
       </p>
     </div>

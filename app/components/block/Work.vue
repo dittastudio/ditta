@@ -42,7 +42,20 @@ const columnSpan = computed(() => Number(block.column_end) - Number(block.column
       </template>
 
       <template #caption>
-        {{ block.caption }}
+        <StoryblokLink
+          v-if="block.link?.cached_url"
+          :item="block.link"
+          class="block px-3 -mx-3 py-2 -my-2"
+          :data-hover-color="block.hover_color.color || 'var(--color-pink)'"
+        >
+          <UiTextLink :is-external="block.link.linktype === 'url'">
+            {{ block.caption }}
+          </UiTextLink>
+        </StoryblokLink>
+
+        <template v-else>
+          {{ block.caption }}
+        </template>
       </template>
     </UiWork>
   </div>
