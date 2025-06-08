@@ -27,7 +27,8 @@
     "nuxt": "^3.17.5",
     "tailwindcss": "^4.1.8",
     "vue": "^3.5.16",
-    "vue-router": "^4.5.1"
+    "vue-router": "^4.5.1",
+    "webgl-fluid-enhanced": "^0.8.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.13.3",

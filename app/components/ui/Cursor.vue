@@ -121,24 +121,33 @@ watchEffect(() => {
 <template>
   <div
     ref="cursorRef"
-    class="cursor fixed top-0 left-0 bg-pink rounded-full pointer-events-none z-50 opacity-0 will-change-translate mix-blend-difference touch:hidden"
+    class="cursor fixed top-0 left-0 z-50 pointer-events-none touch:hidden opacity-0 will-change-translate mix-blend-difference"
     :style="{
       '--x': `${currentPosition.x}px`,
       '--y': `${currentPosition.y}px`,
     }"
-  />
+  >
+    <div class="cursor__dot absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-pink rounded-full" />
+
+    <div class="cursor__crosshair absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[30px] leading-[1] text-pink">
+      +
+    </div>
+  </div>
 </template>
 
 <style lang="postcss">
 .cursor {
   --cursor-size: 24px;
 
-  width: var(--cursor-size);
-  height: var(--cursor-size);
-  translate: calc(var(--x) - (var(--cursor-size) / 2)) calc(var(--y) - (var(--cursor-size) / 2)) 0;
+  translate: var(--x) var(--y) 0;
   transition:
     opacity 0.2s var(--ease-out),
     scale 0.2s var(--ease-out);
+}
+
+.cursor__dot {
+  width: var(--cursor-size);
+  height: var(--cursor-size);
 }
 
 body {
@@ -149,6 +158,18 @@ body {
 /* Dynamic hover color system */
 body.has-hover-color {
   background-color: var(--dynamic-hover-color);
+}
+
+html.is-doom-active .cursor__dot {
+  opacity: 0;
+}
+
+html .cursor__crosshair {
+  opacity: 0;
+}
+
+html.is-doom-active .cursor__crosshair {
+  opacity: 1;
 }
 
 body:has(a:hover, button:hover) .cursor {

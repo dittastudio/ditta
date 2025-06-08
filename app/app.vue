@@ -1,4 +1,37 @@
 <script lang="ts" setup>
+import WebGLFluidEnhanced from 'webgl-fluid-enhanced'
+import IconDittaMask from '@/assets/icons/ditta-mask.svg'
+
+const container = ref<HTMLElement | null>(null)
+
+const simulation = ref<WebGLFluidEnhanced | null>(null)
+
+onMounted(() => {
+  if (container.value) {
+    simulation.value = new WebGLFluidEnhanced(container.value)
+
+    simulation.value.setConfig({
+      transparent: false,
+      simResolution: 60,
+      curl: 0,
+      splatForce: 600,
+      colorful: false,
+      colorPalette: [
+        '#FF9ACC',
+      ],
+      bloom: false,
+      bloomIterations: 1,
+      bloomIntensity: -2.2,
+    })
+
+    simulation.value.start()
+  }
+})
+
+onUnmounted(() => {
+  simulation.value?.stop()
+})
+
 const route = useRoute()
 const audioRef = ref<HTMLAudioElement | null>(null)
 const shotgunAudioRef = ref<HTMLAudioElement | null>(null)
@@ -144,6 +177,7 @@ onUnmounted(() => {
 
 const globalClasses = computed(() => ({
   'is-storyblok-editor': storyblokEditor(route.query),
+  'is-doom-active': showShotgun.value,
 }))
 
 useHead({
@@ -165,6 +199,23 @@ useScriptPlausibleAnalytics({
 
 <template>
   <div>
+    <div class="relative h-screen">
+      <div class="absolute inset-0 size-full">
+        <div
+          ref="container"
+          class="h-full"
+        />
+      </div>
+
+      <div class="absolute inset-0 size-full flex flex-col border-(length:--app-outer-gutter) border-pink pointer-events-none">
+        <div class="bg-pink grow outline-pink outline-1" />
+
+        <IconDittaMask
+          class="w-full h-auto text-pink outline-pink outline-1"
+        />
+      </div>
+    </div>
+
     <NuxtPage />
 
     <div
