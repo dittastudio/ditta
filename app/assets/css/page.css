@@ -1,0 +1,19 @@
+@layer theme {
+  html {
+    color: var(--color-black);
+    background-color: var(--color-pink);
+  }
+
+  body {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .wrapper {
+    width: 100%;
+    margin-inline: auto;
+    padding-inline: var(--app-outer-gutter);
+  }
+}

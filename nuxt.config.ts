@@ -1,9 +1,26 @@
+import tailwindcss from '@tailwindcss/vite'
 import svgLoader from 'vite-svg-loader'
 
 export default defineNuxtConfig({
+  modules: [
+    '@nuxt/eslint',
+    '@nuxt/image',
+    '@nuxt/scripts',
+    '@nuxtjs/sitemap',
+    [
+      '@storyblok/nuxt',
+      {
+        accessToken: process.env.STORYBLOK_TOKEN,
+      },
+    ],
+  ],
+
+  ssr: true,
+
   devtools: { enabled: true },
+
   app: {
-    pageTransition: { name: 'page', mode: 'out-in' },
+    pageTransition: { name: 'fade', mode: 'out-in' },
     layoutTransition: false,
     head: {
       htmlAttrs: {
@@ -13,7 +30,6 @@ export default defineNuxtConfig({
       viewport: 'width=device-width, initial-scale=1',
       meta: [
         { name: 'author', content: 'ditta' },
-        { name: 'revisit-after', content: '1 day' },
         { name: 'msapplication-TileColor', content: '#ffa4d2' },
         { name: 'theme-color', content: '#ffa4d2' },
         { name: 'apple-mobile-web-app-title', content: 'ditta' },
@@ -26,58 +42,49 @@ export default defineNuxtConfig({
         { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' },
         { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
         { rel: 'manifest', href: '/site.webmanifest' },
-        { rel: 'preload', type: 'font/woff2', href: '/fonts/SaansRegular.woff2', as: 'font', crossorigin: '' },
-        { rel: 'preload', type: 'font/woff2', href: '/fonts/SaansSemiBold.woff2', as: 'font', crossorigin: '' },
+        { rel: 'preload', type: 'font/woff2', href: '/fonts/SaansVF.woff2', as: 'font', crossorigin: '' },
       ],
     },
   },
-  css: process.env.LOCAL === 'true' ? ['@michaelpumo/screen/app.css'] : [],
-  build: {
-    transpile: ['gsap'],
-  },
-  eslint: {
-    config: {
-      standalone: false,
-      stylistic: true,
-    },
-  },
-  gtag: {
-    id: 'G-VPGVW7ZKGD',
-  },
-  modules: ['@nuxt/eslint', '@nuxtjs/sitemap', '@nuxtjs/tailwindcss', '@storyblok/nuxt', 'nuxt-gtag', '@nuxt/scripts'],
-  storyblok: {
-    accessToken: process.env.NUXT_STORYBLOK_TOKEN,
-  },
-  postcss: {
-    plugins: {
-      'tailwindcss/nesting': {},
-      'tailwindcss': {},
-      'postcss-utopia': {
-        minWidth: 375,
-        maxWidth: 1440,
-      },
-    },
-  },
-  runtimeConfig: {
-    private: {},
-    public: {
-      SSR: process.env.NUXT_SSR,
-      STORYBLOK_TOKEN: process.env.NUXT_STORYBLOK_TOKEN,
-      STORYBLOK_VERSION: process.env.NUXT_STORYBLOK_VERSION,
-    },
-  },
+
+  css: ['~/assets/css/main.css'],
+
   site: {
     url: 'https://ditta.studio',
+    name: 'ditta',
   },
-  ssr: process.env.NUXT_SSR === 'true',
-  tailwindcss: {
-    cssPath: '@/assets/css/app.css',
+
+  runtimeConfig: {
+    public: {
+      STORYBLOK_TOKEN: process.env.STORYBLOK_TOKEN,
+      STORYBLOK_VERSION: process.env.STORYBLOK_VERSION,
+    },
   },
-  typescript: {
-    strict: true,
+
+  routeRules: {
+    '/**': { prerender: process.env.PRERENDER === 'true' },
   },
+
+  future: {
+    compatibilityVersion: 4,
+  },
+
+  features: {
+    noScripts: false,
+  },
+
+  compatibilityDate: '2025-05-15',
+
+  nitro: {
+    prerender: {
+      crawlLinks: true,
+      routes: ['/'],
+    },
+  },
+
   vite: {
     plugins: [
+      tailwindcss(),
       svgLoader({
         svgo: false,
       }),
@@ -88,5 +95,49 @@ export default defineNuxtConfig({
         propsDestructure: true,
       },
     },
+  },
+
+  typescript: {
+    strict: true,
+  },
+
+  postcss: {
+    plugins: {
+      'postcss-nested': {},
+      'postcss-utopia': {
+        minWidth: 375,
+        maxWidth: 1440,
+      },
+    },
+  },
+
+  eslint: {
+    config: {
+      standalone: false,
+      stylistic: true,
+      autoInit: false,
+    },
+  },
+
+  image: {
+    provider: 'storyblok',
+    storyblok: {
+      baseURL: 'https://a2.storyblok.com',
+    },
+    domains: ['storyblok.com', 'ditta.studio'],
+    quality: 80,
+    screens: {
+      '2xs': 375,
+      'xs': 480,
+      'sm': 600,
+      'md': 800,
+      'lg': 1200,
+      'xl': 1440,
+      '2xl': 1800,
+    },
+  },
+
+  sitemap: {
+    sources: ['/api/sitemap'],
   },
 })

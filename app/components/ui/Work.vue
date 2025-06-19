@@ -1,0 +1,130 @@
+<script lang="ts" setup>
+import type { MultilinkStoryblok } from '@@/types/storyblok'
+import { gsap } from 'gsap'
+import ScrollTrigger from 'gsap/ScrollTrigger'
+import { aspectRatioMap, colEndMap, colStartMap } from '@/utils/maps'
+
+gsap.registerPlugin(ScrollTrigger)
+
+export interface Props {
+  link: MultilinkStoryblok
+  hoverColor?: string
+  index?: number
+  rotation?: string | number
+  ratio?: App.TAspectRatios | string | number
+  colStart?: string | number
+  colEnd?: string | number
+}
+
+const { link, hoverColor = 'var(--color-pink)', index = 0, rotation = '10', ratio = '3/2', colStart = '1', colEnd = '13' } = defineProps<Props>()
+
+// Convert rotation to number for calculations
+const rotationNumber = computed(() => Number(rotation))
+
+const workRef = ref<HTMLElement | null>(null)
+const workInnerRef = ref<HTMLElement | null>(null)
+
+onMounted(() => {
+  // Create a timeline for the rotation and movement animation
+  const movementTl = gsap.timeline({
+    scrollTrigger: {
+      trigger: workRef.value,
+      start: 'top bottom',
+      end: 'bottom top',
+      scrub: true,
+    },
+  })
+
+  // Performance-optimized color management
+  let currentState = false
+  const setHoverColor = (isActive: boolean) => {
+    // Only update if state actually changed
+    if (currentState !== isActive) {
+      currentState = isActive
+      if (isActive) {
+        document.documentElement.style.setProperty('--dynamic-hover-color', hoverColor)
+        document.body.classList.add('has-hover-color')
+      }
+      else {
+        document.body.classList.remove('has-hover-color')
+      }
+    }
+  }
+
+  ScrollTrigger.create({
+    trigger: workRef.value,
+    start: 'top center',
+    end: 'bottom center',
+    onEnter: () => setHoverColor(true),
+    onLeave: () => setHoverColor(false),
+    onEnterBack: () => setHoverColor(true),
+    onLeaveBack: () => setHoverColor(false),
+  })
+
+  // Original movement animation
+  movementTl.fromTo(workRef.value, {
+    y: (index: number) => index % 2 === 0 ? `${rotationNumber.value * 3}%` : `-${rotationNumber.value * 3}%`,
+    rotate: rotationNumber.value,
+  }, {
+    y: (index: number) => index % 2 === 0 ? `-${rotationNumber.value * 3}%` : `${rotationNumber.value * 3}%`,
+    rotate: -rotationNumber.value,
+    duration: 1,
+    ease: 'linear',
+  }).fromTo(workInnerRef.value, {
+    y: 0,
+  }, {
+    y: '30%',
+    duration: 1,
+    ease: 'linear',
+  }, '<')
+})
+</script>
+
+<template>
+  <div
+    ref="workRef"
+    class="w-full grid grid-cols-12 gap-x-[var(--app-inner-gutter)] py-[calc(var(--app-outer-gutter)*2)]"
+  >
+    <StoryblokLink
+      :item="link"
+      :class="[
+        index % 2 === 0 ? 'col-start-1 col-end-11' : 'col-start-3 col-end-13',
+        colStartMap[String(colStart)],
+        colEndMap[String(colEnd)],
+      ]"
+    >
+      <div
+        :class="aspectRatioMap[ratio as App.TAspectRatios]"
+        class="relative z-1 overflow-hidden rounded-sm outline outline-solid outline-transparent"
+      >
+        <div
+          ref="workInnerRef"
+          class="size-full absolute top-0 left-0 flex items-end"
+        >
+          <div
+            class="w-full h-[130%]"
+          >
+            <div class="w-full h-full">
+              <slot name="media" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="type-fluid-xs bg-white/70 backdrop-blur-sm inline-block px-3 py-2 mt-2 rounded-sm outline outline-solid outline-transparent [a:hover_&]:bg-white/100 transition-colors duration-300 ease-out">
+        <slot name="caption" />
+      </p>
+    </StoryblokLink>
+  </div>
+</template>
+
+<style lang="postcss" scoped>
+:global(body) {
+  background-color: transparent;
+  transition: background-color 1s var(--ease-out);
+}
+
+:global(body.has-hover-color) {
+  background-color: var(--dynamic-hover-color);
+}
+</style>
