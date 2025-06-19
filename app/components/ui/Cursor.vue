@@ -9,9 +9,6 @@ const currentPosition = reactive<Position>({ x: 0, y: 0 })
 const targetPosition = reactive<Position>({ x: 0, y: 0 })
 const isVisible = ref(false)
 
-// Use the hover color composable
-const { setupHoverElement } = useHoverColor()
-
 let rafId: number | null = null
 let isAnimating = false
 let cleanupFunctions: (() => void)[] = []
@@ -70,28 +67,12 @@ const handleMouseLeave = () => {
   isVisible.value = false
 }
 
-const setupDynamicHoverElements = () => {
-  // Find all elements with data-hover-color attribute
-  const hoverElements = document.querySelectorAll<HTMLElement>('[data-hover-color]')
-
-  hoverElements.forEach((element) => {
-    const color = element.getAttribute('data-hover-color')
-    if (color) {
-      const cleanup = setupHoverElement(element, color)
-      cleanupFunctions.push(cleanup)
-    }
-  })
-}
-
 onMounted(() => {
   document.body.style.cursor = 'none'
 
   document.addEventListener('mousemove', handleMouseMove, { passive: true })
   document.addEventListener('mouseenter', handleMouseEnter)
   document.addEventListener('mouseleave', handleMouseLeave)
-
-  // Set up dynamic hover elements
-  setupDynamicHoverElements()
 })
 
 onUnmounted(() => {
@@ -121,37 +102,61 @@ watchEffect(() => {
 <template>
   <div
     ref="cursorRef"
-    class="cursor fixed top-0 left-0 bg-pink rounded-full pointer-events-none z-50 opacity-0 will-change-translate mix-blend-difference touch:hidden"
+    class="cursor fixed top-0 left-0 z-50 pointer-events-none touch:hidden opacity-0 will-change-translate mix-blend-difference"
     :style="{
       '--x': `${currentPosition.x}px`,
       '--y': `${currentPosition.y}px`,
     }"
-  />
+  >
+    <div class="cursor__dot absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-pink rounded-full" />
+
+    <div class="cursor__crosshair absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[30px] leading-[1] text-pink">
+      +
+    </div>
+  </div>
 </template>
 
 <style lang="postcss">
 .cursor {
   --cursor-size: 24px;
 
-  width: var(--cursor-size);
-  height: var(--cursor-size);
-  translate: calc(var(--x) - (var(--cursor-size) / 2)) calc(var(--y) - (var(--cursor-size) / 2)) 0;
+  translate: var(--x) var(--y) 0;
   transition:
     opacity 0.2s var(--ease-out),
     scale 0.2s var(--ease-out);
 }
 
-body {
+.cursor__dot {
+  width: var(--cursor-size);
+  height: var(--cursor-size);
+}
+
+/* body {
   background-color: transparent;
   transition: background-color 0.3s var(--ease-out);
 }
 
-/* Dynamic hover color system */
 body.has-hover-color {
   background-color: var(--dynamic-hover-color);
+} */
+
+html.is-doom-active .cursor__dot {
+  opacity: 0;
+}
+
+html .cursor__crosshair {
+  opacity: 0;
+}
+
+html.is-doom-active .cursor__crosshair {
+  opacity: 1;
 }
 
 body:has(a:hover, button:hover) .cursor {
   scale: 2;
+}
+
+a {
+  cursor: none;
 }
 </style>

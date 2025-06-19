@@ -89,7 +89,7 @@ onMounted(() => {
 
     <div
       ref="contentRef"
-      class="relative z-1 overflow-hidden wrapper pt-[calc(var(--app-outer-gutter)*2)] pb-[calc(var(--app-outer-gutter)*1)] flex flex-col gap-[calc(var(--app-outer-gutter)*4)]"
+      class="relative z-1 overflow-hidden wrapper pt-[calc(var(--app-outer-gutter)*2)] pb-[calc(var(--app-outer-gutter)*1)]"
     >
       <slot />
     </div>

@@ -25,40 +25,56 @@ const workRef = ref<HTMLElement | null>(null)
 const workInnerRef = ref<HTMLElement | null>(null)
 
 onMounted(() => {
-  const tl = gsap.timeline({
+  // Create a timeline for the rotation and movement animation
+  const movementTl = gsap.timeline({
     scrollTrigger: {
       trigger: workRef.value,
       start: 'top bottom',
       end: 'bottom top',
       scrub: true,
-      markers: false,
     },
   })
 
-  tl
-    .fromTo(workRef.value, {
-      y: (index: number) => index % 2 === 0 ? `${rotationNumber.value * 3}%` : `-${rotationNumber.value * 3}%`,
-      rotate: rotationNumber.value,
-    }, {
-      y: (index: number) => index % 2 === 0 ? `-${rotationNumber.value * 3}%` : `${rotationNumber.value * 3}%`,
-      rotate: -rotationNumber.value,
-      duration: 1,
-      ease: 'linear',
-    })
-    .fromTo(workInnerRef.value, {
-      y: 0,
-    }, {
-      y: '30%',
-      duration: 1,
-      ease: 'linear',
-    }, '<')
+  // Separate ScrollTrigger for color changes
+  ScrollTrigger.create({
+    trigger: workRef.value,
+    start: 'top center',
+    end: 'bottom center',
+    onEnter: () => {
+      document.documentElement.style.setProperty('--dynamic-hover-color', hoverColor)
+      document.body.classList.add('has-hover-color')
+    },
+    onEnterBack: () => {
+      document.documentElement.style.setProperty('--dynamic-hover-color', hoverColor)
+      document.body.classList.add('has-hover-color')
+    },
+    onLeave: () => document.body.classList.remove('has-hover-color'),
+    onLeaveBack: () => document.body.classList.remove('has-hover-color'),
+  })
+
+  // Original movement animation
+  movementTl.fromTo(workRef.value, {
+    y: (index: number) => index % 2 === 0 ? `${rotationNumber.value * 3}%` : `-${rotationNumber.value * 3}%`,
+    rotate: rotationNumber.value,
+  }, {
+    y: (index: number) => index % 2 === 0 ? `-${rotationNumber.value * 3}%` : `${rotationNumber.value * 3}%`,
+    rotate: -rotationNumber.value,
+    duration: 1,
+    ease: 'linear',
+  }).fromTo(workInnerRef.value, {
+    y: 0,
+  }, {
+    y: '30%',
+    duration: 1,
+    ease: 'linear',
+  }, '<')
 })
 </script>
 
 <template>
   <div
     ref="workRef"
-    class="w-full grid grid-cols-12 gap-x-[var(--app-inner-gutter)]"
+    class="w-full grid grid-cols-12 gap-x-[var(--app-inner-gutter)] py-[calc(var(--app-outer-gutter)*2)]"
   >
     <StoryblokLink
       :item="link"
@@ -67,7 +83,6 @@ onMounted(() => {
         colStartMap[String(colStart)],
         colEndMap[String(colEnd)],
       ]"
-      :data-hover-color="hoverColor"
     >
       <div
         :class="aspectRatioMap[ratio as App.TAspectRatios]"
@@ -93,3 +108,14 @@ onMounted(() => {
     </StoryblokLink>
   </div>
 </template>
+
+<style lang="postcss" scoped>
+:global(body) {
+  background-color: transparent;
+  transition: background-color 1s var(--ease-out);
+}
+
+:global(body.has-hover-color) {
+  background-color: var(--dynamic-hover-color);
+}
+</style>
