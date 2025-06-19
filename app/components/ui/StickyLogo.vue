@@ -41,14 +41,14 @@ onMounted(() => {
     scrollTrigger: {
       trigger: contentRef.value,
       start: 'top 75%',
-      end: '10% 75%',
+      end: '15% 75%',
       scrub: true,
       markers: false,
     },
   })
 
   tlContentInner.fromTo(contentInnerRef.value, {
-    scale: 1.5,
+    scale: 1.25,
     transformOrigin: 'top center',
   }, {
     scale: 1,

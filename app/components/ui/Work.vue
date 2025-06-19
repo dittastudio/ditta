@@ -18,14 +18,12 @@ export interface Props {
 
 const { link, hoverColor = 'var(--color-pink)', index = 0, rotation = '10', ratio = '3/2', colStart = '1', colEnd = '13' } = defineProps<Props>()
 
-// Convert rotation to number for calculations
 const rotationNumber = computed(() => Number(rotation))
 
 const workRef = ref<HTMLElement | null>(null)
 const workInnerRef = ref<HTMLElement | null>(null)
 
 onMounted(() => {
-  // Create a timeline for the rotation and movement animation
   const movementTl = gsap.timeline({
     scrollTrigger: {
       trigger: workRef.value,
@@ -35,10 +33,8 @@ onMounted(() => {
     },
   })
 
-  // Performance-optimized color management
   let currentState = false
   const setHoverColor = (isActive: boolean) => {
-    // Only update if state actually changed
     if (currentState !== isActive) {
       currentState = isActive
       if (isActive) {
@@ -59,14 +55,12 @@ onMounted(() => {
     onLeave: () => setHoverColor(false),
     onEnterBack: () => setHoverColor(true),
     onLeaveBack: () => setHoverColor(false),
+    invalidateOnRefresh: true,
   })
 
-  // Original movement animation
   movementTl.fromTo(workRef.value, {
-    y: (index: number) => index % 2 === 0 ? `${rotationNumber.value * 3}%` : `-${rotationNumber.value * 3}%`,
     rotate: rotationNumber.value,
   }, {
-    y: (index: number) => index % 2 === 0 ? `-${rotationNumber.value * 3}%` : `${rotationNumber.value * 3}%`,
     rotate: -rotationNumber.value,
     duration: 1,
     ease: 'linear',
@@ -93,7 +87,7 @@ onMounted(() => {
     <StoryblokLink
       :item="link"
       :class="[
-        index % 2 === 0 ? 'col-start-1 col-end-11' : 'col-start-3 col-end-13',
+        index % 2 ? 'col-start-3 col-end-13' : 'col-start-1 col-end-11',
         colStartMap[String(colStart)],
         colEndMap[String(colEnd)],
       ]"
