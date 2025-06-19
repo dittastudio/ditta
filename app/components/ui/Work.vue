@@ -77,6 +77,11 @@ onMounted(() => {
     duration: 1,
     ease: 'linear',
   }, '<')
+
+  // Cleanup
+  onUnmounted(() => {
+    document.body.classList.remove('has-hover-color')
+  })
 })
 </script>
 
