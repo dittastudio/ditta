@@ -90,7 +90,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col items-start justify-between min-h-screen">
+  <footer class="flex flex-col items-start justify-between min-h-screen">
     <UiTicker
       :copy="['Say Hello']"
       duration="65s"
@@ -123,5 +123,5 @@ onUnmounted(() => {
         ditta ltd. is a company registered in England and Wales with company number 15648076.
       </p>
     </div>
-  </div>
+  </footer>
 </template>

@@ -131,15 +131,6 @@ watchEffect(() => {
   height: var(--cursor-size);
 }
 
-/* body {
-  background-color: transparent;
-  transition: background-color 0.3s var(--ease-out);
-}
-
-body.has-hover-color {
-  background-color: var(--dynamic-hover-color);
-} */
-
 html.is-doom-active .cursor__dot {
   opacity: 0;
 }

@@ -35,21 +35,30 @@ onMounted(() => {
     },
   })
 
-  // Separate ScrollTrigger for color changes
+  // Performance-optimized color management
+  let currentState = false
+  const setHoverColor = (isActive: boolean) => {
+    // Only update if state actually changed
+    if (currentState !== isActive) {
+      currentState = isActive
+      if (isActive) {
+        document.documentElement.style.setProperty('--dynamic-hover-color', hoverColor)
+        document.body.classList.add('has-hover-color')
+      }
+      else {
+        document.body.classList.remove('has-hover-color')
+      }
+    }
+  }
+
   ScrollTrigger.create({
     trigger: workRef.value,
     start: 'top center',
     end: 'bottom center',
-    onEnter: () => {
-      document.documentElement.style.setProperty('--dynamic-hover-color', hoverColor)
-      document.body.classList.add('has-hover-color')
-    },
-    onEnterBack: () => {
-      document.documentElement.style.setProperty('--dynamic-hover-color', hoverColor)
-      document.body.classList.add('has-hover-color')
-    },
-    onLeave: () => document.body.classList.remove('has-hover-color'),
-    onLeaveBack: () => document.body.classList.remove('has-hover-color'),
+    onEnter: () => setHoverColor(true),
+    onLeave: () => setHoverColor(false),
+    onEnterBack: () => setHoverColor(true),
+    onLeaveBack: () => setHoverColor(false),
   })
 
   // Original movement animation
@@ -68,6 +77,11 @@ onMounted(() => {
     duration: 1,
     ease: 'linear',
   }, '<')
+
+  // Cleanup
+  onUnmounted(() => {
+    document.body.classList.remove('has-hover-color')
+  })
 })
 </script>
 

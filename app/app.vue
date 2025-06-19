@@ -169,6 +169,8 @@ useScriptPlausibleAnalytics({
 
 <template>
   <div>
+    <!-- <AppHeader /> -->
+
     <NuxtPage />
 
     <div

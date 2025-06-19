@@ -5,10 +5,10 @@ import IconDitta from '@/assets/icons/ditta.svg'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const logoRefs = ref<HTMLElement[]>([])
 const logoRefTop = ref<HTMLElement | null>(null)
 const logoRefBottom = ref<HTMLElement | null>(null)
 const contentRef = ref<HTMLElement | null>(null)
+const contentInnerRef = ref<HTMLElement | null>(null)
 const bottomSectionRef = ref<HTMLElement | null>(null)
 
 onMounted(() => {
@@ -29,12 +29,31 @@ onMounted(() => {
     scale: 0.9,
     opacity: 0,
     ease: 'power2.inOut',
-  }).fromTo(logoRefBottom.value, {
-    scale: 1,
+  })
+    .fromTo(logoRefBottom.value, {
+      scale: 1,
+    }, {
+      scale: 0.9,
+      ease: 'power2.inOut',
+    }, '<')
+
+  const tlContentInner = gsap.timeline({
+    scrollTrigger: {
+      trigger: contentRef.value,
+      start: 'top 75%',
+      end: '10% 75%',
+      scrub: true,
+      markers: false,
+    },
+  })
+
+  tlContentInner.fromTo(contentInnerRef.value, {
+    scale: 1.5,
+    transformOrigin: 'top center',
   }, {
-    scale: 0.9,
-    ease: 'power2.inOut',
-  }, '<')
+    scale: 1,
+    ease: 'power2.out',
+  })
 
   const tlBottom = gsap.timeline({
     scrollTrigger: {
@@ -53,10 +72,7 @@ onMounted(() => {
   }).to(logoRefBottom.value, {
     scale: 1,
     ease: 'power2.inOut',
-  }, '<').to(logoRefs.value, {
-    y: index => `-${100 * index}%`,
-    ease: 'power2.inOut',
-  }, '<0.5')
+  }, '<')
 })
 </script>
 
@@ -73,30 +89,25 @@ onMounted(() => {
 
     <div
       ref="logoRefBottom"
-      class="-mt-[100svh] sticky top-0 min-h-svh flex items-end justify-center pb-[var(--app-outer-gutter)] px-[var(--app-outer-gutter)]"
+      class="-mt-[100svh] sticky top-0 min-h-svh flex items-end justify-center p-[var(--app-outer-gutter)]"
     >
-      <div class="page-header__grid contain-layout relative w-full">
-        <div
-          v-for="i in 5"
-          :key="i"
-          ref="logoRefs"
-          class="page-header__grid-item w-full pt-[var(--app-outer-gutter)]"
-        >
-          <IconDitta class="page-header__logo w-full h-auto" />
-        </div>
-      </div>
+      <IconDitta
+        class="page-header__logo w-full h-auto"
+      />
     </div>
 
     <div
       ref="contentRef"
       class="relative z-1 overflow-hidden wrapper pt-[calc(var(--app-outer-gutter)*2)] pb-[calc(var(--app-outer-gutter)*1)]"
     >
-      <slot />
+      <div ref="contentInnerRef">
+        <slot />
+      </div>
     </div>
 
     <div
       ref="bottomSectionRef"
-      class="min-h-[200svh]"
+      class="min-h-[100svh]"
     />
   </div>
 </template>
