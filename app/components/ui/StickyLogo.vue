@@ -92,7 +92,7 @@ onMounted(() => {
       class="-mt-[100svh] sticky top-0 min-h-svh flex items-end justify-center p-[var(--app-outer-gutter)]"
     >
       <IconDitta
-        class="page-header__logo opacity-10 w-full h-auto"
+        class="page-header__logo opacity-5 w-full h-auto"
       />
     </div>
 
