@@ -73,7 +73,7 @@ onMounted(() => {
     onLeave: () => setHoverColor(false),
     onEnterBack: () => setHoverColor(true),
     onLeaveBack: () => setHoverColor(false),
-    markers: true,
+    markers: false,
   })
 
   // Cleanup
