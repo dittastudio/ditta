@@ -67,9 +67,11 @@ const adjustedRatio = computed(() => {
       </template>
 
       <template #caption>
-        <UiTextLink :is-external="block.link?.linktype === 'url'">
-          {{ block.caption }}
-        </UiTextLink>
+        <UiTicker
+          :copy="[`${block.caption}`]"
+          duration="65s"
+          :direction="index % 2 ? 'left' : 'right'"
+        />
       </template>
     </UiWork>
   </div>

@@ -15,9 +15,10 @@ export interface Props {
   duration?: string
   direction?: 'left' | 'right'
   isLast?: boolean
+  hasBorder?: boolean
 }
 
-const { copy, direction = 'left', duration = '60s', isLast = false } = defineProps<Props>()
+const { copy, direction = 'left', duration = '60s', isLast = false, hasBorder = true } = defineProps<Props>()
 
 const container = ref<HTMLElement | null>(null)
 const wrappers = ref<HTMLElement[]>([])
@@ -95,7 +96,7 @@ onUnmounted(() => {
   <div
     v-if="copy"
     class="ui-ticker contain-layout w-full isolate"
-    :class="{ 'ui-ticker--last': isLast }"
+    :class="{ 'ui-ticker--last': isLast, 'ui-ticker--has-border': hasBorder }"
   >
     <div
       ref="container"
@@ -134,8 +135,8 @@ onUnmounted(() => {
 
   position: relative;
 
-  &::before,
-  &::after {
+  &--has-border::before,
+  &--has-border::after {
     position: absolute;
     right: 0;
     left: 0;
@@ -148,16 +149,14 @@ onUnmounted(() => {
     background-color: currentColor;
   }
 
-  &::before {
+  &--has-border::before {
     content: '';
     top: 0;
   }
 
-  &--last {
-    &::after {
-      content: '';
-      bottom: 0;
-    }
+  &--has-border.ui-ticker--last::after {
+    content: '';
+    bottom: 0;
   }
 }
 
@@ -172,8 +171,8 @@ onUnmounted(() => {
 .ui-ticker__words {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.3em;
-  padding: 0.2em 0.15em;
+  gap: 0.4em;
+  padding: 0.2em 0.2em;
 }
 
 .ui-ticker__copy {

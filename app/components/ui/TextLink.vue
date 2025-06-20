@@ -13,7 +13,7 @@ const { isExternal = false } = defineProps<Props>()
     class="
       inline-flex
       items-center
-      gap-2
+      gap-[0.25em]
     "
   >
     <slot />
@@ -21,7 +21,7 @@ const { isExternal = false } = defineProps<Props>()
     <IconExternal
       v-if="isExternal"
       class="
-        size-2.5
+        size-[0.45em]
         [a_&]:transition-transform
         [a_&]:duration-200
         [a_&]:ease-out

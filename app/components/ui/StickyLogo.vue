@@ -92,13 +92,13 @@ onMounted(() => {
       class="-mt-[100svh] sticky top-0 min-h-svh flex items-end justify-center p-[var(--app-outer-gutter)]"
     >
       <IconDitta
-        class="page-header__logo w-full h-auto"
+        class="page-header__logo opacity-10 w-full h-auto"
       />
     </div>
 
     <div
       ref="contentRef"
-      class="relative z-1 overflow-hidden wrapper pt-[calc(var(--app-outer-gutter)*2)] pb-[calc(var(--app-outer-gutter)*1)]"
+      class="relative z-1 contain-paint contain-layout wrapper pt-[calc(var(--app-outer-gutter)*2)] pb-[calc(var(--app-outer-gutter)*1)]"
     >
       <div ref="contentInnerRef">
         <slot />

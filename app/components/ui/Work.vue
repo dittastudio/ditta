@@ -86,6 +86,7 @@ onMounted(() => {
   >
     <StoryblokLink
       :item="link"
+      class="block text-center"
       :class="[
         index % 2 ? 'col-start-3 col-end-13' : 'col-start-1 col-end-11',
         colStartMap[String(colStart)],
@@ -110,9 +111,7 @@ onMounted(() => {
         </div>
       </div>
 
-      <p class="type-fluid-xs bg-white/70 backdrop-blur-sm inline-block px-3 py-2 mt-2 rounded-sm outline outline-solid outline-transparent [a:hover_&]:bg-white/100 transition-colors duration-300 ease-out">
-        <slot name="caption" />
-      </p>
+      <slot name="caption" />
     </StoryblokLink>
   </div>
 </template>
