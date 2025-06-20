@@ -20,6 +20,7 @@ const { link, hoverColor = 'var(--color-pink)', index = 0, rotation = '10', rati
 
 const rotationNumber = computed(() => Number(rotation))
 
+const containerRef = ref<HTMLElement | null>(null)
 const workRef = ref<HTMLElement | null>(null)
 const workInnerRef = ref<HTMLElement | null>(null)
 
@@ -30,6 +31,7 @@ onMounted(() => {
       start: 'top bottom',
       end: 'bottom top',
       scrub: true,
+      markers: false,
     },
   })
 
@@ -48,14 +50,15 @@ onMounted(() => {
   }
 
   ScrollTrigger.create({
-    trigger: workRef.value,
+    trigger: containerRef.value,
     start: 'top center',
     end: 'bottom center',
     onEnter: () => setHoverColor(true),
     onLeave: () => setHoverColor(false),
     onEnterBack: () => setHoverColor(true),
     onLeaveBack: () => setHoverColor(false),
-    invalidateOnRefresh: true,
+    markers: true,
+    // invalidateOnRefresh: true,
   })
 
   movementTl.fromTo(workRef.value, {
@@ -81,38 +84,43 @@ onMounted(() => {
 
 <template>
   <div
-    ref="workRef"
-    class="w-full grid grid-cols-12 gap-x-[var(--app-inner-gutter)] py-[calc(var(--app-outer-gutter)*2)]"
+    ref="containerRef"
+    class="w-full"
   >
-    <StoryblokLink
-      :item="link"
-      class="block text-center"
-      :class="[
-        index % 2 ? 'col-start-3 col-end-13' : 'col-start-1 col-end-11',
-        colStartMap[String(colStart)],
-        colEndMap[String(colEnd)],
-      ]"
+    <div
+      ref="workRef"
+      class="w-full grid grid-cols-12 gap-x-[var(--app-inner-gutter)] py-[calc(var(--app-outer-gutter)*2)]"
     >
-      <div
-        :class="aspectRatioMap[ratio as App.TAspectRatios]"
-        class="relative z-1 overflow-hidden rounded-sm outline outline-solid outline-transparent"
+      <StoryblokLink
+        :item="link"
+        class="block text-center"
+        :class="[
+          index % 2 ? 'col-start-3 col-end-13' : 'col-start-1 col-end-11',
+          colStartMap[String(colStart)],
+          colEndMap[String(colEnd)],
+        ]"
       >
         <div
-          ref="workInnerRef"
-          class="size-full absolute top-0 left-0 flex items-end"
+          :class="aspectRatioMap[ratio as App.TAspectRatios]"
+          class="relative z-1 overflow-hidden rounded-sm outline outline-solid outline-transparent"
         >
           <div
-            class="w-full h-[130%]"
+            ref="workInnerRef"
+            class="size-full absolute top-0 left-0 flex items-end"
           >
-            <div class="w-full h-full">
-              <slot name="media" />
+            <div
+              class="w-full h-[130%]"
+            >
+              <div class="w-full h-full">
+                <slot name="media" />
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <slot name="caption" />
-    </StoryblokLink>
+        <slot name="caption" />
+      </StoryblokLink>
+    </div>
   </div>
 </template>
 
