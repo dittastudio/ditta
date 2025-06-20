@@ -24,6 +24,10 @@ const containerRef = ref<HTMLElement | null>(null)
 const workRef = ref<HTMLElement | null>(null)
 const workInnerRef = ref<HTMLElement | null>(null)
 
+let scrollTriggerInstance: ScrollTrigger | null = null
+let resizeTimeout: ReturnType<typeof setTimeout> | null = null
+let isRefreshing = false
+
 onMounted(() => {
   const movementTl = gsap.timeline({
     scrollTrigger: {
@@ -49,7 +53,7 @@ onMounted(() => {
     }
   }
 
-  ScrollTrigger.create({
+  scrollTriggerInstance = ScrollTrigger.create({
     trigger: containerRef.value,
     start: 'top center',
     end: 'bottom center',
@@ -58,8 +62,31 @@ onMounted(() => {
     onEnterBack: () => setHoverColor(true),
     onLeaveBack: () => setHoverColor(false),
     markers: false,
-    // invalidateOnRefresh: true,
   })
+
+  // Highly performant debounced resize handler
+  const handleResize = () => {
+    // Prevent multiple simultaneous refreshes
+    if (isRefreshing)
+      return
+
+    // Clear existing timeout
+    if (resizeTimeout) {
+      clearTimeout(resizeTimeout)
+    }
+
+    // Set new timeout for debounced refresh
+    resizeTimeout = setTimeout(() => {
+      isRefreshing = true
+
+      // Refresh all ScrollTriggers at once (much more efficient)
+      ScrollTrigger.refresh()
+
+      isRefreshing = false
+    }, 200) // Slightly longer debounce for better performance
+  }
+
+  window.addEventListener('resize', handleResize, { passive: true })
 
   movementTl.fromTo(workRef.value, {
     rotate: rotationNumber.value,
@@ -78,6 +105,14 @@ onMounted(() => {
   // Cleanup
   onUnmounted(() => {
     document.body.classList.remove('has-hover-color')
+    window.removeEventListener('resize', handleResize)
+    if (resizeTimeout) {
+      clearTimeout(resizeTimeout)
+    }
+    if (scrollTriggerInstance) {
+      scrollTriggerInstance.kill()
+      scrollTriggerInstance = null
+    }
   })
 })
 </script>
