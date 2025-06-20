@@ -8,7 +8,6 @@ gsap.registerPlugin(ScrollTrigger)
 const logoRefTop = ref<HTMLElement | null>(null)
 const logoRefBottom = ref<HTMLElement | null>(null)
 const contentRef = ref<HTMLElement | null>(null)
-const contentInnerRef = ref<HTMLElement | null>(null)
 const bottomSectionRef = ref<HTMLElement | null>(null)
 
 onMounted(() => {
@@ -36,24 +35,6 @@ onMounted(() => {
       scale: 0.9,
       ease: 'power2.inOut',
     }, '<')
-
-  const tlContentInner = gsap.timeline({
-    scrollTrigger: {
-      trigger: contentRef.value,
-      start: 'top 75%',
-      end: '15% 75%',
-      scrub: true,
-      markers: false,
-    },
-  })
-
-  tlContentInner.fromTo(contentInnerRef.value, {
-    scale: 1.25,
-    transformOrigin: 'top center',
-  }, {
-    scale: 1,
-    ease: 'power2.out',
-  })
 
   const tlBottom = gsap.timeline({
     scrollTrigger: {
@@ -100,9 +81,7 @@ onMounted(() => {
       ref="contentRef"
       class="relative z-1 contain-paint contain-layout wrapper pt-[calc(var(--app-outer-gutter)*2)] pb-[calc(var(--app-outer-gutter)*1)]"
     >
-      <div ref="contentInnerRef">
-        <slot />
-      </div>
+      <slot />
     </div>
 
     <div
