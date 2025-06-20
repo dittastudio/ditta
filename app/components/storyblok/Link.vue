@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { MultilinkStoryblok } from '@@/types/storyblok'
+import type { StoryblokMultilink } from '@@/.storyblok/types/storyblok'
 
 interface Props {
-  item: MultilinkStoryblok
+  item: StoryblokMultilink
 }
 
 const { item } = defineProps<Props>()
@@ -15,7 +15,6 @@ const href
       : item?.cached_url
 
 const customAttributes = {
-  class: item?.class,
   title: item?.title,
   rel: item?.rel,
 }

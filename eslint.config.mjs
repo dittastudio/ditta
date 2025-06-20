@@ -5,8 +5,7 @@ import withNuxt from './.nuxt/eslint.config.mjs'
 export default withNuxt(
   {
     ignores: [
-      'components.284609.json',
-      'types/storyblok.d.ts',
+      '.storyblok/**',
     ],
   },
   antfu({

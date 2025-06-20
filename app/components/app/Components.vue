@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { PageStoryblok } from '@@/types/storyblok'
+import type { Page } from '@@/.storyblok/types/284609/storyblok-components'
 
 interface Props {
-  content: PageStoryblok
+  content: Page
 }
 
 const { content } = defineProps<Props>()

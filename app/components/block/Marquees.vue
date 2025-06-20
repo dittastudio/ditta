@@ -1,8 +1,8 @@
-<script setup lang="ts">
-import type { BlockMarqueesStoryblok } from '@@/types/storyblok'
+<script lang="ts" setup>
+import type { BlockMarquees } from '@@/.storyblok/types/284609/storyblok-components'
 
 interface Props {
-  block: BlockMarqueesStoryblok
+  block: BlockMarquees
 }
 
 const { block } = defineProps<Props>()

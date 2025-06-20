@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 let rafId: number | null = null
 let totalRotation = 0
 let lastAngle = 0

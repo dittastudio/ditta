@@ -1,14 +1,12 @@
 <script lang="ts" setup>
-import type { SettingsStoryblok } from '@@/types/storyblok'
+import type { Settings } from '@@/.storyblok/types/284609/storyblok-components'
 import { gsap } from 'gsap'
 import { SplitText } from 'gsap/SplitText'
 import IconDitta from '@/assets/icons/ditta.svg'
 
 gsap.registerPlugin(SplitText)
 
-const settings = await useStory('/settings')
-const content = settings.value.content as SettingsStoryblok
-
+const story = await useStory<Settings>('/settings')
 const footerEmailRef = ref<HTMLElement | null>(null)
 let splitText: SplitText | null = null
 
@@ -100,10 +98,10 @@ onUnmounted(() => {
 
     <div class="wrapper py-[var(--app-outer-gutter)]">
       <div
-        v-if="content"
+        v-if="story.content"
         class="prose mb-16 [&_p]:max-w-[40ch]"
       >
-        <StoryblokText :html="content.footer_copy" />
+        <StoryblokText :html="story.content.footer_copy" />
 
         <p>
           <a

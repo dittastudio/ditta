@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { MultilinkStoryblok } from '@@/types/storyblok'
+import type { StoryblokMultilink } from '@@/.storyblok/types/storyblok'
 import { gsap } from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
 import { aspectRatioMap, colEndMap, colStartMap } from '@/utils/maps'
@@ -7,7 +7,7 @@ import { aspectRatioMap, colEndMap, colStartMap } from '@/utils/maps'
 gsap.registerPlugin(ScrollTrigger)
 
 export interface Props {
-  link: MultilinkStoryblok
+  link: StoryblokMultilink
   hoverColor?: string
   index?: number
   rotation?: string | number

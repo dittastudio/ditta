@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { AssetStoryblok } from '@@/types/storyblok'
+import type { StoryblokAsset } from '@@/.storyblok/types/storyblok'
 import { useIntersectionObserver } from '@vueuse/core'
 
 defineOptions({
@@ -9,8 +9,8 @@ defineOptions({
 const attrs = useAttrs() as { [key: string]: any }
 
 interface Props {
-  asset: AssetStoryblok
-  desktopAsset?: AssetStoryblok
+  asset: StoryblokAsset
+  desktopAsset?: StoryblokAsset
   breakpoint?: 'landscape' | 'portrait' | number
   ratio?: string | number
   desktopRatio?: string | number
@@ -51,7 +51,7 @@ useIntersectionObserver(
 const imgMain = useImage()
 
 // Function to get image size based on asset and ratio
-function getImageSize(imageAsset: AssetStoryblok, imageRatio?: string | number) {
+function getImageSize(imageAsset: StoryblokAsset, imageRatio?: string | number) {
   const { width, height } = storyblokImageDimensions(imageAsset.filename)
 
   // Use provided ratio if valid, otherwise calculate from image dimensions
@@ -67,7 +67,7 @@ function getImageSize(imageAsset: AssetStoryblok, imageRatio?: string | number) 
 }
 
 // Function to create image info (srcset, sizes, etc.)
-function createImageInfo(imageAsset: AssetStoryblok, imageSize: { width: number, height: number }, imageSizes: string) {
+function createImageInfo(imageAsset: StoryblokAsset, imageSize: { width: number, height: number }, imageSizes: string) {
   return imgMain.getSizes(storyblokImageUrlUpdate(imageAsset.filename || ''), {
     provider: 'storyblok',
     sizes: imageSizes,
@@ -83,7 +83,7 @@ function createImageInfo(imageAsset: AssetStoryblok, imageSize: { width: number,
 }
 
 // Function to create placeholder image
-function createPlaceholder(imageAsset: AssetStoryblok, imageSize: { width: number, height: number }) {
+function createPlaceholder(imageAsset: StoryblokAsset, imageSize: { width: number, height: number }) {
   return storyblokImage(
     imageAsset.filename,
     {
