@@ -1,58 +1,20 @@
 <script lang="ts" setup>
+import IconMouse from '@/assets/icons/cursor.svg'
+
 interface Position {
   x: number
   y: number
 }
 
 const cursorRef = ref<HTMLElement>()
-const currentPosition = reactive<Position>({ x: 0, y: 0 })
-const targetPosition = reactive<Position>({ x: 0, y: 0 })
+const position = reactive<Position>({ x: 0, y: 0 })
 const isVisible = ref(false)
 
-let rafId: number | null = null
-let isAnimating = false
 let cleanupFunctions: (() => void)[] = []
 
-const lerp = (start: number, end: number, factor: number): number => {
-  return start + (end - start) * factor
-}
-
-// Animation loop with lerp
-const animateCursor = () => {
-  const lerpFactor = 0.4 // Adjust this value for different smoothness (0.1 = slower, 0.3 = faster)
-
-  // Interpolate between current and target positions
-  currentPosition.x = lerp(currentPosition.x, targetPosition.x, lerpFactor)
-  currentPosition.y = lerp(currentPosition.y, targetPosition.y, lerpFactor)
-
-  // Check if we're close enough to the target to stop animating
-  const distance = Math.sqrt(
-    (targetPosition.x - currentPosition.x) ** 2
-    + (targetPosition.y - currentPosition.y) ** 2,
-  )
-
-  // Continue animation if we're not close enough to target
-  if (distance > 0.5) {
-    rafId = requestAnimationFrame(animateCursor)
-  }
-  else {
-    isAnimating = false
-    rafId = null
-  }
-}
-
-const startAnimation = () => {
-  if (!isAnimating) {
-    isAnimating = true
-    animateCursor()
-  }
-}
-
 const handleMouseMove = (e: MouseEvent) => {
-  targetPosition.x = e.clientX
-  targetPosition.y = e.clientY
-
-  startAnimation()
+  position.x = e.clientX
+  position.y = e.clientY
 
   if (!isVisible.value) {
     isVisible.value = true
@@ -85,11 +47,6 @@ onUnmounted(() => {
   // Clean up hover element listeners
   cleanupFunctions.forEach(cleanup => cleanup())
   cleanupFunctions = []
-
-  if (rafId) {
-    cancelAnimationFrame(rafId)
-    isAnimating = false
-  }
 })
 
 watchEffect(() => {
@@ -104,11 +61,11 @@ watchEffect(() => {
     ref="cursorRef"
     class="cursor fixed top-0 left-0 z-50 pointer-events-none touch:hidden opacity-0 will-change-translate mix-blend-difference"
     :style="{
-      '--x': `${currentPosition.x}px`,
-      '--y': `${currentPosition.y}px`,
+      '--x': `${position.x}px`,
+      '--y': `${position.y}px`,
     }"
   >
-    <div class="cursor__dot absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-pink rounded-full" />
+    <IconMouse class="cursor__dot text-pink absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
 
     <div class="cursor__crosshair absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[30px] leading-[1] text-pink">
       +
@@ -118,7 +75,7 @@ watchEffect(() => {
 
 <style lang="postcss">
 .cursor {
-  --cursor-size: 24px;
+  --cursor-size: 30px;
 
   translate: var(--x) var(--y) 0;
   transition:
