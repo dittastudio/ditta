@@ -58,7 +58,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
+  <div class="isolate">
     <div
       ref="logoRefTop"
       class="sticky top-0 z-10 min-h-svh flex items-end justify-center p-[var(--app-outer-gutter)] pointer-events-none"
