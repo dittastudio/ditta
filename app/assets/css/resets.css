@@ -1,0 +1,43 @@
+@layer base {
+  ::selection {
+    color: --alpha(var(--color-pink) / 99%);
+    background-color: var(--color-black);
+  }
+
+  .is-storyblok-editor {
+    a {
+      pointer-events: none !important;
+    }
+  }
+
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button {
+    text-transform: inherit;
+    letter-spacing: inherit;
+    touch-action: manipulation;
+    user-select: none;
+    cursor: pointer;
+
+    &:disabled {
+      cursor: not-allowed;
+    }
+  }
+
+  svg {
+    display: block;
+    fill: currentcolor;
+  }
+
+  blockquote,
+  figcaption,
+  figure,
+  cite,
+  address {
+    font-style: normal;
+  }
+}

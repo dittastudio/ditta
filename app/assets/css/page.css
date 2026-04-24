@@ -1,0 +1,10 @@
+@layer theme {
+  html {
+    color: var(--color-black);
+    background-color: var(--color-pink);
+  }
+
+  body {
+    font-family: var(--font-sans);
+  }
+}

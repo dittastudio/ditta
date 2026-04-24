@@ -1,4 +1,19 @@
+@import './resets.css';
+@import './page.css';
+@import './fonts.css';
 @import 'tailwindcss';
 
 @theme {
+  --color-*: initial;
+  --color-white: oklch(100% 0 0);
+  --color-black: oklch(0% 0 0);
+  --color-lightgrey: oklch(83.8% 0.007 67.7);
+  --color-beige: oklch(78.3% 0.049 73.2);
+  --color-brown: oklch(60.1% 0.028 49.5);
+  --color-pink: oklch(82.2% 0.121 348.4);
+  --color-green: oklch(23% 0.071 145.6);
+  --color-lightgreen: oklch(71.8% 0.048 151);
+
+  --font-*: initial;
+  --font-sans: 'Saans', system-ui, -apple-system, BlinkMacSystem;
 }

@@ -1,0 +1,9 @@
+@layer theme {
+  @font-face {
+    font-family: Saans;
+    font-weight: 380 670;
+    font-style: normal;
+    font-display: swap;
+    src: url('/fonts/SaansVF.woff2') format('woff2-variations');
+  }
+}

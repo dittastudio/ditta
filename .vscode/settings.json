@@ -1,6 +1,7 @@
 {
   "npm.scriptRunner": "vp",
   "editor.defaultFormatter": "oxc.oxc-vscode",
+  "oxc.configPath": "./.oxlintrc.json",
   "oxc.fmt.configPath": "./.oxfmtrc.json",
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file",
