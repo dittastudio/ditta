@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Page",
+    "id": 141388315377170,
+    "object_type": "component"
+  },
+  {
+    "name": "Project",
+    "id": 141388670414355,
+    "object_type": "component"
+  },
+  {
+    "name": "Event",
+    "id": 141389335883285,
+    "object_type": "component"
+  },
+  {
+    "name": "Post",
+    "id": 141391816982039,
+    "object_type": "component"
+  }
+]

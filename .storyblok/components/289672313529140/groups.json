@@ -1,0 +1,30 @@
+[
+  {
+    "name": "Elements",
+    "id": 131185412549810,
+    "uuid": "7fcb11a1-5f87-4c0b-ba8f-0bda6cd7387f",
+    "parent_id": null,
+    "parent_uuid": null
+  },
+  {
+    "name": "Page Blocks",
+    "id": 132594632309883,
+    "uuid": "790a2850-0eb3-4a25-884f-b297e8a1d61e",
+    "parent_id": null,
+    "parent_uuid": null
+  },
+  {
+    "name": "Post Blocks",
+    "id": 133326716759846,
+    "uuid": "ef43f0e2-b155-4f0a-afed-2413ea2837d9",
+    "parent_id": null,
+    "parent_uuid": null
+  },
+  {
+    "name": "Types",
+    "id": 131188020616377,
+    "uuid": "08f3ebfd-247f-4b10-b3af-dc46b5a9a80d",
+    "parent_id": null,
+    "parent_uuid": null
+  }
+]

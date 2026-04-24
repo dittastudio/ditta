@@ -1,0 +1,4567 @@
+[
+  {
+    "name": "block_bcorp",
+    "display_name": "B Corp Graph",
+    "description": "",
+    "created_at": "2026-01-27T21:58:45.009Z",
+    "updated_at": "2026-03-16T18:37:22.641Z",
+    "id": 138696806447243,
+    "schema": {
+      "title": {
+        "type": "text",
+        "pos": 0,
+        "id": "ngxAVQX-SGmtXTKuC5RJsA"
+      },
+      "headline": {
+        "type": "richtext",
+        "pos": 1,
+        "id": "FuO6792QSiK7MgQHPMNtqA",
+        "customize_toolbar": true,
+        "toolbar": [
+          "h3",
+          "unset"
+        ],
+        "style_options": [
+          {
+            "_uid": "32b97c2c-2de3-40bd-ad77-6d92f718c63c",
+            "name": "Outlined",
+            "value": "is-outlined"
+          }
+        ]
+      },
+      "copy": {
+        "type": "richtext",
+        "pos": 2,
+        "id": "smv5StJ1TiuGHdeYWVfzrw",
+        "customize_toolbar": true,
+        "toolbar": [
+          "unset",
+          "paragraph"
+        ]
+      },
+      "cta_title": {
+        "type": "text",
+        "pos": 3,
+        "id": "3wQLCrLPTmOL5GkyubG5Nw"
+      },
+      "cta": {
+        "type": "multilink",
+        "pos": 4,
+        "email_link_type": true,
+        "allow_target_blank": true,
+        "id": "FBvAqJ90TSeEs-KkB_lcGQ"
+      },
+      "theme": {
+        "type": "option",
+        "pos": 6,
+        "use_uuid": true,
+        "source": "internal",
+        "datasource_slug": "theme",
+        "default_value": "dark",
+        "id": "ErZTwpRTR-en-pK9Hn5ynw",
+        "exclude_empty_option": true
+      },
+      "overall_score": {
+        "type": "number",
+        "pos": 6,
+        "decimals": 1,
+        "steps": 0.1,
+        "max_value": 250,
+        "min_value": 0,
+        "id": "6b9BpC5aRpqVpUWnWqR8HQ"
+      },
+      "qualify_score": {
+        "type": "number",
+        "pos": 7,
+        "id": "FN26rLq-RtuJsVGVeASJFg",
+        "max_value": 250,
+        "min_value": 0,
+        "decimals": 1,
+        "steps": 0.1
+      },
+      "median_score": {
+        "type": "number",
+        "pos": 8,
+        "id": "xKCrEP3yTlW9YRaVjW0fPw",
+        "max_value": 250,
+        "min_value": 0,
+        "decimals": 1,
+        "steps": 0.1
+      },
+      "max_score": {
+        "type": "number",
+        "pos": 9,
+        "id": "1_ZtaM0zTcaumRUEVR08Zw",
+        "min_value": 0,
+        "steps": 1,
+        "max_value": 250,
+        "default_value": "150"
+      }
+    },
+    "image": "//a.storyblok.com/f/289672313529140/x/e0099d60a5/screenshot-2026-03-16-at-18-37-11.jpg",
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "B Corp Graph",
+    "component_group_uuid": "790a2850-0eb3-4a25-884f-b297e8a1d61e",
+    "color": "var(--sb-color-accent-background-green-cyan)",
+    "icon": "wallet",
+    "internal_tags_list": [
+      {
+        "id": 141388315377170,
+        "name": "Page"
+      },
+      {
+        "id": 141389335883285,
+        "name": "Event"
+      }
+    ],
+    "internal_tag_ids": [
+      "141388315377170",
+      "141389335883285"
+    ],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "block_contact",
+    "display_name": "Contact",
+    "description": "",
+    "created_at": "2026-01-21T18:18:48.937Z",
+    "updated_at": "2026-03-16T18:26:35.496Z",
+    "id": 136519388948249,
+    "schema": {
+      "title": {
+        "type": "text",
+        "pos": 0,
+        "id": "JHCNzaRXR_GWMDCviJXU2g"
+      },
+      "headline": {
+        "type": "richtext",
+        "pos": 1,
+        "style_options": [
+          {
+            "_uid": "219b8a5e-51d5-40c6-acb4-f2290235de13",
+            "name": "Outlined",
+            "value": "is-outlined"
+          }
+        ],
+        "customize_toolbar": true,
+        "toolbar": [
+          "unset",
+          "h3"
+        ],
+        "id": "jMTnAVgTRDmQ7xk7xG49FA"
+      },
+      "info": {
+        "type": "bloks",
+        "pos": 2,
+        "id": "CdIqYZGnQk6k9M0u3mMtrA",
+        "restrict_type": "",
+        "restrict_components": true,
+        "component_whitelist": [
+          "info_item"
+        ],
+        "component_denylist": []
+      },
+      "theme": {
+        "type": "option",
+        "pos": 3,
+        "use_uuid": true,
+        "id": "9tVuSuyyT-2CTpvlqiYblQ",
+        "source": "internal",
+        "datasource_slug": "theme",
+        "exclude_empty_option": true,
+        "default_value": "light"
+      }
+    },
+    "image": "//a.storyblok.com/f/289672313529140/x/afa00dc0b1/screenshot-2026-03-16-at-18-26-19.jpg",
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Contact",
+    "component_group_uuid": "790a2850-0eb3-4a25-884f-b297e8a1d61e",
+    "color": "var(--sb-color-accent-background-green-cyan)",
+    "icon": "sticker",
+    "internal_tags_list": [
+      {
+        "id": 141388315377170,
+        "name": "Page"
+      }
+    ],
+    "internal_tag_ids": [
+      "141388315377170"
+    ],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "block_divider",
+    "display_name": "Divider Line",
+    "description": "",
+    "created_at": "2026-02-25T17:21:21.398Z",
+    "updated_at": "2026-02-26T17:52:38.880Z",
+    "id": 148891571835997,
+    "schema": {
+      "placement": {
+        "type": "option",
+        "pos": 0,
+        "use_uuid": true,
+        "id": "TR8mVZpJRKyMQFPjSoK4iQ",
+        "required": true,
+        "options": [
+          {
+            "_uid": "60ffb865-1e26-477b-9cec-24bbb21f3cb6",
+            "name": "Inset",
+            "value": "inset"
+          },
+          {
+            "_uid": "1441a85b-3ae6-4207-a372-2b65304b5659",
+            "value": "wide",
+            "name": "Wide"
+          },
+          {
+            "_uid": "994ccbf6-7242-43ee-84d8-8ae2ae19311f",
+            "value": "full",
+            "name": "Full"
+          }
+        ],
+        "default_value": "wide"
+      },
+      "spacing_top": {
+        "type": "boolean",
+        "pos": 1,
+        "id": "RsrYmOa4QpSiK6tuloL0vA",
+        "min_value": 0,
+        "max_value": 300,
+        "steps": 10,
+        "default_value": "150",
+        "inline_label": true
+      },
+      "spacing_bottom": {
+        "type": "boolean",
+        "pos": 2,
+        "id": "IgGKTaVUSEyP_5Ctr-dyKg",
+        "min_value": 0,
+        "max_value": 300,
+        "steps": 10,
+        "default_value": "150",
+        "inline_label": true
+      },
+      "theme": {
+        "type": "option",
+        "pos": 3,
+        "use_uuid": true,
+        "options": [
+          {
+            "_uid": "ba9532a0-951a-4ab6-8250-ed820138b00a",
+            "name": "White Line",
+            "value": "dark"
+          },
+          {
+            "_uid": "b09ce60f-47c7-4c33-bee1-ce36665f11cc",
+            "value": "light",
+            "name": "Black Line"
+          }
+        ],
+        "default_value": "light",
+        "id": "wNKySIDiTKO-RiuXjQlCGg"
+      }
+    },
+    "image": null,
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Divider Line",
+    "component_group_uuid": "790a2850-0eb3-4a25-884f-b297e8a1d61e",
+    "color": "var(--sb-color-accent-background-green-cyan)",
+    "icon": "align-center",
+    "internal_tags_list": [
+      {
+        "id": 141388315377170,
+        "name": "Page"
+      },
+      {
+        "id": 141388670414355,
+        "name": "Project"
+      },
+      {
+        "id": 141389335883285,
+        "name": "Event"
+      }
+    ],
+    "internal_tag_ids": [
+      "141388315377170",
+      "141388670414355",
+      "141389335883285"
+    ],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "block_event_overview",
+    "display_name": "Event Overview",
+    "description": "Displays the overview for your event with date.",
+    "created_at": "2026-02-05T19:42:48.330Z",
+    "updated_at": "2026-03-16T18:52:55.676Z",
+    "id": 141848446285775,
+    "schema": {
+      "copy": {
+        "type": "richtext",
+        "pos": 1,
+        "id": "smv5StJ1TiuGHdeYWVfzrw",
+        "customize_toolbar": true,
+        "toolbar": [
+          "unset",
+          "paragraph",
+          "bold",
+          "link",
+          "olist",
+          "list",
+          "h2",
+          "h1",
+          "h3",
+          "h4",
+          "h5",
+          "h6"
+        ],
+        "required": true,
+        "allow_target_blank": true
+      },
+      "cta_title": {
+        "type": "text",
+        "pos": 2,
+        "id": "3wQLCrLPTmOL5GkyubG5Nw"
+      },
+      "cta": {
+        "type": "multilink",
+        "pos": 3,
+        "email_link_type": true,
+        "allow_target_blank": true,
+        "id": "FBvAqJ90TSeEs-KkB_lcGQ"
+      },
+      "theme": {
+        "type": "option",
+        "pos": 5,
+        "use_uuid": true,
+        "source": "internal",
+        "datasource_slug": "theme",
+        "default_value": "dark",
+        "id": "ErZTwpRTR-en-pK9Hn5ynw",
+        "exclude_empty_option": true
+      }
+    },
+    "image": "//a.storyblok.com/f/289672313529140/x/b484db9473/screenshot-2026-03-16-at-18-52-26.jpg",
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Event Overview",
+    "component_group_uuid": "790a2850-0eb3-4a25-884f-b297e8a1d61e",
+    "color": "var(--sb-color-accent-background-green-cyan)",
+    "icon": "wallet",
+    "internal_tags_list": [
+      {
+        "id": 141389335883285,
+        "name": "Event"
+      }
+    ],
+    "internal_tag_ids": [
+      "141389335883285"
+    ],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "block_event_text",
+    "display_name": "Event Text",
+    "description": "Displays the text block for an event.",
+    "created_at": "2026-02-05T20:47:01.867Z",
+    "updated_at": "2026-03-16T18:53:57.566Z",
+    "id": 141864230377645,
+    "schema": {
+      "title": {
+        "type": "text",
+        "pos": 0,
+        "id": "5FDDnaklQCivlWRiah3Q9A"
+      },
+      "copy": {
+        "type": "richtext",
+        "pos": 1,
+        "id": "smv5StJ1TiuGHdeYWVfzrw",
+        "customize_toolbar": true,
+        "toolbar": [
+          "unset",
+          "paragraph",
+          "bold",
+          "link",
+          "olist",
+          "list",
+          "h2",
+          "h1",
+          "h3",
+          "h4",
+          "h5",
+          "h6"
+        ],
+        "required": true,
+        "allow_target_blank": true
+      },
+      "cta_title": {
+        "type": "text",
+        "pos": 2,
+        "id": "3wQLCrLPTmOL5GkyubG5Nw"
+      },
+      "cta": {
+        "type": "multilink",
+        "pos": 3,
+        "email_link_type": true,
+        "allow_target_blank": true,
+        "id": "FBvAqJ90TSeEs-KkB_lcGQ"
+      },
+      "theme": {
+        "type": "option",
+        "pos": 4,
+        "use_uuid": true,
+        "source": "internal",
+        "datasource_slug": "theme",
+        "default_value": "dark",
+        "id": "ErZTwpRTR-en-pK9Hn5ynw",
+        "exclude_empty_option": true
+      }
+    },
+    "image": "//a.storyblok.com/f/289672313529140/x/c2a32802cd/screenshot-2026-03-16-at-18-53-42.jpg",
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Event Text",
+    "component_group_uuid": "790a2850-0eb3-4a25-884f-b297e8a1d61e",
+    "color": "var(--sb-color-accent-background-green-cyan)",
+    "icon": "wallet",
+    "internal_tags_list": [
+      {
+        "id": 141389335883285,
+        "name": "Event"
+      }
+    ],
+    "internal_tag_ids": [
+      "141389335883285"
+    ],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "block_featured_event",
+    "display_name": "Featured Event",
+    "description": "Displays a standalone event to feature",
+    "created_at": "2026-03-09T20:56:38.442Z",
+    "updated_at": "2026-03-16T18:30:44.656Z",
+    "id": 153191212830757,
+    "schema": {
+      "title": {
+        "type": "text",
+        "pos": 0,
+        "id": "ngxAVQX-SGmtXTKuC5RJsA"
+      },
+      "headline": {
+        "type": "richtext",
+        "pos": 1,
+        "id": "FuO6792QSiK7MgQHPMNtqA",
+        "customize_toolbar": true,
+        "toolbar": [
+          "unset",
+          "paragraph"
+        ],
+        "style_options": [
+          {
+            "_uid": "32b97c2c-2de3-40bd-ad77-6d92f718c63c",
+            "name": "Outlined",
+            "value": "is-outlined"
+          }
+        ]
+      },
+      "event": {
+        "type": "option",
+        "pos": 2,
+        "source": "internal_stories",
+        "entry_appearance": "card",
+        "allow_advanced_search": true,
+        "required": true,
+        "filter_content_type": [
+          "event"
+        ],
+        "use_uuid": true,
+        "id": "gRDX7LZeRWa54GLswJXLEQ"
+      },
+      "cta_title": {
+        "type": "text",
+        "pos": 3,
+        "id": "3wQLCrLPTmOL5GkyubG5Nw"
+      },
+      "cta": {
+        "type": "multilink",
+        "pos": 4,
+        "email_link_type": true,
+        "allow_target_blank": true,
+        "id": "FBvAqJ90TSeEs-KkB_lcGQ"
+      },
+      "theme": {
+        "type": "option",
+        "pos": 5,
+        "use_uuid": true,
+        "source": "internal",
+        "datasource_slug": "theme",
+        "default_value": "light",
+        "id": "ErZTwpRTR-en-pK9Hn5ynw"
+      }
+    },
+    "image": "//a.storyblok.com/f/289672313529140/x/6d3e2e758a/screenshot-2026-03-16-at-18-30-24.jpg",
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Featured Event",
+    "component_group_uuid": "790a2850-0eb3-4a25-884f-b297e8a1d61e",
+    "color": "var(--sb-color-accent-background-green-cyan)",
+    "icon": "message-square",
+    "internal_tags_list": [
+      {
+        "id": 141388315377170,
+        "name": "Page"
+      }
+    ],
+    "internal_tag_ids": [
+      "141388315377170"
+    ],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "block_gallery",
+    "display_name": "Gallery",
+    "description": "",
+    "created_at": "2026-01-27T10:19:51.425Z",
+    "updated_at": "2026-03-16T18:31:31.971Z",
+    "id": 138525046486912,
+    "schema": {
+      "title": {
+        "type": "text",
+        "pos": 0,
+        "id": "Xkr4GAWhTam0OjKDa4bbSA"
+      },
+      "items": {
+        "type": "multiasset",
+        "pos": 1,
+        "id": "g_d9eDSwRk6N0p7UMhzR6g",
+        "filetypes": [
+          "images"
+        ]
+      },
+      "theme": {
+        "type": "option",
+        "pos": 2,
+        "use_uuid": true,
+        "source": "internal",
+        "datasource_slug": "theme",
+        "default_value": "light",
+        "id": "rhoSSCRfSZakGiqqnN1X6Q"
+      }
+    },
+    "image": "//a.storyblok.com/f/289672313529140/x/5a1948eb6d/screenshot-2026-03-16-at-18-31-17.jpg",
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Gallery",
+    "component_group_uuid": "790a2850-0eb3-4a25-884f-b297e8a1d61e",
+    "color": "var(--sb-color-accent-background-green-cyan)",
+    "icon": "image",
+    "internal_tags_list": [
+      {
+        "id": 141388315377170,
+        "name": "Page"
+      },
+      {
+        "id": 141388670414355,
+        "name": "Project"
+      },
+      {
+        "id": 141389335883285,
+        "name": "Event"
+      }
+    ],
+    "internal_tag_ids": [
+      "141388315377170",
+      "141388670414355",
+      "141389335883285"
+    ],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "block_hero",
+    "display_name": "Hero",
+    "description": "Displays a large hero, typically used at the top of pages.",
+    "created_at": "2026-01-10T16:09:09.160Z",
+    "updated_at": "2026-03-16T18:32:16.753Z",
+    "id": 132594684570052,
+    "schema": {
+      "logo": {
+        "type": "asset",
+        "pos": 0,
+        "filetypes": [
+          "images"
+        ],
+        "asset_folder_id": 149570834252135,
+        "id": "btlv0jXpRwqHBpZAz2QlfA",
+        "description": "SVG upload recommended."
+      },
+      "max_width": {
+        "type": "number",
+        "pos": 1,
+        "description": "Adjust the logo max-width in pixels to get fine-tuned sizing. Leave blank to use the image's natural size.",
+        "decimals": 0,
+        "steps": 1,
+        "id": "TuAsk-TlQKiLJjLUSgd--g"
+      },
+      "headline": {
+        "type": "richtext",
+        "pos": 2,
+        "required": false,
+        "customize_toolbar": true,
+        "toolbar": [
+          "h1",
+          "unset"
+        ],
+        "style_options": [
+          {
+            "_uid": "06269a84-e5ec-4bf5-9fb7-d35d7eb20152",
+            "name": "Outlined",
+            "value": "is-outlined"
+          }
+        ],
+        "id": "E36L3I4PTPuwGOpVCCvF2Q"
+      },
+      "text": {
+        "type": "richtext",
+        "pos": 3,
+        "id": "XHKygncmRlmndE_tLtHJig",
+        "customize_toolbar": true,
+        "toolbar": [
+          "paragraph",
+          "unset"
+        ]
+      },
+      "media": {
+        "type": "bloks",
+        "pos": 4,
+        "id": "773CtmxyTrW1s0CgBGp0aw",
+        "restrict_type": "",
+        "restrict_components": true,
+        "component_whitelist": [
+          "image",
+          "mux_video_autoplay"
+        ],
+        "component_denylist": [],
+        "maximum": 1
+      },
+      "theme": {
+        "type": "option",
+        "pos": 5,
+        "use_uuid": true,
+        "required": false,
+        "options": [
+          {
+            "_uid": "44cb9d20-f06e-46ca-8c3e-a8b57c996435",
+            "name": "White Text",
+            "value": "dark"
+          },
+          {
+            "_uid": "c76296ed-4d09-4705-9b98-23c1ddcea87e",
+            "value": "light",
+            "name": "Black Text"
+          }
+        ],
+        "exclude_empty_option": false,
+        "default_value": "light",
+        "id": "BmrYdk1fTiOQo5l9tMEL_A",
+        "display_name": "Theme",
+        "datasource_slug": "theme"
+      }
+    },
+    "image": "//a.storyblok.com/f/289672313529140/x/11b6c664e3/screenshot-2026-03-16-at-18-32-04.jpg",
+    "preview_field": "headline",
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Hero",
+    "component_group_uuid": "790a2850-0eb3-4a25-884f-b297e8a1d61e",
+    "color": "var(--sb-color-accent-background-green-cyan)",
+    "icon": "gallery-vertical",
+    "internal_tags_list": [
+      {
+        "id": 141388315377170,
+        "name": "Page"
+      },
+      {
+        "id": 141388670414355,
+        "name": "Project"
+      },
+      {
+        "id": 141389335883285,
+        "name": "Event"
+      }
+    ],
+    "internal_tag_ids": [
+      "141388315377170",
+      "141388670414355",
+      "141389335883285"
+    ],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "block_hero_brand",
+    "display_name": "Hero Brand",
+    "description": "Displays a large hero which houses a large central Raw logo.",
+    "created_at": "2026-01-15T10:13:39.202Z",
+    "updated_at": "2026-03-11T12:05:45.714Z",
+    "id": 134276789061080,
+    "schema": {
+      "headline": {
+        "type": "richtext",
+        "pos": 0,
+        "required": false,
+        "customize_toolbar": true,
+        "toolbar": [
+          "h2",
+          "unset",
+          "h1"
+        ],
+        "style_options": [
+          {
+            "_uid": "06269a84-e5ec-4bf5-9fb7-d35d7eb20152",
+            "name": "Outlined",
+            "value": "is-outlined"
+          }
+        ],
+        "id": "E36L3I4PTPuwGOpVCCvF2Q"
+      },
+      "headline_2": {
+        "type": "richtext",
+        "pos": 1,
+        "customize_toolbar": true,
+        "toolbar": [
+          "h2",
+          "unset",
+          "h1"
+        ],
+        "id": "VfeGS8mUTI2lQekINuTv0A"
+      },
+      "text": {
+        "type": "richtext",
+        "pos": 2,
+        "id": "XHKygncmRlmndE_tLtHJig",
+        "customize_toolbar": true,
+        "toolbar": [
+          "paragraph",
+          "unset"
+        ]
+      },
+      "media": {
+        "type": "bloks",
+        "pos": 3,
+        "maximum": 1,
+        "restrict_type": "",
+        "restrict_components": true,
+        "component_whitelist": [
+          "mux_video_autoplay",
+          "image"
+        ],
+        "component_denylist": [],
+        "id": "AxoU_I5hRzem4JMtnSdKGQ"
+      },
+      "logos": {
+        "type": "multiasset",
+        "pos": 4,
+        "filetypes": [
+          "images"
+        ],
+        "id": "6DjiyvloT_ikNyHHol8Y5A",
+        "asset_folder_id": 134653467982768,
+        "description": "Upload black and white SVGs for best results."
+      },
+      "logo_strength": {
+        "type": "custom",
+        "pos": 5,
+        "description": "How much logos can differ in size.\nLower = more uniform\nHigher = more variation",
+        "field_type": "storyblok-slider",
+        "options": [
+          {
+            "name": "marks",
+            "value": "[0,25,50,75,100]",
+            "_uid": "d1b06139-d081-481f-a0d7-ae60530dd367"
+          },
+          {
+            "name": "defaultValue",
+            "value": "60",
+            "_uid": "856db0c9-b9e8-46d9-abc5-3b4104f278a8"
+          },
+          {
+            "name": "minValue",
+            "value": "0",
+            "_uid": "ae069086-e436-46ce-a1d1-3af2981702c0"
+          },
+          {
+            "name": "maxValue",
+            "value": "100",
+            "_uid": "4fd150cf-d4b6-4244-9966-e81231c68758"
+          },
+          {
+            "name": "stepSize",
+            "value": "5",
+            "_uid": "da318328-fd3e-4bd6-8934-7971774c6357"
+          },
+          {
+            "name": "minimumSignificantDigits",
+            "value": "",
+            "_uid": "883ea65d-862c-4a8a-af31-f49812ce80c6"
+          },
+          {
+            "name": "maximumSignificantDigits",
+            "value": "",
+            "_uid": "d3d8954b-f2ef-41f3-8a40-99d8ce49f1a3"
+          },
+          {
+            "name": "style",
+            "value": "unit",
+            "_uid": "5f55d4c9-95ab-4e74-83e7-546db342750d"
+          },
+          {
+            "name": "unit",
+            "value": "percent",
+            "_uid": "a1a2dc4d-280e-4464-8aa7-0a5444bab3ea"
+          }
+        ],
+        "id": "p5MbPY37TCeZQ6ToqGHmTw"
+      },
+      "logo_scale": {
+        "type": "custom",
+        "pos": 6,
+        "field_type": "storyblok-slider",
+        "options": [
+          {
+            "name": "marks",
+            "value": "",
+            "_uid": "785247b2-b56a-42cf-be0c-efa1a75256b1"
+          },
+          {
+            "name": "defaultValue",
+            "value": "3.5",
+            "_uid": "dbe83b2c-68dc-415d-9417-a39f9408657e"
+          },
+          {
+            "name": "minValue",
+            "value": "1",
+            "_uid": "25da75ad-aa77-429c-a993-a1d24e44b6e3"
+          },
+          {
+            "name": "maxValue",
+            "value": "6",
+            "_uid": "ce837826-d985-4ec3-9e86-ecdeff5b10d4"
+          },
+          {
+            "name": "stepSize",
+            "value": "0.5",
+            "_uid": "67609598-e4bb-4013-9efb-fae733270bf0"
+          },
+          {
+            "name": "minimumSignificantDigits",
+            "value": "",
+            "_uid": "9a220608-abf4-4f57-b473-5c6ffd29d2a3"
+          },
+          {
+            "name": "maximumSignificantDigits",
+            "value": "",
+            "_uid": "7dbf2fb8-df2c-4fee-9298-34db0d360b6b"
+          },
+          {
+            "name": "style",
+            "value": "decimal",
+            "_uid": "6cf57087-a799-47fc-a818-c234a8fd820e"
+          },
+          {
+            "name": "unit",
+            "value": "",
+            "_uid": "3c9ab323-744a-4d77-b536-83dd7e0fa400"
+          }
+        ],
+        "id": "GAUiM3PIRY2xgBpHmSK54g"
+      }
+    },
+    "image": "//a.storyblok.com/f/289672313529140/x/1b570cbc46/screenshot-2026-01-15-at-10-15-11.jpg",
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Hero Brand",
+    "component_group_uuid": "790a2850-0eb3-4a25-884f-b297e8a1d61e",
+    "color": "var(--sb-color-accent-background-green-cyan)",
+    "icon": "gallery-vertical",
+    "internal_tags_list": [
+      {
+        "id": 141388315377170,
+        "name": "Page"
+      }
+    ],
+    "internal_tag_ids": [
+      "141388315377170"
+    ],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "block_hover_grid",
+    "display_name": "Hover Grid",
+    "description": "",
+    "created_at": "2026-01-21T09:55:39.731Z",
+    "updated_at": "2026-03-16T18:34:15.691Z",
+    "id": 136395733949303,
+    "schema": {
+      "title": {
+        "type": "text",
+        "pos": 0,
+        "id": "ngxAVQX-SGmtXTKuC5RJsA"
+      },
+      "headline": {
+        "type": "richtext",
+        "pos": 1,
+        "id": "FuO6792QSiK7MgQHPMNtqA",
+        "customize_toolbar": true,
+        "toolbar": [
+          "h3",
+          "unset"
+        ],
+        "style_options": [
+          {
+            "_uid": "32b97c2c-2de3-40bd-ad77-6d92f718c63c",
+            "name": "Outlined",
+            "value": "is-outlined"
+          }
+        ]
+      },
+      "copy": {
+        "type": "richtext",
+        "pos": 2,
+        "id": "smv5StJ1TiuGHdeYWVfzrw",
+        "customize_toolbar": true,
+        "toolbar": [
+          "unset",
+          "paragraph"
+        ]
+      },
+      "cta_title": {
+        "type": "text",
+        "pos": 3,
+        "id": "3wQLCrLPTmOL5GkyubG5Nw"
+      },
+      "cta": {
+        "type": "multilink",
+        "pos": 4,
+        "email_link_type": true,
+        "allow_target_blank": true,
+        "id": "FBvAqJ90TSeEs-KkB_lcGQ"
+      },
+      "items": {
+        "type": "bloks",
+        "pos": 5,
+        "restrict_type": "",
+        "restrict_components": true,
+        "component_whitelist": [
+          "list_item"
+        ],
+        "component_denylist": [],
+        "id": "8TfK8RQPS-CJSXv6ciDEtA"
+      },
+      "theme": {
+        "type": "option",
+        "pos": 6,
+        "use_uuid": true,
+        "source": "internal",
+        "datasource_slug": "theme",
+        "default_value": "light",
+        "id": "ErZTwpRTR-en-pK9Hn5ynw"
+      },
+      "accent": {
+        "type": "option",
+        "pos": 7,
+        "use_uuid": true,
+        "source": "internal",
+        "datasource_slug": "theme",
+        "id": "Nk4IXfCTQrOQlwBID_EgZA",
+        "default_value": "blue"
+      }
+    },
+    "image": "//a.storyblok.com/f/289672313529140/x/0d8048b4ae/screenshot-2026-03-16-at-18-34-00.jpg",
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Hover Grid",
+    "component_group_uuid": "790a2850-0eb3-4a25-884f-b297e8a1d61e",
+    "color": "var(--sb-color-accent-background-green-cyan)",
+    "icon": "between-horizontal-start",
+    "internal_tags_list": [
+      {
+        "id": 141388315377170,
+        "name": "Page"
+      },
+      {
+        "id": 141389335883285,
+        "name": "Event"
+      }
+    ],
+    "internal_tag_ids": [
+      "141388315377170",
+      "141389335883285"
+    ],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "block_hover_list",
+    "display_name": "Hover List",
+    "description": "",
+    "created_at": "2026-01-18T18:27:53.343Z",
+    "updated_at": "2026-03-16T18:34:58.582Z",
+    "id": 135459935652633,
+    "schema": {
+      "title": {
+        "type": "text",
+        "pos": 0,
+        "id": "ngxAVQX-SGmtXTKuC5RJsA"
+      },
+      "headline": {
+        "type": "richtext",
+        "pos": 1,
+        "id": "FuO6792QSiK7MgQHPMNtqA",
+        "customize_toolbar": true,
+        "toolbar": [
+          "h3",
+          "unset"
+        ],
+        "style_options": [
+          {
+            "_uid": "32b97c2c-2de3-40bd-ad77-6d92f718c63c",
+            "name": "Outlined",
+            "value": "is-outlined"
+          }
+        ]
+      },
+      "copy": {
+        "type": "richtext",
+        "pos": 2,
+        "id": "smv5StJ1TiuGHdeYWVfzrw",
+        "customize_toolbar": true,
+        "toolbar": [
+          "unset",
+          "paragraph"
+        ]
+      },
+      "cta_title": {
+        "type": "text",
+        "pos": 3,
+        "id": "3wQLCrLPTmOL5GkyubG5Nw"
+      },
+      "cta": {
+        "type": "multilink",
+        "pos": 4,
+        "email_link_type": true,
+        "allow_target_blank": true,
+        "id": "FBvAqJ90TSeEs-KkB_lcGQ"
+      },
+      "items": {
+        "type": "bloks",
+        "pos": 5,
+        "restrict_type": "",
+        "restrict_components": true,
+        "component_whitelist": [
+          "list_item"
+        ],
+        "component_denylist": [],
+        "id": "8TfK8RQPS-CJSXv6ciDEtA"
+      },
+      "media": {
+        "type": "bloks",
+        "pos": 6,
+        "maximum": 1,
+        "restrict_type": "",
+        "restrict_components": true,
+        "component_whitelist": [
+          "image",
+          "mux_video_autoplay"
+        ],
+        "component_denylist": [],
+        "id": "0XsaX496QDaifhMz_QOVLQ"
+      },
+      "theme": {
+        "type": "option",
+        "pos": 7,
+        "use_uuid": true,
+        "source": "internal",
+        "datasource_slug": "theme",
+        "default_value": "light",
+        "id": "ErZTwpRTR-en-pK9Hn5ynw"
+      },
+      "accent": {
+        "type": "option",
+        "pos": 8,
+        "use_uuid": true,
+        "source": "internal",
+        "datasource_slug": "theme",
+        "id": "Nk4IXfCTQrOQlwBID_EgZA",
+        "default_value": "blue"
+      }
+    },
+    "image": "//a.storyblok.com/f/289672313529140/x/729bbf0ad0/screenshot-2026-03-16-at-18-34-45.jpg",
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Hover List",
+    "component_group_uuid": "790a2850-0eb3-4a25-884f-b297e8a1d61e",
+    "color": "var(--sb-color-accent-background-green-cyan)",
+    "icon": "between-horizontal-start",
+    "internal_tags_list": [
+      {
+        "id": 141388315377170,
+        "name": "Page"
+      },
+      {
+        "id": 141389335883285,
+        "name": "Event"
+      }
+    ],
+    "internal_tag_ids": [
+      "141388315377170",
+      "141389335883285"
+    ],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "block_impact_details",
+    "display_name": "Impact Details",
+    "description": "Impactful headline with content for further details.",
+    "created_at": "2026-01-20T21:36:05.929Z",
+    "updated_at": "2026-03-16T18:36:13.021Z",
+    "id": 136213978857390,
+    "schema": {
+      "title": {
+        "type": "text",
+        "pos": 0,
+        "id": "ngxAVQX-SGmtXTKuC5RJsA"
+      },
+      "headline": {
+        "type": "richtext",
+        "pos": 1,
+        "id": "FuO6792QSiK7MgQHPMNtqA",
+        "customize_toolbar": true,
+        "toolbar": [
+          "h3",
+          "unset"
+        ],
+        "style_options": [
+          {
+            "_uid": "32b97c2c-2de3-40bd-ad77-6d92f718c63c",
+            "name": "Outlined",
+            "value": "is-outlined"
+          }
+        ]
+      },
+      "media": {
+        "type": "bloks",
+        "pos": 2,
+        "restrict_type": "",
+        "restrict_components": true,
+        "component_whitelist": [
+          "image"
+        ],
+        "component_denylist": [],
+        "maximum": 1,
+        "id": "peWMo6W2T-yN123xL6PJEA",
+        "required": false
+      },
+      "copy": {
+        "type": "richtext",
+        "pos": 3,
+        "id": "smv5StJ1TiuGHdeYWVfzrw",
+        "customize_toolbar": true,
+        "toolbar": [
+          "unset",
+          "paragraph",
+          "bold",
+          "link",
+          "olist",
+          "list"
+        ]
+      },
+      "cta_title": {
+        "type": "text",
+        "pos": 4,
+        "id": "3wQLCrLPTmOL5GkyubG5Nw"
+      },
+      "cta": {
+        "type": "multilink",
+        "pos": 5,
+        "email_link_type": true,
+        "allow_target_blank": true,
+        "id": "FBvAqJ90TSeEs-KkB_lcGQ"
+      },
+      "logos": {
+        "type": "multiasset",
+        "pos": 6,
+        "id": "7DDxPCRDR8qSNn2R2d3dHg",
+        "filetypes": [
+          "images"
+        ]
+      },
+      "logo_strength": {
+        "type": "custom",
+        "pos": 7,
+        "field_type": "storyblok-slider",
+        "options": [
+          {
+            "name": "marks",
+            "value": "[0,25,50,75,100]",
+            "_uid": "6f7b8e9b-d11a-4fb7-86b3-ee106d97fd04"
+          },
+          {
+            "name": "defaultValue",
+            "value": "60",
+            "_uid": "1f9fd4ba-c0f5-4a9f-aa0b-0d2aa5d36120"
+          },
+          {
+            "name": "minValue",
+            "value": "0",
+            "_uid": "ddae7a41-4264-4cda-bcdc-5aada093374e"
+          },
+          {
+            "name": "maxValue",
+            "value": "100",
+            "_uid": "b58cc580-cceb-4d85-911e-02eb0c40ec30"
+          },
+          {
+            "name": "stepSize",
+            "value": "5",
+            "_uid": "79df0eb2-b8f0-4900-8ced-ca515900315e"
+          },
+          {
+            "name": "minimumSignificantDigits",
+            "value": "",
+            "_uid": "17c8ceba-e0e2-4f9d-b9dd-204cc5ea21fd"
+          },
+          {
+            "name": "maximumSignificantDigits",
+            "value": "",
+            "_uid": "df57b3e8-0ec6-44c2-baf8-cc3234bc61c4"
+          },
+          {
+            "name": "style",
+            "value": "unit",
+            "_uid": "e0cfa2cd-f16b-49f7-8a5e-425cebe0259c"
+          },
+          {
+            "name": "unit",
+            "value": "percent",
+            "_uid": "fb1deffe-4207-40d3-91a0-1cb80948d42c"
+          }
+        ],
+        "id": "dph4hgT1T0CO_emKhnAbIw",
+        "description": "How much logos can differ in size.\nLower = more uniform\nHigher = more variation"
+      },
+      "logo_scale": {
+        "type": "custom",
+        "pos": 8,
+        "id": "tWwLxSwRSDW6n_A_6YuP8g",
+        "field_type": "storyblok-slider",
+        "options": [
+          {
+            "name": "marks",
+            "value": "",
+            "_uid": "6b8dc437-97ad-4f35-9f8d-3eefe7fe34c4"
+          },
+          {
+            "name": "defaultValue",
+            "value": "3.5",
+            "_uid": "5fda3313-b3d7-4f36-96fd-244588af0027"
+          },
+          {
+            "name": "minValue",
+            "value": "1",
+            "_uid": "a69abd38-e524-45a6-801d-3d86036759e5"
+          },
+          {
+            "name": "maxValue",
+            "value": "6",
+            "_uid": "ab246362-eb8f-4152-9e48-b4636dc1cbfb"
+          },
+          {
+            "name": "stepSize",
+            "value": "0.5",
+            "_uid": "45810e79-d9d8-4bd3-b448-bda33b8ae876"
+          },
+          {
+            "name": "minimumSignificantDigits",
+            "value": "",
+            "_uid": "640ca05f-946f-4e9b-b5ba-d05f35b244c3"
+          },
+          {
+            "name": "maximumSignificantDigits",
+            "value": "",
+            "_uid": "4682baac-b6a9-4a38-bce1-9e2a55f7fd02"
+          },
+          {
+            "name": "style",
+            "value": "decimal",
+            "_uid": "233597d5-28f1-41a2-b49c-8073734a5da0"
+          },
+          {
+            "name": "unit",
+            "value": "",
+            "_uid": "a4dd757d-e48d-4176-af3d-5f350047efaf"
+          }
+        ]
+      },
+      "jaa_partnership": {
+        "type": "boolean",
+        "pos": 9,
+        "description": "Check to display the JAA Partnership.",
+        "inline_label": true,
+        "id": "2gk08YNvTiKehd5Fp0ew4Q"
+      },
+      "theme": {
+        "type": "option",
+        "pos": 10,
+        "use_uuid": true,
+        "source": "internal",
+        "datasource_slug": "theme",
+        "default_value": "dark",
+        "id": "ErZTwpRTR-en-pK9Hn5ynw",
+        "exclude_empty_option": true
+      }
+    },
+    "image": "//a.storyblok.com/f/289672313529140/x/8eb3382699/screenshot-2026-03-16-at-18-35-59.jpg",
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Impact Details",
+    "component_group_uuid": "790a2850-0eb3-4a25-884f-b297e8a1d61e",
+    "color": "var(--sb-color-accent-background-green-cyan)",
+    "icon": "layout-list",
+    "internal_tags_list": [
+      {
+        "id": 141388315377170,
+        "name": "Page"
+      },
+      {
+        "id": 141388670414355,
+        "name": "Project"
+      },
+      {
+        "id": 141389335883285,
+        "name": "Event"
+      }
+    ],
+    "internal_tag_ids": [
+      "141388315377170",
+      "141388670414355",
+      "141389335883285"
+    ],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "block_impact_statement",
+    "display_name": "Impact Statement",
+    "description": "",
+    "created_at": "2026-01-13T22:49:11.433Z",
+    "updated_at": "2026-02-26T15:28:07.526Z",
+    "id": 133754681079760,
+    "schema": {
+      "items": {
+        "type": "bloks",
+        "pos": 0,
+        "restrict_type": "",
+        "restrict_components": true,
+        "minimum": 1,
+        "component_whitelist": [
+          "title_copy"
+        ],
+        "component_denylist": [],
+        "id": "0FAQ5Gy4QqCyYSPe5v5xLA",
+        "display_name": "Items",
+        "required": true
+      },
+      "theme": {
+        "type": "option",
+        "pos": 1,
+        "use_uuid": true,
+        "id": "9tVuSuyyT-2CTpvlqiYblQ",
+        "source": "internal",
+        "datasource_slug": "theme",
+        "exclude_empty_option": true,
+        "default_value": "light"
+      }
+    },
+    "image": "//a.storyblok.com/f/289672313529140/x/76aa71aad7/screenshot-2026-01-13-at-22-51-13.jpg",
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Impact Statement",
+    "component_group_uuid": "790a2850-0eb3-4a25-884f-b297e8a1d61e",
+    "color": "var(--sb-color-accent-background-green-cyan)",
+    "icon": "layout-list",
+    "internal_tags_list": [
+      {
+        "id": 141388315377170,
+        "name": "Page"
+      },
+      {
+        "id": 141388670414355,
+        "name": "Project"
+      },
+      {
+        "id": 141389335883285,
+        "name": "Event"
+      }
+    ],
+    "internal_tag_ids": [
+      "141388315377170",
+      "141388670414355",
+      "141389335883285"
+    ],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "block_logo_wall",
+    "display_name": "Logo Wall",
+    "description": "",
+    "created_at": "2026-01-21T16:53:11.246Z",
+    "updated_at": "2026-03-16T18:36:41.034Z",
+    "id": 136498344949214,
+    "schema": {
+      "title": {
+        "type": "text",
+        "pos": 0,
+        "id": "JHCNzaRXR_GWMDCviJXU2g"
+      },
+      "headline": {
+        "type": "richtext",
+        "pos": 1,
+        "style_options": [
+          {
+            "_uid": "219b8a5e-51d5-40c6-acb4-f2290235de13",
+            "name": "Outlined",
+            "value": "is-outlined"
+          }
+        ],
+        "customize_toolbar": true,
+        "toolbar": [
+          "h3",
+          "unset"
+        ],
+        "id": "jMTnAVgTRDmQ7xk7xG49FA"
+      },
+      "items": {
+        "type": "bloks",
+        "pos": 3,
+        "restrict_type": "",
+        "restrict_components": true,
+        "minimum": 1,
+        "required": true,
+        "component_whitelist": [
+          "logo"
+        ],
+        "component_denylist": [],
+        "id": "mIJBojBVR1u3l6c7gnKUJg"
+      },
+      "theme": {
+        "type": "option",
+        "pos": 4,
+        "use_uuid": true,
+        "id": "9tVuSuyyT-2CTpvlqiYblQ",
+        "source": "internal",
+        "datasource_slug": "theme",
+        "exclude_empty_option": true,
+        "default_value": "light"
+      }
+    },
+    "image": "//a.storyblok.com/f/289672313529140/x/509a33bbca/screenshot-2026-03-16-at-18-24-43.jpg",
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": "",
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Logo Wall",
+    "component_group_uuid": "790a2850-0eb3-4a25-884f-b297e8a1d61e",
+    "color": "var(--sb-color-accent-background-green-cyan)",
+    "icon": "sticker",
+    "internal_tags_list": [
+      {
+        "id": 141388315377170,
+        "name": "Page"
+      },
+      {
+        "id": 141389335883285,
+        "name": "Event"
+      }
+    ],
+    "internal_tag_ids": [
+      "141388315377170",
+      "141389335883285"
+    ],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "block_media",
+    "display_name": "Media",
+    "description": "Displays an image or Mux video.",
+    "created_at": "2026-02-04T08:55:58.455Z",
+    "updated_at": "2026-03-16T18:38:33.330Z",
+    "id": 141335586677156,
+    "schema": {
+      "title": {
+        "type": "text",
+        "pos": 0,
+        "id": "2ERlcP5sT2C1TVYOyuwjsA"
+      },
+      "media": {
+        "type": "bloks",
+        "pos": 1,
+        "restrict_type": "",
+        "restrict_components": true,
+        "component_whitelist": [
+          "image",
+          "mux_video_autoplay",
+          "mux_video_player"
+        ],
+        "component_denylist": [],
+        "component_group_whitelist": [],
+        "component_group_denylist": [],
+        "component_tag_whitelist": [],
+        "component_tag_denylist": [],
+        "id": "iALbl79kTFGUwtswoE3Hug",
+        "maximum": 1
+      },
+      "placement": {
+        "type": "option",
+        "pos": 2,
+        "use_uuid": true,
+        "required": true,
+        "options": [
+          {
+            "_uid": "224a5208-74e2-46b8-86ce-9ba67ee0afde",
+            "name": "Inset",
+            "value": "inset"
+          },
+          {
+            "_uid": "80f77401-0a4b-4268-a90e-88451d064943",
+            "value": "wide",
+            "name": "Wide"
+          },
+          {
+            "_uid": "45aaa96c-cfa9-443e-8ceb-a19498ff65fb",
+            "value": "full",
+            "name": "Full"
+          }
+        ],
+        "exclude_empty_option": true,
+        "default_value": "inset",
+        "id": "d64U2vU7SfuIHnCH8ybxoA"
+      },
+      "accent": {
+        "type": "option",
+        "pos": 3,
+        "use_uuid": true,
+        "source": "internal",
+        "datasource_slug": "theme",
+        "id": "2A5SJ3BORRiQ3hDk7acBjA"
+      },
+      "theme": {
+        "type": "option",
+        "pos": 4,
+        "use_uuid": true,
+        "source": "internal",
+        "datasource_slug": "theme",
+        "default_value": "light",
+        "exclude_empty_option": true,
+        "id": "dwWJ6SkzRMabYqB-Bk0-Vg"
+      }
+    },
+    "image": "//a.storyblok.com/f/289672313529140/x/8363106473/screenshot-2026-03-16-at-18-38-15.jpg",
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": "{{@if(it.media[0].component === 'image')}}\n  {{@if(it.media[0].image.filename)}}\n    {{@image(it.media[0].image.filename)/}}\n  {{/if}}\n{{/if}}\n\n{{@if(it.media[0].component === 'mux_video_player')}}\n  {{@if(it.media[0].poster.filename)}}\n    {{@image(it.media[0].poster.filename)/}}\n  {{/if}}\n{{/if}}\n\n{{@if(it.media[0].component === 'mux_video_autoplay')}}\n  {{@if(it.media[0].poster.filename)}}\n    {{@image(it.media[0].poster.filename)/}}\n  {{/if}}\n{{/if}}",
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Media",
+    "component_group_uuid": "790a2850-0eb3-4a25-884f-b297e8a1d61e",
+    "color": "var(--sb-color-accent-background-green-cyan)",
+    "icon": "image",
+    "internal_tags_list": [
+      {
+        "id": 141388315377170,
+        "name": "Page"
+      },
+      {
+        "id": 141388670414355,
+        "name": "Project"
+      },
+      {
+        "id": 141389335883285,
+        "name": "Event"
+      }
+    ],
+    "internal_tag_ids": [
+      "141388315377170",
+      "141388670414355",
+      "141389335883285"
+    ],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "block_next_event",
+    "display_name": "Next Event",
+    "description": "Displays the next available event automatically.",
+    "created_at": "2026-02-02T22:52:46.101Z",
+    "updated_at": "2026-03-16T19:50:22.722Z",
+    "id": 140833448354787,
+    "schema": {
+      "theme": {
+        "type": "option",
+        "pos": 0,
+        "use_uuid": true,
+        "source": "internal",
+        "datasource_slug": "theme",
+        "exclude_empty_option": true,
+        "id": "zhqZ8PAORbSXV-SV7tKuFg"
+      }
+    },
+    "image": "//a.storyblok.com/f/289672313529140/x/4c57b6a37c/screenshot-2026-03-16-at-18-30-24.jpg",
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Next Event",
+    "component_group_uuid": "790a2850-0eb3-4a25-884f-b297e8a1d61e",
+    "color": "var(--sb-color-accent-background-green-cyan)",
+    "icon": "share-2",
+    "internal_tags_list": [
+      {
+        "id": 141388315377170,
+        "name": "Page"
+      }
+    ],
+    "internal_tag_ids": [
+      "141388315377170"
+    ],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "block_past_events",
+    "display_name": "Past Events",
+    "description": "Displays some recent past events.",
+    "created_at": "2026-02-03T12:47:57.434Z",
+    "updated_at": "2026-03-16T18:43:35.995Z",
+    "id": 141038704378105,
+    "schema": {
+      "cta_title": {
+        "type": "text",
+        "pos": 0,
+        "id": "gO1G9LjLRaOuY_wnpT9PLg"
+      },
+      "cta": {
+        "type": "multilink",
+        "pos": 1,
+        "email_link_type": true,
+        "allow_target_blank": true,
+        "id": "MDEI5_shStq1VRMtLMcknw",
+        "show_anchor": false,
+        "allow_custom_attributes": false
+      },
+      "theme": {
+        "type": "option",
+        "pos": 2,
+        "use_uuid": true,
+        "source": "internal",
+        "datasource_slug": "theme",
+        "exclude_empty_option": true,
+        "id": "tBcrltXqQM2LYF707lff1g"
+      }
+    },
+    "image": "//a.storyblok.com/f/289672313529140/x/1b91db9ca2/screenshot-2026-03-16-at-18-40-06.jpg",
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Past Events",
+    "component_group_uuid": "790a2850-0eb3-4a25-884f-b297e8a1d61e",
+    "color": "var(--sb-color-accent-background-green-cyan)",
+    "icon": "share-2",
+    "internal_tags_list": [
+      {
+        "id": 141388315377170,
+        "name": "Page"
+      },
+      {
+        "id": 141389335883285,
+        "name": "Event"
+      }
+    ],
+    "internal_tag_ids": [
+      "141388315377170",
+      "141389335883285"
+    ],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "block_posts",
+    "display_name": "Posts",
+    "description": "Gets latest posts with filtering.",
+    "created_at": "2026-01-18T23:15:54.818Z",
+    "updated_at": "2026-03-16T18:58:10.392Z",
+    "id": 135530720546393,
+    "schema": {
+      "theme": {
+        "type": "option",
+        "pos": 0,
+        "use_uuid": true,
+        "required": false,
+        "source": "internal",
+        "datasource_slug": "theme",
+        "exclude_empty_option": true,
+        "id": "QH9j-wTtQGKBel1L_S8eQA"
+      }
+    },
+    "image": "//a.storyblok.com/f/289672313529140/x/64b7280e99/screenshot-2026-03-16-at-18-57-49.jpg",
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Posts",
+    "component_group_uuid": "790a2850-0eb3-4a25-884f-b297e8a1d61e",
+    "color": "var(--sb-color-accent-background-green-cyan)",
+    "icon": "gallery-horizontal-end",
+    "internal_tags_list": [
+      {
+        "id": 141388315377170,
+        "name": "Page"
+      }
+    ],
+    "internal_tag_ids": [
+      "141388315377170"
+    ],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "block_project_carousel",
+    "display_name": "Project Carousel",
+    "description": "",
+    "created_at": "2026-01-20T17:20:53.569Z",
+    "updated_at": "2026-03-09T15:54:55.421Z",
+    "id": 136151259425859,
+    "schema": {
+      "title": {
+        "type": "text",
+        "pos": 0,
+        "id": "v47Y3qk0SwaYjmlqt2a_hA"
+      },
+      "headline": {
+        "type": "richtext",
+        "pos": 1,
+        "style_options": [
+          {
+            "_uid": "ba0ddafd-eee7-4985-8c9d-6ba9d3bd3383",
+            "name": "Outlined",
+            "value": "is-outlined"
+          }
+        ],
+        "customize_toolbar": true,
+        "toolbar": [
+          "unset",
+          "h3"
+        ],
+        "id": "dWhRiI5YTw6dv13MY7WmMQ"
+      },
+      "copy": {
+        "type": "richtext",
+        "pos": 2,
+        "id": "d3JJ9zeMSmedWOE_wfkeuw",
+        "customize_toolbar": true,
+        "toolbar": [
+          "unset",
+          "paragraph"
+        ]
+      },
+      "cta_title": {
+        "type": "text",
+        "pos": 3,
+        "id": "i5SdQfGmQjCgfV9a4lP4BQ"
+      },
+      "cta": {
+        "type": "multilink",
+        "pos": 4,
+        "id": "-Tp_NOACS3ayxs1jE1Kqyg",
+        "email_link_type": true,
+        "show_anchor": false,
+        "allow_target_blank": true
+      },
+      "autoplay_delay": {
+        "type": "number",
+        "pos": 5,
+        "id": "pBoNCqqUQkiVlGl0A8tbYQ",
+        "min_value": 1,
+        "max_value": 10,
+        "steps": 0.5,
+        "default_value": "3",
+        "decimals": 1,
+        "description": "Seconds between each slide"
+      },
+      "projects": {
+        "type": "options",
+        "pos": 6,
+        "restrict_type": "",
+        "restrict_components": true,
+        "minimum": 1,
+        "component_whitelist": [
+          "slide"
+        ],
+        "component_denylist": [],
+        "id": "0FAQ5Gy4QqCyYSPe5v5xLA",
+        "display_name": "Projects",
+        "is_reference_type": true,
+        "source": "internal_stories",
+        "entry_appearance": "card",
+        "allow_advanced_search": true,
+        "max_options": 10,
+        "min_options": 1,
+        "filter_content_type": [
+          "project"
+        ],
+        "required": true
+      },
+      "theme": {
+        "type": "option",
+        "pos": 7,
+        "use_uuid": true,
+        "id": "9tVuSuyyT-2CTpvlqiYblQ",
+        "source": "internal",
+        "datasource_slug": "theme",
+        "exclude_empty_option": true,
+        "default_value": "light"
+      }
+    },
+    "image": "//a.storyblok.com/f/289672313529140/x/2e7e9fb190/screenshot-2026-01-20-at-17-21-57.jpg",
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Project Carousel",
+    "component_group_uuid": "790a2850-0eb3-4a25-884f-b297e8a1d61e",
+    "color": "var(--sb-color-accent-background-green-cyan)",
+    "icon": "image",
+    "internal_tags_list": [
+      {
+        "id": 141388315377170,
+        "name": "Page"
+      },
+      {
+        "id": 141389335883285,
+        "name": "Event"
+      }
+    ],
+    "internal_tag_ids": [
+      "141388315377170",
+      "141389335883285"
+    ],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "block_projects_filtered",
+    "display_name": "Projects Filtered",
+    "description": "Select projects to showcase with filtering.",
+    "created_at": "2026-01-28T18:28:10.856Z",
+    "updated_at": "2026-03-16T18:59:22.040Z",
+    "id": 138998951353544,
+    "schema": {
+      "projects": {
+        "type": "options",
+        "pos": 0,
+        "is_reference_type": true,
+        "source": "internal_stories",
+        "entry_appearance": "card",
+        "allow_advanced_search": true,
+        "filter_content_type": [
+          "project"
+        ],
+        "id": "4FCzhvx8QkCiBrOnB2yW6Q",
+        "required": true
+      },
+      "theme": {
+        "type": "option",
+        "pos": 1,
+        "use_uuid": true,
+        "source": "internal",
+        "datasource_slug": "theme",
+        "exclude_empty_option": true,
+        "id": "l9xPumTvRhSLNchytwlr5Q"
+      }
+    },
+    "image": "//a.storyblok.com/f/289672313529140/x/f78e016f9f/screenshot-2026-03-16-at-18-59-02.jpg",
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Projects Filtered",
+    "component_group_uuid": "790a2850-0eb3-4a25-884f-b297e8a1d61e",
+    "color": "var(--sb-color-accent-background-green-cyan)",
+    "icon": "layout-panel-left",
+    "internal_tags_list": [
+      {
+        "id": 141388315377170,
+        "name": "Page"
+      }
+    ],
+    "internal_tag_ids": [
+      "141388315377170"
+    ],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "block_projects_selected",
+    "display_name": "Projects Selected",
+    "description": "Select projects to showcase.",
+    "created_at": "2026-02-19T16:16:11.192Z",
+    "updated_at": "2026-03-16T19:00:29.002Z",
+    "id": 146752189209273,
+    "schema": {
+      "title": {
+        "type": "text",
+        "pos": 0,
+        "id": "1r8iltx2Sl-hvceDTdSmYA"
+      },
+      "projects": {
+        "type": "options",
+        "pos": 1,
+        "is_reference_type": true,
+        "source": "internal_stories",
+        "entry_appearance": "card",
+        "allow_advanced_search": true,
+        "filter_content_type": [
+          "project"
+        ],
+        "id": "4FCzhvx8QkCiBrOnB2yW6Q",
+        "required": true
+      },
+      "theme": {
+        "type": "option",
+        "pos": 2,
+        "use_uuid": true,
+        "source": "internal",
+        "datasource_slug": "theme",
+        "exclude_empty_option": true,
+        "id": "l9xPumTvRhSLNchytwlr5Q"
+      }
+    },
+    "image": "//a.storyblok.com/f/289672313529140/x/aab3085f86/screenshot-2026-03-16-at-19-00-14.jpg",
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Projects Selected",
+    "component_group_uuid": "790a2850-0eb3-4a25-884f-b297e8a1d61e",
+    "color": "var(--sb-color-accent-background-green-cyan)",
+    "icon": "layout-panel-left",
+    "internal_tags_list": [
+      {
+        "id": 141388315377170,
+        "name": "Page"
+      },
+      {
+        "id": 141388670414355,
+        "name": "Project"
+      }
+    ],
+    "internal_tag_ids": [
+      "141388315377170",
+      "141388670414355"
+    ],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "block_split_text",
+    "display_name": "Split Text",
+    "description": "",
+    "created_at": "2026-01-23T09:10:10.690Z",
+    "updated_at": "2026-03-16T18:45:38.726Z",
+    "id": 137092344624389,
+    "schema": {
+      "items": {
+        "type": "bloks",
+        "pos": 0,
+        "restrict_type": "",
+        "restrict_components": true,
+        "minimum": 1,
+        "component_whitelist": [
+          "copy"
+        ],
+        "component_denylist": [],
+        "id": "0FAQ5Gy4QqCyYSPe5v5xLA",
+        "display_name": "Items"
+      },
+      "theme": {
+        "type": "option",
+        "pos": 1,
+        "use_uuid": true,
+        "id": "9tVuSuyyT-2CTpvlqiYblQ",
+        "source": "internal",
+        "datasource_slug": "theme",
+        "exclude_empty_option": true,
+        "default_value": "light"
+      }
+    },
+    "image": "//a.storyblok.com/f/289672313529140/x/482c8aedf9/screenshot-2026-03-16-at-18-45-27.jpg",
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Split Text",
+    "component_group_uuid": "790a2850-0eb3-4a25-884f-b297e8a1d61e",
+    "color": "var(--sb-color-accent-background-green-cyan)",
+    "icon": "layout-list",
+    "internal_tags_list": [
+      {
+        "id": 141388315377170,
+        "name": "Page"
+      },
+      {
+        "id": 141389335883285,
+        "name": "Event"
+      }
+    ],
+    "internal_tag_ids": [
+      "141388315377170",
+      "141389335883285"
+    ],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "block_team",
+    "display_name": "Team",
+    "description": "Display teams of selected people.",
+    "created_at": "2026-01-20T12:22:18.524Z",
+    "updated_at": "2026-03-16T18:44:32.273Z",
+    "id": 136077879403799,
+    "schema": {
+      "teams": {
+        "type": "bloks",
+        "pos": 5,
+        "restrict_type": "",
+        "restrict_components": true,
+        "component_whitelist": [
+          "team"
+        ],
+        "component_denylist": [],
+        "id": "8TfK8RQPS-CJSXv6ciDEtA",
+        "display_name": "Team Group",
+        "minimum": 1,
+        "required": true
+      },
+      "theme": {
+        "type": "option",
+        "pos": 6,
+        "use_uuid": true,
+        "source": "internal",
+        "datasource_slug": "theme",
+        "default_value": "dark",
+        "id": "ErZTwpRTR-en-pK9Hn5ynw",
+        "exclude_empty_option": true
+      },
+      "accent": {
+        "type": "option",
+        "pos": 7,
+        "use_uuid": true,
+        "source": "internal",
+        "datasource_slug": "theme",
+        "exclude_empty_option": true,
+        "default_value": "blue",
+        "id": "oJMIG_sMSg6Ence4PVDvXg"
+      }
+    },
+    "image": "//a.storyblok.com/f/289672313529140/x/24f86b6d9e/screenshot-2026-03-16-at-18-44-19.jpg",
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Team",
+    "component_group_uuid": "790a2850-0eb3-4a25-884f-b297e8a1d61e",
+    "color": "var(--sb-color-accent-background-green-cyan)",
+    "icon": "wallet",
+    "internal_tags_list": [
+      {
+        "id": 141388315377170,
+        "name": "Page"
+      }
+    ],
+    "internal_tag_ids": [
+      "141388315377170"
+    ],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "block_testimonials",
+    "display_name": "Testimonials",
+    "description": "",
+    "created_at": "2026-01-16T15:37:59.970Z",
+    "updated_at": "2026-02-26T18:01:53.580Z",
+    "id": 134710394762064,
+    "schema": {
+      "autoplay_delay": {
+        "type": "number",
+        "pos": 0,
+        "default_value": "3",
+        "min_value": 1,
+        "max_value": 10,
+        "steps": 0.5,
+        "decimals": 1,
+        "id": "y8MrQ91FTXWctFaaT49Gqw"
+      },
+      "items": {
+        "type": "bloks",
+        "pos": 1,
+        "restrict_type": "",
+        "restrict_components": true,
+        "minimum": 1,
+        "component_whitelist": [
+          "testimonial"
+        ],
+        "component_denylist": [],
+        "id": "0FAQ5Gy4QqCyYSPe5v5xLA",
+        "display_name": "Items"
+      },
+      "media": {
+        "type": "bloks",
+        "pos": 2,
+        "id": "GbBae6CPSziv8jaFYd80Mw",
+        "restrict_type": "",
+        "restrict_components": true,
+        "component_whitelist": [
+          "image",
+          "mux_video_autoplay"
+        ],
+        "component_denylist": []
+      },
+      "theme": {
+        "type": "option",
+        "pos": 3,
+        "use_uuid": true,
+        "id": "9tVuSuyyT-2CTpvlqiYblQ",
+        "source": "internal",
+        "datasource_slug": "theme",
+        "exclude_empty_option": true,
+        "default_value": "light"
+      }
+    },
+    "image": "//a.storyblok.com/f/289672313529140/x/847743401c/screenshot-2026-01-18-at-18-27-09.jpg",
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Testimonials",
+    "component_group_uuid": "790a2850-0eb3-4a25-884f-b297e8a1d61e",
+    "color": "var(--sb-color-accent-background-green-cyan)",
+    "icon": "align-center",
+    "internal_tags_list": [
+      {
+        "id": 141388315377170,
+        "name": "Page"
+      },
+      {
+        "id": 141388670414355,
+        "name": "Project"
+      },
+      {
+        "id": 141389335883285,
+        "name": "Event"
+      }
+    ],
+    "internal_tag_ids": [
+      "141388315377170",
+      "141388670414355",
+      "141389335883285"
+    ],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "block_text",
+    "display_name": "Text",
+    "description": "Generic Text block used for pages like privacy policy etc",
+    "created_at": "2026-02-03T17:54:53.191Z",
+    "updated_at": "2026-03-16T18:56:55.310Z",
+    "id": 141114135317043,
+    "schema": {
+      "copy": {
+        "type": "richtext",
+        "pos": 0,
+        "style_options": [
+          {
+            "_uid": "7f11f21d-f221-45cb-b287-8a1eb9904303",
+            "name": "Outlined",
+            "value": "is-outlined"
+          }
+        ],
+        "rtl": false,
+        "customize_toolbar": true,
+        "toolbar": [
+          "bold",
+          "h1",
+          "h2",
+          "h3",
+          "h4",
+          "h5",
+          "unset",
+          "hrule",
+          "italic",
+          "link",
+          "olist",
+          "paragraph",
+          "underline",
+          "list",
+          "align-left",
+          "align-center",
+          "align-right",
+          "add-table",
+          "insert-column-before",
+          "insert-column-after",
+          "insert-row-above",
+          "insert-row-below",
+          "toggle-header-column",
+          "toggle-header-row",
+          "toggle-header-cell",
+          "delete-column",
+          "delete-row",
+          "merge-cells",
+          "split-cells",
+          "delete-table",
+          "cell-color"
+        ],
+        "id": "bQc-jfjcQP-b4VQtKRVveQ",
+        "allow_target_blank": true
+      }
+    },
+    "image": "//a.storyblok.com/f/289672313529140/x/92dc34f8f4/screenshot-2026-03-16-at-18-56-29.jpg",
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Text",
+    "component_group_uuid": "790a2850-0eb3-4a25-884f-b297e8a1d61e",
+    "color": "var(--sb-color-accent-background-green-cyan)",
+    "icon": "align-left",
+    "internal_tags_list": [
+      {
+        "id": 141388315377170,
+        "name": "Page"
+      },
+      {
+        "id": 141389335883285,
+        "name": "Event"
+      }
+    ],
+    "internal_tag_ids": [
+      "141388315377170",
+      "141389335883285"
+    ],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "block_ticker",
+    "display_name": "Logo Ticker",
+    "description": "Displays a logo ticker with optional background media & title",
+    "created_at": "2026-01-28T18:19:09.336Z",
+    "updated_at": "2026-03-16T18:48:03.214Z",
+    "id": 138996733287616,
+    "schema": {
+      "media": {
+        "type": "bloks",
+        "pos": 0,
+        "id": "773CtmxyTrW1s0CgBGp0aw",
+        "restrict_type": "",
+        "restrict_components": true,
+        "component_whitelist": [
+          "image",
+          "mux_video_autoplay"
+        ],
+        "component_denylist": [],
+        "maximum": 1
+      },
+      "text": {
+        "type": "text",
+        "pos": 1,
+        "id": "XHKygncmRlmndE_tLtHJig",
+        "customize_toolbar": true,
+        "toolbar": [
+          "paragraph",
+          "unset"
+        ]
+      },
+      "logos": {
+        "type": "multiasset",
+        "pos": 2,
+        "id": "hyBP33ZmSCa9jGXAsnhb2w",
+        "description": "For best results use SVG images.",
+        "filetypes": [
+          "images"
+        ],
+        "required": true
+      },
+      "logo_strength": {
+        "type": "custom",
+        "pos": 3,
+        "description": "How much logos can differ in size.\nLower = more uniform\nHigher = more variation",
+        "id": "q3q2loBrQgCoOmqAJ-Zt2Q",
+        "field_type": "storyblok-slider",
+        "options": [
+          {
+            "name": "marks",
+            "value": "[0,25,50,75,100]",
+            "_uid": "26a74fda-efb4-437f-a1ca-e92d830efd10"
+          },
+          {
+            "name": "defaultValue",
+            "value": "60",
+            "_uid": "fc6be388-6e5a-4c1e-8cc7-a5b3312ad3bc"
+          },
+          {
+            "name": "minValue",
+            "value": "0",
+            "_uid": "1fde76b0-df90-4460-bc86-41abeeebdda6"
+          },
+          {
+            "name": "maxValue",
+            "value": "100",
+            "_uid": "30a73fa2-a86b-4372-b2a8-ff79b2c3601f"
+          },
+          {
+            "name": "stepSize",
+            "value": "5",
+            "_uid": "f9a4d54c-76c2-48de-9abb-c37b025c5a53"
+          },
+          {
+            "name": "minimumSignificantDigits",
+            "value": "",
+            "_uid": "9cf54542-77de-4f77-a00f-384c26ae9b4a"
+          },
+          {
+            "name": "maximumSignificantDigits",
+            "value": "",
+            "_uid": "eddc758c-06f0-4217-a66d-26b9ac873def"
+          },
+          {
+            "name": "style",
+            "value": "unit",
+            "_uid": "1e300b5e-4eef-4d13-bae6-26615388acdc"
+          },
+          {
+            "name": "unit",
+            "value": "percent",
+            "_uid": "8459f493-71ca-4e82-8d81-7f3e2eb71f1e"
+          }
+        ]
+      },
+      "logo_scale": {
+        "type": "custom",
+        "pos": 4,
+        "id": "2mv4ryybSvegHfI2rUrj2w",
+        "field_type": "storyblok-slider",
+        "options": [
+          {
+            "name": "marks",
+            "value": "",
+            "_uid": "4de387dd-e694-4407-9ec9-e2d8360a18e0"
+          },
+          {
+            "name": "defaultValue",
+            "value": "3.5",
+            "_uid": "488edf69-8858-4f4b-8f14-474a82be186d"
+          },
+          {
+            "name": "minValue",
+            "value": "1",
+            "_uid": "c7a391a8-c1ab-49b9-930e-8f0a24c973fc"
+          },
+          {
+            "name": "maxValue",
+            "value": "6",
+            "_uid": "ac1dfc91-a2e9-4047-a30a-00fde005f8a1"
+          },
+          {
+            "name": "stepSize",
+            "value": "0.5",
+            "_uid": "bfb2b28a-11d0-40d0-a43c-bde39498b90f"
+          },
+          {
+            "name": "minimumSignificantDigits",
+            "value": "",
+            "_uid": "5dd19743-64e9-44f5-8492-b75a6cb5bf38"
+          },
+          {
+            "name": "maximumSignificantDigits",
+            "value": "",
+            "_uid": "7486390c-3263-433c-86cb-58f4a3a92074"
+          },
+          {
+            "name": "style",
+            "value": "decimal",
+            "_uid": "bfb38d3d-b1e9-4a18-95ed-072cc8e525d0"
+          },
+          {
+            "name": "unit",
+            "value": "",
+            "_uid": "b67f0a71-7666-4eb1-9df9-b1de5fb151d4"
+          }
+        ]
+      },
+      "theme": {
+        "type": "option",
+        "pos": 5,
+        "use_uuid": true,
+        "required": false,
+        "options": [],
+        "exclude_empty_option": false,
+        "default_value": "light",
+        "id": "BmrYdk1fTiOQo5l9tMEL_A",
+        "display_name": "Theme",
+        "source": "internal",
+        "datasource_slug": "theme"
+      }
+    },
+    "image": "//a.storyblok.com/f/289672313529140/x/01f45f4f4f/screenshot-2026-03-16-at-18-47-50.jpg",
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Logo Ticker",
+    "component_group_uuid": "790a2850-0eb3-4a25-884f-b297e8a1d61e",
+    "color": "var(--sb-color-accent-background-green-cyan)",
+    "icon": "sticker",
+    "internal_tags_list": [
+      {
+        "id": 141388315377170,
+        "name": "Page"
+      },
+      {
+        "id": 141388670414355,
+        "name": "Project"
+      },
+      {
+        "id": 141389335883285,
+        "name": "Event"
+      }
+    ],
+    "internal_tag_ids": [
+      "141388315377170",
+      "141388670414355",
+      "141389335883285"
+    ],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "block_truths",
+    "display_name": "Raw Truths",
+    "description": "",
+    "created_at": "2026-01-26T18:42:18.974Z",
+    "updated_at": "2026-03-16T18:49:11.673Z",
+    "id": 138294636445153,
+    "schema": {
+      "title": {
+        "type": "text",
+        "pos": 0,
+        "id": "ngxAVQX-SGmtXTKuC5RJsA"
+      },
+      "headline": {
+        "type": "richtext",
+        "pos": 1,
+        "id": "FuO6792QSiK7MgQHPMNtqA",
+        "customize_toolbar": true,
+        "toolbar": [
+          "h3",
+          "unset"
+        ],
+        "style_options": [
+          {
+            "_uid": "32b97c2c-2de3-40bd-ad77-6d92f718c63c",
+            "name": "Outlined",
+            "value": "is-outlined"
+          }
+        ]
+      },
+      "copy": {
+        "type": "richtext",
+        "pos": 2,
+        "id": "smv5StJ1TiuGHdeYWVfzrw",
+        "customize_toolbar": true,
+        "toolbar": [
+          "unset",
+          "paragraph",
+          "bold",
+          "link",
+          "olist",
+          "list"
+        ]
+      },
+      "cta_title": {
+        "type": "text",
+        "pos": 3,
+        "id": "3wQLCrLPTmOL5GkyubG5Nw"
+      },
+      "cta": {
+        "type": "multilink",
+        "pos": 4,
+        "email_link_type": true,
+        "allow_target_blank": true,
+        "id": "FBvAqJ90TSeEs-KkB_lcGQ"
+      },
+      "items": {
+        "type": "bloks",
+        "pos": 5,
+        "minimum": 4,
+        "maximum": 4,
+        "restrict_type": "",
+        "restrict_components": true,
+        "component_whitelist": [
+          "list_item"
+        ],
+        "component_denylist": [],
+        "id": "QVC5Toe8Taiia4HpuWHH6A"
+      },
+      "bottom_headline": {
+        "type": "text",
+        "pos": 6,
+        "id": "ICsrFgpPTl2F8ui6xwRncA"
+      },
+      "bottom_copy": {
+        "type": "text",
+        "pos": 7,
+        "id": "pUh4GbZPSMGRI0fnt-hh0Q"
+      },
+      "theme": {
+        "type": "option",
+        "pos": 8,
+        "use_uuid": true,
+        "source": "internal",
+        "datasource_slug": "theme",
+        "default_value": "dark",
+        "id": "ErZTwpRTR-en-pK9Hn5ynw",
+        "exclude_empty_option": true
+      }
+    },
+    "image": "//a.storyblok.com/f/289672313529140/x/807bdd4297/screenshot-2026-03-16-at-18-48-56.jpg",
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Raw Truths",
+    "component_group_uuid": "790a2850-0eb3-4a25-884f-b297e8a1d61e",
+    "color": "var(--sb-color-accent-background-green-cyan)",
+    "icon": "layout-list",
+    "internal_tags_list": [
+      {
+        "id": 141388315377170,
+        "name": "Page"
+      },
+      {
+        "id": 141388670414355,
+        "name": "Project"
+      }
+    ],
+    "internal_tag_ids": [
+      "141388315377170",
+      "141388670414355"
+    ],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "block_work_text",
+    "display_name": "Work Text",
+    "description": "Standard text for Work pages",
+    "created_at": "2026-01-30T09:03:20.197Z",
+    "updated_at": "2026-03-16T18:47:25.859Z",
+    "id": 139567924016608,
+    "schema": {
+      "title": {
+        "type": "text",
+        "pos": 0,
+        "id": "ngxAVQX-SGmtXTKuC5RJsA",
+        "required": false
+      },
+      "copy": {
+        "type": "richtext",
+        "pos": 1,
+        "id": "smv5StJ1TiuGHdeYWVfzrw",
+        "customize_toolbar": true,
+        "toolbar": [
+          "unset",
+          "paragraph",
+          "bold",
+          "link",
+          "olist",
+          "list"
+        ],
+        "required": true
+      },
+      "autoplay_delay": {
+        "type": "number",
+        "pos": 2,
+        "min_value": 1,
+        "max_value": 10,
+        "decimals": 1,
+        "steps": 0.5,
+        "id": "cthqy8LBTlmoejyiOKeZWQ",
+        "default_value": "3",
+        "description": "Seconds between each slide"
+      },
+      "stats": {
+        "type": "bloks",
+        "pos": 3,
+        "restrict_type": "",
+        "restrict_components": true,
+        "component_whitelist": [
+          "copy"
+        ],
+        "component_denylist": [],
+        "component_group_whitelist": [],
+        "component_group_denylist": [],
+        "component_tag_whitelist": [],
+        "component_tag_denylist": [],
+        "id": "Ylz8x_l4TQWmGxz38218mg"
+      },
+      "logos": {
+        "type": "multiasset",
+        "pos": 4,
+        "id": "WMCAh05GQr2rfEijz70_Aw",
+        "filetypes": [
+          "images"
+        ]
+      },
+      "logo_strength": {
+        "type": "custom",
+        "pos": 5,
+        "field_type": "storyblok-slider",
+        "options": [
+          {
+            "name": "marks",
+            "value": "[0,25,50,75,100]",
+            "_uid": "b1d431e9-bf1e-4d06-8eaa-3f43e9aec5d9"
+          },
+          {
+            "name": "defaultValue",
+            "value": "60",
+            "_uid": "b63ea48d-4228-40ea-becf-be6dfb6de9cd"
+          },
+          {
+            "name": "minValue",
+            "value": "0",
+            "_uid": "1b63eeec-5ce4-4fbe-af61-fa507f86d16a"
+          },
+          {
+            "name": "maxValue",
+            "value": "100",
+            "_uid": "b8cc8bab-309d-4ba0-bf6c-a14a968c1993"
+          },
+          {
+            "name": "stepSize",
+            "value": "5",
+            "_uid": "91a83890-a57e-4bc1-8ee6-8638e8a93fa3"
+          },
+          {
+            "name": "minimumSignificantDigits",
+            "value": "",
+            "_uid": "ef8d8b77-626a-4d58-8a93-f8db28a5daf5"
+          },
+          {
+            "name": "maximumSignificantDigits",
+            "value": "",
+            "_uid": "b5bad0ff-c836-4687-8a81-c692c6ae9fa6"
+          },
+          {
+            "name": "style",
+            "value": "unit",
+            "_uid": "9bd7a0c1-305a-4e21-81a5-ddf66d90cc66"
+          },
+          {
+            "name": "unit",
+            "value": "percent",
+            "_uid": "87fb323a-6434-4163-a2e3-5f0b2cc8ea61"
+          }
+        ],
+        "id": "EsxDXKy_TluUbMwt0UKpyQ",
+        "description": "How much logos can differ in size.\nLower = more uniform\nHigher = more variation"
+      },
+      "logo_scale": {
+        "type": "custom",
+        "pos": 6,
+        "id": "Iv4ZIXXURg6OJf8-f6cC4w",
+        "field_type": "storyblok-slider",
+        "options": [
+          {
+            "name": "marks",
+            "value": "",
+            "_uid": "9c498ee6-4717-4d23-b9b3-5de859cb742b"
+          },
+          {
+            "name": "defaultValue",
+            "value": "3.5",
+            "_uid": "112792e5-fc72-4572-b718-87df00088e6f"
+          },
+          {
+            "name": "minValue",
+            "value": "1",
+            "_uid": "d98da34b-6d76-486e-985e-64375376bf3e"
+          },
+          {
+            "name": "maxValue",
+            "value": "6",
+            "_uid": "770b76a8-3e3d-4e72-9f73-f593a8320160"
+          },
+          {
+            "name": "stepSize",
+            "value": "0.5",
+            "_uid": "2997ae40-98ae-4074-bc93-a98619a43344"
+          },
+          {
+            "name": "minimumSignificantDigits",
+            "value": "",
+            "_uid": "d7bf0704-245e-49d8-b5ca-a31c91b066e8"
+          },
+          {
+            "name": "maximumSignificantDigits",
+            "value": "",
+            "_uid": "5e6fd3ea-cbb8-41ee-abf3-dd22e4d18ff8"
+          },
+          {
+            "name": "style",
+            "value": "decimal",
+            "_uid": "8b1d6a3a-2cbe-439c-85bd-28546c207e23"
+          },
+          {
+            "name": "unit",
+            "value": "",
+            "_uid": "fd762a3e-7a5d-450a-b18c-731e29b73232"
+          }
+        ],
+        "min_value": 1,
+        "max_value": 6,
+        "decimals": 1,
+        "steps": 0.5,
+        "default_value": "3",
+        "display_name": "Logo Scale"
+      },
+      "theme": {
+        "type": "option",
+        "pos": 7,
+        "use_uuid": true,
+        "source": "internal",
+        "datasource_slug": "theme",
+        "default_value": "dark",
+        "id": "ErZTwpRTR-en-pK9Hn5ynw",
+        "exclude_empty_option": true
+      }
+    },
+    "image": "//a.storyblok.com/f/289672313529140/x/5bd324a273/screenshot-2026-03-16-at-18-47-06.jpg",
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Work Text",
+    "component_group_uuid": "790a2850-0eb3-4a25-884f-b297e8a1d61e",
+    "color": "var(--sb-color-accent-background-green-cyan)",
+    "icon": "layout-list",
+    "internal_tags_list": [
+      {
+        "id": 141388670414355,
+        "name": "Project"
+      }
+    ],
+    "internal_tag_ids": [
+      "141388670414355"
+    ],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "copy",
+    "display_name": "Copy",
+    "description": "",
+    "created_at": "2026-01-23T09:11:06.837Z",
+    "updated_at": "2026-01-23T09:11:45.788Z",
+    "id": 137092574573896,
+    "schema": {
+      "copy": {
+        "type": "richtext",
+        "pos": 1,
+        "id": "DAfQWVQfRtKh44893qpCiw",
+        "customize_toolbar": true,
+        "toolbar": [
+          "unset",
+          "paragraph",
+          "link",
+          "italic",
+          "bold"
+        ],
+        "allow_target_blank": true
+      }
+    },
+    "image": null,
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Copy",
+    "component_group_uuid": "7fcb11a1-5f87-4c0b-ba8f-0bda6cd7387f",
+    "color": null,
+    "icon": null,
+    "internal_tags_list": [],
+    "internal_tag_ids": [],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "event",
+    "display_name": "Event",
+    "description": null,
+    "created_at": "2026-02-04T13:18:41.535Z",
+    "updated_at": "2026-02-24T12:13:27.757Z",
+    "id": 141400152217171,
+    "schema": {
+      "event_datetime": {
+        "type": "datetime",
+        "pos": 0,
+        "display_name": "Event Date/Time",
+        "required": true,
+        "id": "-B__BDIKQrieD6XHkrmYnw"
+      },
+      "preview_image": {
+        "type": "asset",
+        "pos": 1,
+        "filetypes": [
+          "images"
+        ],
+        "id": "QjZluUS7QL2hVyVO9q3R_Q",
+        "required": true
+      },
+      "preview_text": {
+        "type": "textarea",
+        "pos": 2,
+        "id": "CJJ-dMYfR7KAuCGwhqJOKg",
+        "customize_toolbar": true,
+        "toolbar": [
+          "unset",
+          "italic",
+          "link",
+          "paragraph",
+          "bold"
+        ],
+        "allow_target_blank": true
+      },
+      "jaa_partnership": {
+        "type": "boolean",
+        "pos": 3,
+        "description": "Check to display the JAA Partnership.",
+        "inline_label": true,
+        "display_name": "JAA Partnership",
+        "id": "zhO92JfNRCaRQmRRwZf3Lw"
+      },
+      "blocks": {
+        "type": "bloks",
+        "id": "lyVLs15bQCmzh1VCc_gAXw",
+        "pos": 4,
+        "restrict_type": "tags",
+        "restrict_components": true,
+        "component_whitelist": [],
+        "component_denylist": [],
+        "component_group_whitelist": [],
+        "component_group_denylist": [],
+        "component_tag_whitelist": [
+          141389335883285
+        ],
+        "component_tag_denylist": []
+      },
+      "tab-3b61b796-8ea0-4311-8609-140de487b153": {
+        "display_name": "Content",
+        "keys": [
+          "blocks"
+        ],
+        "pos": 5,
+        "type": "tab",
+        "name": "tab-3b61b796-8ea0-4311-8609-140de487b153",
+        "id": "O2G3lo6gQxGGCRQN5IexUw"
+      },
+      "tab-a012b6af-5d9a-4985-832a-84f119d934c0": {
+        "display_name": "SEO",
+        "keys": [
+          "seo_title",
+          "seo_description",
+          "seo_image"
+        ],
+        "pos": 6,
+        "type": "tab",
+        "id": "oBK2r12aSYWDKoTxGdk0wA",
+        "name": "tab-a012b6af-5d9a-4985-832a-84f119d934c0"
+      },
+      "seo_title": {
+        "type": "text",
+        "pos": 7,
+        "id": "n4dTWU-rTjWIP0dQX06h3A",
+        "required": true,
+        "display_name": "Title"
+      },
+      "seo_description": {
+        "type": "text",
+        "pos": 8,
+        "id": "wbN2f5lbRaazAXhoUEVYTg",
+        "required": true,
+        "display_name": "Description"
+      },
+      "seo_image": {
+        "type": "asset",
+        "pos": 9,
+        "required": true,
+        "filetypes": [
+          "images"
+        ],
+        "id": "8-T6gz7lTUmrPCnJZBgx_Q",
+        "display_name": "Image"
+      }
+    },
+    "image": null,
+    "preview_field": null,
+    "is_root": true,
+    "preview_tmpl": null,
+    "is_nestable": false,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Event",
+    "component_group_uuid": "08f3ebfd-247f-4b10-b3af-dc46b5a9a80d",
+    "color": null,
+    "icon": null,
+    "internal_tags_list": [],
+    "internal_tag_ids": [],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "image",
+    "display_name": null,
+    "description": "",
+    "created_at": "2026-01-21T13:29:13.287Z",
+    "updated_at": "2026-02-20T18:01:37.726Z",
+    "id": 136448218275795,
+    "schema": {
+      "image": {
+        "type": "asset",
+        "pos": 0,
+        "id": "POpxrIxhTj2icwAiEkA44g"
+      }
+    },
+    "image": null,
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": "{{@if(it.image)}}\n{{@image(it.image.filename)/}}\n{{/if}}",
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "image",
+    "component_group_uuid": "7fcb11a1-5f87-4c0b-ba8f-0bda6cd7387f",
+    "color": null,
+    "icon": null,
+    "internal_tags_list": [],
+    "internal_tag_ids": [],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "info_item",
+    "display_name": "Info Item",
+    "description": "",
+    "created_at": "2026-01-21T18:25:51.654Z",
+    "updated_at": "2026-03-09T12:39:53.316Z",
+    "id": 136521120380730,
+    "schema": {
+      "title": {
+        "type": "text",
+        "pos": 0,
+        "id": "5V9qWj81RHWBZnt0jY4CkA",
+        "style_options": [
+          {
+            "_uid": "9a901605-db42-4180-bc82-925a40ef0ec5",
+            "name": "Outlined",
+            "value": "is-outlined"
+          }
+        ],
+        "customize_toolbar": true,
+        "toolbar": [
+          "h2",
+          "unset",
+          "h3",
+          "h4"
+        ]
+      },
+      "column_one": {
+        "type": "richtext",
+        "pos": 1,
+        "id": "DAfQWVQfRtKh44893qpCiw",
+        "customize_toolbar": true,
+        "toolbar": [
+          "unset",
+          "paragraph",
+          "link",
+          "italic",
+          "bold"
+        ],
+        "allow_target_blank": true
+      },
+      "column_two": {
+        "type": "richtext",
+        "pos": 2,
+        "customize_toolbar": true,
+        "toolbar": [
+          "bold",
+          "unset",
+          "italic",
+          "link",
+          "paragraph"
+        ],
+        "allow_target_blank": true,
+        "id": "kg-FdIHgQJeXkQp7oOf6Sg"
+      },
+      "media": {
+        "type": "bloks",
+        "pos": 3,
+        "maximum": 1,
+        "restrict_type": "",
+        "restrict_components": true,
+        "component_whitelist": [
+          "image",
+          "mux_video_autoplay",
+          "mux_video_player"
+        ],
+        "component_denylist": [],
+        "id": "LPpXZn7wSMmmQvAnmyhjxA"
+      }
+    },
+    "image": null,
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Info Item",
+    "component_group_uuid": "7fcb11a1-5f87-4c0b-ba8f-0bda6cd7387f",
+    "color": null,
+    "icon": null,
+    "internal_tags_list": [],
+    "internal_tag_ids": [],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "link",
+    "display_name": null,
+    "description": "Creates a link to anywhere",
+    "created_at": "2026-01-06T16:35:10.870Z",
+    "updated_at": "2026-01-06T16:36:11.434Z",
+    "id": 131185503728013,
+    "schema": {
+      "title": {
+        "type": "text",
+        "pos": 0,
+        "id": "bBwTuIOwTlizek3escaIFg",
+        "required": true
+      },
+      "link": {
+        "type": "multilink",
+        "pos": 1,
+        "required": true,
+        "email_link_type": true,
+        "allow_target_blank": true,
+        "restrict_content_types": true,
+        "component_whitelist": [
+          "page"
+        ],
+        "id": "aHob3w2bQ9CxVpxdbDPC_g"
+      }
+    },
+    "image": null,
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "link",
+    "component_group_uuid": "7fcb11a1-5f87-4c0b-ba8f-0bda6cd7387f",
+    "color": null,
+    "icon": null,
+    "internal_tags_list": [],
+    "internal_tag_ids": [],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "list_item",
+    "display_name": null,
+    "description": "",
+    "created_at": "2026-01-19T11:08:45.655Z",
+    "updated_at": "2026-02-17T15:55:05.077Z",
+    "id": 135705909889037,
+    "schema": {
+      "title": {
+        "type": "text",
+        "pos": 0,
+        "id": "YmC_cLEqSV64PmJmEZbgVg"
+      },
+      "copy": {
+        "type": "textarea",
+        "pos": 1,
+        "id": "UrYietPOThSNnb98X-WaYw"
+      },
+      "arrow_icon": {
+        "type": "boolean",
+        "pos": 3,
+        "id": "Z1kYgCegQmGNBNaLiHb-OQ"
+      }
+    },
+    "image": null,
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "list_item",
+    "component_group_uuid": "7fcb11a1-5f87-4c0b-ba8f-0bda6cd7387f",
+    "color": null,
+    "icon": null,
+    "internal_tags_list": [],
+    "internal_tag_ids": [],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "logo",
+    "display_name": null,
+    "description": "Creates a link to anywhere",
+    "created_at": "2026-01-09T16:09:46.828Z",
+    "updated_at": "2026-03-16T17:45:42.498Z",
+    "id": 132240944454403,
+    "schema": {
+      "image": {
+        "type": "asset",
+        "pos": 0,
+        "required": true,
+        "filetypes": [
+          "images"
+        ],
+        "id": "jVt_QPHISP6l8JiUjgrLHg"
+      },
+      "title": {
+        "type": "text",
+        "pos": 1,
+        "id": "bBwTuIOwTlizek3escaIFg",
+        "required": false,
+        "display_name": ""
+      },
+      "link": {
+        "type": "multilink",
+        "pos": 2,
+        "required": false,
+        "email_link_type": true,
+        "allow_target_blank": true,
+        "restrict_content_types": true,
+        "component_whitelist": [
+          "page"
+        ],
+        "id": "aHob3w2bQ9CxVpxdbDPC_g"
+      }
+    },
+    "image": null,
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": "{{@if(it.image.filename)}}\n  {{@image(it.image.filename)/}}\n{{/if}}\n",
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "logo",
+    "component_group_uuid": "7fcb11a1-5f87-4c0b-ba8f-0bda6cd7387f",
+    "color": null,
+    "icon": null,
+    "internal_tags_list": [],
+    "internal_tag_ids": [],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "mux_video_autoplay",
+    "display_name": "",
+    "description": "Creates a Mux video autoplay.",
+    "created_at": "2026-01-27T17:48:04.838Z",
+    "updated_at": "2026-02-26T10:22:59.649Z",
+    "id": 138635201897827,
+    "schema": {
+      "poster": {
+        "type": "asset",
+        "pos": 0,
+        "description": "Image that is shown as the poster for the video before it's played.",
+        "filetypes": [
+          "images"
+        ],
+        "id": "ROI6XisnTJy3Odfp1tQRNA"
+      },
+      "video": {
+        "type": "custom",
+        "pos": 1,
+        "field_type": "storyblok-mux-assets",
+        "options": [
+          {
+            "name": "assetsApiUrl",
+            "value": "https://raw-london.netlify.app/api/mux-assets",
+            "_uid": "9c14a9e0-e321-4742-907a-bd57b7a81f84"
+          }
+        ],
+        "required": true,
+        "id": "SyvanaWGR969UYcJAg28KA"
+      }
+    },
+    "image": null,
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "mux_video_autoplay",
+    "component_group_uuid": "7fcb11a1-5f87-4c0b-ba8f-0bda6cd7387f",
+    "color": null,
+    "icon": null,
+    "internal_tags_list": [],
+    "internal_tag_ids": [],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "mux_video_player",
+    "display_name": "Mux Video Player",
+    "description": "Creates a Mux video player.",
+    "created_at": "2026-02-04T11:44:36.156Z",
+    "updated_at": "2026-03-30T16:19:53.285Z",
+    "id": 141377028756591,
+    "schema": {
+      "poster": {
+        "type": "asset",
+        "pos": 0,
+        "filetypes": [
+          "images"
+        ],
+        "description": "Image that is shown as the poster for the video before it's played.",
+        "id": "aYiTIWoVSUWP8ac5zUn7fA"
+      },
+      "video": {
+        "type": "custom",
+        "pos": 1,
+        "field_type": "storyblok-mux-assets",
+        "options": [
+          {
+            "name": "assetsApiUrl",
+            "value": "https://raw-london.netlify.app/api/mux-assets",
+            "_uid": "9c14a9e0-e321-4742-907a-bd57b7a81f84"
+          }
+        ],
+        "required": true,
+        "id": "SyvanaWGR969UYcJAg28KA"
+      },
+      "name": {
+        "type": "text",
+        "pos": 2,
+        "display_name": "Name",
+        "required": true,
+        "description": "Name the video (for use in GHL)",
+        "id": "P7eldiGGTIC4x_QJi2vpzg"
+      },
+      "data_capture": {
+        "type": "boolean",
+        "pos": 3,
+        "inline_label": true,
+        "default_value": true,
+        "id": "_RBk7rKoTdiK0uKPtdYo6A",
+        "description": "Should this video ask for a user's data before it can play?"
+      }
+    },
+    "image": null,
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": "{{@if(it.poster)}}\n{{@image(it.poster.filename)/}}\n{{/if}}",
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Mux Video Player",
+    "component_group_uuid": "7fcb11a1-5f87-4c0b-ba8f-0bda6cd7387f",
+    "color": "var(--sb-color-accent-background-gainsboro)",
+    "icon": "",
+    "internal_tags_list": [],
+    "internal_tag_ids": [],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "page",
+    "display_name": null,
+    "description": null,
+    "created_at": "2026-01-06T14:40:46.968Z",
+    "updated_at": "2026-02-04T12:40:46.425Z",
+    "id": 131157389192885,
+    "schema": {
+      "blocks": {
+        "type": "bloks",
+        "id": "lyVLs15bQCmzh1VCc_gAXw",
+        "pos": 0,
+        "restrict_type": "tags",
+        "restrict_components": true,
+        "component_whitelist": [],
+        "component_denylist": [],
+        "component_group_whitelist": [],
+        "component_group_denylist": [],
+        "component_tag_whitelist": [
+          141388315377170
+        ],
+        "component_tag_denylist": []
+      },
+      "tab-a012b6af-5d9a-4985-832a-84f119d934c0": {
+        "display_name": "SEO",
+        "keys": [
+          "seo_title",
+          "seo_description",
+          "seo_image"
+        ],
+        "pos": 1,
+        "type": "tab",
+        "id": "oBK2r12aSYWDKoTxGdk0wA"
+      },
+      "seo_title": {
+        "type": "text",
+        "pos": 2,
+        "id": "n4dTWU-rTjWIP0dQX06h3A",
+        "required": true,
+        "display_name": "Title"
+      },
+      "seo_description": {
+        "type": "text",
+        "pos": 3,
+        "id": "wbN2f5lbRaazAXhoUEVYTg",
+        "required": true,
+        "display_name": "Description"
+      },
+      "seo_image": {
+        "type": "asset",
+        "pos": 4,
+        "required": true,
+        "filetypes": [
+          "images"
+        ],
+        "id": "8-T6gz7lTUmrPCnJZBgx_Q",
+        "display_name": "Image"
+      }
+    },
+    "image": null,
+    "preview_field": null,
+    "is_root": true,
+    "preview_tmpl": null,
+    "is_nestable": false,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "page",
+    "component_group_uuid": "08f3ebfd-247f-4b10-b3af-dc46b5a9a80d",
+    "color": null,
+    "icon": null,
+    "internal_tags_list": [],
+    "internal_tag_ids": [],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "person",
+    "display_name": null,
+    "description": "",
+    "created_at": "2026-01-12T14:50:26.442Z",
+    "updated_at": "2026-02-26T19:18:35.762Z",
+    "id": 133283129116447,
+    "schema": {
+      "image": {
+        "type": "asset",
+        "pos": 0,
+        "required": true,
+        "filetypes": [
+          "images"
+        ],
+        "id": "LvI9Da7FRAituCZehjDJwQ",
+        "asset_folder_id": 133290567152459
+      },
+      "image_selected": {
+        "type": "asset",
+        "pos": 1,
+        "description": "Optional secondary image to show if the person is selected.",
+        "filetypes": [
+          "images"
+        ],
+        "display_name": "Image Selected",
+        "id": "gfdQhtElRyWlRex9zfjrdw"
+      },
+      "name": {
+        "type": "text",
+        "pos": 2,
+        "required": true,
+        "id": "Hcl371ELSv28rmadjHTqGw"
+      },
+      "biography": {
+        "type": "textarea",
+        "pos": 3,
+        "id": "7yYKtVNiTcefbz0yo_Q2OA"
+      },
+      "position": {
+        "type": "text",
+        "pos": 4,
+        "required": true,
+        "id": "48XLRperQIyTyH7d8RCPvA"
+      },
+      "email": {
+        "type": "text",
+        "pos": 5,
+        "id": "QsVBsAAUR2Stjre1AKQKiQ"
+      },
+      "linkedin": {
+        "type": "text",
+        "pos": 6,
+        "id": "vxNmdBISTtCrsB6dl3_E1w",
+        "display_name": "LinkedIn",
+        "regex": ""
+      }
+    },
+    "image": null,
+    "preview_field": "image",
+    "is_root": true,
+    "preview_tmpl": null,
+    "is_nestable": false,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "person",
+    "component_group_uuid": "08f3ebfd-247f-4b10-b3af-dc46b5a9a80d",
+    "color": null,
+    "icon": null,
+    "internal_tags_list": [],
+    "internal_tag_ids": [],
+    "content_type_asset_preview": "image",
+    "metadata": {}
+  },
+  {
+    "name": "post",
+    "display_name": null,
+    "description": "",
+    "created_at": "2026-01-06T16:45:38.978Z",
+    "updated_at": "2026-04-14T17:05:59.438Z",
+    "id": 131188076458425,
+    "schema": {
+      "hero": {
+        "type": "asset",
+        "pos": 0,
+        "filetypes": [
+          "images"
+        ],
+        "id": "PxYHklgtT8-ZaBfy3fIW5A"
+      },
+      "author": {
+        "type": "option",
+        "pos": 1,
+        "use_uuid": true,
+        "required": false,
+        "source": "internal_stories",
+        "folder_slug": "people/",
+        "filter_content_type": [
+          "person"
+        ],
+        "entry_appearance": "card",
+        "id": "EZb54pc2SE28YuJxQdX7_g"
+      },
+      "preview_image": {
+        "type": "asset",
+        "pos": 2,
+        "id": "e-Ml53GJTYqcJ_2D2Wp8bA",
+        "filetypes": [
+          "images"
+        ],
+        "description": "Image that is shown when featured around the site.\n"
+      },
+      "preview_text": {
+        "type": "text",
+        "pos": 3,
+        "id": "3EwhUpJeQOSvlDn825PI-Q",
+        "description": "Text that is shown when featured around the site."
+      },
+      "category": {
+        "type": "option",
+        "pos": 4,
+        "source": "internal",
+        "datasource_slug": "post-category",
+        "exclude_empty_option": true,
+        "required": false,
+        "id": "YsFi5nf_SnqY-8m3_FpyxQ",
+        "use_uuid": true
+      },
+      "event_datetime": {
+        "type": "datetime",
+        "pos": 5,
+        "display_name": "Event Date/Time",
+        "description": "⚠️ If you're creating a new Event, you should create this as an Event content type in the Events folder and not as a Post.\n\nThis is used only for legacy events migrated from the old site.",
+        "id": "KhEEDxgQTrSfosMbRKjddA"
+      },
+      "tab-87c5d3eb-2390-40c7-afd8-e24b263999e5": {
+        "display_name": "Content",
+        "keys": [
+          "blocks",
+          "hero"
+        ],
+        "pos": 6,
+        "type": "tab",
+        "id": "h8XT6yOQQMev2OJLJjmZ5Q"
+      },
+      "tab-d1be1461-8b44-4f55-8950-fba96982c4f9": {
+        "display_name": "SEO",
+        "keys": [
+          "seo_title",
+          "seo_description",
+          "seo_image"
+        ],
+        "pos": 7,
+        "type": "tab",
+        "id": "0b4UYYtET1WJUPupaYLE-Q",
+        "name": "tab-d1be1461-8b44-4f55-8950-fba96982c4f9"
+      },
+      "seo_title": {
+        "type": "text",
+        "pos": 8,
+        "id": "osiPAj9TRe6WAZ5q-rIDoQ",
+        "required": false,
+        "display_name": "Title"
+      },
+      "seo_description": {
+        "type": "text",
+        "pos": 9,
+        "id": "Y1niTZM1RQKGc_rzdC4Bdg",
+        "required": false,
+        "display_name": "Description"
+      },
+      "seo_image": {
+        "type": "asset",
+        "pos": 10,
+        "required": false,
+        "filetypes": [
+          "images"
+        ],
+        "id": "GeTJUhvXRz6362cJNSqtSA",
+        "display_name": "Image"
+      },
+      "blocks": {
+        "type": "bloks",
+        "pos": 11,
+        "id": "F8gsyVNHRcuIjE6vuldKjw",
+        "restrict_type": "",
+        "restrict_components": true,
+        "component_whitelist": [
+          "post_gallery",
+          "post_heading",
+          "post_html",
+          "post_image",
+          "post_quote",
+          "post_text",
+          "post_embed",
+          "post_wistia",
+          "mux_video_player",
+          "mux_video_autoplay"
+        ],
+        "component_denylist": []
+      },
+      "jaa_partnership": {
+        "type": "boolean",
+        "pos": 12,
+        "description": "Check to display the JAA Partnership.",
+        "inline_label": true,
+        "id": "3inANyNSRKO8tCT5jKPoLA"
+      }
+    },
+    "image": null,
+    "preview_field": null,
+    "is_root": true,
+    "preview_tmpl": null,
+    "is_nestable": false,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "post",
+    "component_group_uuid": "08f3ebfd-247f-4b10-b3af-dc46b5a9a80d",
+    "color": null,
+    "icon": null,
+    "internal_tags_list": [],
+    "internal_tag_ids": [],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "post_embed",
+    "display_name": "Embed",
+    "description": "Embed content from YouTube or others.",
+    "created_at": "2026-01-14T21:51:40.405Z",
+    "updated_at": "2026-02-04T12:42:07.146Z",
+    "id": 134094440066440,
+    "schema": {
+      "url": {
+        "type": "text",
+        "pos": 0,
+        "id": "ob8U9SfeTFytW4UEjny8uQ",
+        "display_name": "URL",
+        "description": "Not all platforms are supported."
+      }
+    },
+    "image": null,
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Embed",
+    "component_group_uuid": "ef43f0e2-b155-4f0a-afed-2413ea2837d9",
+    "color": "var(--sb-color-accent-background-pink-lace)",
+    "icon": null,
+    "internal_tags_list": [],
+    "internal_tag_ids": [],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "post_gallery",
+    "display_name": "Gallery",
+    "description": "Displays a gallery of images in a grid.",
+    "created_at": "2026-01-12T18:01:43.377Z",
+    "updated_at": "2026-02-04T12:45:00.501Z",
+    "id": 133330138639232,
+    "schema": {
+      "items": {
+        "type": "multiasset",
+        "pos": 1,
+        "id": "g_d9eDSwRk6N0p7UMhzR6g",
+        "filetypes": [
+          "images"
+        ]
+      }
+    },
+    "image": null,
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Gallery",
+    "component_group_uuid": "ef43f0e2-b155-4f0a-afed-2413ea2837d9",
+    "color": "var(--sb-color-accent-background-pink-lace)",
+    "icon": null,
+    "internal_tags_list": [
+      {
+        "id": 141391816982039,
+        "name": "Post"
+      }
+    ],
+    "internal_tag_ids": [
+      "141391816982039"
+    ],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "post_heading",
+    "display_name": "Heading",
+    "description": "Displays a text heading.",
+    "created_at": "2026-01-12T17:49:39.859Z",
+    "updated_at": "2026-02-04T12:45:09.145Z",
+    "id": 133327175113585,
+    "schema": {
+      "heading": {
+        "type": "text",
+        "pos": 0,
+        "id": "lpzrFVTvQwWsA8nEjlC6Vg"
+      }
+    },
+    "image": null,
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Heading",
+    "component_group_uuid": "ef43f0e2-b155-4f0a-afed-2413ea2837d9",
+    "color": "var(--sb-color-accent-background-pink-lace)",
+    "icon": null,
+    "internal_tags_list": [
+      {
+        "id": 141391816982039,
+        "name": "Post"
+      }
+    ],
+    "internal_tag_ids": [
+      "141391816982039"
+    ],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "post_html",
+    "display_name": "HTML",
+    "description": "Renders custom HTML into the page. Use with extreme caution.",
+    "created_at": "2026-01-12T17:53:39.993Z",
+    "updated_at": "2026-02-04T12:45:14.673Z",
+    "id": 133328158722931,
+    "schema": {
+      "html": {
+        "type": "textarea",
+        "pos": 0,
+        "id": "sdqp_BfVQxazXZyyKXnq_A",
+        "display_name": "HTML",
+        "description": "⚠️ Do not paste code in here you don't understand. It can be very dangerous. Consult a developer. This field is only here for migration purposes of the old website that used custom HTML blocks for video. Once we have a better solution, this field will be removed."
+      }
+    },
+    "image": null,
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "HTML",
+    "component_group_uuid": "ef43f0e2-b155-4f0a-afed-2413ea2837d9",
+    "color": "var(--sb-color-accent-background-pink-lace)",
+    "icon": null,
+    "internal_tags_list": [
+      {
+        "id": 141391816982039,
+        "name": "Post"
+      }
+    ],
+    "internal_tag_ids": [
+      "141391816982039"
+    ],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "post_image",
+    "display_name": "Image",
+    "description": "Displays a full-width image.",
+    "created_at": "2026-01-12T17:50:58.789Z",
+    "updated_at": "2026-02-04T12:45:24.681Z",
+    "id": 133327498406770,
+    "schema": {
+      "image": {
+        "type": "asset",
+        "pos": 0,
+        "id": "yQ0h5xIMR5WDysKK11_oGg",
+        "filetypes": [
+          "images"
+        ]
+      }
+    },
+    "image": null,
+    "preview_field": "image",
+    "is_root": false,
+    "preview_tmpl": "{{@if(it.image.filename)}}\n{{@image(it.image.filename)/}}\n{{/if}}",
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Image",
+    "component_group_uuid": "ef43f0e2-b155-4f0a-afed-2413ea2837d9",
+    "color": "var(--sb-color-accent-background-pink-lace)",
+    "icon": null,
+    "internal_tags_list": [
+      {
+        "id": 141391816982039,
+        "name": "Post"
+      }
+    ],
+    "internal_tag_ids": [
+      "141391816982039"
+    ],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "post_quote",
+    "display_name": "Quote",
+    "description": "Displays a quote with citation.",
+    "created_at": "2026-01-12T18:09:03.466Z",
+    "updated_at": "2026-02-04T12:45:32.308Z",
+    "id": 133331941243785,
+    "schema": {
+      "quote": {
+        "type": "richtext",
+        "pos": 0,
+        "id": "GSSKiQ1tQqCkotrFu38vDA"
+      },
+      "citation": {
+        "type": "text",
+        "pos": 1,
+        "id": "QyqCk-C1QIGotQJUNNcXYw"
+      }
+    },
+    "image": null,
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Quote",
+    "component_group_uuid": "ef43f0e2-b155-4f0a-afed-2413ea2837d9",
+    "color": "var(--sb-color-accent-background-pink-lace)",
+    "icon": null,
+    "internal_tags_list": [
+      {
+        "id": 141391816982039,
+        "name": "Post"
+      }
+    ],
+    "internal_tag_ids": [
+      "141391816982039"
+    ],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "post_text",
+    "display_name": "Text",
+    "description": "Displays text content.",
+    "created_at": "2026-01-12T17:48:34.789Z",
+    "updated_at": "2026-02-04T12:45:42.017Z",
+    "id": 133326908582768,
+    "schema": {
+      "text": {
+        "type": "richtext",
+        "pos": 0,
+        "customize_toolbar": true,
+        "allow_target_blank": true,
+        "id": "qfK9ZLlsTkOLy_3Xv7hy7g",
+        "toolbar": [
+          "bold",
+          "list",
+          "italic",
+          "link",
+          "olist",
+          "paragraph"
+        ]
+      }
+    },
+    "image": null,
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Text",
+    "component_group_uuid": "ef43f0e2-b155-4f0a-afed-2413ea2837d9",
+    "color": "var(--sb-color-accent-background-pink-lace)",
+    "icon": null,
+    "internal_tags_list": [
+      {
+        "id": 141391816982039,
+        "name": "Post"
+      }
+    ],
+    "internal_tag_ids": [
+      "141391816982039"
+    ],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "post_wistia",
+    "display_name": "Wistia Video",
+    "description": "Provide a Wistia video ID to embed into the page.",
+    "created_at": "2026-01-24T15:19:51.600Z",
+    "updated_at": "2026-02-04T12:45:51.654Z",
+    "id": 137537091999205,
+    "schema": {
+      "id": {
+        "type": "text",
+        "pos": 0,
+        "required": true,
+        "id": "6QIWi5xkS9yZM4wphluNtg",
+        "description": "Provide the Wistia video ID only."
+      }
+    },
+    "image": null,
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Wistia Video",
+    "component_group_uuid": "ef43f0e2-b155-4f0a-afed-2413ea2837d9",
+    "color": "var(--sb-color-accent-background-pink-lace)",
+    "icon": null,
+    "internal_tags_list": [
+      {
+        "id": 141391816982039,
+        "name": "Post"
+      }
+    ],
+    "internal_tag_ids": [
+      "141391816982039"
+    ],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "project",
+    "display_name": null,
+    "description": "",
+    "created_at": "2026-01-06T16:50:14.156Z",
+    "updated_at": "2026-03-11T16:36:49.877Z",
+    "id": 131189203587517,
+    "schema": {
+      "preview_logo": {
+        "type": "asset",
+        "pos": 0,
+        "description": "Logo that is shown when featured around the site. SVG upload recommended.",
+        "filetypes": [
+          "images"
+        ],
+        "id": "BRKg-8qqQ9ySyXcW1jOTfw",
+        "asset_folder_id": 149570834252135
+      },
+      "preview_max_width": {
+        "type": "number",
+        "pos": 1,
+        "description": "Adjust the logo max-width in pixels to get fine-tuned sizing. Leave blank to use the image's natural size.",
+        "decimals": 0,
+        "steps": 1,
+        "id": "mRHwrA_YTbe1mIsUmzpf1A"
+      },
+      "preview_media": {
+        "type": "bloks",
+        "pos": 2,
+        "required": true,
+        "maximum": 1,
+        "restrict_type": "",
+        "restrict_components": true,
+        "component_whitelist": [
+          "image",
+          "mux_video_autoplay"
+        ],
+        "component_denylist": [],
+        "description": "The Image or video that is shown when featured around the site.",
+        "id": "kRWrB4VuRreUarOKc455jQ"
+      },
+      "preview_headline": {
+        "type": "text",
+        "pos": 3,
+        "description": "Headline that is shown when featured around the site.",
+        "required": true,
+        "id": "fkNbwlsXQXiS2ncPJ_wZ3g"
+      },
+      "preview_text": {
+        "type": "text",
+        "pos": 4,
+        "required": true,
+        "description": "Text that is shown when featured around the site.",
+        "id": "-nz7o1nxRY-Z6czHa_YOsA"
+      },
+      "category": {
+        "type": "option",
+        "pos": 5,
+        "use_uuid": true,
+        "id": "0H5G2s8pRNqs3GQ-0A25nw",
+        "required": true,
+        "source": "internal",
+        "datasource_slug": "project-category",
+        "exclude_empty_option": true
+      },
+      "blocks": {
+        "type": "bloks",
+        "pos": 6,
+        "id": "ZEk25vg0QYOxGeK3TRO1gQ",
+        "restrict_type": "tags",
+        "restrict_components": true,
+        "component_whitelist": [],
+        "component_denylist": [],
+        "component_group_whitelist": [],
+        "component_group_denylist": [],
+        "component_tag_whitelist": [
+          141388670414355
+        ],
+        "component_tag_denylist": []
+      },
+      "tab-0c7882b0-9f8b-4e24-83f1-096af4e560d1": {
+        "display_name": "Content",
+        "keys": [
+          "blocks"
+        ],
+        "pos": 7,
+        "type": "tab",
+        "name": "tab-0c7882b0-9f8b-4e24-83f1-096af4e560d1",
+        "id": "DHiCsJ-LTiSD8Qlq9OVg0Q"
+      },
+      "seo_title": {
+        "type": "text",
+        "pos": 8,
+        "id": "D6UJXhPbSJaJbbL5h383UQ",
+        "display_name": "Title",
+        "required": true
+      },
+      "tab-0df61d3a-3a9f-4508-b1f3-edda3b534d36": {
+        "display_name": "SEO",
+        "keys": [
+          "seo_title",
+          "seo_description",
+          "seo_image"
+        ],
+        "pos": 9,
+        "type": "tab",
+        "id": "DfYdOjqfRQix8-3aO1NNNg",
+        "name": "tab-0df61d3a-3a9f-4508-b1f3-edda3b534d36"
+      },
+      "seo_description": {
+        "type": "text",
+        "pos": 10,
+        "id": "6hDt2n0RRQ68wXLTnKElTA",
+        "display_name": "Description",
+        "required": true
+      },
+      "seo_image": {
+        "type": "asset",
+        "pos": 11,
+        "required": true,
+        "filetypes": [
+          "images"
+        ],
+        "display_name": "Image",
+        "id": "u9KjwvbHTWuJ6TZ8G1o6bA"
+      }
+    },
+    "image": null,
+    "preview_field": null,
+    "is_root": true,
+    "preview_tmpl": null,
+    "is_nestable": false,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "project",
+    "component_group_uuid": "08f3ebfd-247f-4b10-b3af-dc46b5a9a80d",
+    "color": null,
+    "icon": null,
+    "internal_tags_list": [],
+    "internal_tag_ids": [],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "settings",
+    "display_name": null,
+    "description": "Settings for the global content of the website",
+    "created_at": "2026-01-06T16:27:28.640Z",
+    "updated_at": "2026-03-31T09:03:11.599Z",
+    "id": 131183610438016,
+    "schema": {
+      "navigation": {
+        "type": "bloks",
+        "pos": 0,
+        "id": "P3g2KiXRRwu6DVqFjoz-9Q",
+        "restrict_type": "",
+        "restrict_components": true,
+        "component_whitelist": [
+          "link"
+        ],
+        "component_denylist": []
+      },
+      "statement": {
+        "type": "richtext",
+        "pos": 1,
+        "id": "tBMijeqoT_qT1SxSVgG_tw",
+        "style_options": [
+          {
+            "_uid": "e1875580-fd6e-4728-a22e-e0c371d34155",
+            "name": "Outlined",
+            "value": "is-outlined"
+          }
+        ],
+        "customize_toolbar": true,
+        "toolbar": [
+          "h5",
+          "unset"
+        ]
+      },
+      "statement_media": {
+        "type": "bloks",
+        "pos": 2,
+        "restrict_type": "",
+        "restrict_components": true,
+        "component_whitelist": [
+          "image",
+          "mux_video_autoplay"
+        ],
+        "component_denylist": [],
+        "id": "zm4iVnVrRhO7uGOPRq_e2w",
+        "maximum": 1
+      },
+      "cta_title": {
+        "type": "text",
+        "pos": 3,
+        "id": "rwMjUzPRRUK9BCtOMMChQw",
+        "display_name": "CTA Title"
+      },
+      "cta_link": {
+        "type": "multilink",
+        "pos": 4,
+        "email_link_type": true,
+        "allow_target_blank": true,
+        "id": "0O1YQgp4S5mCXseiHplXrA",
+        "display_name": "CTA Link"
+      },
+      "newsletter_text": {
+        "type": "text",
+        "pos": 5,
+        "id": "zXg7pzRfQGGdO8PD98UkPw"
+      },
+      "newsletter_subtext": {
+        "type": "richtext",
+        "pos": 6,
+        "customize_toolbar": true,
+        "toolbar": [
+          "bold",
+          "unset",
+          "italic",
+          "link",
+          "paragraph"
+        ],
+        "allow_target_blank": true,
+        "id": "QqMKz4TDRV2zlNqZBspebA"
+      },
+      "links": {
+        "type": "bloks",
+        "pos": 7,
+        "restrict_type": "",
+        "restrict_components": true,
+        "component_whitelist": [
+          "link"
+        ],
+        "component_denylist": [],
+        "component_group_whitelist": [],
+        "component_group_denylist": [],
+        "component_tag_whitelist": [],
+        "component_tag_denylist": [],
+        "id": "tz3miIb2St2ttqmdhqdHDg"
+      },
+      "company_email": {
+        "type": "text",
+        "pos": 8,
+        "id": "d52tHlAtSn-R_jedEJJxzw"
+      },
+      "company_telephone": {
+        "type": "text",
+        "pos": 9,
+        "id": "Wqedvb7-SdC62myJrsfrFw"
+      },
+      "company_address": {
+        "type": "textarea",
+        "pos": 10,
+        "id": "pn_At08IRwCLl-RwRal48A"
+      },
+      "logos": {
+        "type": "bloks",
+        "pos": 11,
+        "restrict_type": "",
+        "restrict_components": true,
+        "component_whitelist": [
+          "logo"
+        ],
+        "component_denylist": [],
+        "id": "Pzrc_gzxRfOBjjVh-OwOtQ"
+      },
+      "data_capture_headline": {
+        "type": "text",
+        "pos": 12,
+        "required": true,
+        "description": "Headline that is shown on video's with data capture enabled.",
+        "id": "BlhwBy7vRiCq9v3ILhmMPw"
+      },
+      "data_capture_text": {
+        "type": "richtext",
+        "pos": 13,
+        "required": true,
+        "description": "Text that is shown on video's with data capture enabled.",
+        "id": "rGwKDf8tRiqFh5ux57rL9g",
+        "allow_target_blank": true,
+        "customize_toolbar": true,
+        "toolbar": [
+          "bold",
+          "unset",
+          "italic",
+          "link",
+          "paragraph"
+        ]
+      }
+    },
+    "image": null,
+    "preview_field": null,
+    "is_root": true,
+    "preview_tmpl": null,
+    "is_nestable": false,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "settings",
+    "component_group_uuid": "08f3ebfd-247f-4b10-b3af-dc46b5a9a80d",
+    "color": null,
+    "icon": null,
+    "internal_tags_list": [],
+    "internal_tag_ids": [],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "slide",
+    "display_name": "Slide",
+    "description": "Slide",
+    "created_at": "2026-01-20T17:23:08.792Z",
+    "updated_at": "2026-02-17T17:33:48.936Z",
+    "id": 136151813303369,
+    "schema": {
+      "project": {
+        "type": "options",
+        "pos": 0,
+        "is_reference_type": true,
+        "source": "internal_stories",
+        "entry_appearance": "card",
+        "allow_advanced_search": true,
+        "max_options": 1,
+        "filter_content_type": [
+          "project"
+        ],
+        "min_options": 1,
+        "id": "65oG5SDJQXaHEhSf7PEK2A"
+      },
+      "logo": {
+        "type": "asset",
+        "pos": 1,
+        "id": "CmtWcYRwSTGu6xdD2-wGsA"
+      },
+      "media": {
+        "type": "bloks",
+        "pos": 2,
+        "maximum": 1,
+        "restrict_type": "",
+        "restrict_components": true,
+        "component_whitelist": [
+          "image",
+          "mux_video_autoplay"
+        ],
+        "component_denylist": [],
+        "id": "FOlpLD7gR9GJo-2Cq3rymg"
+      },
+      "copy": {
+        "type": "richtext",
+        "pos": 3,
+        "style_options": [
+          {
+            "_uid": "fb715ca3-c9a0-4fcd-8470-022c9bf238a6",
+            "name": "Outlined",
+            "value": "is-outlined"
+          }
+        ],
+        "customize_toolbar": true,
+        "toolbar": [
+          "h3",
+          "paragraph",
+          "unset"
+        ],
+        "id": "JYT8KtrSRfa303cLKDwkhg"
+      }
+    },
+    "image": null,
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Slide",
+    "component_group_uuid": "7fcb11a1-5f87-4c0b-ba8f-0bda6cd7387f",
+    "color": null,
+    "icon": null,
+    "internal_tags_list": [],
+    "internal_tag_ids": [],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "team",
+    "display_name": null,
+    "description": "",
+    "created_at": "2026-01-20T12:25:25.879Z",
+    "updated_at": "2026-01-20T12:27:42.374Z",
+    "id": 136078646809915,
+    "schema": {
+      "title": {
+        "type": "text",
+        "pos": 0,
+        "id": "43ZqtoQVQZa6w-rON_sNJQ"
+      },
+      "people": {
+        "type": "options",
+        "pos": 1,
+        "required": true,
+        "source": "internal_stories",
+        "filter_content_type": [
+          "person"
+        ],
+        "entry_appearance": "card",
+        "id": "2-NqtyUiQV6QsnPnhLrZVA"
+      }
+    },
+    "image": null,
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "team",
+    "component_group_uuid": "7fcb11a1-5f87-4c0b-ba8f-0bda6cd7387f",
+    "color": null,
+    "icon": null,
+    "internal_tags_list": [],
+    "internal_tag_ids": [],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "testimonial",
+    "display_name": "Testimonial",
+    "description": "",
+    "created_at": "2026-01-16T16:14:42.590Z",
+    "updated_at": "2026-01-16T16:27:27.700Z",
+    "id": 134719416693881,
+    "schema": {
+      "quote": {
+        "type": "textarea",
+        "pos": 0,
+        "id": "DAfQWVQfRtKh44893qpCiw",
+        "customize_toolbar": true,
+        "toolbar": [
+          "unset",
+          "paragraph",
+          "link",
+          "italic",
+          "bold"
+        ],
+        "allow_target_blank": true,
+        "display_name": "Quote"
+      },
+      "name": {
+        "type": "text",
+        "pos": 1,
+        "id": "5V9qWj81RHWBZnt0jY4CkA",
+        "style_options": [
+          {
+            "_uid": "9a901605-db42-4180-bc82-925a40ef0ec5",
+            "name": "Outlined",
+            "value": "is-outlined"
+          }
+        ],
+        "customize_toolbar": true,
+        "toolbar": [
+          "h2",
+          "unset",
+          "h3",
+          "h4"
+        ],
+        "display_name": "Name"
+      },
+      "desc": {
+        "type": "text",
+        "pos": 2,
+        "display_name": "Description",
+        "id": "5BXZZW8NRquFWEA5l8R0dQ"
+      }
+    },
+    "image": null,
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Testimonial",
+    "component_group_uuid": "7fcb11a1-5f87-4c0b-ba8f-0bda6cd7387f",
+    "color": null,
+    "icon": null,
+    "internal_tags_list": [],
+    "internal_tag_ids": [],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "title_copy",
+    "display_name": "Title & Copy",
+    "description": "",
+    "created_at": "2026-01-13T23:06:18.961Z",
+    "updated_at": "2026-02-19T13:54:11.706Z",
+    "id": 133758889830392,
+    "schema": {
+      "title": {
+        "type": "richtext",
+        "pos": 0,
+        "id": "5V9qWj81RHWBZnt0jY4CkA",
+        "style_options": [
+          {
+            "_uid": "9a901605-db42-4180-bc82-925a40ef0ec5",
+            "name": "Outlined",
+            "value": "is-outlined"
+          }
+        ],
+        "customize_toolbar": true,
+        "toolbar": [
+          "unset",
+          "h3"
+        ],
+        "required": true
+      },
+      "copy": {
+        "type": "richtext",
+        "pos": 1,
+        "id": "DAfQWVQfRtKh44893qpCiw",
+        "customize_toolbar": true,
+        "toolbar": [
+          "unset",
+          "paragraph",
+          "link",
+          "italic",
+          "bold"
+        ],
+        "allow_target_blank": true,
+        "required": true
+      }
+    },
+    "image": null,
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Title & Copy",
+    "component_group_uuid": "7fcb11a1-5f87-4c0b-ba8f-0bda6cd7387f",
+    "color": null,
+    "icon": null,
+    "internal_tags_list": [],
+    "internal_tag_ids": [],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  }
+]

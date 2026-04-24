@@ -3,13 +3,23 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "sb:login": "storyblok login",
+    "sb:logout": "storyblok logout",
+    "sb:help": "storyblok --help",
+    "sb:components": "storyblok components pull --space 284609 --verbose",
+    "sb:types": "storyblok types generate --space 284609 --strict",
+    "sb:generate": "npm run sb:components && npm run sb:types",
+    "dev": "npm run sb:generate && nuxt dev --host 0.0.0.0",
+    "dev:ssl": "local-ssl-proxy --source 3010 --target 3000 --cert localhost.pem --key localhost-key.pem",
     "build": "nuxt build",
-    "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "nuke": "del-cli '.output' 'dist' '.nuxt' 'node_modules' 'package-lock.json'",
+    "prepare": "husky"
   },
   "dependencies": {
+    "@storyblok/nuxt": "^10.1.3",
     "@tailwindcss/vite": "^4.2.4",
     "nuxt": "^4.4.2",
     "tailwindcss": "^4.2.4",
@@ -17,6 +27,13 @@
     "vue-router": "^5.0.4"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.5.0",
+    "@commitlint/config-conventional": "^20.5.0",
+    "@nuxt/image": "^2.0.0",
+    "@total-typescript/ts-reset": "^0.6.1",
+    "del-cli": "^7.0.0",
+    "husky": "^9.1.7",
+    "storyblok": "^4.16.9",
     "vite-plus": "latest"
   },
   "overrides": {
