@@ -1,6 +1,9 @@
-import { defineConfig } from 'vite-plus'
+import { defineConfig } from "vite-plus";
 
 export default defineConfig({
+  staged: {
+    "*.{js,ts,vue}": "vp check --fix",
+  },
   // Using .oxfmtrc for formatting configuration so extension works
   // fmt: {
   //   semi: false,
@@ -13,4 +16,4 @@ export default defineConfig({
       typeCheck: true,
     },
   },
-})
+});
