@@ -1,9 +1,0 @@
-# ditta
-
-## .env
-
-```env
-PRERENDER=true
-STORYBLOK_TOKEN=<VALUE>
-STORYBLOK_VERSION=<VALUE>
-```
