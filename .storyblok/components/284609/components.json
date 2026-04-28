@@ -438,6 +438,78 @@
     "metadata": {}
   },
   {
+    "name": "project",
+    "display_name": null,
+    "description": null,
+    "created_at": "2026-04-28T14:01:45.750Z",
+    "updated_at": "2026-04-28T14:02:33.341Z",
+    "id": 170783972357679,
+    "schema": {
+      "blocks": {
+        "type": "bloks",
+        "pos": 1,
+        "restrict_type": "groups",
+        "restrict_components": true,
+        "component_whitelist": [],
+        "component_group_whitelist": [
+          "c56a9133-c409-488d-9f91-40d75d6e78cd"
+        ],
+        "id": "TEthTDcMRGOFSALxUXkDOA"
+      },
+      "tab-554f4d6b-1445-4095-a716-160ff3edcf74": {
+        "display_name": "SEO",
+        "keys": [
+          "seo_title",
+          "seo_description",
+          "seo_image"
+        ],
+        "pos": 2,
+        "type": "tab",
+        "id": "VU9NaxRFQJWnFhYP8-3PdA"
+      },
+      "seo_title": {
+        "type": "text",
+        "pos": 3,
+        "id": "cOLSOMqqSKCsh7L2xWHwnA",
+        "required": true,
+        "display_name": "Title"
+      },
+      "seo_description": {
+        "type": "text",
+        "pos": 4,
+        "id": "qcOA9qamSeOqJl7K5u2oAw",
+        "required": true,
+        "display_name": "Description"
+      },
+      "seo_image": {
+        "type": "asset",
+        "pos": 5,
+        "required": true,
+        "display_name": "Image",
+        "description": "For best results, use an image size of 1200px by 630px.",
+        "filetypes": [
+          "images"
+        ],
+        "id": "EXxMDdMTQ3OoxC9ZY_nMJg"
+      }
+    },
+    "image": null,
+    "preview_field": null,
+    "is_root": true,
+    "preview_tmpl": null,
+    "is_nestable": false,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "project",
+    "component_group_uuid": "67a899e1-7a4c-4a22-ad69-551d9227880c",
+    "color": null,
+    "icon": null,
+    "internal_tags_list": [],
+    "internal_tag_ids": [],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
     "name": "seo",
     "display_name": null,
     "description": null,

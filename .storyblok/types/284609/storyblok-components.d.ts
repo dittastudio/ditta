@@ -67,6 +67,15 @@ export interface Page {
   _uid: string;
 }
 
+export interface Project {
+  blocks?: (BlockImage | BlockMarquees | BlockSplit | BlockText)[];
+  seo_title: string;
+  seo_description: string;
+  seo_image: StoryblokAsset;
+  component: "project";
+  _uid: string;
+}
+
 export interface Seo {
   seo_title: string;
   seo_description: string;
@@ -81,4 +90,4 @@ export interface Settings {
   _uid: string;
 }
 
-export type ContentType = Page | Settings;
+export type ContentType = Page | Project | Settings;
