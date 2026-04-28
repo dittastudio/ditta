@@ -1,58 +1,44 @@
 <script lang="ts" setup>
-import type { StoryblokMultilink } from '@@/.storyblok/types/storyblok'
+import type { StoryblokMultilink } from "#storyblok-types";
 
 interface Props {
-  item: StoryblokMultilink
+  item: StoryblokMultilink;
 }
 
-const { item } = defineProps<Props>()
+const { item } = defineProps<Props>();
+
+const route = useRoute();
 
 const determineHref = (item: StoryblokMultilink) => {
   switch (item.linktype) {
-    case 'story': {
-      const path = `/${item.cached_url}`.replace('/home', '/').trim()
-      return path === '/' ? path : path.replace(/\/$/, '')
+    case "story": {
+      const path = `/${item.cached_url}`.replace("/home", "/").trim();
+      return path === "/" ? path : path.replace(/\/$/, "");
     }
-    case 'email': {
-      return `mailto:${item.email}`
+    case "email": {
+      return `mailto:${item.email}`;
     }
     default: {
-      return item.cached_url
+      return item.cached_url;
     }
   }
-}
+};
 
-const href =
-  item?.linktype === 'email'
-    ? `mailto:${item?.email}`
-    : item?.linktype === 'story'
-      ? `/${item?.cached_url?.replace('home', '')}`
-      : item?.cached_url
-
-const customAttributes = {
-  title: item?.title,
-  rel: item?.rel,
-}
+const isActiveLink = computed(() => {
+  const href = determineHref(item);
+  return route.path === href || (href !== "/" && route.path.startsWith(`${href}/`));
+});
 
 const attributes = {
-  ...customAttributes,
-  to: href?.trim().replace(/\/+$/, ''),
-  target: (item?.target ?? item?.linktype === 'asset') ? '_blank' : null,
-}
+  title: item?.title,
+  rel: item?.rel,
+  to: determineHref(item),
+  target: (item?.target ?? item?.linktype === "asset") ? "_blank" : null,
+};
 </script>
 
 <template>
-  <NuxtLink
-    v-if="href"
-    v-bind="attributes"
-  >
+  <NuxtLink v-bind="attributes" :class="{ 'router-link-active': isActiveLink }">
     <slot />
   </NuxtLink>
-
-  <div
-    v-else
-    v-bind="attributes"
-  >
-    <slot />
-  </div>
 </template>
