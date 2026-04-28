@@ -38,7 +38,7 @@ export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   ssr: true,
   devtools: { enabled: false },
-  css: ["~/assets/css/main.css"],
+  css: ["~/assets/css/app.css"],
   vite: {
     optimizeDeps: {
       include: ["@vue/devtools-core", "@vue/devtools-kit"],

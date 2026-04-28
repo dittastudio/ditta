@@ -1,0 +1,78 @@
+@import "tailwindcss";
+@import "./fonts.css";
+@import "./resets.css";
+@import "./transitions.css";
+@import "./utils.css";
+@import "./page.css";
+
+@theme {
+  --color-\*: initial;
+  --color-white: hsla(0, 0%, 100%, 1);
+  --color-black: hsla(0, 0%, 0%, 1);
+
+  --bp-2xs: 375px;
+  --bp-xs: 480px;
+  --bp-sm: 600px;
+  --bp-md: 800px;
+  --bp-lg: 1200px;
+  --bp-xl: 1440px;
+  --bp-2xl: 1800px;
+
+  --breakpoint-\*: initial;
+  --breakpoint-2xs: var(--bp-2xs);
+  --breakpoint-xs: var(--bp-xs);
+  --breakpoint-sm: var(--bp-sm);
+  --breakpoint-md: var(--bp-md);
+  --breakpoint-lg: var(--bp-lg);
+  --breakpoint-xl: var(--bp-xl);
+  --breakpoint-2xl: var(--bp-2xl);
+
+  --spacing-\*: initial;
+  --spacing: 4px;
+
+  --font-\*: initial;
+  --font-sans: 'Saans', sans-serif, system-ui;
+  --font-serif: serif, ui-serif;
+  --font-mono: monospace, ui-monospace;
+
+  --text-\*: initial;
+  --text-16: 1rem; /* 16px */
+
+  --ease-inQuad: cubic-bezier(0.55, 0.085, 0.68, 0.53);
+  --ease-outQuad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-inOutQuad: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+
+  --ease-inCubic: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+  --ease-outCubic: cubic-bezier(0.215, 0.61, 0.355, 1);
+  --ease-inOutCubic: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --ease-inQuart: cubic-bezier(0.895, 0.03, 0.685, 0.22);
+  --ease-outQuart: cubic-bezier(0.165, 0.84, 0.44, 1);
+  --ease-inOutQuart: cubic-bezier(0.77, 0, 0.175, 1);
+
+  --ease-inQuint: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+  --ease-outQuint: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-inOutQuint: cubic-bezier(0.86, 0, 0.07, 1);
+
+  --ease-inSine: cubic-bezier(0.47, 0, 0.745, 0.715);
+  --ease-outSine: cubic-bezier(0.39, 0.575, 0.565, 1);
+  --ease-inOutSine: cubic-bezier(0.445, 0.05, 0.55, 0.95);
+
+  --ease-inExpo: cubic-bezier(0.95, 0.05, 0.795, 0.035);
+  --ease-outExpo: cubic-bezier(0.19, 1, 0.22, 1);
+  --ease-inOutExpo: cubic-bezier(1, 0, 0, 1);
+
+  --ease-inCirc: cubic-bezier(0.6, 0.04, 0.98, 0.335);
+  --ease-outCirc: cubic-bezier(0.075, 0.82, 0.165, 1);
+  --ease-inOutCirc: cubic-bezier(0.785, 0.135, 0.15, 0.86);
+
+  --ease-inBack: cubic-bezier(0.6, -0.28, 0.735, 0.045);
+  --ease-outBack: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-inOutBack: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  --ease-spring-1: linear(
+    0, 0.006, 0.025 2.8%, 0.101 6.1%, 0.539 18.9%, 0.721 25.3%, 0.849 31.5%,
+    0.937 38.1%, 0.968 41.8%, 0.991 45.7%, 1.006 50.1%, 1.015 55%, 1.017 63.9%,
+    1.001
+  );
+}

@@ -1,0 +1,19 @@
+@layer base {
+  .fade-enter-active {
+    transition: opacity 1s var(--ease-outCubic);
+  }
+
+  .fade-leave-active {
+    transition: opacity 0.5s var(--ease-inCubic);
+  }
+
+  .fade-enter-to,
+  .fade-leave-from {
+    opacity: 1;
+  }
+
+  .fade-enter-from,
+  .fade-leave-to {
+    opacity: 0;
+  }
+}
