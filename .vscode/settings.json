@@ -1,8 +1,12 @@
 {
+  "workbench.editorAssociations": { "*.svg": "default" },
   "npm.scriptRunner": "vp",
   "editor.defaultFormatter": "oxc.oxc-vscode",
   "oxc.configPath": "./.oxlintrc.json",
   "oxc.fmt.configPath": "./.oxfmtrc.json",
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file",
   "editor.codeActionsOnSave": {
