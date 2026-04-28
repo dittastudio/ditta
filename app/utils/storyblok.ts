@@ -1,4 +1,4 @@
-import type { Page, Image } from '#storyblok-components'
+import type { Page } from '#storyblok-components'
 import type { StoryblokRichtext } from '#storyblok-types'
 import type { ImageModifiers } from '@nuxt/image'
 import type { ISbStoryData } from '@storyblok/js'
@@ -50,7 +50,7 @@ const storyblokRichTextContent = (richtext: StoryblokRichtext | undefined): bool
 const storyblokSlug = (path: string): string =>
   ['', '/'].includes(path) ? '/home' : path.replace(/\/+$/, '')
 
-const isImageComponent = (media: Image): media is Image => media.component === 'image'
+// const isImageComponent = (media: Image): media is Image => media.component === 'image'
 
 type ContentTypes = Page
 
@@ -60,7 +60,7 @@ const isPage = (
 
 const storyblokImage = (
   filename: string | null | undefined,
-  modifiers?: Partial<ImageModifiers> | undefined,
+  modifiers?: Partial<ImageModifiers>,
 ): string => {
   const image = useImage()
 
@@ -103,7 +103,7 @@ const storyblokImageDimensions = (
 
 export {
   getCategoryEntry,
-  isImageComponent,
+  // isImageComponent,
   isPage,
   storyblokAssetType,
   storyblokEditor,

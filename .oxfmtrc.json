@@ -3,5 +3,7 @@
   "semi": false,
   "singleQuote": true,
   "singleAttributePerLine": true,
-  "ignorePatterns": []
+  "vueIndentScriptAndStyle": false,
+  "printWidth": 120,
+  "ignorePatterns": [".storyblok/**/*", ".claude/**/*", ".vscode/**/*"]
 }
