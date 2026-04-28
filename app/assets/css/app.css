@@ -7,8 +7,15 @@
 
 @theme {
   --color-\*: initial;
-  --color-white: hsla(0, 0%, 100%, 1);
-  --color-black: hsla(0, 0%, 0%, 1);
+  --color-white: oklch(100% 0 0);
+  --color-black: oklch(0% 0 0);
+  --color-pink: oklch(0.8221 0.1207 348.4);
+  --color-beige: oklch(0.8643 0.0104 32.52);
+  --color-grey: oklch(0.9731 0 0);
+  --color-olive: oklch(0.7442 0.0554 154.96);
+  --color-forest: oklch(0.2505 0.0852 142.5);
+  --color-mood: oklch(0.6385 0.0312 42.55);
+  --color-crema: oklch(0.8102 0.0532 66.96);
 
   --bp-2xs: 375px;
   --bp-xs: 480px;
@@ -35,8 +42,27 @@
   --font-serif: serif, ui-serif;
   --font-mono: monospace, ui-monospace;
 
+  --font-weight-\*: initial;
+  --font-weight-regular: 380;
+  --font-weight-medium: 570;
+
   --text-\*: initial;
-  --text-16: 1rem; /* 16px */
+  --text-14: 0.875rem;
+  --text-14--line-height: 1;
+  --text-16: 1rem;
+  --text-16--line-height: 1.5;
+  --text-20: 1.25rem;
+  --text-20--line-height: 1.4;
+  --text-28: 1.75rem;
+  --text-28--line-height: 1.28;
+  --text-40: 2.5rem;
+  --text-40--line-height: 1.2;
+  --text-64: 4rem;
+  --text-64--line-height: 1.15;
+  --text-120: 7.5rem;
+  --text-120--line-height: 1.1;
+  --text-160: 10rem;
+  --text-160--line-height: 1;
 
   --ease-inQuad: cubic-bezier(0.55, 0.085, 0.68, 0.53);
   --ease-outQuad: cubic-bezier(0.25, 0.46, 0.45, 0.94);

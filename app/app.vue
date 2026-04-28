@@ -19,6 +19,18 @@ useSeoMeta({
   titleTemplate: (title) => (title ? `${title} - ditta` : 'ditta'),
   robots: 'index, follow',
 })
+
+const bgColours = [
+  'bg-white',
+  'bg-black',
+  'bg-pink',
+  'bg-beige',
+  'bg-grey',
+  'bg-olive',
+  'bg-forest',
+  'bg-mood',
+  'bg-crema',
+]
 </script>
 
 <template>
@@ -28,6 +40,16 @@ useSeoMeta({
 
       <IconLogo class="ml-2 h-6 w-auto" />
     </div>
+
+    <ul class="flex gap-5">
+      <li
+        v-for="bgColour in bgColours"
+        :class="bgColour"
+        class="aspect-square w-50 rounded-sm"
+      >
+        {{ bgColour }}
+      </li>
+    </ul>
 
     <NuxtPage />
 
