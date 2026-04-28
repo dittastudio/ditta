@@ -1,45 +1,46 @@
-import type { ISbStoriesParams, ISbStoryData, StoryblokBridgeConfigV2 } from '@storyblok/js'
+import type { ISbStoriesParams, ISbStoryData, StoryblokBridgeConfigV2 } from "@storyblok/js";
 
-type UseAsyncDataOptions = Omit<Parameters<typeof useAsyncStoryblok>[1], 'api' | 'bridge'>
+type UseAsyncDataOptions = Omit<Parameters<typeof useAsyncStoryblok>[1], "api" | "bridge">;
 
 export async function useStory<T>(
-  slug: string = '',
+  slug: string = "",
   api: ISbStoriesParams = {},
   bridge: StoryblokBridgeConfigV2 = {},
   options: UseAsyncDataOptions = {},
 ) {
-  const runtimeConfig = useRuntimeConfig()
-  const route = useRoute()
+  const runtimeConfig = useRuntimeConfig();
+  const route = useRoute();
+  const isDraft = runtimeConfig.public.NUXT_STORYBLOK_VERSION !== "published";
 
   const { story, error } = await useAsyncStoryblok(storyblokSlug(slug), {
     api: {
-      version: runtimeConfig.public.STORYBLOK_VERSION === 'published' ? 'published' : 'draft',
+      version: isDraft ? "draft" : "published",
       from_release:
-        typeof route.query?._storyblok_release === 'string'
+        typeof route.query?._storyblok_release === "string"
           ? route.query?._storyblok_release
           : undefined,
       ...api,
     },
     bridge: {
-      resolveLinks: 'url',
+      resolveLinks: "url",
       preventClicks: true,
       ...bridge,
     },
     transform: (input) => {
-      return input
+      return input;
     },
     deep: true,
     ...options,
-  })
+  });
 
   if (error.value) {
     throw createError({
       statusCode: error.value.status || 404,
-      statusMessage: `Page not found${slug ? ` for: ${slug}` : ''}`,
+      statusMessage: `Page not found${slug ? ` for: ${slug}` : ""}`,
       fatal: true,
       cause: error.value,
-    })
+    });
   }
 
-  return story as ComputedRef<ISbStoryData<T>>
+  return story as ComputedRef<ISbStoryData<T>>;
 }
