@@ -86,6 +86,7 @@ export interface Seo {
 
 export interface Settings {
   footer_copy?: StoryblokRichtext;
+  footer_copy_v2?: StoryblokRichtext;
   component: "settings";
   _uid: string;
 }

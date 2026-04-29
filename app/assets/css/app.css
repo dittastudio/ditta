@@ -5,6 +5,7 @@
 @import './utils.css';
 @import './page.css';
 @import './type.css';
+@import './prose.css';
 
 @theme {
   --color-\*: initial;
@@ -31,15 +32,16 @@
   --font-weight-medium: 570;
 
   --text-\*: initial;
-  --text-14: 14px;
-  --text-16: 16px;
-  --text-20: 20px;
-  --text-28: 28px;
-  --text-40: 40px;
-  --text-64: 64px;
-  --text-120: 120px;
-  --text-160: 160px;
-  --text-180: 180px;
+  --text-14: 0.875rem;
+  --text-16: 1rem;
+  --text-20: 1.25rem;
+  --text-24: 1.5rem;
+  --text-28: 1.75rem;
+  --text-40: 2.5rem;
+  --text-64: 4rem;
+  --text-120: 7.5rem;
+  --text-160: 10rem;
+  --text-180: 11.25rem;
 
   /* --text-16--line-height: 1.5;
   --text-20--line-height: 1.4;

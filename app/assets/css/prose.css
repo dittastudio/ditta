@@ -1,0 +1,35 @@
+@utility prose {
+  & :where(h2) {
+    @apply text-h2;
+  }
+
+  & :where(h3) {
+    @apply text-h3;
+  }
+
+  & :where(p) {
+    @apply text-body-lg;
+  }
+
+  & :where(h1, h2, h3, h4):has(+ :where(p, ul, ol)) {
+    margin-bottom: 1.35lh;
+  }
+}
+
+@custom-variant prose-h2 {
+  & :where(h2) {
+    @slot;
+  }
+}
+
+@custom-variant prose-h3 {
+  & :where(h3) {
+    @slot;
+  }
+}
+
+@custom-variant prose-p {
+  & :where(p) {
+    @slot;
+  }
+}

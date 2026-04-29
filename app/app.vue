@@ -53,7 +53,7 @@ const bgColours = [
 
     <NuxtPage />
 
-    <AppFooter />
+    <AppFooter :text="story.content.footer_copy_v2" />
 
     <!-- <pre> {{ story }} </pre> -->
   </div>
