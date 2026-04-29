@@ -59,6 +59,10 @@ export default defineNuxtConfig({
   postcss: {
     plugins: {
       'postcss-nested': {},
+      'postcss-utopia': {
+        minWidth: 375,
+        maxWidth: 1440,
+      },
     },
   },
 })

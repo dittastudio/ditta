@@ -53,6 +53,8 @@ const bgColours = [
 
     <NuxtPage />
 
-    <pre> {{ story }} </pre>
+    <AppFooter />
+
+    <!-- <pre> {{ story }} </pre> -->
   </div>
 </template>

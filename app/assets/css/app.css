@@ -111,11 +111,10 @@
 
 @layer theme {
   :root {
-    --app-gutter-outer: 32px;
+    --app-gutter-outer: utopia.clamp(32, 190);
     --app-gutter-inner: 24px;
 
     @variant md {
-      --app-gutter-outer: 80px;
       --app-gutter-inner: 32px;
     }
   }

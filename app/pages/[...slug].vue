@@ -31,6 +31,6 @@ useSeoMeta({
   <div>
     <h1>Page</h1>
 
-    <pre>{{ story.content }}</pre>
+    <!-- <pre>{{ story.content }}</pre> -->
   </div>
 </template>
