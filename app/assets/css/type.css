@@ -1,0 +1,96 @@
+@utility text-h1 {
+  font-family: var(--font-sans);
+  font-size: var(--text-180);
+  line-height: var(--leading-36);
+  font-weight: var(--font-weight-regular);
+  letter-spacing: var(--tracking-normal);
+}
+
+@utility text-h2 {
+  font-family: var(--font-sans);
+  font-size: var(--text-160);
+  line-height: var(--leading-36);
+  font-weight: var(--font-weight-regular);
+  letter-spacing: var(--tracking-normal);
+}
+
+@utility text-h2-caps {
+  font-family: var(--font-sans);
+  font-size: var(--text-160);
+  line-height: var(--leading-36);
+  font-weight: var(--font-weight-regular);
+  letter-spacing: var(--tracking-normal);
+  text-transform: uppercase;
+}
+
+@utility text-h3 {
+  font-family: var(--font-sans);
+  font-size: var(--text-120);
+  line-height: var(--leading-128);
+  font-weight: var(--font-weight-regular);
+  letter-spacing: var(--tracking-normal);
+}
+
+@utility text-h4 {
+  font-family: var(--font-sans);
+  font-size: var(--text-64);
+  line-height: var(--leading-74);
+  font-weight: var(--font-weight-regular);
+  letter-spacing: var(--tracking-normal);
+}
+
+@utility text-h5 {
+  font-family: var(--font-sans);
+  font-size: var(--text-40);
+  line-height: var(--leading-48);
+  font-weight: var(--font-weight-regular);
+  letter-spacing: var(--tracking-normal);
+}
+
+@utility text-h6 {
+  font-family: var(--font-sans);
+  font-size: var(--text-28);
+  line-height: var(--leading-38);
+  font-weight: var(--font-weight-regular);
+  letter-spacing: var(--tracking-normal);
+}
+
+@utility text-body-lg {
+  font-family: var(--font-sans);
+  font-size: var(--text-20);
+  line-height: var(--leading-28);
+  font-weight: var(--font-weight-regular);
+  letter-spacing: var(--tracking-normal);
+}
+
+@utility text-body {
+  font-family: var(--font-sans);
+  font-size: var(--text-16);
+  line-height: var(--leading-28);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--tracking-normal);
+}
+
+@utility text-body-sm {
+  font-family: var(--font-sans);
+  font-size: var(--text-14);
+  line-height: var(--leading-none);
+  font-weight: var(--font-weight-regular);
+  letter-spacing: var(--tracking-normal);
+}
+
+@utility text-caption {
+  font-family: var(--font-sans);
+  font-size: var(--text-14);
+  line-height: var(--leading-none);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--tracking-normal);
+}
+
+@utility text-eyebrow {
+  font-family: var(--font-sans);
+  font-size: var(--text-28);
+  line-height: var(--leading-none);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--tracking-normal);
+}

@@ -41,11 +41,11 @@ const bgColours = [
       <IconLogo class="ml-2 h-6 w-auto" />
     </div>
 
-    <ul class="flex gap-5">
+    <ul class="wrapper flex flex-wrap gap-5">
       <li
         v-for="bgColour in bgColours"
         :class="bgColour"
-        class="aspect-square w-50 rounded-sm"
+        class="aspect-square w-30 rounded-sm"
       >
         {{ bgColour }}
       </li>

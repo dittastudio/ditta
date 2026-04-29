@@ -4,6 +4,7 @@
 @import './transitions.css';
 @import './utils.css';
 @import './page.css';
+@import './type.css';
 
 @theme {
   --color-\*: initial;
@@ -17,52 +18,36 @@
   --color-mood: oklch(0.6385 0.0312 42.55);
   --color-crema: oklch(0.8102 0.0532 66.96);
 
-  --bp-2xs: 375px;
-  --bp-xs: 480px;
-  --bp-sm: 600px;
-  --bp-md: 800px;
-  --bp-lg: 1200px;
-  --bp-xl: 1440px;
-  --bp-2xl: 1800px;
-
   --breakpoint-\*: initial;
-  --breakpoint-2xs: var(--bp-2xs);
-  --breakpoint-xs: var(--bp-xs);
-  --breakpoint-sm: var(--bp-sm);
-  --breakpoint-md: var(--bp-md);
-  --breakpoint-lg: var(--bp-lg);
-  --breakpoint-xl: var(--bp-xl);
-  --breakpoint-2xl: var(--bp-2xl);
 
   --spacing-\*: initial;
   --spacing: 4px;
 
   --font-\*: initial;
   --font-sans: 'Saans', sans-serif, system-ui;
-  --font-serif: serif, ui-serif;
-  --font-mono: monospace, ui-monospace;
 
   --font-weight-\*: initial;
   --font-weight-regular: 380;
   --font-weight-medium: 570;
 
   --text-\*: initial;
-  --text-14: 0.875rem;
-  --text-14--line-height: 1;
-  --text-16: 1rem;
-  --text-16--line-height: 1.5;
-  --text-20: 1.25rem;
+  --text-14: 14px;
+  --text-16: 16px;
+  --text-20: 20px;
+  --text-28: 28px;
+  --text-40: 40px;
+  --text-64: 64px;
+  --text-120: 120px;
+  --text-160: 160px;
+  --text-180: 180px;
+
+  /* --text-16--line-height: 1.5;
   --text-20--line-height: 1.4;
-  --text-28: 1.75rem;
   --text-28--line-height: 1.28;
-  --text-40: 2.5rem;
   --text-40--line-height: 1.2;
-  --text-64: 4rem;
   --text-64--line-height: 1.15;
-  --text-120: 7.5rem;
   --text-120--line-height: 1.1;
-  --text-160: 10rem;
-  --text-160--line-height: 1;
+  --text-160--line-height: 1; */
 
   --ease-inQuad: cubic-bezier(0.55, 0.085, 0.68, 0.53);
   --ease-outQuad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -112,4 +97,26 @@
     1.017 63.9%,
     1.001
   );
+}
+
+@theme static {
+  --breakpoint-2xs: 375px;
+  --breakpoint-xs: 480px;
+  --breakpoint-sm: 600px;
+  --breakpoint-md: 800px;
+  --breakpoint-lg: 1200px;
+  --breakpoint-xl: 1440px;
+  --breakpoint-2xl: 1800px;
+}
+
+@layer theme {
+  :root {
+    --app-gutter-outer: 32px;
+    --app-gutter-inner: 24px;
+
+    @variant md {
+      --app-gutter-outer: 80px;
+      --app-gutter-inner: 32px;
+    }
+  }
 }
