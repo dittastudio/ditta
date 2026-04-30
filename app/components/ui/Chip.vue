@@ -2,17 +2,25 @@
 import type { Themes } from '@/types/app'
 
 interface Props {
-  theme?: Themes
   text: string
+  size?: 'small' | 'medium' | 'large'
+  theme?: Themes
 }
 
-const { theme, text } = defineProps<Props>()
+const { text, size = 'small', theme } = defineProps<Props>()
 </script>
 
 <template>
   <span
-    class="ui-chip inline-flex text-lead font-[600] leading-none rounded-full p-[0.8em]"
-    :class="[theme ? themeClasses[theme as Themes] : '']"
+    class="ui-chip inline-flex font-[600] leading-none rounded-full"
+    :class="[
+      {
+        'text-14 px-4 py-3': size === 'small',
+        'ui-chip--medium': size === 'medium',
+        'ui-chip--large': size === 'large',
+      },
+      theme ? themeClasses[theme as Themes] : '',
+    ]"
   >
     <span class="mt-[-0.15em] mb-[-0.1em]">
       {{ text }}
@@ -23,7 +31,15 @@ const { theme, text } = defineProps<Props>()
 <style scoped>
 @reference "@/assets/css/app.css";
 
-.ui-chip {
+.ui-chip--medium {
+  font-size: utopia.clamp(14, 16);
+  padding-block: utopia.clamp(12, 16);
+  padding-inline: utopia.clamp(16, 20);
+}
+
+.ui-chip--large {
   font-size: utopia.clamp(14, 28);
+  padding-block: utopia.clamp(12, 24);
+  padding-inline: utopia.clamp(16, 24);
 }
 </style>

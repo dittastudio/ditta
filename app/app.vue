@@ -89,6 +89,33 @@ const services = [
               <UiChip
                 :text="service"
                 theme="light"
+                size="large"
+              />
+            </li>
+          </ul>
+
+          <ul class="flex flex-wrap gap-5">
+            <li>
+              <UiChip
+                text="Storyblok CMS"
+                theme="light"
+                size="medium"
+              />
+            </li>
+
+            <li>
+              <UiChip
+                text="Shopify"
+                theme="light"
+                size="medium"
+              />
+            </li>
+
+            <li>
+              <UiChip
+                text="Vue / Nuxt"
+                theme="light"
+                size="medium"
               />
             </li>
           </ul>
@@ -96,7 +123,14 @@ const services = [
           <ul class="flex flex-wrap gap-5">
             <li>
               <UiButton
-                text="Button"
+                text="Say hello"
+                theme="light"
+              />
+            </li>
+
+            <li>
+              <UiButton
+                text="Talk to a human"
                 theme="light"
               />
             </li>

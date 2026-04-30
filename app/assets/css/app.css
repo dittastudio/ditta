@@ -11,7 +11,7 @@
   --color-\*: initial;
   --color-white: oklch(100% 0 0);
   --color-black: oklch(0% 0 0);
-  --color-offblack: oklch(20% 0 0);
+  --color-offblack: oklch(30% 0 0);
   --color-pink: oklch(0.8221 0.1207 348.4);
   --color-beige: oklch(0.8643 0.0104 32.52);
   --color-grey: oklch(0.9731 0 0);
