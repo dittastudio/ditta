@@ -54,10 +54,28 @@ const bgColours = [
           </li>
         </ul>
 
-        <h1 class="text-display">Heading 1</h1>
-        <h2 class="text-title">Heading 2</h2>
-        <h3 class="text-heading">Heading 3</h3>
-        <h4 class="text-subheading">Heading 3</h4>
+        <div class="mt-20">
+          <h1 class="text-display">Display</h1>
+          <h2 class="text-title">Title</h2>
+          <h3 class="text-heading">Heading</h3>
+          <h4 class="text-subheading">Subheading</h4>
+          <br /><br />
+          <p class="text-lead">
+            Lead
+            <br />
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus.
+          </p>
+          <p class="text-body">
+            Body
+            <br />
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus.
+          </p>
+
+          <UiChip
+            text="Web Design"
+            theme="light"
+          />
+        </div>
       </div>
     </div>
 
