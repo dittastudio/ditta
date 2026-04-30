@@ -1,25 +1,53 @@
-@utility text-h2 {
+@utility text-display {
   font-family: var(--font-sans);
-  font-size: var(--text-120);
+  font-size: var(--text-64);
   line-height: 1;
   font-weight: var(--font-weight-regular);
   letter-spacing: var(--tracking-normal);
+
+  @variant md {
+    font-size: var(--text-120);
+  }
 }
 
-@utility text-h3 {
+@utility text-title {
   font-family: var(--font-sans);
-  font-size: var(--text-40);
-  line-height: 1.2;
+  font-size: utopia.clamp(28, 64);
+  line-height: 1.15;
   font-weight: var(--font-weight-regular);
   letter-spacing: var(--tracking-normal);
 }
 
-@utility text-body-lg {
+@utility text-heading {
   font-family: var(--font-sans);
   font-size: var(--text-28);
   line-height: 1.2;
   font-weight: var(--font-weight-regular);
   letter-spacing: var(--tracking-normal);
+
+  @variant md {
+    font-size: var(--text-40);
+  }
+}
+
+@utility text-subheading {
+  font-family: var(--font-sans);
+  font-size: var(--text-14);
+  line-height: 1;
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--tracking-normal);
+}
+
+@utility text-lead {
+  font-family: var(--font-sans);
+  font-size: var(--text-20);
+  line-height: 1.2;
+  font-weight: var(--font-weight-regular);
+  letter-spacing: var(--tracking-normal);
+
+  @variant md {
+    font-size: var(--text-28);
+  }
 }
 
 @utility text-body {
@@ -27,29 +55,5 @@
   font-size: var(--text-16);
   line-height: 1.75;
   font-weight: var(--font-weight-regular);
-  letter-spacing: var(--tracking-normal);
-}
-
-@utility text-body-sm {
-  font-family: var(--font-sans);
-  font-size: var(--text-14);
-  line-height: 1;
-  font-weight: var(--font-weight-regular);
-  letter-spacing: var(--tracking-normal);
-}
-
-@utility text-caption {
-  font-family: var(--font-sans);
-  font-size: var(--text-14);
-  line-height: 1;
-  font-weight: var(--font-weight-medium);
-  letter-spacing: var(--tracking-normal);
-}
-
-@utility text-eyebrow {
-  font-family: var(--font-sans);
-  font-size: var(--text-28);
-  line-height: 1;
-  font-weight: var(--font-weight-medium);
   letter-spacing: var(--tracking-normal);
 }

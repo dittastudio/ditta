@@ -61,7 +61,7 @@ export default defineNuxtConfig({
       'postcss-nested': {},
       'postcss-utopia': {
         minWidth: 375,
-        maxWidth: 1440,
+        maxWidth: 1800,
       },
     },
   },

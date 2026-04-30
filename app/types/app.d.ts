@@ -2,4 +2,6 @@ import type { Page } from '#storyblok-components'
 
 type BlockTypes = NonNullable<Page['blocks']>[number]
 
-export { BlockTypes }
+type Themes = 'dark' | 'light' | 'pink' | 'beige'
+
+export { BlockTypes, Themes }

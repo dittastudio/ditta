@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { Settings } from '#storyblok-components'
-import IconLogo from '@/assets/icons/ditta.svg'
 
 const story = await useStory<Settings>('/settings')
 const route = useRoute()
@@ -35,26 +34,33 @@ const bgColours = [
 
 <template>
   <div>
-    <div class="flex items-center justify-center">
-      <div class="text-xl">Ditta</div>
-
-      <IconLogo class="ml-2 h-6 w-auto" />
-    </div>
-
-    <ul class="wrapper flex flex-wrap gap-5">
-      <li
-        v-for="bgColour in bgColours"
-        :class="bgColour"
-        class="aspect-square w-30 rounded-sm"
-      >
-        {{ bgColour }}
-      </li>
-    </ul>
+    <BlockHero />
 
     <NuxtPage />
 
-    <AppFooter :text="story.content.footer_copy_v2" />
+    <div class="bg-black text-grey">
+      <div class="wrapper py-10">
+        <ul class="flex flex-wrap gap-5">
+          <li
+            v-for="bgColour in bgColours"
+            :class="bgColour"
+            class="aspect-square w-30 rounded-md p-2 flex flex-col items-end justify-end"
+          >
+            <div
+              class="inline-block px-1.5 py-0.5 font-[monospace] text-[12px] rounded-sm bg-white/60 text-black border border-current/10 shadow-md"
+            >
+              .{{ bgColour }}
+            </div>
+          </li>
+        </ul>
 
-    <!-- <pre> {{ story }} </pre> -->
+        <h1 class="text-display">Heading 1</h1>
+        <h2 class="text-title">Heading 2</h2>
+        <h3 class="text-heading">Heading 3</h3>
+        <h4 class="text-subheading">Heading 3</h4>
+      </div>
+    </div>
+
+    <AppFooter :text="story.content.footer_copy_v2" />
   </div>
 </template>

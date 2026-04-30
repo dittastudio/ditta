@@ -28,9 +28,10 @@ useSeoMeta({
 </script>
 
 <template>
-  <div>
-    <h1>Page</h1>
-
-    <!-- <pre>{{ story.content }}</pre> -->
-  </div>
+  <main class="w-full min-h-svh">
+    <TemplatePage
+      v-if="isPage(story)"
+      :story="story"
+    />
+  </main>
 </template>

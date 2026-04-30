@@ -13,7 +13,15 @@ const { text } = defineProps<Props>()
     <div class="wrapper w-full py-10 flex flex-col justify-between gap-6">
       <div
         v-if="storyblokRichTextContent(text)"
-        class="prose prose-h3:max-w-[18em] prose-h3:text-pretty prose-p:text-beige prose-p:max-w-[23em] prose-p:text-pretty"
+        :class="[
+          'prose',
+          'text-pretty',
+          'prose-h2:text-heading',
+          'prose-h2:max-w-[18em]',
+          'prose-p:text-lead',
+          'prose-p:text-beige',
+          'prose-p:max-w-[23em]',
+        ]"
       >
         <StoryblokText :html="text" />
       </div>

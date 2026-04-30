@@ -11,6 +11,7 @@
   --color-\*: initial;
   --color-white: oklch(100% 0 0);
   --color-black: oklch(0% 0 0);
+  --color-offblack: oklch(20% 0 0);
   --color-pink: oklch(0.8221 0.1207 348.4);
   --color-beige: oklch(0.8643 0.0104 32.52);
   --color-grey: oklch(0.9731 0 0);
@@ -28,8 +29,9 @@
   --font-sans: 'Saans', sans-serif, system-ui;
 
   --font-weight-\*: initial;
-  --font-weight-regular: 380;
-  --font-weight-medium: 570;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 800;
 
   --text-\*: initial;
   --text-14: 0.875rem;
@@ -42,14 +44,6 @@
   --text-120: 7.5rem;
   --text-160: 10rem;
   --text-180: 11.25rem;
-
-  /* --text-16--line-height: 1.5;
-  --text-20--line-height: 1.4;
-  --text-28--line-height: 1.28;
-  --text-40--line-height: 1.2;
-  --text-64--line-height: 1.15;
-  --text-120--line-height: 1.1;
-  --text-160--line-height: 1; */
 
   --ease-inQuad: cubic-bezier(0.55, 0.085, 0.68, 0.53);
   --ease-outQuad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -115,6 +109,8 @@
   :root {
     --app-gutter-outer: utopia.clamp(32, 190);
     --app-gutter-inner: 24px;
+
+    --app-vertical-rhythm: utopia.clamp(60, 120);
 
     @variant md {
       --app-gutter-inner: 32px;
