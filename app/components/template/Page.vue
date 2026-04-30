@@ -23,6 +23,11 @@ const { story } = defineProps<Props>()
       v-if="block.component === 'block_statement'"
       :block="block"
     />
+
+    <BlockChips
+      v-else-if="block.component === 'block_chips'"
+      :block="block"
+    />
   </section>
 </template>
 
