@@ -25,6 +25,7 @@ const { text, tracking = '0em' } = defineProps<Props>()
 
 <style scoped>
 /* Inspired by: https://kizu.dev/fit-to-width/ */
+/* TODO: add fallback for older browsers */
 
 .text-fit {
   display: flex;
