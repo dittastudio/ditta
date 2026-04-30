@@ -479,7 +479,7 @@
     "display_name": null,
     "description": "Settings",
     "created_at": "2025-05-29T12:28:50.243Z",
-    "updated_at": "2026-04-29T10:23:29.237Z",
+    "updated_at": "2026-04-30T09:02:31.201Z",
     "id": 7399417,
     "schema": {
       "footer_copy": {
@@ -502,7 +502,6 @@
         "customize_toolbar": true,
         "toolbar": [
           "h2",
-          "h3",
           "link",
           "paragraph",
           "unset"

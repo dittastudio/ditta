@@ -95,6 +95,7 @@
   );
 }
 
+/* New TW way to whitelist classes */
 @theme static {
   --breakpoint-2xs: 375px;
   --breakpoint-xs: 480px;
