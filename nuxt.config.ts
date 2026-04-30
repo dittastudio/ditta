@@ -41,7 +41,7 @@ export default defineNuxtConfig({
   css: ['~/assets/css/app.css'],
   vite: {
     optimizeDeps: {
-      include: ['@vue/devtools-core', '@vue/devtools-kit'],
+      include: ['@vue/devtools-core', '@vue/devtools-kit', '@storyblok/vue', '@tiptap/core'],
     },
     plugins: [
       tailwindcss(),
