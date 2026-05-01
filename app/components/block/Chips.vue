@@ -15,6 +15,17 @@ const ready = ref(false)
 
 let stopPhysics: (() => void) | null = null
 
+const pad = 100
+
+function buildWalls(w: number, h: number) {
+  return [
+    Bodies.rectangle(w / 2, h + pad / 2, w + pad * 2, pad, { isStatic: true }),
+    Bodies.rectangle(w / 2, -pad / 2, w + pad * 2, pad, { isStatic: true }),
+    Bodies.rectangle(-pad / 2, h / 2, pad, h + pad * 2, { isStatic: true }),
+    Bodies.rectangle(w + pad / 2, h / 2, pad, h + pad * 2, { isStatic: true }),
+  ]
+}
+
 onMounted(() => {
   const el = containerRef.value
   const chipEls = chipRefs.value
@@ -32,13 +43,8 @@ onMounted(() => {
 
   const engine = Engine.create({ gravity: { x: 0, y: 0.5 } })
 
-  const pad = 100
-  Composite.add(engine.world, [
-    Bodies.rectangle(width / 2, height + pad / 2, width + pad * 2, pad, { isStatic: true }),
-    Bodies.rectangle(width / 2, -pad / 2, width + pad * 2, pad, { isStatic: true }),
-    Bodies.rectangle(-pad / 2, height / 2, pad, height + pad * 2, { isStatic: true }),
-    Bodies.rectangle(width + pad / 2, height / 2, pad, height + pad * 2, { isStatic: true }),
-  ])
+  let walls = buildWalls(width, height)
+  Composite.add(engine.world, walls)
 
   const cols = Math.ceil(Math.sqrt(sizes.length * (width / height)))
   const rows = Math.ceil(sizes.length / cols)
@@ -52,7 +58,7 @@ onMounted(() => {
       chamfer: { radius: h / 2 },
       restitution: 0.5,
       friction: 0.05,
-      frictionAir: 0.01,
+      frictionAir: 0.02,
       angle: (Math.random() - 0.5) * Math.PI * 0.4,
     })
     Body.setVelocity(body, {
@@ -77,8 +83,28 @@ onMounted(() => {
     }),
   )
 
-  const runner = Runner.create()
+  const observer = new ResizeObserver((entries) => {
+    const entry = entries[0]
+    if (!entry) return
+    const { width: newW, height: newH } = entry.contentRect
 
+    walls.forEach((wall) => Composite.remove(engine.world, wall))
+    walls = buildWalls(newW, newH)
+    Composite.add(engine.world, walls)
+
+    bodies.forEach((body, i) => {
+      const size = sizes[i]
+      if (!size) return
+      Body.setPosition(body, {
+        x: Math.max(size.w / 2, Math.min(newW - size.w / 2, body.position.x)),
+        y: Math.max(size.h / 2, Math.min(newH - size.h / 2, body.position.y)),
+      })
+    })
+  })
+
+  observer.observe(el)
+
+  const runner = Runner.create()
   Runner.run(runner, engine)
 
   let raf: number
@@ -89,7 +115,6 @@ onMounted(() => {
       if (!size) return ''
       return `translate(${x - size.w / 2}px, ${y - size.h / 2}px) rotate(${angle}rad)`
     })
-
     raf = requestAnimationFrame(tick)
   }
 
@@ -100,6 +125,7 @@ onMounted(() => {
     cancelAnimationFrame(raf)
     Runner.stop(runner)
     Engine.clear(engine)
+    observer.disconnect()
   }
 })
 
