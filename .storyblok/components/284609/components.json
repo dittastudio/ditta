@@ -4,7 +4,7 @@
     "display_name": "Chips",
     "description": "",
     "created_at": "2026-04-30T22:10:04.014Z",
-    "updated_at": "2026-05-01T11:53:48.085Z",
+    "updated_at": "2026-05-01T13:21:28.888Z",
     "id": 171611766857927,
     "schema": {
       "heading": {
@@ -43,6 +43,22 @@
         "exclude_empty_option": true,
         "default_value": "beige",
         "id": "PhYypZL4TtiIVwgkdaSVWA"
+      },
+      "spacing_top": {
+        "type": "boolean",
+        "display_name": "Spacing Top",
+        "pos": 4,
+        "default_value": true,
+        "inline_label": true,
+        "id": "7Ow4U5w4Qt6NldVH6nTi6g"
+      },
+      "spacing_bottom": {
+        "type": "boolean",
+        "display_name": "Spacing Bottom",
+        "pos": 5,
+        "default_value": true,
+        "inline_label": true,
+        "id": "dEMupm7WRACzTcmXvJIWgg"
       }
     },
     "image": null,
@@ -66,7 +82,7 @@
     "display_name": "CTA",
     "description": null,
     "created_at": "2026-05-01T07:24:46.515Z",
-    "updated_at": "2026-05-01T07:26:24.751Z",
+    "updated_at": "2026-05-01T13:21:34.217Z",
     "id": 171748091970095,
     "schema": {
       "text": {
@@ -93,6 +109,22 @@
         "exclude_empty_option": true,
         "default_value": "light",
         "id": "dDx-xvJBS4aXc3loaTdDJA"
+      },
+      "spacing_top": {
+        "type": "boolean",
+        "display_name": "Spacing Top",
+        "pos": 3,
+        "default_value": true,
+        "inline_label": true,
+        "id": "SVRH7AC4QGClkqt8Xl5etQ"
+      },
+      "spacing_bottom": {
+        "type": "boolean",
+        "display_name": "Spacing Bottom",
+        "pos": 4,
+        "default_value": true,
+        "inline_label": true,
+        "id": "7fjljr8eT9aiPtld1Qf8vg"
       }
     },
     "image": null,
@@ -116,7 +148,7 @@
     "display_name": "Image",
     "description": null,
     "created_at": "2024-06-18T17:57:58.986Z",
-    "updated_at": "2026-04-30T22:07:58.297Z",
+    "updated_at": "2026-05-01T13:21:38.043Z",
     "id": 5945698,
     "schema": {
       "media": {
@@ -138,6 +170,22 @@
         "exclude_empty_option": true,
         "id": "dwqZWfC4QeqU5ru50mU7Yw",
         "default_value": "9:16"
+      },
+      "spacing_top": {
+        "type": "boolean",
+        "display_name": "Spacing Top",
+        "pos": 2,
+        "default_value": true,
+        "inline_label": true,
+        "id": "sAWLV1gxRuiPsZFvOzHFKQ"
+      },
+      "spacing_bottom": {
+        "type": "boolean",
+        "display_name": "Spacing Bottom",
+        "pos": 3,
+        "default_value": true,
+        "inline_label": true,
+        "id": "jphzRnxaTn2ptN5trnxHYQ"
       }
     },
     "image": null,
@@ -161,7 +209,7 @@
     "display_name": "Projects",
     "description": null,
     "created_at": "2026-05-01T07:52:45.862Z",
-    "updated_at": "2026-05-01T08:03:02.257Z",
+    "updated_at": "2026-05-01T13:21:44.117Z",
     "id": 171754970579561,
     "schema": {
       "ticker": {
@@ -189,6 +237,22 @@
         "exclude_empty_option": true,
         "default_value": "light",
         "id": "wA3EcAzgT4uSwyZ-Ax5QBw"
+      },
+      "spacing_top": {
+        "type": "boolean",
+        "display_name": "Spacing Top",
+        "pos": 3,
+        "default_value": true,
+        "inline_label": true,
+        "id": "o_RhNLhmRPeTCnGQ9OelSg"
+      },
+      "spacing_bottom": {
+        "type": "boolean",
+        "display_name": "Spacing Bottom",
+        "pos": 4,
+        "default_value": true,
+        "inline_label": true,
+        "id": "u7L9s5SHQoymtVF3BNyzgw"
       }
     },
     "image": null,
@@ -212,7 +276,7 @@
     "display_name": "Statement",
     "description": "",
     "created_at": "2026-04-29T13:18:23.308Z",
-    "updated_at": "2026-04-29T16:38:56.167Z",
+    "updated_at": "2026-05-01T13:21:48.205Z",
     "id": 171127207159869,
     "schema": {
       "text": {
@@ -237,6 +301,22 @@
         "exclude_empty_option": true,
         "default_value": "light",
         "id": "E_S_XHU5QdS80bWeCA8ifw"
+      },
+      "spacing_top": {
+        "type": "boolean",
+        "display_name": "Spacing Top",
+        "pos": 2,
+        "default_value": true,
+        "inline_label": true,
+        "id": "_DaNtKP9QqymSXTvxZfm5g"
+      },
+      "spacing_bottom": {
+        "type": "boolean",
+        "display_name": "Spacing Bottom",
+        "pos": 3,
+        "default_value": true,
+        "inline_label": true,
+        "id": "SdkA32laSJa64G6cknm0lw"
       }
     },
     "image": null,
@@ -260,7 +340,7 @@
     "display_name": "Steps",
     "description": null,
     "created_at": "2026-05-01T07:20:05.722Z",
-    "updated_at": "2026-05-01T07:20:05.722Z",
+    "updated_at": "2026-05-01T13:21:55.099Z",
     "id": 171746941846058,
     "schema": {
       "heading": {
@@ -298,6 +378,22 @@
           "element_step"
         ],
         "id": "Yc-r0rD8Tz2imAJCTMZSaA"
+      },
+      "spacing_top": {
+        "type": "boolean",
+        "display_name": "Spacing Top",
+        "pos": 4,
+        "default_value": true,
+        "inline_label": true,
+        "id": "a69b-V43T7msZmrMalOQFg"
+      },
+      "spacing_bottom": {
+        "type": "boolean",
+        "display_name": "Spacing Bottom",
+        "pos": 5,
+        "default_value": true,
+        "inline_label": true,
+        "id": "TscKdTYNQ5CpEAGSaDmYqA"
       }
     },
     "image": null,
@@ -321,7 +417,7 @@
     "display_name": "Team",
     "description": null,
     "created_at": "2026-05-01T07:52:46.579Z",
-    "updated_at": "2026-05-01T07:53:50.272Z",
+    "updated_at": "2026-05-01T13:22:02.815Z",
     "id": 171754973512298,
     "schema": {
       "heading": {
@@ -371,6 +467,22 @@
         "exclude_empty_option": true,
         "default_value": "light",
         "id": "V9VCKGZISTeNCv6OxVYfUw"
+      },
+      "spacing_top": {
+        "type": "boolean",
+        "display_name": "Spacing Top",
+        "pos": 5,
+        "default_value": true,
+        "inline_label": true,
+        "id": "-LNRYr1ETc2-36CmxIYJiQ"
+      },
+      "spacing_bottom": {
+        "type": "boolean",
+        "display_name": "Spacing Bottom",
+        "pos": 6,
+        "default_value": true,
+        "inline_label": true,
+        "id": "1JFNVOTPTLqp4a4AdJI4yw"
       }
     },
     "image": null,
@@ -394,7 +506,7 @@
     "display_name": "Text",
     "description": "",
     "created_at": "2025-06-02T14:18:56.373Z",
-    "updated_at": "2025-06-02T15:44:28.642Z",
+    "updated_at": "2026-05-01T13:22:05.507Z",
     "id": 7408651,
     "schema": {
       "text": {
@@ -415,6 +527,22 @@
           "unset"
         ],
         "id": "NI04FkteSoOmi2dGs31MiQ"
+      },
+      "spacing_top": {
+        "type": "boolean",
+        "display_name": "Spacing Top",
+        "pos": 2,
+        "default_value": true,
+        "inline_label": true,
+        "id": "pIjvdRj4Ro6KDQHa7bDQ-w"
+      },
+      "spacing_bottom": {
+        "type": "boolean",
+        "display_name": "Spacing Bottom",
+        "pos": 3,
+        "default_value": true,
+        "inline_label": true,
+        "id": "UYN19IvLTr-trsFULsmSHw"
       }
     },
     "image": null,

@@ -11,6 +11,10 @@ const { block } = defineProps<Props>()
 <template>
   <div
     class="wrapper flex flex-col gap-[calc(var(--app-gutter-outer)*2)] md:gap-(--app-gutter-outer)"
+    :class="{
+      'pt-(--app-vertical-rhythm)': block.spacing_top,
+      'pb-(--app-vertical-rhythm)': block.spacing_bottom,
+    }"
   >
     <UiLockup
       :heading="block.heading"

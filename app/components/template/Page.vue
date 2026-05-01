@@ -14,10 +14,7 @@ const { story } = defineProps<Props>()
   <section
     v-for="block in story.content.blocks"
     :key="block._uid"
-    :class="[
-      `section section--${block.component}`,
-      'theme' in block ? themeClasses[block.theme as Themes] : '',
-    ]"
+    :class="['theme' in block ? themeClasses[block.theme as Themes] : '']"
   >
     <BlockStatement
       v-if="block.component === 'block_statement'"
@@ -40,11 +37,3 @@ const { story } = defineProps<Props>()
     />
   </section>
 </template>
-
-<style scoped>
-@reference "@/assets/css/app.css";
-
-.section:not(.section--block_statement) {
-  padding-block: var(--app-vertical-rhythm);
-}
-</style>
