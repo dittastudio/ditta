@@ -8,8 +8,8 @@ interface Props {
 
 const { block } = defineProps<Props>()
 
-const containerRef = useTemplateRef<HTMLElement>('container')
-const chipRefs = useTemplateRef<HTMLElement[]>('chipRef')
+const containerRef = useTemplateRef('container')
+const chipRefs = useTemplateRef('chipRef')
 const transforms = ref<string[]>([])
 const ready = ref(false)
 
@@ -28,13 +28,13 @@ function buildWalls(w: number, h: number) {
 
 onMounted(() => {
   const el = containerRef.value
-  const chipEls = chipRefs.value
+  const chips = chipRefs.value
 
-  if (!el || !chipEls?.length) return
+  if (!el || !chips?.length) return
 
   const { width, height } = el.getBoundingClientRect()
 
-  const sizes = chipEls.map((chip) => {
+  const sizes = chips.map((chip) => {
     const { width: w, height: h } = chip.getBoundingClientRect()
     return { w, h }
   })
@@ -56,15 +56,17 @@ onMounted(() => {
     const y = (row * height) / rows + height / rows / 2 + (Math.random() - 0.5) * 40
     const body = Bodies.rectangle(x, y, w, h, {
       chamfer: { radius: h / 2 },
-      restitution: 0.5,
-      friction: 0.05,
-      frictionAir: 0.02,
+      restitution: 0.8,
+      friction: 0.01,
+      frictionAir: 0.01,
       angle: (Math.random() - 0.5) * Math.PI * 0.4,
     })
+
     Body.setVelocity(body, {
       x: (Math.random() - 0.5) * 8,
       y: (Math.random() - 0.5) * 8,
     })
+
     return body
   })
 
@@ -90,6 +92,7 @@ onMounted(() => {
 
     walls.forEach((wall) => Composite.remove(engine.world, wall))
     walls = buildWalls(newW, newH)
+
     Composite.add(engine.world, walls)
 
     bodies.forEach((body, i) => {
@@ -151,11 +154,11 @@ onUnmounted(() => stopPhysics?.())
       <!-- Filler element to create space. -->
     </div>
 
-    <div
+    <ul
       ref="container"
       class="absolute inset-0 z-0 select-none"
     >
-      <div
+      <li
         v-for="(chip, i) in block.chips"
         :key="chip._uid"
         ref="chipRef"
@@ -168,7 +171,7 @@ onUnmounted(() => stopPhysics?.())
           size="large"
           theme="light"
         />
-      </div>
-    </div>
+      </li>
+    </ul>
   </div>
 </template>
