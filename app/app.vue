@@ -73,6 +73,8 @@ const services = [
         </ul>
 
         <div class="mt-20 flex flex-col items-start gap-10">
+          <p class="text-14">.Mono</p>
+
           <h1 class="text-display">Display</h1>
           <h2 class="text-title">Title</h2>
           <h3 class="text-heading">Heading</h3>
