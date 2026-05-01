@@ -44,6 +44,10 @@
   --text-160: 10rem;
   --text-180: 11.25rem;
 
+  --radius-\*: initial;
+  --radius-full: 9999px;
+  --radius-20: 20px;
+
   --ease-inQuad: cubic-bezier(0.55, 0.085, 0.68, 0.53);
   --ease-outQuad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
   --ease-inOutQuad: cubic-bezier(0.455, 0.03, 0.515, 0.955);

@@ -21,7 +21,7 @@ const { block } = defineProps<Props>()
       :copy="block.copy"
     />
 
-    <div class="flex flex-col gap-1 rounded-2xl overflow-hidden -mx-(--app-gutter-outer) md:-mx-15">
+    <div class="flex flex-col gap-1 rounded-20 overflow-hidden -mx-(--app-gutter-outer) md:-mx-15">
       <div
         v-for="step in block.steps"
         :key="step._uid"

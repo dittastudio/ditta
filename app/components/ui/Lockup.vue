@@ -10,10 +10,10 @@ const { heading, copy } = defineProps<Props>()
 </script>
 
 <template>
-  <div>
+  <div class="flex flex-col gap-10 md:gap-20">
     <h2
       v-if="heading"
-      class="text-display max-w-[5em] mb-[0.6lh] md:mb-[0.5lh]"
+      class="text-display max-w-[5em]"
     >
       {{ heading }}
     </h2>
@@ -24,5 +24,7 @@ const { heading, copy } = defineProps<Props>()
     >
       <StoryblokText :html="copy" />
     </div>
+
+    <slot />
   </div>
 </template>

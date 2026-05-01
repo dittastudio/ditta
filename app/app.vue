@@ -62,10 +62,10 @@ const services = [
           <li
             v-for="bgColour in bgColours"
             :class="bgColour"
-            class="aspect-square w-30 rounded-md p-2 flex flex-col items-end justify-end"
+            class="aspect-square w-30 rounded-20 p-2 flex flex-col items-end justify-end"
           >
             <div
-              class="inline-block px-1.5 py-0.5 font-[monospace] text-[12px] rounded-sm bg-white/60 text-black border border-current/10 shadow-md"
+              class="inline-block px-1.5 py-0.5 font-[monospace] text-[12px] rounded-20 bg-white/60 text-black border border-current/10 shadow-md"
             >
               .{{ bgColour }}
             </div>

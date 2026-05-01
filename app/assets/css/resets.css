@@ -41,4 +41,8 @@
   em {
     font-style: normal;
   }
+
+  strong {
+    font-weight: 570;
+  }
 }

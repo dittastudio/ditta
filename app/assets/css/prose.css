@@ -3,6 +3,15 @@
     margin-bottom: 1.35lh;
   }
 
+  /* Quick and dirty spacing. Will AI please make nice. */
+  & :where(p:not(:last-child)) {
+    margin-bottom: 2.5ch;
+
+    @variant md {
+      margin-bottom: 2.2ch;
+    }
+  }
+
   & :where(b, strong) {
     font-weight: var(--font-weight-bold);
   }
