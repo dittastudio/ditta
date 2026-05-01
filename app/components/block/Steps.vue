@@ -9,17 +9,19 @@ const { block } = defineProps<Props>()
 </script>
 
 <template>
-  <div class="wrapper">
+  <div
+    class="wrapper flex flex-col gap-[calc(var(--app-gutter-outer)*2)] md:gap-(--app-gutter-outer)"
+  >
     <UiLockup
       :heading="block.heading"
       :copy="block.copy"
     />
 
-    <div class="flex flex-col gap-1 rounded-2xl overflow-hidden -mx-15">
+    <div class="flex flex-col gap-1 rounded-2xl overflow-hidden -mx-(--app-gutter-outer) md:-mx-15">
       <div
         v-for="step in block.steps"
         :key="step._uid"
-        class="bg-white p-15"
+        class="bg-white px-(--app-gutter-outer) py-10 md:px-15 md:py-20"
       >
         <UiStep
           :title="step.title"
