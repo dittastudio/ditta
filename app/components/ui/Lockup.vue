@@ -2,7 +2,7 @@
 import type { StoryblokRichtext } from '#storyblok-types'
 
 interface Props {
-  heading: string
+  heading?: string
   copy?: StoryblokRichtext
 }
 
@@ -11,7 +11,10 @@ const { heading, copy } = defineProps<Props>()
 
 <template>
   <div>
-    <h2 class="text-display max-w-[5em] mb-[0.6lh] md:mb-[0.5lh]">
+    <h2
+      v-if="heading"
+      class="text-display max-w-[5em] mb-[0.6lh] md:mb-[0.5lh]"
+    >
       {{ heading }}
     </h2>
 
