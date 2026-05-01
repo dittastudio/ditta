@@ -9,10 +9,24 @@ const { block } = defineProps<Props>()
 </script>
 
 <template>
-  <div class="wrapper flex flex-col justify-center py-(--app-vertical-rhythm)">
+  <div class="wrapper">
     <UiLockup
       :heading="block.heading"
       :copy="block.copy"
     />
+
+    <div class="flex flex-col gap-1 rounded-2xl overflow-hidden -mx-15">
+      <div
+        v-for="step in block.steps"
+        :key="step._uid"
+        class="bg-white p-15"
+      >
+        <UiStep
+          :title="step.title"
+          :heading="step.heading"
+          :copy="step.copy"
+        />
+      </div>
+    </div>
   </div>
 </template>

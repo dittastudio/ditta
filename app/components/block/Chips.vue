@@ -104,7 +104,7 @@ onUnmounted(() => stopPhysics?.())
 </script>
 
 <template>
-  <div class="wrapper py-(--app-vertical-rhythm) relative">
+  <div class="wrapper relative">
     <div class="relative z-1">
       <UiLockup
         :heading="block.heading"
