@@ -34,7 +34,7 @@
   font-family: var(--font-sans);
   font-size: var(--text-14);
   line-height: 1;
-  font-weight: var(--font-weight-medium);
+  font-weight: 600;
   letter-spacing: var(--tracking-normal);
 }
 
@@ -53,7 +53,11 @@
 @utility text-body {
   font-family: var(--font-sans);
   font-size: var(--text-16);
-  line-height: 1.75;
+  line-height: 1.4;
   font-weight: var(--font-weight-regular);
   letter-spacing: var(--tracking-normal);
+
+  @variant md {
+    font-size: var(--text-20);
+  }
 }

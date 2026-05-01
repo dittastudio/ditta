@@ -9,7 +9,7 @@ const { block } = defineProps<Props>()
 </script>
 
 <template>
-  <div class="wrapper flex flex-col justify-center py-(--app-vertical-rhythm)">
+  <div class="wrapper flex flex-col justify-center">
     <UiLockup
       :heading="block.heading"
       :copy="block.copy"

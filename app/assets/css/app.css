@@ -108,12 +108,8 @@
 @layer theme {
   :root {
     --app-gutter-outer: utopia.clamp(32, 190);
-    --app-gutter-inner: 24px;
+    --app-gutter-inner: --spacing(5);
 
-    --app-vertical-rhythm: utopia.clamp(60, 120);
-
-    @variant md {
-      --app-gutter-inner: 32px;
-    }
+    --app-vertical-rhythm: 12.5vw;
   }
 }
