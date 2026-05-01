@@ -21,6 +21,7 @@
   "dependencies": {
     "@nuxt/image": "^2.0.0",
     "@storyblok/nuxt": "^10.1.4",
+    "matter-js": "^0.20.0",
     "nuxt": "^4.4.4",
     "vue": "^3.5.33",
     "vue-router": "^5.0.6"
@@ -29,6 +30,7 @@
     "@commitlint/cli": "^20.5.3",
     "@commitlint/config-conventional": "^20.5.3",
     "@tailwindcss/vite": "^4.2.4",
+    "@types/matter-js": "^0.20.2",
     "del-cli": "^7.0.0",
     "postcss-nested": "^7.0.2",
     "postcss-utopia": "^1.1.0",
