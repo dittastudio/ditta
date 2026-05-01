@@ -83,8 +83,8 @@ export interface BlockText {
 }
 
 export interface ElementCta {
-  text?: string;
-  link?: Exclude<StoryblokMultilink, {linktype?: "email"} | {linktype?: "asset"}>;
+  text: string;
+  link: Exclude<StoryblokMultilink, {linktype?: "asset"}>;
   theme?: number | string;
   component: "element_cta";
   _uid: string;
@@ -114,7 +114,7 @@ export interface Page {
 }
 
 export interface Person {
-  image?: StoryblokAsset;
+  image: StoryblokAsset;
   name: string;
   position?: string;
   component: "person";
