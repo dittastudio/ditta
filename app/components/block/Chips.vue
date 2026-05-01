@@ -133,7 +133,13 @@ onUnmounted(() => stopPhysics?.())
 </script>
 
 <template>
-  <div class="wrapper relative">
+  <div
+    class="wrapper relative"
+    :class="{
+      'pt-(--app-vertical-rhythm)': block.spacing_top,
+      'pb-(--app-vertical-rhythm)': block.spacing_bottom,
+    }"
+  >
     <div class="relative z-1">
       <UiLockup
         :heading="block.heading"

@@ -9,7 +9,13 @@ const { block } = defineProps<Props>()
 </script>
 
 <template>
-  <div class="wrapper">
+  <div
+    class="wrapper"
+    :class="{
+      'pt-(--app-vertical-rhythm)': block.spacing_top,
+      'pb-(--app-vertical-rhythm)': block.spacing_bottom,
+    }"
+  >
     <UiLockup
       :heading="block.heading"
       :copy="block.copy"
