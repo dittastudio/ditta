@@ -65,6 +65,9 @@ onMounted(() => {
   Composite.add(engine.world, bodies)
 
   const mouse = Mouse.create(el)
+  // matter-js registers 'wheel' with passive: false and calls preventDefault — remove it so page scroll works
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  mouse.element.removeEventListener('wheel', (mouse as any).mousewheel as EventListener)
 
   Composite.add(
     engine.world,
