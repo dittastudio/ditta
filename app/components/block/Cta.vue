@@ -7,27 +7,34 @@ interface Props {
 }
 
 const { block } = defineProps<Props>()
+
+const button = block.button?.[0]
+const buttonTheme = computed(() => button?.theme as Themes | undefined)
 </script>
 
 <template>
-  <div class="wrapper py-(--app-vertical-rhythm)">
-    <p v-if="block.text">
+  <div
+    class="wrapper flex flex-col gap-10 md:gap-18 items-center text-center"
+    :class="{
+      'pt-(--app-vertical-rhythm)': block.spacing_top,
+      'pb-(--app-vertical-rhythm)': block.spacing_bottom,
+    }"
+  >
+    <p
+      v-if="block.text"
+      class="text-heading max-w-[24ch] text-pretty mx-auto"
+    >
       {{ block.text }}
     </p>
 
-    <template
-      v-for="cta in block.button"
-      :key="cta._uid"
+    <StoryblokLink
+      v-if="button?.link"
+      :item="button.link"
     >
-      <StoryblokLink
-        v-if="cta.link"
-        :item="cta.link"
-      >
-        <UiButton
-          :text="cta.text || ''"
-          :theme="cta.theme as Themes | undefined"
-        />
-      </StoryblokLink>
-    </template>
+      <UiButton
+        :text="button.text || ''"
+        :theme="buttonTheme"
+      />
+    </StoryblokLink>
   </div>
 </template>

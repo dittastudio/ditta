@@ -417,11 +417,11 @@
     "display_name": "Team",
     "description": null,
     "created_at": "2026-05-01T07:52:46.579Z",
-    "updated_at": "2026-05-01T13:22:02.815Z",
+    "updated_at": "2026-05-01T16:31:55.125Z",
     "id": 171754973512298,
     "schema": {
       "heading": {
-        "type": "text",
+        "type": "textarea",
         "pos": 0,
         "id": "XZykLKWsTy-aN8DuuBSeuA"
       },
@@ -566,18 +566,21 @@
     "display_name": "CTA",
     "description": null,
     "created_at": "2026-05-01T07:24:41.071Z",
-    "updated_at": "2026-05-01T07:24:41.071Z",
+    "updated_at": "2026-05-01T17:24:28.329Z",
     "id": 171748069679662,
     "schema": {
       "text": {
         "type": "text",
         "pos": 0,
-        "id": "IngNbqyNSFWnCooXb4D_2Q"
+        "id": "IngNbqyNSFWnCooXb4D_2Q",
+        "required": true
       },
       "link": {
         "type": "multilink",
         "pos": 1,
-        "id": "_RYUiKUVRLKBsYtdc-4fdg"
+        "id": "_RYUiKUVRLKBsYtdc-4fdg",
+        "required": true,
+        "email_link_type": true
       },
       "theme": {
         "type": "option",
@@ -759,7 +762,7 @@
     "display_name": "Person",
     "description": null,
     "created_at": "2026-05-01T07:52:36.769Z",
-    "updated_at": "2026-05-01T07:52:36.769Z",
+    "updated_at": "2026-05-01T17:00:36.542Z",
     "id": 171754933334632,
     "schema": {
       "image": {
@@ -768,7 +771,8 @@
         "filetypes": [
           "images"
         ],
-        "id": "nLX19tcSQb2ZE-5cztncFw"
+        "id": "nLX19tcSQb2ZE-5cztncFw",
+        "required": true
       },
       "name": {
         "type": "text",
