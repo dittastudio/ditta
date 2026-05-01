@@ -4,7 +4,7 @@
     "display_name": "Chips",
     "description": "",
     "created_at": "2026-04-30T22:10:04.014Z",
-    "updated_at": "2026-04-30T22:26:05.370Z",
+    "updated_at": "2026-05-01T11:53:48.085Z",
     "id": 171611766857927,
     "schema": {
       "heading": {
@@ -24,9 +24,19 @@
           "paragraph"
         ]
       },
+      "chips": {
+        "type": "bloks",
+        "display_name": "Chips",
+        "pos": 2,
+        "restrict_components": true,
+        "component_whitelist": [
+          "element_title"
+        ],
+        "id": "If8cia3pQ7eHvcQEHR29Fw"
+      },
       "theme": {
         "type": "option",
-        "pos": 2,
+        "pos": 3,
         "use_uuid": true,
         "source": "internal",
         "datasource_slug": "themes",
@@ -504,6 +514,38 @@
     "all_presets": [],
     "preset_id": null,
     "real_name": "Step",
+    "component_group_uuid": "a4bb317a-f2a8-450c-95ee-324278de45c2",
+    "color": null,
+    "icon": null,
+    "internal_tags_list": [],
+    "internal_tag_ids": [],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "element_title",
+    "display_name": "Title",
+    "description": null,
+    "created_at": "2026-05-01T11:51:45.532Z",
+    "updated_at": "2026-05-01T11:53:22.519Z",
+    "id": 171813705864158,
+    "schema": {
+      "title": {
+        "type": "text",
+        "display_name": "Title",
+        "pos": 0,
+        "id": "BfaUZp1sSwqqx4iVytOByQ",
+        "required": true
+      }
+    },
+    "image": null,
+    "preview_field": "title",
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Title",
     "component_group_uuid": "a4bb317a-f2a8-450c-95ee-324278de45c2",
     "color": null,
     "icon": null,

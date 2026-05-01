@@ -5,6 +5,7 @@ import type { StoryblokRichtext, StoryblokAsset, StoryblokMultilink } from '../s
 export interface BlockChips {
   heading?: string;
   copy?: StoryblokRichtext;
+  chips?: ElementTitle[];
   theme?: number | string;
   component: "block_chips";
   _uid: string;
@@ -78,6 +79,12 @@ export interface ElementStep {
   heading?: string;
   copy?: StoryblokRichtext;
   component: "element_step";
+  _uid: string;
+}
+
+export interface ElementTitle {
+  title: string;
+  component: "element_title";
   _uid: string;
 }
 
