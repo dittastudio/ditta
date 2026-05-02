@@ -9,7 +9,9 @@ export default defineConfig({
     semi: false,
     singleQuote: true,
     singleAttributePerLine: true,
-    ignorePatterns: ['.storyblok/**/*', '.claude/**/*', '.vscode/**/*'],
+    vueIndentScriptAndStyle: false,
+    printWidth: 120,
+    ignorePatterns: ['.storyblok/**/*', '.claude/**/*', '.vscode/**/*', '.agents/**/*'],
   },
   lint: {
     options: {

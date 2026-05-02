@@ -10,10 +10,7 @@ interface Entry {
   name: string
 }
 
-const getCategoryEntry = (
-  value?: string | string[] | number,
-  entries?: Entry[],
-): Entry | undefined => {
+const getCategoryEntry = (value?: string | string[] | number, entries?: Entry[]): Entry | undefined => {
   if (Array.isArray(entries) && value) {
     const category = Array.isArray(value) ? value[0] : value
     const entry = entries.find((entry: Entry) => entry.value === category)
@@ -47,21 +44,16 @@ const storyblokAssetType = (filename: string): 'image' | 'video' | 'other' => {
 const storyblokRichTextContent = (richtext: StoryblokRichtext | undefined): boolean =>
   Boolean(richtext?.content?.[0]?.content?.length)
 
-const storyblokSlug = (path: string): string =>
-  ['', '/'].includes(path) ? '/home' : path.replace(/\/+$/, '')
+const storyblokSlug = (path: string): string => (['', '/'].includes(path) ? '/home' : path.replace(/\/+$/, ''))
 
 // const isImageComponent = (media: Image): media is Image => media.component === 'image'
 
 type ContentTypes = Page
 
-const isPage = (
-  story: ISbStoryData<ContentTypes> | null | undefined,
-): story is ISbStoryData<Page> => Boolean(story?.content?.component === 'page')
+const isPage = (story: ISbStoryData<ContentTypes> | null | undefined): story is ISbStoryData<Page> =>
+  Boolean(story?.content?.component === 'page')
 
-const storyblokImage = (
-  filename: string | null | undefined,
-  modifiers?: Partial<ImageModifiers>,
-): string => {
+const storyblokImage = (filename: string | null | undefined, modifiers?: Partial<ImageModifiers>): string => {
   const image = useImage()
 
   const path = image(filename ?? '', {
@@ -77,9 +69,7 @@ const storyblokImage = (
   return path
 }
 
-const storyblokImageDimensions = (
-  filename: string | null | undefined,
-): { width: number; height: number } => {
+const storyblokImageDimensions = (filename: string | null | undefined): { width: number; height: number } => {
   if (!filename?.length) {
     return {
       width: 0,

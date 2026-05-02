@@ -15,10 +15,7 @@ export async function useStory<T>(
   const { story, error } = await useAsyncStoryblok(storyblokSlug(slug), {
     api: {
       version: isDraft ? 'draft' : 'published',
-      from_release:
-        typeof route.query?._storyblok_release === 'string'
-          ? route.query?._storyblok_release
-          : undefined,
+      from_release: typeof route.query?._storyblok_release === 'string' ? route.query?._storyblok_release : undefined,
       ...api,
     },
     bridge: {

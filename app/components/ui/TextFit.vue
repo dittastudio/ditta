@@ -53,11 +53,7 @@ const { text, tracking = '0em' } = defineProps<Props>()
       --support-sentinel: inherit;
       --captured-length: 100cqi;
       --ratio: tan(atan2(var(--available-space), var(--available-space) - var(--captured-length)));
-      --font-size: clamp(
-        1em,
-        1em * var(--ratio),
-        var(--max-font-size, infinity * 1px) - var(--support-sentinel)
-      );
+      --font-size: clamp(1em, 1em * var(--ratio), var(--max-font-size, infinity * 1px) - var(--support-sentinel));
       inline-size: var(--available-space);
 
       &:not(.text-fit) {

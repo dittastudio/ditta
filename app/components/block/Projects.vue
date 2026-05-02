@@ -37,18 +37,25 @@ const { block } = defineProps<Props>()
     </UiTicker>
 
     <div>
-      <div>
-        <h1>Projects</h1>
-
-        <pre>{{ block.projects }}</pre>
-        <!-- <ul>
-          <li v-for="project in block.projects" :key="project.id">
-            <NuxtLink :to="project._path">
-              {{ project.title }}
-            </NuxtLink>
-          </li>
-        </ul> -->
-      </div>
+      <!-- <pre>{{ block.projects }}</pre> -->
+      <ul>
+        <li
+          v-for="project in block.projects"
+          :key="typeof project === 'string' ? project : project.uuid"
+        >
+          <NuxtImg
+            v-if="
+              typeof project !== 'string' &&
+              project?.content?.media?.filename &&
+              storyblokAssetType(project.content.media.filename) === 'image'
+            "
+            class="block w-full rounded-20"
+            :src="project.content.media.filename"
+            :alt="project.content.media.alt || project.content.title || ''"
+            loading="lazy"
+          />
+        </li>
+      </ul>
     </div>
   </div>
 </template>

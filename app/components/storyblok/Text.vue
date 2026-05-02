@@ -33,11 +33,7 @@ const CustomLink = Mark.create({
 type VNodeResult = VNode | VNode[]
 type RenderChildren = VNodeResult | (() => VNodeResult)
 
-const renderFn = (
-  tag: string | Component,
-  attrs: BlockAttributes,
-  children?: RenderChildren,
-): VNodeResult => {
+const renderFn = (tag: string | Component, attrs: BlockAttributes, children?: RenderChildren): VNodeResult => {
   if (typeof tag !== 'string' && children != null) {
     const resolved = typeof children === 'function' ? children() : children
     return h(tag, attrs, { default: () => (Array.isArray(resolved) ? resolved : [resolved]) })

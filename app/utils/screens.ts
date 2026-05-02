@@ -4,9 +4,7 @@ const getBreakpoint = (breakpoint: string): number => {
     return 0
   }
 
-  const value = getComputedStyle(document.documentElement).getPropertyValue(
-    `--breakpoint-${breakpoint}`,
-  )
+  const value = getComputedStyle(document.documentElement).getPropertyValue(`--breakpoint-${breakpoint}`)
 
   return value ? Number.parseInt(value, 10) : 0
 }

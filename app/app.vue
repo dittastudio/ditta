@@ -79,12 +79,8 @@ const services = [
           <h2 class="text-title">Title</h2>
           <h3 class="text-heading">Heading</h3>
           <h4 class="text-subheading">Subheading</h4>
-          <p class="text-lead">
-            Lead: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus.
-          </p>
-          <p class="text-body">
-            Body: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus.
-          </p>
+          <p class="text-lead">Lead: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus.</p>
+          <p class="text-body">Body: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus.</p>
 
           <ul class="flex flex-wrap gap-5">
             <li v-for="service in services">

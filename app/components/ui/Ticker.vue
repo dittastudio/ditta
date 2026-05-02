@@ -10,11 +10,7 @@ interface Props {
 
 gsap.registerPlugin(ScrollTrigger)
 
-const {
-  direction = 'left',
-  duration = '60s',
-  spacingClasses = 'gap-80 px-40',
-} = defineProps<Props>()
+const { direction = 'left', duration = '60s', spacingClasses = 'gap-80 px-40' } = defineProps<Props>()
 
 const container = useTemplateRef('container')
 const wrappers = useTemplateRef('wrappers')

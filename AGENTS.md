@@ -170,13 +170,13 @@ These rules govern every Figma-driven implementation in this repo.
 
 ## Quick Reference
 
-| Task | Where / How |
-|---|---|
-| Add a design token | `app/assets/css/app.css` → `@theme { ... }` |
-| Add an SVG icon | Drop in `app/assets/icons/`, import as `@/assets/icons/foo.svg` |
-| Add a global utility class | `app/assets/css/utils.css` (custom variants) or appropriate `@layer` |
-| Add a Storyblok block component | `app/components/storyblok/<BlockName>.vue` |
-| Add a route | `app/pages/...` (file-based) |
-| Add a composable | `app/composables/use<Name>.ts` (auto-imported) |
-| Regenerate Storyblok types | `npm run sb:generate` |
-| Run dev server | `npm run dev` |
+| Task                            | Where / How                                                          |
+| ------------------------------- | -------------------------------------------------------------------- |
+| Add a design token              | `app/assets/css/app.css` → `@theme { ... }`                          |
+| Add an SVG icon                 | Drop in `app/assets/icons/`, import as `@/assets/icons/foo.svg`      |
+| Add a global utility class      | `app/assets/css/utils.css` (custom variants) or appropriate `@layer` |
+| Add a Storyblok block component | `app/components/storyblok/<BlockName>.vue`                           |
+| Add a route                     | `app/pages/...` (file-based)                                         |
+| Add a composable                | `app/composables/use<Name>.ts` (auto-imported)                       |
+| Regenerate Storyblok types      | `npm run sb:generate`                                                |
+| Run dev server                  | `npm run dev`                                                        |

@@ -5,5 +5,5 @@
   "singleAttributePerLine": true,
   "vueIndentScriptAndStyle": false,
   "printWidth": 120,
-  "ignorePatterns": [".storyblok/**/*", ".claude/**/*", ".vscode/**/*"]
+  "ignorePatterns": [".storyblok/**/*", ".claude/**/*", ".vscode/**/*", ".agents/**/*"]
 }
