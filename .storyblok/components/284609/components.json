@@ -4,13 +4,14 @@
     "display_name": "Chips",
     "description": "",
     "created_at": "2026-04-30T22:10:04.014Z",
-    "updated_at": "2026-05-01T13:21:28.888Z",
+    "updated_at": "2026-05-02T14:52:06.800Z",
     "id": 171611766857927,
     "schema": {
       "heading": {
-        "type": "text",
+        "type": "textarea",
         "pos": 0,
-        "id": "iN5PFIKIR3WjAYjK-YZVnQ"
+        "id": "iN5PFIKIR3WjAYjK-YZVnQ",
+        "required": true
       },
       "copy": {
         "type": "richtext",
@@ -22,7 +23,8 @@
           "unset",
           "italic",
           "paragraph"
-        ]
+        ],
+        "required": true
       },
       "chips": {
         "type": "bloks",
@@ -276,7 +278,7 @@
     "display_name": "Statement",
     "description": "",
     "created_at": "2026-04-29T13:18:23.308Z",
-    "updated_at": "2026-05-01T13:21:48.205Z",
+    "updated_at": "2026-05-02T14:52:42.278Z",
     "id": 171127207159869,
     "schema": {
       "text": {
@@ -290,7 +292,8 @@
           "paragraph",
           "unset"
         ],
-        "id": "t21j7400ShCWIYSOldrRDg"
+        "id": "t21j7400ShCWIYSOldrRDg",
+        "required": true
       },
       "theme": {
         "type": "option",
@@ -340,13 +343,14 @@
     "display_name": "Steps",
     "description": null,
     "created_at": "2026-05-01T07:20:05.722Z",
-    "updated_at": "2026-05-01T13:21:55.099Z",
+    "updated_at": "2026-05-02T14:51:48.496Z",
     "id": 171746941846058,
     "schema": {
       "heading": {
-        "type": "text",
+        "type": "textarea",
         "pos": 0,
-        "id": "g58tjM2jSS62QObgv4QfRA"
+        "id": "g58tjM2jSS62QObgv4QfRA",
+        "required": true
       },
       "copy": {
         "type": "richtext",
@@ -358,7 +362,8 @@
           "unset",
           "paragraph"
         ],
-        "id": "ldXNXw9_TYeSt4-Mb4Jx0Q"
+        "id": "ldXNXw9_TYeSt4-Mb4Jx0Q",
+        "required": true
       },
       "theme": {
         "type": "option",
@@ -417,13 +422,14 @@
     "display_name": "Team",
     "description": null,
     "created_at": "2026-05-01T07:52:46.579Z",
-    "updated_at": "2026-05-01T16:31:55.125Z",
+    "updated_at": "2026-05-02T14:52:31.989Z",
     "id": 171754973512298,
     "schema": {
       "heading": {
         "type": "textarea",
         "pos": 0,
-        "id": "XZykLKWsTy-aN8DuuBSeuA"
+        "id": "XZykLKWsTy-aN8DuuBSeuA",
+        "required": true
       },
       "copy": {
         "type": "richtext",
@@ -435,7 +441,8 @@
           "unset",
           "paragraph"
         ],
-        "id": "c0cwCSQ3Q_eNp1_1X60cfQ"
+        "id": "c0cwCSQ3Q_eNp1_1X60cfQ",
+        "required": true
       },
       "cta": {
         "type": "bloks",

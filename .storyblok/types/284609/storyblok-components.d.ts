@@ -3,8 +3,8 @@
 import type { ISbStoryData } from '@storyblok/js';
 import type { StoryblokRichtext, StoryblokMultilink, StoryblokAsset } from '../storyblok.d.ts';
 export interface BlockChips {
-  heading?: string;
-  copy?: StoryblokRichtext;
+  heading: string;
+  copy: StoryblokRichtext;
   chips?: ElementTitle[];
   theme?: number | string;
   spacing_top?: boolean;
@@ -43,7 +43,7 @@ export interface BlockProjects {
 }
 
 export interface BlockStatement {
-  text?: StoryblokRichtext;
+  text: StoryblokRichtext;
   theme?: number | string;
   spacing_top?: boolean;
   spacing_bottom?: boolean;
@@ -52,8 +52,8 @@ export interface BlockStatement {
 }
 
 export interface BlockSteps {
-  heading?: string;
-  copy?: StoryblokRichtext;
+  heading: string;
+  copy: StoryblokRichtext;
   theme?: number | string;
   steps?: ElementStep[];
   spacing_top?: boolean;
@@ -63,8 +63,8 @@ export interface BlockSteps {
 }
 
 export interface BlockTeam {
-  heading?: string;
-  copy?: StoryblokRichtext;
+  heading: string;
+  copy: StoryblokRichtext;
   cta?: ElementCta[];
   humans?: (ISbStoryData<Person> | string)[];
   theme?: number | string;
