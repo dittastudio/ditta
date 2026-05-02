@@ -25,7 +25,7 @@ const { block } = defineProps<Props>()
           v-for="i in 4"
           class="text-display"
         >
-          {{ block.ticker }}
+          {{ block.ticker }} —
         </div>
       </UiTicker>
 
