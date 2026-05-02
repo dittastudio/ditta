@@ -87,7 +87,9 @@ onMounted(() => {
 
   const observer = new ResizeObserver((entries) => {
     const entry = entries[0]
+
     if (!entry) return
+
     const { width: newW, height: newH } = entry.contentRect
 
     walls.forEach((wall) => Composite.remove(engine.world, wall))
@@ -143,15 +145,12 @@ onUnmounted(() => stopPhysics?.())
       'pb-(--app-vertical-rhythm)': block.spacing_bottom,
     }"
   >
-    <div class="relative z-1">
+    <div class="relative z-1 pb-80 pointer-events-none">
       <UiLockup
         :heading="block.heading"
         :copy="block.copy"
+        class="pointer-events-auto"
       />
-    </div>
-
-    <div class="w-full h-80">
-      <!-- Filler element to create space. -->
     </div>
 
     <ul
