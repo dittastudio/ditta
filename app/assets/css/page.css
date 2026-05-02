@@ -1,7 +1,7 @@
 @layer base {
   html {
     color: var(--color-black);
-    background-color: var(--color-pink);
+    background-color: var(--color-accent);
   }
 
   body {

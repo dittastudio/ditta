@@ -28,7 +28,10 @@ const button = computed(() => block.cta?.[0])
       </h2>
 
       <div class="@4xl:col-span-6 flex flex-col gap-10 md:gap-20">
-        <UiLockup :copy="block.copy" />
+        <UiLockup
+          v-if="storyblokRichTextContent(block.copy)"
+          :copy="block.copy"
+        />
 
         <StoryblokLink
           v-if="button?.link"
