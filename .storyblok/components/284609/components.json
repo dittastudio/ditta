@@ -4,13 +4,14 @@
     "display_name": "Chips",
     "description": "",
     "created_at": "2026-04-30T22:10:04.014Z",
-    "updated_at": "2026-05-01T13:21:28.888Z",
+    "updated_at": "2026-05-02T14:52:06.800Z",
     "id": 171611766857927,
     "schema": {
       "heading": {
-        "type": "text",
+        "type": "textarea",
         "pos": 0,
-        "id": "iN5PFIKIR3WjAYjK-YZVnQ"
+        "id": "iN5PFIKIR3WjAYjK-YZVnQ",
+        "required": true
       },
       "copy": {
         "type": "richtext",
@@ -22,7 +23,8 @@
           "unset",
           "italic",
           "paragraph"
-        ]
+        ],
+        "required": true
       },
       "chips": {
         "type": "bloks",
@@ -276,7 +278,7 @@
     "display_name": "Statement",
     "description": "",
     "created_at": "2026-04-29T13:18:23.308Z",
-    "updated_at": "2026-05-01T13:21:48.205Z",
+    "updated_at": "2026-05-02T14:52:42.278Z",
     "id": 171127207159869,
     "schema": {
       "text": {
@@ -290,7 +292,8 @@
           "paragraph",
           "unset"
         ],
-        "id": "t21j7400ShCWIYSOldrRDg"
+        "id": "t21j7400ShCWIYSOldrRDg",
+        "required": true
       },
       "theme": {
         "type": "option",
@@ -340,13 +343,14 @@
     "display_name": "Steps",
     "description": null,
     "created_at": "2026-05-01T07:20:05.722Z",
-    "updated_at": "2026-05-01T13:21:55.099Z",
+    "updated_at": "2026-05-02T14:51:48.496Z",
     "id": 171746941846058,
     "schema": {
       "heading": {
-        "type": "text",
+        "type": "textarea",
         "pos": 0,
-        "id": "g58tjM2jSS62QObgv4QfRA"
+        "id": "g58tjM2jSS62QObgv4QfRA",
+        "required": true
       },
       "copy": {
         "type": "richtext",
@@ -358,7 +362,8 @@
           "unset",
           "paragraph"
         ],
-        "id": "ldXNXw9_TYeSt4-Mb4Jx0Q"
+        "id": "ldXNXw9_TYeSt4-Mb4Jx0Q",
+        "required": true
       },
       "theme": {
         "type": "option",
@@ -417,13 +422,14 @@
     "display_name": "Team",
     "description": null,
     "created_at": "2026-05-01T07:52:46.579Z",
-    "updated_at": "2026-05-01T16:31:55.125Z",
+    "updated_at": "2026-05-02T14:52:31.989Z",
     "id": 171754973512298,
     "schema": {
       "heading": {
         "type": "textarea",
         "pos": 0,
-        "id": "XZykLKWsTy-aN8DuuBSeuA"
+        "id": "XZykLKWsTy-aN8DuuBSeuA",
+        "required": true
       },
       "copy": {
         "type": "richtext",
@@ -435,7 +441,8 @@
           "unset",
           "paragraph"
         ],
-        "id": "c0cwCSQ3Q_eNp1_1X60cfQ"
+        "id": "c0cwCSQ3Q_eNp1_1X60cfQ",
+        "required": true
       },
       "cta": {
         "type": "bloks",
@@ -601,6 +608,44 @@
     "all_presets": [],
     "preset_id": null,
     "real_name": "CTA",
+    "component_group_uuid": "a4bb317a-f2a8-450c-95ee-324278de45c2",
+    "color": null,
+    "icon": null,
+    "internal_tags_list": [],
+    "internal_tag_ids": [],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "element_link",
+    "display_name": "Link",
+    "description": null,
+    "created_at": "2026-05-02T15:16:49.090Z",
+    "updated_at": "2026-05-02T15:20:35.924Z",
+    "id": 172217995643769,
+    "schema": {
+      "text": {
+        "type": "text",
+        "pos": 0,
+        "id": "IngNbqyNSFWnCooXb4D_2Q",
+        "required": true
+      },
+      "link": {
+        "type": "multilink",
+        "pos": 1,
+        "id": "_RYUiKUVRLKBsYtdc-4fdg",
+        "required": true,
+        "email_link_type": true
+      }
+    },
+    "image": null,
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Link",
     "component_group_uuid": "a4bb317a-f2a8-450c-95ee-324278de45c2",
     "color": null,
     "icon": null,
@@ -807,19 +852,18 @@
     "display_name": null,
     "description": null,
     "created_at": "2026-04-28T14:01:45.750Z",
-    "updated_at": "2026-04-28T14:02:33.341Z",
+    "updated_at": "2026-05-02T13:26:18.783Z",
     "id": 170783972357679,
     "schema": {
-      "blocks": {
-        "type": "bloks",
+      "title": {
+        "type": "text",
+        "pos": 0,
+        "id": "QDDZJR-sSZ6EesCIlI_03g"
+      },
+      "media": {
+        "type": "asset",
         "pos": 1,
-        "restrict_type": "groups",
-        "restrict_components": true,
-        "component_whitelist": [],
-        "component_group_whitelist": [
-          "c56a9133-c409-488d-9f91-40d75d6e78cd"
-        ],
-        "id": "TEthTDcMRGOFSALxUXkDOA"
+        "id": "_BusU_2qT3yDcDBhPpe83w"
       },
       "tab-554f4d6b-1445-4095-a716-160ff3edcf74": {
         "display_name": "SEO",
@@ -830,25 +874,48 @@
         ],
         "pos": 2,
         "type": "tab",
-        "id": "VU9NaxRFQJWnFhYP8-3PdA"
+        "id": "VU9NaxRFQJWnFhYP8-3PdA",
+        "name": "tab-554f4d6b-1445-4095-a716-160ff3edcf74"
+      },
+      "tab-6aa7f8d0-ec3e-453b-a4ae-fee0363bbd0a": {
+        "display_name": "Preview",
+        "keys": [
+          "media",
+          "title"
+        ],
+        "pos": 3,
+        "type": "tab",
+        "name": "tab-6aa7f8d0-ec3e-453b-a4ae-fee0363bbd0a",
+        "id": "aqf40Ow-RTukrv7gNju9Cg"
+      },
+      "blocks": {
+        "type": "bloks",
+        "pos": 4,
+        "restrict_type": "groups",
+        "restrict_components": true,
+        "component_whitelist": [],
+        "component_group_whitelist": [
+          "c56a9133-c409-488d-9f91-40d75d6e78cd"
+        ],
+        "id": "TEthTDcMRGOFSALxUXkDOA"
       },
       "seo_title": {
         "type": "text",
-        "pos": 3,
+        "pos": 5,
         "id": "cOLSOMqqSKCsh7L2xWHwnA",
         "required": true,
         "display_name": "Title"
       },
       "seo_description": {
         "type": "text",
-        "pos": 4,
+        "pos": 6,
         "id": "qcOA9qamSeOqJl7K5u2oAw",
         "required": true,
         "display_name": "Description"
       },
       "seo_image": {
         "type": "asset",
-        "pos": 5,
+        "pos": 7,
         "required": true,
         "display_name": "Image",
         "description": "For best results, use an image size of 1200px by 630px.",
@@ -922,12 +989,23 @@
     "display_name": null,
     "description": "Settings",
     "created_at": "2025-05-29T12:28:50.243Z",
-    "updated_at": "2026-04-30T09:02:31.201Z",
+    "updated_at": "2026-05-02T15:20:08.505Z",
     "id": 7399417,
     "schema": {
+      "navigation": {
+        "type": "bloks",
+        "pos": 0,
+        "id": "Mtt3hCT3Te24yKI7twDeuA",
+        "restrict_type": "",
+        "restrict_components": true,
+        "component_whitelist": [
+          "element_link"
+        ],
+        "component_denylist": []
+      },
       "footer_copy": {
         "type": "richtext",
-        "pos": 0,
+        "pos": 1,
         "id": "8UEBcPzDRP6fm29oSfpz2A",
         "customize_toolbar": true,
         "toolbar": [
@@ -941,7 +1019,7 @@
       },
       "footer_copy_v2": {
         "type": "richtext",
-        "pos": 1,
+        "pos": 2,
         "customize_toolbar": true,
         "toolbar": [
           "h2",

@@ -137,7 +137,7 @@ onUnmounted(() => stopPhysics?.())
 
 <template>
   <div
-    class="wrapper relative"
+    class="wrapper relative overflow-hidden"
     :class="{
       'pt-(--app-vertical-rhythm)': block.spacing_top,
       'pb-(--app-vertical-rhythm)': block.spacing_bottom,

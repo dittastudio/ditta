@@ -13,7 +13,7 @@ gsap.registerPlugin(ScrollTrigger)
 const {
   direction = 'left',
   duration = '60s',
-  spacingClasses = 'gap-40 px-20',
+  spacingClasses = 'gap-80 px-40',
 } = defineProps<Props>()
 
 const container = useTemplateRef('container')

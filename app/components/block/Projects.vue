@@ -10,24 +10,51 @@ const { block } = defineProps<Props>()
 
 <template>
   <div
-    class=""
     :class="{
       'pt-(--app-vertical-rhythm)': block.spacing_top,
       'pb-(--app-vertical-rhythm)': block.spacing_bottom,
     }"
   >
-    <div
+    <UiTicker
       v-if="block.ticker"
-      class="w-full"
+      spacing-classes="gap-10 px-5"
     >
-      <UiTicker>
-        <div
-          v-for="i in 4"
-          class="text-display"
-        >
+      <template
+        v-for="i in 4"
+        :key="i"
+      >
+        <div class="ui-ticker__text text-display">
           {{ block.ticker }}
         </div>
-      </UiTicker>
+
+        <div
+          aria-hidden="true"
+          class="ui-ticker__text text-display"
+        >
+          &mdash;
+        </div>
+      </template>
+    </UiTicker>
+
+    <div>
+      <div>
+        <h1>Projects</h1>
+
+        <pre>{{ block.projects }}</pre>
+        <!-- <ul>
+          <li v-for="project in block.projects" :key="project.id">
+            <NuxtLink :to="project._path">
+              {{ project.title }}
+            </NuxtLink>
+          </li>
+        </ul> -->
+      </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.ui-ticker__text {
+  font-size: utopia.clamp(120, 160);
+}
+</style>
