@@ -17,10 +17,16 @@ const humans = computed(() => block.humans?.filter((human) => typeof human !== '
       'pb-(--app-vertical-rhythm)': block.spacing_bottom,
     }"
   >
-    <div class="grid grid-cols-1 gap-x-(--app-gutter-inner) gap-y-20 @4xl:grid-cols-12">
+    <div class="grid grid-cols-1 gap-x-(--app-gutter-inner) gap-y-10 md:gap-y-20 @4xl:grid-cols-12">
+      <h2
+        v-if="block.heading"
+        class="col-span-full text-display whitespace-pre-wrap trim-both"
+      >
+        {{ block.heading }}
+      </h2>
+
       <UiLockup
         class="@4xl:col-span-6"
-        :heading="block.heading"
         :copy="block.copy"
       />
 

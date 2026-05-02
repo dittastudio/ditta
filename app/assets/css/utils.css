@@ -8,3 +8,7 @@
   margin-inline: auto;
   padding-inline: var(--app-gutter-outer);
 }
+
+@utility trim-both {
+  text-box: trim-both cap alphabetic;
+}

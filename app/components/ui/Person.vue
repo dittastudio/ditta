@@ -22,7 +22,7 @@ const { name, position } = defineProps<Props>()
 
     <p class="text-lead">
       <strong v-if="name">{{ name }}</strong>
-      <template v-if="position"><br />{{ position }}</template>
+      <template v-if="position"><br v-if="name" />{{ position }}</template>
     </p>
   </div>
 </template>
