@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { Themes } from '@/types/app'
 import type { BlockTeam } from '#storyblok-components'
 
 interface Props {
@@ -7,6 +8,7 @@ interface Props {
 
 const { block } = defineProps<Props>()
 const humans = computed(() => block.humans?.filter((human) => typeof human !== 'string') || [])
+const button = computed(() => block.cta?.[0])
 </script>
 
 <template>
@@ -25,10 +27,19 @@ const humans = computed(() => block.humans?.filter((human) => typeof human !== '
         {{ block.heading }}
       </h2>
 
-      <UiLockup
-        class="@4xl:col-span-6"
-        :copy="block.copy"
-      />
+      <div class="@4xl:col-span-6 flex flex-col gap-10 md:gap-20">
+        <UiLockup :copy="block.copy" />
+
+        <StoryblokLink
+          v-if="button?.link"
+          :item="button.link"
+        >
+          <UiButton
+            :text="button.text"
+            :theme="button.theme as Themes"
+          />
+        </StoryblokLink>
+      </div>
 
       <div class="@container/team @4xl:col-span-5 @4xl:col-end-13">
         <ul class="flex flex-col gap-[calc(var(--app-gutter-inner)*4)] @2xl/team:flex-row">

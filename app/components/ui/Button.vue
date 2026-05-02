@@ -11,14 +11,14 @@ const { theme, text } = defineProps<Props>()
 
 <template>
   <span
-    class="ui-button inline-flex items-center gap-[0.71em] text-lead font-[600] leading-none rounded-full py-2.5 md:py-3.75 pr-2.5 md:pr-3.75 pl-5 md:pl-6"
+    class="ui-button select-none inline-flex items-center gap-[0.71em] text-lead font-[600] leading-none rounded-full py-2.5 md:py-3.75 pr-2.5 md:pr-3.75 pl-5 md:pl-6"
     :class="[theme ? themeClasses[theme as Themes] : '']"
   >
     <span class="mt-[-0.15em] mb-[-0.1em]">
       {{ text }}
     </span>
 
-    <span class="ui-button__icon size-[1em] rounded-full aspect-square bg-pink" />
+    <span class="ui-button__icon size-[1em] rounded-full aspect-square bg-accent" />
   </span>
 </template>
 
