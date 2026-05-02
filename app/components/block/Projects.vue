@@ -28,6 +28,8 @@ const { block } = defineProps<Props>()
           {{ block.ticker }}
         </div>
       </UiTicker>
+
+      <pre>{{ block.projects }}</pre>
     </div>
   </div>
 </template>
