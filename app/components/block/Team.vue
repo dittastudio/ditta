@@ -27,7 +27,7 @@ const button = computed(() => block.cta?.[0])
         {{ block.heading }}
       </h2>
 
-      <div class="@4xl:col-span-6 flex flex-col gap-10 md:gap-20">
+      <div class="@4xl:col-span-6 flex flex-col items-start gap-10 md:gap-20">
         <UiLockup
           v-if="storyblokRichTextContent(block.copy)"
           :copy="block.copy"
