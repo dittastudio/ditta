@@ -122,6 +122,8 @@ export interface Person {
 }
 
 export interface Project {
+  title?: string;
+  media?: StoryblokAsset;
   blocks?: (BlockChips | BlockCta | BlockImage | BlockProjects | BlockStatement | BlockSteps | BlockTeam | BlockText)[];
   seo_title: string;
   seo_description: string;

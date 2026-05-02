@@ -807,19 +807,18 @@
     "display_name": null,
     "description": null,
     "created_at": "2026-04-28T14:01:45.750Z",
-    "updated_at": "2026-04-28T14:02:33.341Z",
+    "updated_at": "2026-05-02T13:26:18.783Z",
     "id": 170783972357679,
     "schema": {
-      "blocks": {
-        "type": "bloks",
+      "title": {
+        "type": "text",
+        "pos": 0,
+        "id": "QDDZJR-sSZ6EesCIlI_03g"
+      },
+      "media": {
+        "type": "asset",
         "pos": 1,
-        "restrict_type": "groups",
-        "restrict_components": true,
-        "component_whitelist": [],
-        "component_group_whitelist": [
-          "c56a9133-c409-488d-9f91-40d75d6e78cd"
-        ],
-        "id": "TEthTDcMRGOFSALxUXkDOA"
+        "id": "_BusU_2qT3yDcDBhPpe83w"
       },
       "tab-554f4d6b-1445-4095-a716-160ff3edcf74": {
         "display_name": "SEO",
@@ -830,25 +829,48 @@
         ],
         "pos": 2,
         "type": "tab",
-        "id": "VU9NaxRFQJWnFhYP8-3PdA"
+        "id": "VU9NaxRFQJWnFhYP8-3PdA",
+        "name": "tab-554f4d6b-1445-4095-a716-160ff3edcf74"
+      },
+      "tab-6aa7f8d0-ec3e-453b-a4ae-fee0363bbd0a": {
+        "display_name": "Preview",
+        "keys": [
+          "media",
+          "title"
+        ],
+        "pos": 3,
+        "type": "tab",
+        "name": "tab-6aa7f8d0-ec3e-453b-a4ae-fee0363bbd0a",
+        "id": "aqf40Ow-RTukrv7gNju9Cg"
+      },
+      "blocks": {
+        "type": "bloks",
+        "pos": 4,
+        "restrict_type": "groups",
+        "restrict_components": true,
+        "component_whitelist": [],
+        "component_group_whitelist": [
+          "c56a9133-c409-488d-9f91-40d75d6e78cd"
+        ],
+        "id": "TEthTDcMRGOFSALxUXkDOA"
       },
       "seo_title": {
         "type": "text",
-        "pos": 3,
+        "pos": 5,
         "id": "cOLSOMqqSKCsh7L2xWHwnA",
         "required": true,
         "display_name": "Title"
       },
       "seo_description": {
         "type": "text",
-        "pos": 4,
+        "pos": 6,
         "id": "qcOA9qamSeOqJl7K5u2oAw",
         "required": true,
         "display_name": "Description"
       },
       "seo_image": {
         "type": "asset",
-        "pos": 5,
+        "pos": 7,
         "required": true,
         "display_name": "Image",
         "description": "For best results, use an image size of 1200px by 630px.",
