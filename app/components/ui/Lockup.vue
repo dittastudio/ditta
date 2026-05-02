@@ -13,7 +13,7 @@ const { heading, copy } = defineProps<Props>()
   <div class="flex flex-col gap-10 md:gap-20">
     <h2
       v-if="heading"
-      class="text-display max-w-[5em]"
+      class="text-display whitespace-pre-wrap trim-both"
     >
       {{ heading }}
     </h2>

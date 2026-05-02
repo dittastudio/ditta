@@ -7,9 +7,7 @@ interface Props {
 }
 
 const { block } = defineProps<Props>()
-
-const button = block.button?.[0]
-const buttonTheme = computed(() => button?.theme as Themes | undefined)
+const button = computed(() => block.button?.[0])
 </script>
 
 <template>
@@ -32,8 +30,8 @@ const buttonTheme = computed(() => button?.theme as Themes | undefined)
       :item="button.link"
     >
       <UiButton
-        :text="button.text || ''"
-        :theme="buttonTheme"
+        :text="button.text"
+        :theme="button.theme as Themes"
       />
     </StoryblokLink>
   </div>
