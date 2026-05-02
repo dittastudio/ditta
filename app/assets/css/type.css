@@ -41,7 +41,7 @@
 @utility text-lead {
   font-family: var(--font-sans);
   font-size: var(--text-20);
-  line-height: 1.2;
+  line-height: 1.3;
   font-weight: var(--font-weight-regular);
   letter-spacing: var(--tracking-normal);
 
