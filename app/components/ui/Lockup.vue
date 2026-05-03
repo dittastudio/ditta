@@ -10,7 +10,7 @@ const { heading, copy } = defineProps<Props>()
 </script>
 
 <template>
-  <div class="flex flex-col gap-10 md:gap-20">
+  <div class="flex flex-col items-start gap-10 md:gap-20">
     <h2
       v-if="heading"
       class="text-display whitespace-pre-wrap trim-both"

@@ -156,7 +156,7 @@ onUnmounted(() => stopPhysics?.())
       <UiLockup
         :heading="block.heading"
         :copy="block.copy"
-        class="pointer-events-auto"
+        class="*:pointer-events-auto"
       />
     </div>
 
