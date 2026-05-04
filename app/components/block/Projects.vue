@@ -9,10 +9,8 @@ const { block } = defineProps<Props>()
 
 const projects = computed(() => block.projects?.filter((project) => typeof project !== 'string') || [])
 
-const projectsList = computed(() => [...projects.value, ...projects.value])
-
 const rotations = computed(() =>
-  projectsList.value.map((_, index) => {
+  projects.value.map((_, index) => {
     const sign = index % 2 === 0 ? -1 : 1
     return {
       '--deg-from': `${Math.round(sign * 6 * Math.random() * 5)}deg`,
@@ -54,7 +52,7 @@ const rotations = computed(() =>
     <div class="wrapper grid grid-cols-1 md:grid-cols-12 gap-(--app-gutter-inner)">
       <ul class="col-span-1 md:col-start-2 md:col-span-10">
         <li
-          v-for="(project, index) in projectsList"
+          v-for="(project, index) in projects"
           :key="`${project.uuid}-${index}`"
           class="sticky top-0 h-screen w-full flex flex-col items-center py-10"
         >
