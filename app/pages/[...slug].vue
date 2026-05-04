@@ -29,5 +29,10 @@ useSeoMeta({
       v-if="isPage(story)"
       :story="story"
     />
+
+    <TemplateProject
+      v-else-if="isProject(story)"
+      :story="story"
+    />
   </main>
 </template>

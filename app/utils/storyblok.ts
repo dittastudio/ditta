@@ -1,4 +1,4 @@
-import type { Page } from '#storyblok-components'
+import type { Page, Project } from '#storyblok-components'
 import type { StoryblokRichtext } from '#storyblok-types'
 import type { ImageModifiers } from '@nuxt/image'
 import type { ISbStoryData } from '@storyblok/js'
@@ -48,10 +48,13 @@ const storyblokSlug = (path: string): string => (['', '/'].includes(path) ? '/ho
 
 // const isImageComponent = (media: Image): media is Image => media.component === 'image'
 
-type ContentTypes = Page
+type ContentTypes = Page | Project
 
 const isPage = (story: ISbStoryData<ContentTypes> | null | undefined): story is ISbStoryData<Page> =>
   Boolean(story?.content?.component === 'page')
+
+const isProject = (story: ISbStoryData<ContentTypes> | null | undefined): story is ISbStoryData<Project> =>
+  Boolean(story?.content?.component === 'project')
 
 const storyblokImage = (filename: string | null | undefined, modifiers?: Partial<ImageModifiers>): string => {
   const image = useImage()
@@ -95,6 +98,7 @@ export {
   getCategoryEntry,
   // isImageComponent,
   isPage,
+  isProject,
   storyblokAssetType,
   storyblokEditor,
   storyblokImage,
