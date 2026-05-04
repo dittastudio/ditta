@@ -9,13 +9,18 @@ const { block } = defineProps<Props>()
 
 const projects = computed(() => block.projects?.filter((project) => typeof project !== 'string') || [])
 
+function seededRand(seed: number) {
+  const x = Math.sin(seed) * 10000
+  return x - Math.floor(x)
+}
+
 const rotations = computed(() =>
   projects.value.map((_, index) => {
     const sign = index % 2 === 0 ? -1 : 1
     return {
-      '--deg-from': `${Math.round(sign * 6 * Math.random() * 5)}deg`,
-      '--deg-to': `${Math.round(-sign * Math.random() * 5)}deg`,
-      '--translate-from': `${Math.round(sign * Math.random() * 25)}% 50% 0`,
+      '--deg-from': `${Math.round(sign * 6 * seededRand(index * 3) * 5)}deg`,
+      '--deg-to': `${Math.round(-sign * seededRand(index * 3 + 1) * 5)}deg`,
+      '--translate-from': `${Math.round(sign * seededRand(index * 3 + 2) * 25)}% 50% 0`,
     }
   }),
 )
