@@ -82,6 +82,12 @@ export interface BlockText {
   _uid: string;
 }
 
+export interface Client {
+  name: string;
+  component: "client";
+  _uid: string;
+}
+
 export interface ElementCta {
   text: string;
   link: Exclude<StoryblokMultilink, {linktype?: "asset"}>;
@@ -129,9 +135,11 @@ export interface Person {
 }
 
 export interface Project {
+  client: ISbStoryData<Client> | string;
+  Credits?: ElementLink[];
+  blocks?: (BlockChips | BlockCta | BlockImage | BlockProjects | BlockStatement | BlockSteps | BlockTeam | BlockText)[];
   title?: string;
   media?: StoryblokAsset;
-  blocks?: (BlockChips | BlockCta | BlockImage | BlockProjects | BlockStatement | BlockSteps | BlockTeam | BlockText)[];
   seo_title: string;
   seo_description: string;
   seo_image: StoryblokAsset;
@@ -155,4 +163,4 @@ export interface Settings {
   _uid: string;
 }
 
-export type ContentType = Page | Person | Project | Settings;
+export type ContentType = Client | Page | Person | Project | Settings;
