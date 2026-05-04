@@ -11,6 +11,8 @@ const { story } = defineProps<Props>()
 </script>
 
 <template>
+  <BlockHero />
+
   <section
     v-for="block in story.content.blocks"
     :key="block._uid"

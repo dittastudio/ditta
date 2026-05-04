@@ -52,8 +52,6 @@ const services = [
 
 <template>
   <div>
-    <BlockHero />
-
     <NuxtPage />
 
     <div class="bg-black text-grey">
