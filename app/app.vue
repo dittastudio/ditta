@@ -52,7 +52,14 @@ const services = [
 
 <template>
   <div>
-    <AppNavigation :items="settings.content.navigation" />
+    <p v-if="settings.content.tagline">
+      {{ settings.content.tagline }}
+    </p>
+
+    <AppNavigation
+      v-if="settings.content.navigation"
+      :items="settings.content.navigation"
+    />
 
     <NuxtPage />
 
