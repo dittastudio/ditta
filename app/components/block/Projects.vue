@@ -56,7 +56,8 @@ const rotations = computed(() =>
           :key="`${project.uuid}-${index}`"
           class="sticky top-0 h-screen w-full flex flex-col items-center py-10"
         >
-          <div
+          <NuxtLink
+            :to="`/${project.full_slug}`"
             class="project__item flex flex-col justify-center max-w-full h-full aspect-video"
             :style="rotations[index]"
           >
@@ -64,7 +65,7 @@ const rotations = computed(() =>
               :title="project.content.title"
               :image="project.content.media"
             />
-          </div>
+          </NuxtLink>
         </li>
       </ul>
     </div>

@@ -35,6 +35,25 @@ export default defineNuxtConfig({
       },
     ],
   ],
+  app: {
+    pageTransition: { name: 'fade', mode: 'out-in' },
+    layoutTransition: false,
+    head: {
+      htmlAttrs: {
+        lang: 'en-GB',
+      },
+      charset: 'utf-8',
+      viewport: 'width=device-width, initial-scale=1',
+      meta: [
+        { name: 'author', content: 'ditta' },
+        { name: 'msapplication-TileColor', content: '#ffa4d2' },
+        { name: 'theme-color', content: '#ffa4d2' },
+        { name: 'apple-mobile-web-app-title', content: 'ditta' },
+        { 'http-equiv': 'content-language', content: 'en-GB' },
+      ],
+      link: [{ rel: 'manifest', href: '/site.webmanifest' }],
+    },
+  },
   compatibilityDate: '2025-07-15',
   ssr: true,
   devtools: { enabled: false },

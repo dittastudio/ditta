@@ -10,7 +10,7 @@ const { title, image } = defineProps<Props>()
 </script>
 
 <template>
-  <div class="relative card-work">
+  <div class="relative max-w-full max-h-full aspect-video">
     <NuxtImg
       v-if="image?.filename && storyblokAssetType(image.filename) === 'image'"
       class="block size-full object-cover rounded-20"
@@ -28,11 +28,3 @@ const { title, image } = defineProps<Props>()
     </div>
   </div>
 </template>
-
-<style scoped>
-.card-work {
-  max-width: 100%;
-  max-height: 100%;
-  aspect-ratio: 16 / 9;
-}
-</style>
