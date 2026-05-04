@@ -6,6 +6,21 @@ interface Props {
 }
 
 const { block } = defineProps<Props>()
+
+const projects = computed(() => block.projects?.filter((project) => typeof project !== 'string') || [])
+
+const projectsList = computed(() => [...projects.value, ...projects.value])
+
+const rotations = computed(() =>
+  projectsList.value.map((_, index) => {
+    const sign = index % 2 === 0 ? -1 : 1
+    return {
+      '--deg-from': `${Math.round(sign * 6 * Math.random() * 5)}deg`,
+      '--deg-to': `${Math.round(-sign * Math.random() * 5)}deg`,
+      '--translate-from': `${Math.round(sign * Math.random() * 25)}% 50% 0`,
+    }
+  }),
+)
 </script>
 
 <template>
@@ -23,37 +38,35 @@ const { block } = defineProps<Props>()
         v-for="i in 4"
         :key="i"
       >
-        <div class="ui-ticker__text text-display">
+        <div class="project__ticker text-display">
           {{ block.ticker }}
         </div>
 
         <div
           aria-hidden="true"
-          class="ui-ticker__text text-display"
+          class="project__ticker text-display"
         >
           &mdash;
         </div>
       </template>
     </UiTicker>
 
-    <div>
-      <!-- <pre>{{ block.projects }}</pre> -->
-      <ul>
+    <div class="wrapper grid grid-cols-1 md:grid-cols-12 gap-(--app-gutter-inner)">
+      <ul class="col-span-1 md:col-start-2 md:col-span-10">
         <li
-          v-for="project in block.projects"
-          :key="typeof project === 'string' ? project : project.uuid"
+          v-for="(project, index) in projectsList"
+          :key="`${project.uuid}-${index}`"
+          class="sticky top-0 h-screen w-full flex flex-col items-center py-10"
         >
-          <NuxtImg
-            v-if="
-              typeof project !== 'string' &&
-              project?.content?.media?.filename &&
-              storyblokAssetType(project.content.media.filename) === 'image'
-            "
-            class="block w-full rounded-20"
-            :src="project.content.media.filename"
-            :alt="project.content.media.alt || project.content.title || ''"
-            loading="lazy"
-          />
+          <div
+            class="project__item flex flex-col justify-center max-w-full h-full aspect-video"
+            :style="rotations[index]"
+          >
+            <UiCardWork
+              :title="project.content.title"
+              :image="project.content.media"
+            />
+          </div>
         </li>
       </ul>
     </div>
@@ -61,7 +74,24 @@ const { block } = defineProps<Props>()
 </template>
 
 <style scoped>
-.ui-ticker__text {
+.project__ticker {
   font-size: utopia.clamp(120, 160);
+}
+
+.project__item {
+  animation: project-in var(--ease-out) both;
+  animation-timeline: view();
+  animation-range: entry 0% entry 100%;
+}
+
+@keyframes project-in {
+  0% {
+    rotate: var(--deg-from);
+    translate: var(--translate-from);
+  }
+  100% {
+    rotate: var(--deg-to);
+    translate: 0 0 0;
+  }
 }
 </style>
