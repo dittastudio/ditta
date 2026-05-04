@@ -41,13 +41,13 @@ const rotations = computed(() =>
         v-for="i in 4"
         :key="i"
       >
-        <div class="project__ticker text-display">
+        <div class="project__ticker text-display trim-both">
           {{ block.ticker }}
         </div>
 
         <div
           aria-hidden="true"
-          class="project__ticker text-display"
+          class="project__ticker text-display trim-both"
         >
           &mdash;
         </div>

@@ -93,11 +93,11 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="ui-ticker relative contain-layout w-full isolate">
-    <div
+    <ul
       ref="container"
       class="flex justify-center transform-gpu"
     >
-      <div
+      <li
         v-for="i in 4"
         :key="i"
         ref="wrappers"
@@ -114,8 +114,8 @@ onBeforeUnmount(() => {
             <slot />
           </div>
         </div>
-      </div>
-    </div>
+      </li>
+    </ul>
   </div>
 </template>
 
