@@ -156,6 +156,7 @@ export interface Seo {
 }
 
 export interface Settings {
+  tagline: string;
   navigation?: ElementLink[];
   footer_copy?: StoryblokRichtext;
   footer_copy_v2?: StoryblokRichtext;

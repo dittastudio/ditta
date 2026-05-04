@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Settings } from '#storyblok-components'
 
-const story = await useStory<Settings>('/settings')
+const settings = await useStory<Settings>('/settings')
 const route = useRoute()
 
 const globalClasses = computed(() => ({
@@ -52,6 +52,8 @@ const services = [
 
 <template>
   <div>
+    <AppNavigation :items="settings.content.navigation" />
+
     <NuxtPage />
 
     <div class="bg-black text-grey">
@@ -135,6 +137,6 @@ const services = [
       </div>
     </div>
 
-    <AppFooter :text="story.content.footer_copy_v2" />
+    <AppFooter :text="settings.content.footer_copy_v2" />
   </div>
 </template>
