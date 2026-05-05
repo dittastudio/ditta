@@ -118,7 +118,7 @@ export interface ElementMediaImage {
 }
 
 export interface ElementStep {
-  title?: string;
+  title: string;
   heading?: string;
   copy?: StoryblokRichtext;
   component: "element_step";

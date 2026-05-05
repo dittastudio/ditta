@@ -11,7 +11,7 @@ const { block } = defineProps<Props>()
 
 const projects = computed(() => block.projects?.filter((project) => typeof project !== 'string') || [])
 
-const projectRefs = useTemplateRef<HTMLElement[]>('project')
+const projectRefs = useTemplateRef('project')
 
 const brightnessStep = 10
 
@@ -23,8 +23,8 @@ onMounted(() => {
   ctx = gsap.context(() => {
     projectRefs.value?.forEach((el, index) => {
       const sign = index % 2 === 0 ? 1 : -1
-      const rotateFrom = sign * gsap.utils.random(1, 6)
-      const rotateTo = -sign * gsap.utils.random(1, 6)
+      const rotateFrom = sign * gsap.utils.random(1, 4)
+      const rotateTo = -sign * gsap.utils.random(1, 4)
 
       gsap
         .timeline({
@@ -33,7 +33,6 @@ onMounted(() => {
             start: 'top bottom',
             end: 'center center',
             scrub: true,
-            // markers: true,
           },
         })
         .fromTo(
