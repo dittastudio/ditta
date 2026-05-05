@@ -9,6 +9,7 @@
     "sb:components": "storyblok components pull --space 284609 --verbose",
     "sb:types": "storyblok types generate --space 284609 --strict",
     "sb:generate": "npm run sb:components && npm run sb:types",
+    "create:icons": "npx nuxt-seo-utils icons --source ./favicon.svg",
     "dev": "npm run sb:generate && nuxt dev --host 0.0.0.0",
     "dev:ssl": "local-ssl-proxy --source 3010 --target 3000 --cert localhost.pem --key localhost-key.pem",
     "build": "nuxt build",
