@@ -126,7 +126,7 @@ onUnmounted(() => {
             :to="`/${project.full_slug}`"
             class="project__item flex flex-col justify-center max-w-full h-full aspect-video"
           >
-            <UiCardWork :title="project.content.title">
+            <UiCardProject :title="project.content.title">
               <NuxtImg
                 v-if="project.content.media?.filename && storyblokAssetType(project.content.media.filename) === 'image'"
                 class="block size-full object-cover rounded-20 shadow-xl"
@@ -142,7 +142,7 @@ onUnmounted(() => {
                 "
                 loading="lazy"
               />
-            </UiCardWork>
+            </UiCardProject>
           </NuxtLink>
         </li>
       </ul>
