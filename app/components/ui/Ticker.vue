@@ -78,7 +78,7 @@ onMounted(async () => {
   })
 })
 
-onBeforeUnmount(() => {
+onUnmounted(() => {
   if (scrollTrigger) {
     scrollTrigger.kill()
     scrollTrigger = null

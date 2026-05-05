@@ -25,6 +25,18 @@ export interface BlockCta {
   _uid: string;
 }
 
+export interface BlockHeroProject {
+  image: StoryblokAsset;
+  heading: string;
+  copy?: StoryblokRichtext;
+  theme?: number | string;
+  id?: string;
+  spacing_top?: boolean;
+  spacing_bottom?: boolean;
+  component: "block_hero_project";
+  _uid: string;
+}
+
 export interface BlockMedia {
   media: ElementMediaImage[];
   id?: string;
@@ -83,7 +95,9 @@ export interface BlockTeam {
 
 export interface BlockTestimonial {
   quote: StoryblokRichtext;
-  person?: ISbStoryData<Person> | string;
+  image?: StoryblokAsset;
+  name?: string;
+  position?: string;
   theme?: number | string;
   id?: string;
   spacing_top?: boolean;
@@ -149,6 +163,7 @@ export interface Page {
   blocks?: (
     | BlockChips
     | BlockCta
+    | BlockHeroProject
     | BlockMedia
     | BlockProjects
     | BlockStatement
@@ -178,6 +193,7 @@ export interface Project {
   blocks?: (
     | BlockChips
     | BlockCta
+    | BlockHeroProject
     | BlockMedia
     | BlockProjects
     | BlockStatement

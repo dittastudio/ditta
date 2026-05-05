@@ -10,7 +10,7 @@ const { text } = defineProps<Props>()
 
 <template>
   <footer class="bg-black text-grey min-h-screen flex">
-    <div class="wrapper w-full pt-(--app-vertical-rhythm) pb-10 flex flex-col justify-between gap-6">
+    <div class="wrapper w-full pt-25 md:pt-(--app-gutter-outer) pb-10 flex flex-col justify-between gap-6">
       <div
         v-if="storyblokRichTextContent(text)"
         :class="[
@@ -26,7 +26,10 @@ const { text } = defineProps<Props>()
         <StoryblokText :html="text" />
       </div>
 
-      <a href="mailto:hello@ditta.studio">
+      <a
+        class="block"
+        href="mailto:hello@ditta.studio"
+      >
         <UiTextFit text="hello@ditta.studio" />
       </a>
     </div>
