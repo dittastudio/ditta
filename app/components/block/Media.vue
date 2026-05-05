@@ -7,17 +7,15 @@ interface Props {
 
 const { block } = defineProps<Props>()
 
-// const media = computed(() => block.media?.[0])
-
-const setSizes = computed(() => {
-  switch (block.placement) {
-    case 'inset':
+function getSizes(layout: string | undefined) {
+  switch (layout) {
+    case 'half':
       return `
         xs:100vw
         sm:100vw
-        md:80vw
-        lg:80vw
-        xl:1147px
+        md:50vw
+        lg:50vw
+        xl:700px
       `
     case 'wide':
       return `
@@ -25,7 +23,7 @@ const setSizes = computed(() => {
         sm:100vw
         md:100vw
         lg:100vw
-        xl:1380px
+        xl:1420px
       `
     default:
       return `
@@ -36,41 +34,36 @@ const setSizes = computed(() => {
         xl:100vw
       `
   }
-})
+}
 </script>
 
 <template>
   <div
     v-editable="block"
     :class="{
-      'wrapper grid gap-x-(--app-gutter-inner) grid-cols-12': block.placement !== 'full',
-      'pt-(--app-gutter-inner)': block.spacing_top_media && block.spacing_top,
-      'pt-(--app-vertical-rhythm)': block.spacing_top && !block.spacing_top_media,
-      'pb-(--app-gutter-inner)': block.spacing_bottom_media && block.spacing_bottom,
-      'pb-(--app-vertical-rhythm)': block.spacing_bottom && !block.spacing_bottom_media,
+      'pt-(--app-vertical-rhythm)': block.spacing_top,
+      'pb-(--app-vertical-rhythm)': block.spacing_bottom,
     }"
+    class="overflow-clip"
   >
-    <div
-      class="flex flex-col md:flex-row gap-(--app-gutter-inner)"
-      :class="{
-        'col-span-full': block.placement === 'wide',
-        'col-span-full md:col-start-2 md:col-span-10': block.placement === 'inset',
-        'pt-(--app-vertical-spacing)': block.placement === 'full',
-      }"
-    >
+    <div class="wrapper grid grid-cols-1 md:grid-cols-2 gap-(--app-gutter-inner) grid-flow-dense">
       <div
-        class="basis-1/2 grow"
         v-for="media in block.media"
         :key="media._uid"
+        :class="{
+          'col-span-full': media.layout === 'full' || media.layout === 'wide',
+          'col-span-1': media.layout === 'half',
+          'w-dvw mx-[calc(50%-50dvw)] max-w-none': media.layout === 'full',
+        }"
       >
         <NuxtImg
-          v-if="media && media.image?.filename && storyblokAssetType(media.image.filename) === 'image'"
-          class="block"
+          v-if="media.image && media.image.filename && storyblokAssetType(media.image.filename) === 'image'"
+          class="block w-full"
           :src="media.image.filename"
           :alt="media.image.alt || ''"
           :width="storyblokImageDimensions(media.image.filename).width"
           :height="storyblokImageDimensions(media.image.filename).height"
-          :sizes="setSizes"
+          :sizes="getSizes(media.layout)"
           loading="lazy"
         />
       </div>
