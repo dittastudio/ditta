@@ -1,7 +1,14 @@
 @layer base {
   ::selection {
-    color: --alpha(var(--color-black) / 99%);
-    background-color: var(--color-accent);
+    color: --alpha(var(--color-white) / 99%);
+    background-color: var(--color-black);
+  }
+
+  .bg-black {
+    ::selection {
+      color: --alpha(var(--color-black) / 99%);
+      background-color: var(--color-white);
+    }
   }
 
   .is-storyblok-editor {
