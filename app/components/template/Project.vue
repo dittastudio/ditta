@@ -45,5 +45,10 @@ const { story } = defineProps<Props>()
       v-else-if="block.component === 'block_projects'"
       :block="block"
     />
+
+    <BlockMedia
+      v-else-if="block.component === 'block_media'"
+      :block="block"
+    />
   </section>
 </template>
