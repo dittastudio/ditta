@@ -145,5 +145,14 @@ const services = [
     </div>
 
     <AppFooter :text="settings.content.footer_copy_v2" />
+
+    <DevOnly>
+      <DevGuide
+        :columns="{ base: 2, md: 12 }"
+        inner-gutter="var(--app-gutter-inner)"
+        outer-gutter="var(--app-gutter-outer)"
+        max-width="var(--breakpoint-2xl)"
+      />
+    </DevOnly>
   </div>
 </template>
