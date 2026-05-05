@@ -53,8 +53,8 @@ onMounted(() => {
   const startPhysics = () => {
     const { width, height } = el.getBoundingClientRect()
     const engine = Engine.create({ gravity: { x: 0, y: 0.5 } })
-
     let walls = buildWalls(width, height)
+
     Composite.add(engine.world, walls)
 
     const cols = Math.ceil(Math.sqrt(sizes.length * (width / height)))
@@ -88,7 +88,9 @@ onMounted(() => {
 
     const resizeObserver = new ResizeObserver((entries) => {
       const entry = entries[0]
+
       if (!entry) return
+
       const { width: newW, height: newH } = entry.contentRect
 
       walls.forEach((wall) => Composite.remove(engine.world, wall))
@@ -121,6 +123,7 @@ onMounted(() => {
     Runner.run(runner, engine)
 
     let raf: number
+
     const tick = () => {
       transforms.value = bodies.map(({ position: { x, y }, angle }, i) => {
         const size = sizes[i]
