@@ -33,8 +33,8 @@ onMounted(() => {
   if (!el || !chips?.length) return
 
   const sizes = chips.map((chip) => {
-    const { width: w, height: h } = chip.getBoundingClientRect()
-    return { w, h }
+    const el = chip as HTMLElement
+    return { w: el.offsetWidth, h: el.offsetHeight }
   })
 
   if (sizes.some(({ w, h }) => w === 0 || h === 0)) return
@@ -83,20 +83,37 @@ onMounted(() => {
       }),
     )
 
+    const currentSizes = sizes.map((s) => ({ ...s }))
+
     const resizeObserver = new ResizeObserver((entries) => {
       const entry = entries[0]
       if (!entry) return
       const { width: newW, height: newH } = entry.contentRect
+
       walls.forEach((wall) => Composite.remove(engine.world, wall))
       walls = buildWalls(newW, newH)
       Composite.add(engine.world, walls)
-      bodies.forEach((body, i) => {
-        const size = sizes[i]
-        if (!size) return
-        Body.setPosition(body, {
-          x: Math.max(size.w / 2, Math.min(newW - size.w / 2, body.position.x)),
-          y: Math.max(size.h / 2, Math.min(newH - size.h / 2, body.position.y)),
-        })
+
+      chips.forEach((chip, i) => {
+        const el = chip as HTMLElement
+        const w = el.offsetWidth
+        const h = el.offsetHeight
+        if (w === 0 || h === 0) return
+        const old = bodies[i]
+        if (!old) return
+        const newBody = Bodies.rectangle(
+          Math.max(w / 2, Math.min(newW - w / 2, old.position.x)),
+          Math.max(h / 2, Math.min(newH - h / 2, old.position.y)),
+          w,
+          h,
+          { chamfer: { radius: h / 2 }, restitution: 0.8, friction: 0.01, frictionAir: 0.01 },
+        )
+        Body.setAngle(newBody, old.angle)
+        Body.setVelocity(newBody, old.velocity)
+        Composite.remove(engine.world, old)
+        Composite.add(engine.world, newBody)
+        bodies[i] = newBody
+        currentSizes[i] = { w, h }
       })
     })
 
@@ -108,7 +125,7 @@ onMounted(() => {
     let raf: number
     const tick = () => {
       transforms.value = bodies.map(({ position: { x, y }, angle }, i) => {
-        const size = sizes[i]
+        const size = currentSizes[i]
         if (!size) return ''
         return `translate(${x - size.w / 2}px, ${y - size.h / 2}px) rotate(${angle}rad)`
       })
