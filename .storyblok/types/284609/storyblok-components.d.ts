@@ -28,6 +28,7 @@ export interface BlockCta {
 export interface BlockMedia {
   media: ElementMediaImage[];
   id?: string;
+  theme?: number | string;
   spacing_top?: boolean;
   spacing_bottom?: boolean;
   component: "block_media";
@@ -80,8 +81,21 @@ export interface BlockTeam {
   _uid: string;
 }
 
+export interface BlockTestimonial {
+  quote: StoryblokRichtext;
+  person?: ISbStoryData<Person> | string;
+  theme?: number | string;
+  id?: string;
+  spacing_top?: boolean;
+  spacing_bottom?: boolean;
+  component: "block_testimonial";
+  _uid: string;
+}
+
 export interface BlockText {
   text?: StoryblokRichtext;
+  align_right?: boolean;
+  theme?: number | string;
   id?: string;
   spacing_top?: boolean;
   spacing_bottom?: boolean;
@@ -132,7 +146,17 @@ export interface ElementTitle {
 }
 
 export interface Page {
-  blocks?: (BlockChips | BlockCta | BlockMedia | BlockProjects | BlockStatement | BlockSteps | BlockTeam | BlockText)[];
+  blocks?: (
+    | BlockChips
+    | BlockCta
+    | BlockMedia
+    | BlockProjects
+    | BlockStatement
+    | BlockSteps
+    | BlockTeam
+    | BlockTestimonial
+    | BlockText
+  )[];
   seo_title: string;
   seo_description: string;
   seo_image: StoryblokAsset;
@@ -151,7 +175,17 @@ export interface Person {
 export interface Project {
   client: ISbStoryData<Client> | string;
   Credits?: ElementLink[];
-  blocks?: (BlockChips | BlockCta | BlockMedia | BlockProjects | BlockStatement | BlockSteps | BlockTeam | BlockText)[];
+  blocks?: (
+    | BlockChips
+    | BlockCta
+    | BlockMedia
+    | BlockProjects
+    | BlockStatement
+    | BlockSteps
+    | BlockTeam
+    | BlockTestimonial
+    | BlockText
+  )[];
   title?: string;
   media?: StoryblokAsset;
   seo_title: string;

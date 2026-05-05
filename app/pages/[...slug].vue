@@ -3,7 +3,7 @@ import type { Page } from '#storyblok-components'
 
 const route = useRoute()
 
-const relations: string[] = ['block_team.humans', 'block_projects.projects']
+const relations: string[] = ['block_team.humans', 'block_projects.projects', 'block_testimonial.person']
 
 const story = await useStory<Page>(route.path, { resolve_relations: relations }, { resolveRelations: relations })
 
