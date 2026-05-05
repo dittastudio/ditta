@@ -16,6 +16,7 @@ const { story } = defineProps<Props>()
   <section
     v-for="block in story.content.blocks"
     :key="block._uid"
+    :id="block?.id"
     :class="['theme' in block ? themeClasses[block.theme as Themes] : '']"
   >
     <BlockChips

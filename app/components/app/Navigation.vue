@@ -9,13 +9,16 @@ const { items } = defineProps<Props>()
 </script>
 
 <template>
-  <nav class="w-full">
-    <ul>
+  <nav class="overflow-hidden">
+    <ul class="group flex justify-end flex-wrap text-navigation -ml-5 -mr-5">
       <li
         v-for="item in items"
         :key="item._uid"
       >
-        <StoryblokLink :item="item.link">
+        <StoryblokLink
+          :item="item.link"
+          class="block px-5 group-hover:opacity-50 hover:opacity-100 transition-opacity duration-500"
+        >
           {{ item.text }}
         </StoryblokLink>
       </li>
