@@ -3,8 +3,6 @@ import type { BlockProjects } from '#storyblok-components'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-gsap.registerPlugin(ScrollTrigger)
-
 interface Props {
   block: BlockProjects
 }
@@ -14,84 +12,79 @@ const { block } = defineProps<Props>()
 const projects = computed(() => block.projects?.filter((project) => typeof project !== 'string') || [])
 
 const projectRefs = useTemplateRef<HTMLElement[]>('project')
-let tl: gsap.core.Timeline | null = null
 
-const scroll = () => {
-  projectRefs.value?.forEach((el, index) => {
-    const sign = index % 2 === 0 ? 1 : -1
-    const rotateFrom = sign * gsap.utils.random(1, 6)
-    const rotateTo = -sign * gsap.utils.random(1, 6)
+const brightnessStep = 10
 
-    tl = gsap
-      .timeline({
-        scrollTrigger: {
-          trigger: el,
-          start: 'top bottom',
-          end: 'center center',
-          scrub: true,
-          markers: true,
-        },
-      })
-      .fromTo(
-        el,
-        {
-          scale: 1,
-          rotate: rotateFrom,
-        },
-        {
-          ease: 'power2.in',
-          scale: 0.9,
-          rotate: rotateTo,
-        },
-        0,
-      )
+let ctx: gsap.Context | null = null
 
-    const nextEl = projectRefs.value?.[index + 1]
-    if (nextEl) {
-      gsap.fromTo(
-        el,
-        {
-          filter: 'brightness(100%)',
-        },
-        {
-          filter: 'brightness(70%)',
-          ease: 'power2.in',
+onMounted(() => {
+  gsap.registerPlugin(ScrollTrigger)
+
+  ctx = gsap.context(() => {
+    projectRefs.value?.forEach((el, index) => {
+      const sign = index % 2 === 0 ? 1 : -1
+      const rotateFrom = sign * gsap.utils.random(1, 6)
+      const rotateTo = -sign * gsap.utils.random(1, 6)
+
+      gsap
+        .timeline({
           scrollTrigger: {
-            trigger: nextEl,
+            trigger: el,
             start: 'top bottom',
             end: 'center center',
             scrub: true,
+            // markers: true,
           },
-        },
-      )
-    }
-  })
-}
+        })
+        .fromTo(
+          el,
+          {
+            scale: 1.1,
+            rotate: rotateFrom,
+          },
+          {
+            ease: 'power2.in',
+            scale: 1,
+            rotate: rotateTo,
+          },
+          0,
+        )
 
-onMounted(() => {
-  console.log(projectRefs.value)
-  scroll()
+      const subsequent = projectRefs.value?.slice(index + 1) ?? []
+      subsequent.forEach((triggerEl, stepsBelow) => {
+        const fromBrightness = Math.max(0, 100 - stepsBelow * brightnessStep)
+        const toBrightness = Math.max(0, 100 - (stepsBelow + 1) * brightnessStep)
+
+        gsap.fromTo(
+          el,
+          {
+            filter: `brightness(${fromBrightness}%)`,
+          },
+          {
+            filter: `brightness(${toBrightness}%)`,
+            ease: 'power2.in',
+            immediateRender: false,
+            scrollTrigger: {
+              trigger: triggerEl,
+              start: 'top bottom',
+              end: 'center center',
+              scrub: true,
+            },
+          },
+        )
+      })
+    })
+  })
 })
 
-// function seededRand(seed: number) {
-//   const x = Math.sin(seed) * 10000
-//   return x - Math.floor(x)
-// }
-
-// const rotations = computed(() =>
-//   projects.value.map((_, index) => {
-//     const sign = index % 2 === 0 ? -1 : 1
-//     return {
-//       '--deg-from': `${Math.round(sign * 6 * seededRand(index * 3) * 5)}deg`,
-//       '--deg-to': `${Math.round(-sign * seededRand(index * 3 + 1) * 5)}deg`,
-//       '--translate-from': `${Math.round(sign * seededRand(index * 3 + 2) * 25)}% 50% 0`,
-//     }
-//   }),
-// )
+onUnmounted(() => {
+  ctx?.revert()
+})
 </script>
 
 <template>
   <div
+    class="flex flex-col gap-40"
     :class="{
       'pt-(--app-vertical-rhythm)': block.spacing_top,
       'pb-(--app-vertical-rhythm)': block.spacing_bottom,
@@ -130,10 +123,23 @@ onMounted(() => {
             :to="`/${project.full_slug}`"
             class="project__item flex flex-col justify-center max-w-full h-full aspect-video"
           >
-            <UiCardWork
-              :title="project.content.title"
-              :image="project.content.media"
-            />
+            <UiCardWork :title="project.content.title">
+              <NuxtImg
+                v-if="project.content.media?.filename && storyblokAssetType(project.content.media.filename) === 'image'"
+                class="block size-full object-cover rounded-20 shadow-xl"
+                :src="project.content.media.filename"
+                :alt="project.content.title || project.content.media.alt"
+                width="16"
+                height="9"
+                sizes="
+                  xs:100vw
+                  sm:100vw
+                  lg:66vw
+                  2xl:1180px
+                "
+                loading="lazy"
+              />
+            </UiCardWork>
           </NuxtLink>
         </li>
       </ul>
@@ -144,22 +150,5 @@ onMounted(() => {
 <style scoped>
 .project__ticker {
   font-size: utopia.clamp(120, 160);
-}
-
-.project__item {
-  animation: project-in var(--ease-out) both;
-  animation-timeline: view();
-  animation-range: entry 0% entry 100%;
-}
-
-@keyframes project-in {
-  0% {
-    rotate: var(--deg-from);
-    translate: var(--translate-from);
-  }
-  100% {
-    rotate: var(--deg-to);
-    translate: 0 0 0;
-  }
 }
 </style>
