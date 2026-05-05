@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Settings } from '#storyblok-components'
+import { VueLenis } from 'lenis/vue'
 
 const settings = await useStory<Settings>('/settings')
 const route = useRoute()
@@ -21,8 +22,18 @@ useSeoMeta({
 </script>
 
 <template>
-  <div>
-    <header class="absolute top-0 z-10 w-full mix-blend-difference text-white">
+  <VueLenis
+    root
+    :options="{
+      duration: 1,
+      autoRaf: true,
+      anchors: {
+        duration: 1,
+        offset: 1,
+      },
+    }"
+  >
+    <header class="absolute top-0 z-10 w-full">
       <div class="wrapper flex justify-between items-start pt-(--app-gutter-outer) md:pt-20">
         <p
           v-if="settings.content.tagline"
@@ -50,5 +61,5 @@ useSeoMeta({
         max-width="var(--breakpoint-2xl)"
       />
     </DevOnly>
-  </div>
+  </VueLenis>
 </template>
