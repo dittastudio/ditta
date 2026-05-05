@@ -16,8 +16,13 @@ const { story } = defineProps<Props>()
     :key="block._uid"
     :class="['theme' in block ? themeClasses[block.theme as Themes] : '']"
   >
+    <BlockHeroProject
+      v-if="block.component === 'block_hero_project'"
+      :block="block"
+    />
+
     <BlockChips
-      v-if="block.component === 'block_chips'"
+      v-else-if="block.component === 'block_chips'"
       :block="block"
     />
 

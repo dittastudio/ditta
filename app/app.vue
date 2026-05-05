@@ -22,7 +22,7 @@ useSeoMeta({
 
 <template>
   <div>
-    <header class="absolute top-0 z-10 w-full">
+    <header class="absolute top-0 z-10 w-full mix-blend-difference text-white">
       <div class="wrapper flex justify-between items-start pt-(--app-gutter-outer) md:pt-20">
         <p
           v-if="settings.content.tagline"

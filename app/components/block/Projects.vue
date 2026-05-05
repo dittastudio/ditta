@@ -83,7 +83,7 @@ onUnmounted(() => {
 
 <template>
   <div
-    class="relative"
+    class="relative overflow-clip"
     :class="{
       'pt-(--app-vertical-rhythm)': block.spacing_top,
       'pb-(--app-vertical-rhythm)': block.spacing_bottom,
