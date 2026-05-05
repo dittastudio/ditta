@@ -12,7 +12,7 @@ const { title } = defineProps<Props>()
   <div class="relative max-w-full max-h-full aspect-[inherit]">
     <slot />
 
-    <div class="absolute inset-0 p-10 flex items-end justify-start">
+    <div class="absolute inset-0 p-5 md:p-10 flex items-end justify-start">
       <UiButton
         v-if="title"
         theme="light"

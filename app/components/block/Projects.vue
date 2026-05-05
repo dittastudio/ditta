@@ -84,32 +84,36 @@ onUnmounted(() => {
 
 <template>
   <div
-    class="flex flex-col gap-40"
+    class="relative flex flex-col gap-0"
     :class="{
       'pt-(--app-vertical-rhythm)': block.spacing_top,
       'pb-(--app-vertical-rhythm)': block.spacing_bottom,
     }"
   >
-    <UiTicker
-      v-if="block.ticker"
-      spacing-classes="gap-10 px-5"
-    >
-      <template
-        v-for="i in 4"
-        :key="i"
-      >
-        <div class="project__ticker text-display trim-both">
-          {{ block.ticker }}
-        </div>
-
-        <div
-          aria-hidden="true"
-          class="project__ticker text-display trim-both"
+    <div class="absolute inset-0">
+      <div class="sticky top-0">
+        <UiTicker
+          v-if="block.ticker"
+          spacing-classes="gap-10 px-5"
         >
-          &mdash;
-        </div>
-      </template>
-    </UiTicker>
+          <template
+            v-for="i in 4"
+            :key="i"
+          >
+            <div class="project__ticker text-display trim-both">
+              {{ block.ticker }}
+            </div>
+
+            <div
+              aria-hidden="true"
+              class="project__ticker text-display trim-both"
+            >
+              &mdash;
+            </div>
+          </template>
+        </UiTicker>
+      </div>
+    </div>
 
     <div class="wrapper grid grid-cols-1 md:grid-cols-12 gap-(--app-gutter-inner)">
       <ul class="col-span-1 md:col-start-2 md:col-span-10">
@@ -117,7 +121,7 @@ onUnmounted(() => {
           v-for="(project, index) in projects"
           :key="`${project.uuid}-${index}`"
           ref="project"
-          class="sticky top-0 h-screen w-full flex flex-col items-center py-10"
+          class="project__wrapper sticky top-0 h-screen w-full flex flex-col items-center py-10"
         >
           <NuxtLink
             :to="`/${project.full_slug}`"
@@ -148,6 +152,9 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
+.project__wrapper {
+  padding-top: utopia.clamp(120, 160);
+}
 .project__ticker {
   font-size: utopia.clamp(120, 160);
 }
