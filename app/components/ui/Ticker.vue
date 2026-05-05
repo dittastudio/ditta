@@ -2,13 +2,13 @@
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
+gsap.registerPlugin(ScrollTrigger)
+
 interface Props {
   duration?: string
   direction?: 'left' | 'right'
   spacingClasses?: string
 }
-
-gsap.registerPlugin(ScrollTrigger)
 
 const { direction = 'left', duration = '60s', spacingClasses = 'gap-80 px-40' } = defineProps<Props>()
 

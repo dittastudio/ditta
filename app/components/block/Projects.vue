@@ -1,5 +1,9 @@
 <script lang="ts" setup>
 import type { BlockProjects } from '#storyblok-components'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+gsap.registerPlugin(ScrollTrigger)
 
 interface Props {
   block: BlockProjects
@@ -9,21 +13,81 @@ const { block } = defineProps<Props>()
 
 const projects = computed(() => block.projects?.filter((project) => typeof project !== 'string') || [])
 
-function seededRand(seed: number) {
-  const x = Math.sin(seed) * 10000
-  return x - Math.floor(x)
+const projectRefs = useTemplateRef<HTMLElement[]>('project')
+let tl: gsap.core.Timeline | null = null
+
+const scroll = () => {
+  projectRefs.value?.forEach((el, index) => {
+    const sign = index % 2 === 0 ? 1 : -1
+    const rotateFrom = sign * gsap.utils.random(1, 6)
+    const rotateTo = -sign * gsap.utils.random(1, 6)
+
+    tl = gsap
+      .timeline({
+        scrollTrigger: {
+          trigger: el,
+          start: 'top bottom',
+          end: 'center center',
+          scrub: true,
+          markers: true,
+        },
+      })
+      .fromTo(
+        el,
+        {
+          scale: 1,
+          rotate: rotateFrom,
+        },
+        {
+          ease: 'power2.in',
+          scale: 0.9,
+          rotate: rotateTo,
+        },
+        0,
+      )
+
+    const nextEl = projectRefs.value?.[index + 1]
+    if (nextEl) {
+      gsap.fromTo(
+        el,
+        {
+          filter: 'brightness(100%)',
+        },
+        {
+          filter: 'brightness(70%)',
+          ease: 'power2.in',
+          scrollTrigger: {
+            trigger: nextEl,
+            start: 'top bottom',
+            end: 'center center',
+            scrub: true,
+          },
+        },
+      )
+    }
+  })
 }
 
-const rotations = computed(() =>
-  projects.value.map((_, index) => {
-    const sign = index % 2 === 0 ? -1 : 1
-    return {
-      '--deg-from': `${Math.round(sign * 6 * seededRand(index * 3) * 5)}deg`,
-      '--deg-to': `${Math.round(-sign * seededRand(index * 3 + 1) * 5)}deg`,
-      '--translate-from': `${Math.round(sign * seededRand(index * 3 + 2) * 25)}% 50% 0`,
-    }
-  }),
-)
+onMounted(() => {
+  console.log(projectRefs.value)
+  scroll()
+})
+
+// function seededRand(seed: number) {
+//   const x = Math.sin(seed) * 10000
+//   return x - Math.floor(x)
+// }
+
+// const rotations = computed(() =>
+//   projects.value.map((_, index) => {
+//     const sign = index % 2 === 0 ? -1 : 1
+//     return {
+//       '--deg-from': `${Math.round(sign * 6 * seededRand(index * 3) * 5)}deg`,
+//       '--deg-to': `${Math.round(-sign * seededRand(index * 3 + 1) * 5)}deg`,
+//       '--translate-from': `${Math.round(sign * seededRand(index * 3 + 2) * 25)}% 50% 0`,
+//     }
+//   }),
+// )
 </script>
 
 <template>
@@ -59,12 +123,12 @@ const rotations = computed(() =>
         <li
           v-for="(project, index) in projects"
           :key="`${project.uuid}-${index}`"
+          ref="project"
           class="sticky top-0 h-screen w-full flex flex-col items-center py-10"
         >
           <NuxtLink
             :to="`/${project.full_slug}`"
             class="project__item flex flex-col justify-center max-w-full h-full aspect-video"
-            :style="rotations[index]"
           >
             <UiCardWork
               :title="project.content.title"

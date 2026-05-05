@@ -13,7 +13,7 @@ const { title, image } = defineProps<Props>()
   <div class="relative max-w-full max-h-full aspect-video">
     <NuxtImg
       v-if="image?.filename && storyblokAssetType(image.filename) === 'image'"
-      class="block size-full object-cover rounded-20"
+      class="block size-full object-cover rounded-20 shadow-xl"
       :src="image.filename"
       :alt="title || image.alt"
       loading="lazy"
