@@ -13,7 +13,7 @@ const { title, heading, copy } = defineProps<Props>()
 <template>
   <div class="grid grid-cols-1 sm:grid-cols-2 items-center gap-x-(--app-gutter-inner) gap-y-10">
     <h2
-      class="text-title max-w-[7em] text-balance trim-both"
+      class="text-title max-w-[7em] text-balance trim-both whitespace-pre-wrap"
       v-if="title"
     >
       {{ title }}
