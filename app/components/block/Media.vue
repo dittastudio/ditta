@@ -7,36 +7,34 @@ interface Props {
 
 const { block } = defineProps<Props>()
 
-// const media = computed(() => block.media?.[0])
-
-// const setSizes = computed(() => {
-//   switch (block.layout) {
-//     case 'inset':
-//       return `
-//         xs:100vw
-//         sm:100vw
-//         md:80vw
-//         lg:80vw
-//         xl:1147px
-//       `
-//     case 'wide':
-//       return `
-//         xs:100vw
-//         sm:100vw
-//         md:100vw
-//         lg:100vw
-//         xl:1380px
-//       `
-//     default:
-//       return `
-//         xs:100vw
-//         sm:100vw
-//         md:100vw
-//         lg:100vw
-//         xl:100vw
-//       `
-//   }
-// })
+function getSizes(layout: string | undefined) {
+  switch (layout) {
+    case 'half':
+      return `
+        xs:100vw
+        sm:100vw
+        md:50vw
+        lg:50vw
+        xl:700px
+      `
+    case 'wide':
+      return `
+        xs:100vw
+        sm:100vw
+        md:100vw
+        lg:100vw
+        xl:1420px
+      `
+    default:
+      return `
+        xs:100vw
+        sm:100vw
+        md:100vw
+        lg:100vw
+        xl:100vw
+      `
+  }
+}
 </script>
 
 <template>
@@ -54,8 +52,8 @@ const { block } = defineProps<Props>()
         :key="media._uid"
         :class="{
           'col-span-full': media.layout === 'full' || media.layout === 'wide',
-          'w-dvw mx-[calc(50%-50dvw)] max-w-none': media.layout === 'full',
           'col-span-1': media.layout === 'half',
+          'w-dvw mx-[calc(50%-50dvw)] max-w-none': media.layout === 'full',
         }"
       >
         <NuxtImg
@@ -65,6 +63,7 @@ const { block } = defineProps<Props>()
           :alt="media.image.alt || ''"
           :width="storyblokImageDimensions(media.image.filename).width"
           :height="storyblokImageDimensions(media.image.filename).height"
+          :sizes="getSizes(media.layout)"
           loading="lazy"
         />
       </div>
