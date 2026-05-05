@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-// import type { StoryblokAsset } from '#storyblok-types'
-
 interface Props {
   title?: string
 }

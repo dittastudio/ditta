@@ -84,7 +84,7 @@ onUnmounted(() => {
 
 <template>
   <div
-    class="relative flex flex-col gap-0"
+    class="relative"
     :class="{
       'pt-(--app-vertical-rhythm)': block.spacing_top,
       'pb-(--app-vertical-rhythm)': block.spacing_bottom,
