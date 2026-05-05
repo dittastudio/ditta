@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
-gsap.registerPlugin(ScrollTrigger)
+import { useLenis } from 'lenis/vue'
 
 interface Props {
   duration?: string
@@ -16,75 +14,77 @@ const container = useTemplateRef('container')
 const wrappers = useTemplateRef('wrappers')
 const lists = useTemplateRef('lists')
 
-let scrollTrigger: ScrollTrigger | null = null
+const isLeft = direction === 'left'
 
-onMounted(async () => {
+let xTo: ReturnType<typeof gsap.quickTo> | null = null
+// Where the ticker really sits in the page — works even when sticky-pinned.
+let documentTop = Number.POSITIVE_INFINITY
+
+let viewportHeight = 0
+let containerWidth = 0
+let lastIsScrollingUp: boolean | null = null
+
+const refreshDimensions = () => {
   if (!container.value) {
     return
   }
 
-  await nextTick()
+  viewportHeight = window.innerHeight
+  containerWidth = container.value.clientWidth
+}
 
-  let lastProgress = 0
+onMounted(() => {
+  if (!container.value) {
+    return
+  }
 
-  scrollTrigger = ScrollTrigger.create({
-    trigger: container.value,
-    start: 'top bottom',
-    end: 'bottom top',
-    scrub: false,
-    markers: false,
-    onUpdate: (self) => {
-      if (!container.value) {
-        return
-      }
+  xTo = gsap.quickTo(container.value, 'x', { duration: 0.5, ease: 'power3' })
+  refreshDimensions()
+  window.addEventListener('resize', refreshDimensions)
+})
 
-      const progress = self.progress
-      const isScrollingUp = progress < lastProgress
+useLenis((lenis) => {
+  if (!container.value || !xTo) {
+    return
+  }
 
-      // Update animation states
-      if (wrappers.value) {
-        wrappers.value.forEach((wrapper) => {
-          wrapper.style.animationPlayState = isScrollingUp
-            ? direction === 'left'
-              ? 'running'
-              : 'paused'
-            : direction === 'left'
-              ? 'paused'
-              : 'running'
-        })
-      }
+  const isScrollingUp = lenis.direction === -1
 
-      if (lists.value) {
-        lists.value.forEach((list) => {
-          list.style.animationPlayState = isScrollingUp
-            ? direction === 'left'
-              ? 'paused'
-              : 'running'
-            : direction === 'left'
-              ? 'running'
-              : 'paused'
-        })
-      }
+  if (isScrollingUp !== lastIsScrollingUp) {
+    const wrapperState = isLeft === isScrollingUp ? 'running' : 'paused'
+    const listState = isLeft === isScrollingUp ? 'paused' : 'running'
 
-      lastProgress = progress
+    wrappers.value?.forEach((el) => {
+      el.style.animationPlayState = wrapperState
+    })
+    lists.value?.forEach((el) => {
+      el.style.animationPlayState = listState
+    })
 
-      gsap.to(container.value, {
-        x:
-          direction === 'left'
-            ? -container.value.clientWidth * (progress / 3) + 1
-            : container.value.clientWidth * (progress / 3) - 1,
-      })
-    },
-  })
+    lastIsScrollingUp = isScrollingUp
+  }
+
+  const rect = container.value.getBoundingClientRect()
+  const naturalTop = rect.top + lenis.scroll
+  if (naturalTop < documentTop) {
+    documentTop = naturalTop
+  }
+
+  if (rect.bottom < 0 || rect.top > viewportHeight) {
+    return
+  }
+
+  const range = viewportHeight + rect.height
+  // Lower-clamped only — progress is allowed past 1 so momentum continues during sticky pin.
+  const progress = Math.max(0, (lenis.scroll + viewportHeight - documentTop) / range)
+  const offset = containerWidth * (progress / 3)
+
+  xTo(isLeft ? -offset : offset)
 })
 
 onUnmounted(() => {
-  if (scrollTrigger) {
-    scrollTrigger.kill()
-    scrollTrigger = null
-  }
+  window.removeEventListener('resize', refreshDimensions)
 
-  // Reset GSAP properties
   if (container.value) {
     gsap.set(container.value, { clearProps: 'all' })
   }
@@ -101,11 +101,11 @@ onUnmounted(() => {
         v-for="i in 4"
         :key="i"
         ref="wrappers"
-        class="ui-ticker__wrapper min-w-full shrink-0 transform-gpu"
+        class="ui-ticker__wrapper min-w-full shrink-0"
       >
         <div
           ref="lists"
-          class="ui-ticker__list select-none flex justify-center shrink-0 min-w-full transform-gpu"
+          class="ui-ticker__list select-none flex justify-center shrink-0 min-w-full"
         >
           <div
             :class="spacingClasses"
