@@ -26,16 +26,27 @@ function buildWalls(w: number, h: number) {
   ]
 }
 
+function chipSize(chip: Element) {
+  const el = chip as HTMLElement
+  return { w: el.offsetWidth, h: el.offsetHeight }
+}
+
+function makeChipBody(x: number, y: number, w: number, h: number) {
+  return Bodies.rectangle(x, y, w, h, {
+    chamfer: { radius: h / 2 },
+    restitution: 0.8,
+    friction: 0.01,
+    frictionAir: 0.01,
+  })
+}
+
 onMounted(() => {
   const el = containerRef.value
   const chips = chipRefs.value
 
   if (!el || !chips?.length) return
 
-  const sizes = chips.map((chip) => {
-    const el = chip as HTMLElement
-    return { w: el.offsetWidth, h: el.offsetHeight }
-  })
+  const sizes = chips.map(chipSize)
 
   if (sizes.some(({ w, h }) => w === 0 || h === 0)) return
 
@@ -54,17 +65,9 @@ onMounted(() => {
       const row = Math.floor(i / cols)
       const x = (col * width) / cols + width / cols / 2 + (Math.random() - 0.5) * 40
       const y = (row * height) / rows + height / rows / 2 + (Math.random() - 0.5) * 40
-      const body = Bodies.rectangle(x, y, w, h, {
-        chamfer: { radius: h / 2 },
-        restitution: 0.8,
-        friction: 0.01,
-        frictionAir: 0.01,
-        angle: (Math.random() - 0.5) * Math.PI * 0.4,
-      })
-      Body.setVelocity(body, {
-        x: (Math.random() - 0.5) * 8,
-        y: (Math.random() - 0.5) * 8,
-      })
+      const body = makeChipBody(x, y, w, h)
+      Body.setAngle(body, (Math.random() - 0.5) * Math.PI * 0.4)
+      Body.setVelocity(body, { x: (Math.random() - 0.5) * 8, y: (Math.random() - 0.5) * 8 })
       return body
     })
 
@@ -83,8 +86,6 @@ onMounted(() => {
       }),
     )
 
-    const currentSizes = sizes.map((s) => ({ ...s }))
-
     const resizeObserver = new ResizeObserver((entries) => {
       const entry = entries[0]
       if (!entry) return
@@ -95,25 +96,22 @@ onMounted(() => {
       Composite.add(engine.world, walls)
 
       chips.forEach((chip, i) => {
-        const el = chip as HTMLElement
-        const w = el.offsetWidth
-        const h = el.offsetHeight
+        const { w, h } = chipSize(chip)
         if (w === 0 || h === 0) return
         const old = bodies[i]
         if (!old) return
-        const newBody = Bodies.rectangle(
+        const newBody = makeChipBody(
           Math.max(w / 2, Math.min(newW - w / 2, old.position.x)),
           Math.max(h / 2, Math.min(newH - h / 2, old.position.y)),
           w,
           h,
-          { chamfer: { radius: h / 2 }, restitution: 0.8, friction: 0.01, frictionAir: 0.01 },
         )
         Body.setAngle(newBody, old.angle)
         Body.setVelocity(newBody, old.velocity)
         Composite.remove(engine.world, old)
         Composite.add(engine.world, newBody)
         bodies[i] = newBody
-        currentSizes[i] = { w, h }
+        sizes[i] = { w, h }
       })
     })
 
@@ -125,7 +123,7 @@ onMounted(() => {
     let raf: number
     const tick = () => {
       transforms.value = bodies.map(({ position: { x, y }, angle }, i) => {
-        const size = currentSizes[i]
+        const size = sizes[i]
         if (!size) return ''
         return `translate(${x - size.w / 2}px, ${y - size.h / 2}px) rotate(${angle}rad)`
       })
