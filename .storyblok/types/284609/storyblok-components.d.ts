@@ -15,6 +15,7 @@ export interface BlockCta {
 
 export interface BlockHeroProject {
   image: StoryblokAsset;
+  image_desktop?: StoryblokAsset;
   heading: string;
   copy?: StoryblokRichtext;
   theme?: number | string;

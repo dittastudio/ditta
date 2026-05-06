@@ -9,21 +9,26 @@ const { block } = defineProps<Props>()
 </script>
 
 <template>
-  <div class="grid grid-cols-1 grid-rows-1 h-[calc(100svh---spacing(10))] w-full">
+  <div class="grid grid-cols-1 grid-rows-1 h-svh w-full">
     <picture
       v-if="block.image && block.image.filename && storyblokAssetType(block.image.filename) === 'image'"
       class="col-start-1 row-start-1"
     >
       <MediaSource
+        v-if="
+          block.image_desktop &&
+          block.image_desktop.filename &&
+          storyblokAssetType(block.image_desktop.filename) === 'image'
+        "
         media="(orientation: landscape)"
         :width="16"
         :height="9"
-        :src="block.image.filename"
+        :src="block.image_desktop.filename"
         sizes="sm:100vw md:100vw lg:100vw"
       />
 
       <MediaSource
-        media="(orientation: portrait)"
+        :media="block.image.filename ? '(orientation: portrait)' : undefined"
         :width="10"
         :height="16"
         :src="block.image.filename"

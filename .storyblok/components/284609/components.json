@@ -75,7 +75,7 @@
     "display_name": "Hero Project",
     "description": null,
     "created_at": "2026-05-05T20:52:52.575Z",
-    "updated_at": "2026-05-05T20:52:52.575Z",
+    "updated_at": "2026-05-06T15:50:34.112Z",
     "id": 173362268478563,
     "schema": {
       "image": {
@@ -88,16 +88,21 @@
         "display_name": "Image",
         "id": "idJESWX5Q7G7WRgNgBZBww"
       },
+      "image_desktop": {
+        "type": "asset",
+        "pos": 1,
+        "id": "U7_BuRg6TFaIEbcvAd55pg"
+      },
       "heading": {
         "type": "text",
-        "pos": 1,
+        "pos": 2,
         "required": true,
         "display_name": "Heading",
         "id": "1Jbgx3peQz2xRCgYGlFo1w"
       },
       "copy": {
         "type": "richtext",
-        "pos": 2,
+        "pos": 3,
         "customize_toolbar": true,
         "toolbar": [
           "bold",
@@ -111,7 +116,7 @@
       },
       "theme": {
         "type": "option",
-        "pos": 3,
+        "pos": 4,
         "use_uuid": true,
         "source": "internal",
         "datasource_slug": "themes",
@@ -122,13 +127,13 @@
       },
       "id": {
         "type": "text",
-        "pos": 4,
+        "pos": 5,
         "display_name": "ID",
         "id": "lRHJ3CXqQrWQyVlHp2wg8Q"
       },
       "spacing_top": {
         "type": "boolean",
-        "pos": 5,
+        "pos": 6,
         "default_value": true,
         "inline_label": true,
         "display_name": "Spacing Top",
@@ -136,7 +141,7 @@
       },
       "spacing_bottom": {
         "type": "boolean",
-        "pos": 6,
+        "pos": 7,
         "default_value": true,
         "inline_label": true,
         "display_name": "Spacing Bottom",

@@ -129,7 +129,7 @@ onUnmounted(() => {
             <UiCardProject :title="project.content.title">
               <NuxtImg
                 v-if="project.content.media?.filename && storyblokAssetType(project.content.media.filename) === 'image'"
-                class="block size-full object-cover rounded-20 shadow-xl"
+                class="block size-full object-cover rounded-20 squircle-40 shadow-lg"
                 :src="project.content.media.filename"
                 :alt="project.content.title || project.content.media.alt"
                 width="16"
