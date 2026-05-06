@@ -5,7 +5,7 @@ import type { StoryblokMultilink, StoryblokAsset, StoryblokRichtext } from '../s
 export interface BlockChips {
   heading: string;
   copy: StoryblokRichtext;
-  chips?: ElementTitle[];
+  chips?: (number | string)[];
   theme?: number | string;
   id?: string;
   spacing_top?: boolean;
