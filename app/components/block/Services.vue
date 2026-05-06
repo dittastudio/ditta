@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { Engine, Runner, Bodies, Body, Composite, Mouse, MouseConstraint } from 'matter-js'
-import type { BlockChips } from '#storyblok-components'
+import type { BlockServices } from '#storyblok-components'
 
 interface Props {
-  block: BlockChips
+  block: BlockServices
 }
 
 const { block } = defineProps<Props>()
@@ -12,6 +12,8 @@ const containerRef = useTemplateRef('container')
 const chipRefs = useTemplateRef('chipRef')
 const transforms = ref<string[]>([])
 const ready = ref(false)
+
+const services = await useDatasource('services', block.services)
 
 let stopPhysics: (() => void) | null = null
 
@@ -183,15 +185,15 @@ onUnmounted(() => stopPhysics?.())
       class="absolute inset-0 z-0 select-none"
     >
       <li
-        v-for="(chip, i) in block.chips"
-        :key="chip._uid"
+        v-for="(service, i) in services"
+        :key="service.id"
         ref="chipRef"
         class="absolute top-0 left-0 pointer-events-none will-change-transform transition-opacity duration-500"
         :class="ready ? 'opacity-100' : 'opacity-0'"
         :style="transforms[i] ? { transform: transforms[i] } : {}"
       >
         <UiChip
-          :text="chip.title"
+          :text="service.name"
           size="large"
           theme="light"
         />

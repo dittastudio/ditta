@@ -21,11 +21,6 @@ const { story } = defineProps<Props>()
       :block="block"
     />
 
-    <BlockChips
-      v-else-if="block.component === 'block_chips'"
-      :block="block"
-    />
-
     <BlockCta
       v-else-if="block.component === 'block_cta'"
       :block="block"
@@ -56,13 +51,18 @@ const { story } = defineProps<Props>()
       :block="block"
     />
 
-    <BlockText
-      v-else-if="block.component === 'block_text'"
+    <BlockServices
+      v-else-if="block.component === 'block_services'"
       :block="block"
     />
 
     <BlockTestimonial
       v-else-if="block.component === 'block_testimonial'"
+      :block="block"
+    />
+
+    <BlockText
+      v-else-if="block.component === 'block_text'"
       :block="block"
     />
   </section>

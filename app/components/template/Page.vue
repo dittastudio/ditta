@@ -19,13 +19,13 @@ const { story } = defineProps<Props>()
     :id="block?.id"
     :class="['theme' in block ? themeClasses[block.theme as Themes] : '']"
   >
-    <BlockChips
-      v-if="block.component === 'block_chips'"
+    <BlockCta
+      v-if="block.component === 'block_cta'"
       :block="block"
     />
 
-    <BlockCta
-      v-else-if="block.component === 'block_cta'"
+    <BlockServices
+      v-else-if="block.component === 'block_services'"
       :block="block"
     />
 
