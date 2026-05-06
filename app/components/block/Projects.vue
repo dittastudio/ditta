@@ -154,6 +154,7 @@ onUnmounted(() => {
 .project__wrapper {
   padding-top: utopia.clamp(120, 160);
 }
+
 .project__ticker {
   font-size: utopia.clamp(120, 160);
 }
