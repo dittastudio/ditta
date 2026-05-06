@@ -237,6 +237,81 @@
     "metadata": {}
   },
   {
+    "name": "block_project_overview",
+    "display_name": "Project Overview",
+    "description": "",
+    "created_at": "2026-05-06T16:20:24.579Z",
+    "updated_at": "2026-05-06T16:32:14.819Z",
+    "id": 173649201483938,
+    "schema": {
+      "heading": {
+        "type": "textarea",
+        "pos": 0,
+        "id": "iN5PFIKIR3WjAYjK-YZVnQ",
+        "required": true
+      },
+      "copy": {
+        "type": "richtext",
+        "pos": 1,
+        "id": "_SfpewrHSXe7D8l9oF3zyg",
+        "customize_toolbar": true,
+        "toolbar": [
+          "bold",
+          "unset",
+          "italic",
+          "paragraph"
+        ],
+        "required": true
+      },
+      "theme": {
+        "type": "option",
+        "pos": 3,
+        "use_uuid": true,
+        "source": "internal",
+        "datasource_slug": "themes",
+        "exclude_empty_option": true,
+        "default_value": "beige",
+        "id": "PhYypZL4TtiIVwgkdaSVWA"
+      },
+      "id": {
+        "type": "text",
+        "pos": 4,
+        "id": "_R7Et1ZKTim0IdDnzIhfaQ"
+      },
+      "spacing_top": {
+        "type": "boolean",
+        "display_name": "Spacing Top",
+        "pos": 5,
+        "default_value": true,
+        "inline_label": true,
+        "id": "7Ow4U5w4Qt6NldVH6nTi6g"
+      },
+      "spacing_bottom": {
+        "type": "boolean",
+        "display_name": "Spacing Bottom",
+        "pos": 6,
+        "default_value": true,
+        "inline_label": true,
+        "id": "dEMupm7WRACzTcmXvJIWgg"
+      }
+    },
+    "image": null,
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Project Overview",
+    "component_group_uuid": "c56a9133-c409-488d-9f91-40d75d6e78cd",
+    "color": null,
+    "icon": null,
+    "internal_tags_list": [],
+    "internal_tag_ids": [],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
     "name": "block_projects",
     "display_name": "Projects",
     "description": null,
@@ -1072,19 +1147,28 @@
     "display_name": null,
     "description": null,
     "created_at": "2024-04-12T15:16:30.902Z",
-    "updated_at": "2026-04-29T13:16:14.465Z",
+    "updated_at": "2026-05-06T16:38:03.212Z",
     "id": 5647533,
     "schema": {
       "blocks": {
         "type": "bloks",
         "pos": 1,
-        "restrict_type": "groups",
+        "restrict_type": "",
         "restrict_components": true,
-        "component_whitelist": [],
-        "component_group_whitelist": [
-          "c56a9133-c409-488d-9f91-40d75d6e78cd"
+        "component_whitelist": [
+          "block_cta",
+          "block_projects",
+          "block_services",
+          "block_statement",
+          "block_steps",
+          "block_team"
         ],
-        "id": "TEthTDcMRGOFSALxUXkDOA"
+        "component_group_whitelist": [],
+        "id": "TEthTDcMRGOFSALxUXkDOA",
+        "component_group_denylist": [],
+        "component_denylist": [],
+        "component_tag_whitelist": [],
+        "component_tag_denylist": []
       },
       "tab-554f4d6b-1445-4095-a716-160ff3edcf74": {
         "display_name": "SEO",
@@ -1189,7 +1273,7 @@
     "display_name": null,
     "description": null,
     "created_at": "2026-04-28T14:01:45.750Z",
-    "updated_at": "2026-05-04T14:23:56.648Z",
+    "updated_at": "2026-05-06T16:38:34.989Z",
     "id": 170783972357679,
     "schema": {
       "client": {
@@ -1215,25 +1299,44 @@
         "component_denylist": [],
         "id": "UWrvO30YQ1-jw1wm1xXGhQ"
       },
+      "services": {
+        "type": "options",
+        "pos": 2,
+        "source": "internal",
+        "datasource_slug": "services",
+        "id": "N_oj4WJISVqzo1SuIprmwQ",
+        "display_name": "Services"
+      },
       "blocks": {
         "type": "bloks",
-        "pos": 2,
-        "restrict_type": "groups",
+        "pos": 3,
+        "restrict_type": "",
         "restrict_components": true,
-        "component_whitelist": [],
-        "component_group_whitelist": [
-          "c56a9133-c409-488d-9f91-40d75d6e78cd"
+        "component_whitelist": [
+          "block_cta",
+          "block_hero_project",
+          "block_media",
+          "block_project_overview",
+          "block_projects",
+          "block_statement",
+          "block_testimonial",
+          "block_text"
         ],
-        "id": "TEthTDcMRGOFSALxUXkDOA"
+        "component_group_whitelist": [],
+        "id": "TEthTDcMRGOFSALxUXkDOA",
+        "component_group_denylist": [],
+        "component_denylist": [],
+        "component_tag_whitelist": [],
+        "component_tag_denylist": []
       },
       "title": {
         "type": "text",
-        "pos": 3,
+        "pos": 4,
         "id": "QDDZJR-sSZ6EesCIlI_03g"
       },
       "media": {
         "type": "asset",
-        "pos": 4,
+        "pos": 5,
         "id": "_BusU_2qT3yDcDBhPpe83w"
       },
       "tab-554f4d6b-1445-4095-a716-160ff3edcf74": {
@@ -1243,7 +1346,7 @@
           "seo_description",
           "seo_image"
         ],
-        "pos": 5,
+        "pos": 6,
         "type": "tab",
         "id": "VU9NaxRFQJWnFhYP8-3PdA",
         "name": "tab-554f4d6b-1445-4095-a716-160ff3edcf74"
@@ -1254,28 +1357,28 @@
           "media",
           "title"
         ],
-        "pos": 6,
+        "pos": 7,
         "type": "tab",
         "name": "tab-6aa7f8d0-ec3e-453b-a4ae-fee0363bbd0a",
         "id": "aqf40Ow-RTukrv7gNju9Cg"
       },
       "seo_title": {
         "type": "text",
-        "pos": 7,
+        "pos": 8,
         "id": "cOLSOMqqSKCsh7L2xWHwnA",
         "required": true,
         "display_name": "Title"
       },
       "seo_description": {
         "type": "text",
-        "pos": 8,
+        "pos": 9,
         "id": "qcOA9qamSeOqJl7K5u2oAw",
         "required": true,
         "display_name": "Description"
       },
       "seo_image": {
         "type": "asset",
-        "pos": 9,
+        "pos": 10,
         "required": true,
         "display_name": "Image",
         "description": "For best results, use an image size of 1200px by 630px.",

@@ -8,6 +8,7 @@ interface Props {
 }
 
 const { story } = defineProps<Props>()
+const services = await useDatasource('services', story.content.services)
 </script>
 
 <template>
@@ -21,11 +22,6 @@ const { story } = defineProps<Props>()
       :block="block"
     />
 
-    <BlockChips
-      v-else-if="block.component === 'block_chips'"
-      :block="block"
-    />
-
     <BlockCta
       v-else-if="block.component === 'block_cta'"
       :block="block"
@@ -36,33 +32,41 @@ const { story } = defineProps<Props>()
       :block="block"
     />
 
-    <BlockSteps
-      v-else-if="block.component === 'block_steps'"
-      :block="block"
-    />
-
-    <BlockTeam
-      v-else-if="block.component === 'block_team'"
-      :block="block"
-    />
-
     <BlockProjects
       v-else-if="block.component === 'block_projects'"
       :block="block"
     />
+
+    <BlockProjectOverview
+      v-else-if="block.component === 'block_project_overview'"
+      :block="block"
+    >
+      <ul class="flex gap-2.5 flex-wrap max-w-[40em]">
+        <li
+          v-for="service in services"
+          :key="service.id"
+        >
+          <UiChip
+            :text="service.name"
+            size="medium"
+            theme="light"
+          />
+        </li>
+      </ul>
+    </BlockProjectOverview>
 
     <BlockMedia
       v-else-if="block.component === 'block_media'"
       :block="block"
     />
 
-    <BlockText
-      v-else-if="block.component === 'block_text'"
+    <BlockTestimonial
+      v-else-if="block.component === 'block_testimonial'"
       :block="block"
     />
 
-    <BlockTestimonial
-      v-else-if="block.component === 'block_testimonial'"
+    <BlockText
+      v-else-if="block.component === 'block_text'"
       :block="block"
     />
   </section>

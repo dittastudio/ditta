@@ -36,6 +36,17 @@ export interface BlockMedia {
   _uid: string;
 }
 
+export interface BlockProjectOverview {
+  heading: string;
+  copy: StoryblokRichtext;
+  theme?: number | string;
+  id?: string;
+  spacing_top?: boolean;
+  spacing_bottom?: boolean;
+  component: "block_project_overview";
+  _uid: string;
+}
+
 export interface BlockProjects {
   ticker?: string;
   projects?: (ISbStoryData<Project> | string)[];
@@ -161,18 +172,7 @@ export interface ElementTitle {
 }
 
 export interface Page {
-  blocks?: (
-    | BlockCta
-    | BlockHeroProject
-    | BlockMedia
-    | BlockProjects
-    | BlockServices
-    | BlockStatement
-    | BlockSteps
-    | BlockTeam
-    | BlockTestimonial
-    | BlockText
-  )[];
+  blocks?: (BlockCta | BlockProjects | BlockServices | BlockStatement | BlockSteps | BlockTeam)[];
   seo_title: string;
   seo_description: string;
   seo_image: StoryblokAsset;
@@ -191,15 +191,14 @@ export interface Person {
 export interface Project {
   client: ISbStoryData<Client> | string;
   Credits?: ElementLink[];
+  services?: (number | string)[];
   blocks?: (
     | BlockCta
     | BlockHeroProject
     | BlockMedia
+    | BlockProjectOverview
     | BlockProjects
-    | BlockServices
     | BlockStatement
-    | BlockSteps
-    | BlockTeam
     | BlockTestimonial
     | BlockText
   )[];
