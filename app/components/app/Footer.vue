@@ -11,8 +11,8 @@ const { text } = defineProps<Props>()
 const email = 'hello@ditta.studio'
 const chars = [...email]
 
-const linkRef = useTemplateRef<HTMLAnchorElement>('linkRef')
-const charRefs = useTemplateRef<HTMLSpanElement[]>('charRefs')
+const linkRef = useTemplateRef('linkRef')
+const charRefs = useTemplateRef('charRefs')
 
 const FALLOFF = 240
 const MIN_WGHT = 300
@@ -56,6 +56,7 @@ const tick = () => {
   dirty = false
 
   const len = charRefs.value?.length ?? 0
+
   for (let i = 0; i < len; i++) {
     let eased = 0
 
@@ -80,10 +81,12 @@ onMounted(() => {
   italSetters = els.map((el) => gsap.quickTo(el, '--ital', TWEEN))
 
   measure()
+
   if (linkRef.value) {
     ro = new ResizeObserver(measure)
     ro.observe(linkRef.value)
   }
+
   gsap.ticker.add(tick)
 })
 
@@ -127,8 +130,9 @@ onUnmounted(() => {
           ref="charRefs"
           class="footer__char"
           aria-hidden="true"
-          >{{ char }}</span
         >
+          {{ char }}
+        </span>
       </a>
     </div>
   </footer>
