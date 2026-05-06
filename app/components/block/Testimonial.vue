@@ -36,15 +36,12 @@ const { block } = defineProps<Props>()
       >
         <NuxtImg
           v-if="block.image && block.image.filename && storyblokAssetType(block.image.filename) === 'image'"
-          class="block size-16 md:size-20 object-cover rounded-full"
+          class="block size-14 md:size-18 object-cover rounded-full"
           :src="block.image.filename"
           :alt="block.name || block.image.alt"
           width="80"
           height="80"
-          sizes="
-            xs:40px
-            sm:80px
-          "
+          density="1x, 2x"
           loading="lazy"
         />
 

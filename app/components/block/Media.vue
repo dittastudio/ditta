@@ -59,6 +59,9 @@ function getSizes(layout: string | undefined) {
         <NuxtImg
           v-if="media.image && media.image.filename && storyblokAssetType(media.image.filename) === 'image'"
           class="block w-full"
+          :class="{
+            'rounded-[2px]': media.layout !== 'full',
+          }"
           :src="media.image.filename"
           :alt="media.image.alt || ''"
           :width="storyblokImageDimensions(media.image.filename).width"

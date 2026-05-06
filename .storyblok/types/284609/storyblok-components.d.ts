@@ -2,18 +2,6 @@
 // DO NOT MODIFY THIS FILE BY HAND.
 import type { ISbStoryData } from '@storyblok/js';
 import type { StoryblokMultilink, StoryblokAsset, StoryblokRichtext } from '../storyblok.d.ts';
-export interface BlockChips {
-  heading: string;
-  copy: StoryblokRichtext;
-  chips?: (number | string)[];
-  theme?: number | string;
-  id?: string;
-  spacing_top?: boolean;
-  spacing_bottom?: boolean;
-  component: "block_chips";
-  _uid: string;
-}
-
 export interface BlockCta {
   text?: string;
   button?: ElementCta[];
@@ -27,6 +15,7 @@ export interface BlockCta {
 
 export interface BlockHeroProject {
   image: StoryblokAsset;
+  image_desktop?: StoryblokAsset;
   heading: string;
   copy?: StoryblokRichtext;
   theme?: number | string;
@@ -55,6 +44,18 @@ export interface BlockProjects {
   spacing_top?: boolean;
   spacing_bottom?: boolean;
   component: "block_projects";
+  _uid: string;
+}
+
+export interface BlockServices {
+  heading: string;
+  copy: StoryblokRichtext;
+  services?: (number | string)[];
+  theme?: number | string;
+  id?: string;
+  spacing_top?: boolean;
+  spacing_bottom?: boolean;
+  component: "block_services";
   _uid: string;
 }
 
@@ -161,11 +162,11 @@ export interface ElementTitle {
 
 export interface Page {
   blocks?: (
-    | BlockChips
     | BlockCta
     | BlockHeroProject
     | BlockMedia
     | BlockProjects
+    | BlockServices
     | BlockStatement
     | BlockSteps
     | BlockTeam
@@ -191,11 +192,11 @@ export interface Project {
   client: ISbStoryData<Client> | string;
   Credits?: ElementLink[];
   blocks?: (
-    | BlockChips
     | BlockCta
     | BlockHeroProject
     | BlockMedia
     | BlockProjects
+    | BlockServices
     | BlockStatement
     | BlockSteps
     | BlockTeam

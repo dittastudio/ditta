@@ -12,3 +12,12 @@
 @utility trim-both {
   text-box: trim-both cap alphabetic;
 }
+
+@utility squircle-40 {
+  @supports (corner-shape: squircle) {
+    && {
+      corner-shape: squircle;
+      border-radius: 40px;
+    }
+  }
+}
