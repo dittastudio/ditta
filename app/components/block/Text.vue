@@ -18,7 +18,7 @@ const { block } = defineProps<Props>()
   >
     <div
       v-if="storyblokRichTextContent(block.text)"
-      class="col-span-1 prose prose-h2:text-subheading text-pretty max-w-[60ch]"
+      class="col-span-1 prose prose-h2:text-subheading prose-p:text-body text-pretty max-w-[60ch]"
       :class="{
         'lg:col-start-2': block.align_right,
       }"
