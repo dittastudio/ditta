@@ -117,6 +117,7 @@ onUnmounted(() => {
         ref="linkRef"
         class="footer__link block whitespace-nowrap text-center"
         href="mailto:hello@ditta.studio"
+        aria-label="Email Ditta at hello@ditta.studio"
         @pointermove.passive="onMove"
         @pointerleave="onLeave"
       >
@@ -125,6 +126,7 @@ onUnmounted(() => {
           :key="i"
           ref="charRefs"
           class="footer__char"
+          aria-hidden="true"
           >{{ char }}</span
         >
       </a>
