@@ -7,7 +7,7 @@ const { title } = defineProps<Props>()
 </script>
 
 <template>
-  <div class="relative max-w-full max-h-full aspect-[inherit]">
+  <div class="relative">
     <slot />
 
     <div class="absolute inset-0 p-5 md:p-10 flex items-end justify-start">

@@ -12,7 +12,7 @@ const { text, size = 'small', theme } = defineProps<Props>()
 
 <template>
   <span
-    class="ui-chip inline-flex font-semibold leading-none rounded-full"
+    class="ui-chip inline-flex font-medium leading-none rounded-full"
     :class="[
       {
         'text-14 px-4 py-3': size === 'small',

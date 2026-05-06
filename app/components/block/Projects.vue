@@ -120,30 +120,34 @@ onUnmounted(() => {
           v-for="(project, index) in projects"
           :key="`${project.uuid}-${index}`"
           ref="project"
-          class="project__wrapper sticky top-0 h-screen w-full flex flex-col items-center py-10"
+          class="project__wrapper sticky top-0 h-screen w-full flex flex-col items-center py-10 pointer-events-none"
         >
-          <NuxtLink
-            :to="`/${project.full_slug}`"
-            class="project__item flex flex-col justify-center max-w-full h-full aspect-video"
-          >
-            <UiCardProject :title="project.content.title">
-              <NuxtImg
-                v-if="project.content.media?.filename && storyblokAssetType(project.content.media.filename) === 'image'"
-                class="block size-full object-cover rounded-20 squircle-40 shadow-lg"
-                :src="project.content.media.filename"
-                :alt="project.content.title || project.content.media.alt"
-                width="16"
-                height="9"
-                sizes="
+          <div class="flex flex-col justify-center max-w-full h-full aspect-video">
+            <NuxtLink
+              class="block pointer-events-auto"
+              :to="`/${project.full_slug}`"
+            >
+              <UiCardProject :title="project.content.title">
+                <NuxtImg
+                  v-if="
+                    project.content.media?.filename && storyblokAssetType(project.content.media.filename) === 'image'
+                  "
+                  class="block size-full object-cover rounded-20 squircle-40 shadow-lg"
+                  :src="project.content.media.filename"
+                  :alt="project.content.title || project.content.media.alt"
+                  width="16"
+                  height="9"
+                  sizes="
                   xs:100vw
                   sm:100vw
                   lg:66vw
                   2xl:1180px
                 "
-                loading="lazy"
-              />
-            </UiCardProject>
-          </NuxtLink>
+                  loading="lazy"
+                />
+              </UiCardProject>
+            </NuxtLink>
+          </div>
         </li>
       </ul>
     </div>
