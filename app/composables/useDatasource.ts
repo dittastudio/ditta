@@ -4,6 +4,16 @@ type Entry = {
   value: string
 }
 
+type Datasource = {
+  data: {
+    datasource_entries: Entry[]
+    cv: number
+  }
+  headers: Record<string, string>
+  perPage: number
+  total: number
+}
+
 export async function useDatasource(slug: string = '', items: (string | number)[] = []) {
   const storyblokApi = useStoryblokApi()
 
@@ -17,10 +27,10 @@ export async function useDatasource(slug: string = '', items: (string | number)[
   )
 
   const matched = computed(() => {
-    const datasource = data.value?.data
+    const datasource = data.value as Datasource | undefined
     if (!datasource) return []
 
-    const entries: Entry[] = data.value?.data.datasource_entries
+    const entries = datasource.data.datasource_entries
     if (!entries) return []
 
     return items.map((item) => entries.find((entry) => entry.value === item)).filter((entry): entry is Entry => !!entry)
