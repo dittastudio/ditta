@@ -29,10 +29,12 @@
   --font-sans: 'Saans', sans-serif, system-ui;
 
   --font-weight-\*: initial;
-  --font-weight-regular: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 560;
-  --font-weight-bold: 800;
+  --font-weight-light: 300;
+  --font-weight-regular: 380;
+  --font-weight-medium: 570;
+  --font-weight-semibold: 670;
+  --font-weight-bold: 790;
+  --font-weight-heavy: 900;
 
   --text-\*: initial;
   --text-14: 0.875rem;

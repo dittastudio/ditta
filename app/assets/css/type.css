@@ -2,7 +2,7 @@
   font-family: var(--font-sans);
   font-size: utopia.clamp(64, 120);
   line-height: 1;
-  font-weight: 350;
+  font-weight: var(--font-weight-regular);
   letter-spacing: var(--tracking-normal);
 }
 
@@ -26,7 +26,7 @@
   font-family: var(--font-sans);
   font-size: var(--text-14);
   line-height: 1;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   letter-spacing: var(--tracking-normal);
 }
 
