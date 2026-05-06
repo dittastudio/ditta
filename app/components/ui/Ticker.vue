@@ -33,6 +33,19 @@ const refreshDimensions = () => {
   containerWidth = container.value.clientWidth
 }
 
+const setPlayState = (isScrollingUp: boolean) => {
+  const flip = isLeft === isScrollingUp
+  const wrapperState = flip ? 'running' : 'paused'
+  const listState = flip ? 'paused' : 'running'
+
+  wrappers.value?.forEach((el) => {
+    el.style.animationPlayState = wrapperState
+  })
+  lists.value?.forEach((el) => {
+    el.style.animationPlayState = listState
+  })
+}
+
 onMounted(() => {
   if (!container.value) {
     return
@@ -41,6 +54,20 @@ onMounted(() => {
   xTo = gsap.quickTo(container.value, 'x', { duration: 0.5, ease: 'power3' })
   refreshDimensions()
   window.addEventListener('resize', refreshDimensions)
+
+  const rect = container.value.getBoundingClientRect()
+  const scroll = window.scrollY
+
+  documentTop = rect.top + scroll
+
+  const range = viewportHeight + rect.height
+  const progress = Math.max(0, (scroll + viewportHeight - documentTop) / range)
+  const offset = containerWidth * (progress / 3)
+
+  gsap.set(container.value, { x: isLeft ? -offset : offset })
+
+  lastIsScrollingUp = false
+  setPlayState(false)
 })
 
 useLenis((lenis) => {
@@ -51,16 +78,7 @@ useLenis((lenis) => {
   const isScrollingUp = lenis.direction === -1
 
   if (isScrollingUp !== lastIsScrollingUp) {
-    const wrapperState = isLeft === isScrollingUp ? 'running' : 'paused'
-    const listState = isLeft === isScrollingUp ? 'paused' : 'running'
-
-    wrappers.value?.forEach((el) => {
-      el.style.animationPlayState = wrapperState
-    })
-    lists.value?.forEach((el) => {
-      el.style.animationPlayState = listState
-    })
-
+    setPlayState(isScrollingUp)
     lastIsScrollingUp = isScrollingUp
   }
 
