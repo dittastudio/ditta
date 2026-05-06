@@ -41,7 +41,7 @@ const { block } = defineProps<Props>()
     </picture>
 
     <div class="hero-project__text col-start-1 row-start-1 self-end wrapper pb-15 md:pb-25">
-      <div class="flex flex-col gap-10 md:gap-20">
+      <div class="flex flex-col gap-10">
         <h1
           v-if="block.heading"
           class="text-display text-balance trim-both"
