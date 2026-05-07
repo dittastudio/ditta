@@ -13,7 +13,7 @@ const { block } = defineProps<Props>()
     class="wrapper"
     :class="{
       'pt-(--app-vertical-rhythm)': block.spacing_top,
-      'pb-(--app-vertical-rhythm)': block.spacing_bottom,
+      'pb-[calc(var(--app-vertical-rhythm)/2)]': block.spacing_bottom,
     }"
   >
     <UiLockup

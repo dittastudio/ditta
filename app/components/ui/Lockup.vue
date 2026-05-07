@@ -11,17 +11,17 @@ const { heading, copy } = defineProps<Props>()
 
 <template>
   <div class="flex flex-col items-start gap-10 md:gap-20">
-    <h2
-      v-if="heading"
-      class="text-display whitespace-pre-wrap trim-both"
-    >
-      {{ heading }}
-    </h2>
-
     <div
       v-if="storyblokRichTextContent(copy)"
-      class="prose text-pretty prose-p:text-lead prose-p:max-w-[21em]"
+      class="prose prose-p:text-pretty prose-p:text-lead prose-p:max-w-[21em]"
     >
+      <h2
+        v-if="heading"
+        class="text-display whitespace-pre-wrap trim-both"
+      >
+        {{ heading }}
+      </h2>
+
       <StoryblokText :html="copy" />
     </div>
 

@@ -49,7 +49,7 @@ useHead({
 
       <div class="grow flex flex-col justify-center wrapper py-30">
         <div class="flex flex-col items-center justify-center text-center h-full gap-10">
-          <h1 class="text-display">Mamma mia</h1>
+          <h1 class="text-display">Mamma mia 🍝</h1>
 
           <p class="text-lead text-balance max-w-[30ch]">
             {{ message }}
@@ -64,11 +64,12 @@ useHead({
           </NuxtLink>
         </div>
       </div>
-      <div class="absolute bottom-0 right-0 left-0 -z-1 drop-shadow-xl text-pink">
+
+      <!-- <div class="absolute bottom-0 right-0 left-0 -z-1 drop-shadow-xl text-pink">
         <div class="wrapper">
           <IconLogo class="w-full h-auto" />
         </div>
-      </div>
+      </div> -->
     </div>
   </VueLenis>
 </template>
