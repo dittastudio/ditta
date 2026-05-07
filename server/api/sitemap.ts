@@ -13,7 +13,7 @@ export default defineSitemapEventHandler(async () => {
 
   try {
     const response = await storyblokApi.getAll('cdn/stories', {
-      version: 'draft',
+      version: 'published',
       page: 1,
       per_page: 100,
       excluding_slugs: 'settings,clients*,people*',
