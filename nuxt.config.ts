@@ -51,6 +51,10 @@ export default defineNuxtConfig({
         { name: 'apple-mobile-web-app-title', content: 'ditta' },
         { 'http-equiv': 'content-language', content: 'en-GB' },
       ],
+      link: [
+        { rel: 'manifest', href: '/site.webmanifest' },
+        { rel: 'preload', type: 'font/woff2', href: '/fonts/SaansVF.woff2', as: 'font', crossorigin: '' },
+      ],
     },
   },
   compatibilityDate: '2025-07-15',
