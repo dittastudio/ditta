@@ -14,7 +14,7 @@ const { name, position } = defineProps<Props>()
   <div class="flex flex-col gap-10">
     <NuxtImg
       v-if="image?.filename && storyblokAssetType(image.filename) === 'image'"
-      class="block w-full rounded-20 squircle-40"
+      class="block size-full aspect-square object-cover rounded-20 squircle-40"
       :src="image.filename"
       :alt="image.alt || name || ''"
       loading="lazy"

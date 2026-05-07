@@ -15,12 +15,12 @@ const email = 'hello@ditta.studio'
 
 const linkRef = useTemplateRef('linkRef')
 
-const FALLOFF = 240
+const FALLOFF = 220
 const MIN_WGHT = 300
 const MAX_WGHT = 900
 const MIN_ITAL = 0
 const MAX_ITAL = 10
-const TWEEN = { duration: 0.4, ease: 'power2.out' }
+const TWEEN = { duration: 0.3, ease: 'power2.out' }
 const falloffEase = gsap.parseEase('power2.inOut')
 
 let split: SplitText | null = null
@@ -81,8 +81,9 @@ onMounted(() => {
   const chars = split.chars
 
   gsap.set(chars, { '--wght': MIN_WGHT, '--ital': MIN_ITAL })
-  wghtSetters = chars.map((el) => gsap.quickTo(el, '--wght', TWEEN))
-  italSetters = chars.map((el) => gsap.quickTo(el, '--ital', TWEEN))
+  const round1dp = (v: string) => String(Math.round(parseFloat(v) * 10) / 10)
+  wghtSetters = chars.map((el) => gsap.quickTo(el, '--wght', { ...TWEEN, modifiers: { '--wght': round1dp } }))
+  italSetters = chars.map((el) => gsap.quickTo(el, '--ital', { ...TWEEN, modifiers: { '--ital': round1dp } }))
 
   measure()
 
