@@ -59,7 +59,17 @@ export default defineNuxtConfig({
   css: ['~/assets/css/app.css'],
   vite: {
     optimizeDeps: {
-      include: ['@vue/devtools-core', '@vue/devtools-kit', '@storyblok/vue', '@tiptap/core'],
+      include: [
+        '@vue/devtools-core',
+        '@vue/devtools-kit',
+        '@storyblok/vue',
+        '@tiptap/core',
+        'gsap/SplitText',
+        'lenis/vue',
+        'gsap',
+        'gsap/ScrollTrigger',
+        'matter-js',
+      ],
     },
     plugins: [
       tailwindcss(),

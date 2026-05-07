@@ -1,15 +1,10 @@
 @utility prose {
-  & :where(h1, h2, h3, h4):has(+ :where(p, ul, ol)) {
-    margin-bottom: 1.35lh;
+  & :where(h1, h2, h3, h4, h5, h6):has(+ :where(p, ul, ol)) {
+    margin-bottom: 0.6lh;
   }
 
-  /* Quick and dirty spacing. Will AI please make nice. */
-  & :where(p:not(:last-child)) {
-    margin-bottom: 2.5ch;
-
-    @variant md {
-      margin-bottom: 2.2ch;
-    }
+  & :where(p + p) {
+    margin-top: 1lh;
   }
 
   & :where(b, strong) {
@@ -21,6 +16,12 @@
   }
 }
 
+@custom-variant prose-h1 {
+  & :where(h1) {
+    @slot;
+  }
+}
+
 @custom-variant prose-h2 {
   & :where(h2) {
     @slot;
@@ -29,6 +30,24 @@
 
 @custom-variant prose-h3 {
   & :where(h3) {
+    @slot;
+  }
+}
+
+@custom-variant prose-h4 {
+  & :where(h4) {
+    @slot;
+  }
+}
+
+@custom-variant prose-h5 {
+  & :where(h5) {
+    @slot;
+  }
+}
+
+@custom-variant prose-h6 {
+  & :where(h6) {
     @slot;
   }
 }

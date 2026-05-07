@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 import type { StoryblokRichtext } from '#storyblok-types'
 import { gsap } from 'gsap'
+import { SplitText } from 'gsap/SplitText'
+
+gsap.registerPlugin(SplitText)
 
 interface Props {
   text?: StoryblokRichtext
@@ -9,10 +12,8 @@ interface Props {
 const { text } = defineProps<Props>()
 
 const email = 'hello@ditta.studio'
-const chars = [...email]
 
 const linkRef = useTemplateRef('linkRef')
-const charRefs = useTemplateRef('charRefs')
 
 const FALLOFF = 240
 const MIN_WGHT = 300
@@ -22,6 +23,7 @@ const MAX_ITAL = 10
 const TWEEN = { duration: 0.4, ease: 'power2.out' }
 const falloffEase = gsap.parseEase('power2.inOut')
 
+let split: SplitText | null = null
 let centers: number[] = []
 let wghtSetters: ((v: number) => gsap.core.Tween)[] = []
 let italSetters: ((v: number) => gsap.core.Tween)[] = []
@@ -32,9 +34,9 @@ let active = false
 let dirty = false
 
 const measure = () => {
-  const els = charRefs.value
-  if (!els) return
-  centers = els.map((el) => {
+  const chars = split?.chars
+  if (!chars) return
+  centers = chars.map((el) => {
     const rect = el.getBoundingClientRect()
     return rect.left + rect.width / 2
   })
@@ -55,7 +57,7 @@ const tick = () => {
   if (!dirty) return
   dirty = false
 
-  const len = charRefs.value?.length ?? 0
+  const len = split?.chars.length ?? 0
 
   for (let i = 0; i < len; i++) {
     let eased = 0
@@ -73,19 +75,19 @@ const tick = () => {
 }
 
 onMounted(() => {
-  const els = charRefs.value
-  if (!els) return
+  if (!linkRef.value) return
 
-  gsap.set(els, { '--wght': MIN_WGHT, '--ital': MIN_ITAL })
-  wghtSetters = els.map((el) => gsap.quickTo(el, '--wght', TWEEN))
-  italSetters = els.map((el) => gsap.quickTo(el, '--ital', TWEEN))
+  split = new SplitText(linkRef.value, { type: 'chars', charsClass: 'footer__char' })
+  const chars = split.chars
+
+  gsap.set(chars, { '--wght': MIN_WGHT, '--ital': MIN_ITAL })
+  wghtSetters = chars.map((el) => gsap.quickTo(el, '--wght', TWEEN))
+  italSetters = chars.map((el) => gsap.quickTo(el, '--ital', TWEEN))
 
   measure()
 
-  if (linkRef.value) {
-    ro = new ResizeObserver(measure)
-    ro.observe(linkRef.value)
-  }
+  ro = new ResizeObserver(measure)
+  ro.observe(linkRef.value)
 
   gsap.ticker.add(tick)
 })
@@ -93,8 +95,10 @@ onMounted(() => {
 onUnmounted(() => {
   ro?.disconnect()
   gsap.ticker.remove(tick)
-  const els = charRefs.value
-  if (els) for (const el of els) gsap.killTweensOf(el)
+  if (split) {
+    for (const el of split.chars) gsap.killTweensOf(el)
+    split.revert()
+  }
 })
 </script>
 
@@ -124,15 +128,7 @@ onUnmounted(() => {
         @pointermove.passive="onMove"
         @pointerleave="onLeave"
       >
-        <span
-          v-for="(char, i) in chars"
-          :key="i"
-          ref="charRefs"
-          class="footer__char"
-          aria-hidden="true"
-        >
-          {{ char }}
-        </span>
+        {{ email }}
       </a>
     </div>
   </footer>
@@ -143,7 +139,7 @@ onUnmounted(() => {
   font-size: min(calc(9.5vw + 6px), 176px); /* magic number */
 }
 
-.footer__char {
+.footer__link :deep(.footer__char) {
   display: inline-block;
   font-variation-settings:
     'ital' var(--ital, 0),
