@@ -4,6 +4,8 @@ import svgLoader from 'vite-svg-loader'
 
 export default defineNuxtConfig({
   modules: [
+    '@nuxtjs/seo',
+    'nuxt-ai-ready',
     [
       '@nuxt/image',
       {
@@ -59,8 +61,14 @@ export default defineNuxtConfig({
   },
   compatibilityDate: '2025-07-15',
   ssr: true,
-  devtools: { enabled: false },
   css: ['~/assets/css/app.css'],
+  devtools: { enabled: false },
+  runtimeConfig: {
+    public: {
+      STORYBLOK_TOKEN: process.env.NUXT_STORYBLOK_TOKEN,
+      STORYBLOK_VERSION: process.env.NUXT_STORYBLOK_VERSION,
+    },
+  },
   vite: {
     optimizeDeps: {
       include: [
@@ -94,5 +102,13 @@ export default defineNuxtConfig({
         maxWidth: 1800,
       },
     },
+  },
+  site: {
+    name: 'ditta',
+    url: 'https://ditta.studio',
+  },
+  sitemap: {
+    excludeAppSources: true,
+    sources: ['/api/sitemap'],
   },
 })
