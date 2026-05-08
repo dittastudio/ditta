@@ -9,7 +9,7 @@ const { block } = defineProps<Props>()
 </script>
 
 <template>
-  <div class="grid grid-cols-1 grid-rows-1 h-svh w-full">
+  <div class="h-svh grid w-full grid-cols-1 grid-rows-1">
     <picture
       v-if="block.image && block.image.filename && storyblokAssetType(block.image.filename) === 'image'"
       class="col-start-1 row-start-1"
@@ -45,13 +45,13 @@ const { block } = defineProps<Props>()
       />
     </picture>
 
-    <div class="col-start-1 row-start-1 self-end wrapper pb-15 md:pb-25">
-      <div class="flex flex-col gap-10">
+    <div class="self-end col-start-1 row-start-1">
+      <div class="hero-project__content wrapper pb-15 md:pb-25 flex flex-col gap-10">
         <h1
           v-if="block.heading"
-          class="text-display text-balance trim-both"
+          class="text-display text-balance trim-both mt-20"
         >
-          {{ block.heading }}
+          <UiTextMorph :text="block.heading" />
         </h1>
 
         <div
@@ -64,3 +64,24 @@ const { block } = defineProps<Props>()
     </div>
   </div>
 </template>
+
+<style>
+.hero-project__content {
+  position: relative;
+  z-index: 1;
+
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 200%;
+    z-index: -1;
+    pointer-events: none;
+    backdrop-filter: blur(4px);
+    background-color: --alpha(var(--color-black) / 30%);
+    mask-image: linear-gradient(to bottom, transparent 0%, black 100%);
+  }
+}
+</style>
