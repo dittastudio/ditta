@@ -10,6 +10,31 @@ interface Props {
 const { blocks = 30, duration = 1 } = defineProps<Props>()
 const root = useTemplateRef('root')
 
+function coverCrop(
+  source: HTMLImageElement,
+  img: HTMLImageElement,
+  containerW: number,
+  containerH: number,
+): [number, number, number, number] {
+  const { naturalWidth: nw, naturalHeight: nh } = source
+  const objectFit = getComputedStyle(img).objectFit
+
+  if (objectFit !== 'cover') return [0, 0, nw, nh]
+
+  const scale = Math.max(containerW / nw, containerH / nh)
+  const scaledW = nw * scale
+  const scaledH = nh * scale
+
+  const [rawX = '50%', rawY = '50%'] = getComputedStyle(img).objectPosition.split(' ')
+  const parseAxis = (v: string) =>
+    v === 'left' || v === 'top' ? 0 : v === 'right' || v === 'bottom' ? 1 : v === 'center' ? 0.5 : parseFloat(v) / 100
+
+  const sx = ((scaledW - containerW) * parseAxis(rawX)) / scale
+  const sy = ((scaledH - containerH) * parseAxis(rawY)) / scale
+
+  return [sx, sy, containerW / scale, containerH / scale]
+}
+
 let sketch: p5 | undefined
 let io: IntersectionObserver | undefined
 let ro: ResizeObserver | undefined
@@ -58,10 +83,11 @@ onMounted(async () => {
         const bs = Math.max(1, Math.round(state.blocks))
         const sw = Math.ceil(p.width / bs)
         const sh = Math.ceil(p.height / bs)
+        const [sx, sy, srcW, srcH] = coverCrop(source, img, p.width, p.height)
 
         offscreen.width = sw
         offscreen.height = sh
-        offCtx.drawImage(source, 0, 0, sw, sh)
+        offCtx.drawImage(source, sx, sy, srcW, srcH, 0, 0, sw, sh)
 
         const ctx = p.drawingContext as CanvasRenderingContext2D
         ctx.imageSmoothingEnabled = false
