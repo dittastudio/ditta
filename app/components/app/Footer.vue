@@ -11,7 +11,10 @@ const email = 'hello@ditta.studio'
 </script>
 
 <template>
-  <footer class="bg-black text-grey min-h-screen flex">
+  <footer
+    id="contact"
+    class="bg-black text-grey min-h-screen flex"
+  >
     <div class="wrapper w-full pt-25 md:pt-(--app-gutter-outer) pb-10 flex flex-col justify-between gap-6">
       <div
         v-if="storyblokRichTextContent(text)"

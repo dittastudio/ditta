@@ -11,7 +11,7 @@
     "sb:generate": "npm run sb:components && npm run sb:types",
     "create:icons": "npx nuxt-seo-utils icons --source ./favicon.svg",
     "agent:readability": "npx @vercel/agent-readability audit https://ditta.studio",
-    "dev": "npm run sb:generate && npm run agent:readability && nuxt dev --host 0.0.0.0",
+    "dev": "npm run sb:generate && nuxt dev --host 0.0.0.0",
     "dev:ssl": "local-ssl-proxy --source 3010 --target 3000 --cert localhost.pem --key localhost-key.pem",
     "build": "nuxt build",
     "generate": "nuxt generate",
