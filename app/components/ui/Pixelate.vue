@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import type p5 from 'p5'
 import { gsap } from 'gsap'
 
 interface Props {
@@ -35,15 +34,13 @@ function coverCrop(
   return [sx, sy, containerW / scale, containerH / scale]
 }
 
-let sketch: p5 | undefined
+let canvas: HTMLCanvasElement | undefined
 let ro: ResizeObserver | undefined
 
-onMounted(async () => {
+onMounted(() => {
   const img = root.value?.querySelector('img')
 
   if (!img) return
-
-  const { default: P5 } = await import('p5')
 
   const source = new Image()
   source.crossOrigin = 'anonymous'
@@ -53,53 +50,54 @@ onMounted(async () => {
   const offCtx = offscreen.getContext('2d')!
   const state = { blocks }
 
-  const createSketch = () => {
-    if (!root.value) return
+  function draw() {
+    if (!canvas || !img) return
 
-    sketch?.remove()
+    const ctx = canvas.getContext('2d')!
+    const bs = Math.max(1, Math.round(state.blocks))
+    const sw = Math.ceil(canvas.width / bs)
+    const sh = Math.ceil(canvas.height / bs)
+    const [sx, sy, srcW, srcH] = coverCrop(source, img, canvas.width, canvas.height)
+
+    offscreen.width = sw
+    offscreen.height = sh
+    offCtx.drawImage(source, sx, sy, srcW, srcH, 0, 0, sw, sh)
+
+    ctx.imageSmoothingEnabled = false
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    ctx.drawImage(offscreen, 0, 0, sw, sh, 0, 0, canvas.width, canvas.height)
+  }
+
+  function initCanvas() {
+    if (!root.value || !img) return
+
+    canvas?.remove()
 
     const { width, height } = root.value.getBoundingClientRect()
 
-    sketch = new P5((p: p5) => {
-      p.setup = () => {
-        const cnv = p.createCanvas(width, height)
+    canvas = document.createElement('canvas')
+    canvas.width = width
+    canvas.height = height
+    Object.assign(canvas.style, {
+      position: 'absolute',
+      top: '0',
+      left: '0',
+      width: '100%',
+      height: '100%',
+      pointerEvents: 'none',
+    })
 
-        cnv.style('position', 'absolute')
-        cnv.style('top', '0')
-        cnv.style('left', '0')
-        cnv.style('width', '100%')
-        cnv.style('height', '100%')
-        cnv.style('pointer-events', 'none')
+    root.value.appendChild(canvas)
+    img.style.opacity = '0'
 
-        p.noLoop()
-
-        img.style.opacity = '0'
-
-        p.redraw()
-      }
-
-      p.draw = () => {
-        const bs = Math.max(1, Math.round(state.blocks))
-        const sw = Math.ceil(p.width / bs)
-        const sh = Math.ceil(p.height / bs)
-        const [sx, sy, srcW, srcH] = coverCrop(source, img, p.width, p.height)
-
-        offscreen.width = sw
-        offscreen.height = sh
-        offCtx.drawImage(source, sx, sy, srcW, srcH, 0, 0, sw, sh)
-
-        const ctx = p.drawingContext as CanvasRenderingContext2D
-        ctx.imageSmoothingEnabled = false
-        ctx.clearRect(0, 0, p.width, p.height)
-        ctx.drawImage(offscreen, 0, 0, sw, sh, 0, 0, p.width, p.height)
-      }
-    }, root.value)
+    draw()
 
     ro = new ResizeObserver(() => {
-      if (!root.value) return
+      if (!root.value || !canvas) return
       const { width, height } = root.value.getBoundingClientRect()
-      sketch?.resizeCanvas(width, height)
-      sketch?.redraw()
+      canvas.width = width
+      canvas.height = height
+      draw()
     })
 
     ro.observe(root.value)
@@ -114,19 +112,19 @@ onMounted(async () => {
         end: 'center center',
         scrub: true,
       },
-      onUpdate: () => sketch?.redraw(),
+      onUpdate: draw,
     })
   }
 
   if (source.complete && source.naturalWidth > 0) {
-    createSketch()
+    initCanvas()
   } else {
-    source.addEventListener('load', createSketch, { once: true })
+    source.addEventListener('load', initCanvas, { once: true })
   }
 })
 
 onUnmounted(() => {
-  sketch?.remove()
+  canvas?.remove()
   ro?.disconnect()
 })
 </script>
