@@ -36,7 +36,6 @@ function coverCrop(
 }
 
 let sketch: p5 | undefined
-let io: IntersectionObserver | undefined
 let ro: ResizeObserver | undefined
 
 onMounted(async () => {
@@ -105,28 +104,18 @@ onMounted(async () => {
 
     ro.observe(root.value)
 
-    io = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry?.isIntersecting) return
-
-        gsap.to(state, {
-          blocks: 1,
-          duration,
-          ease: 'power1.out',
-          onUpdate: () => sketch?.redraw(),
-          onComplete: () => {
-            img.style.opacity = ''
-            sketch?.remove()
-            sketch = undefined
-          },
-        })
-
-        io?.disconnect()
+    gsap.to(state, {
+      blocks: 1,
+      duration,
+      ease: 'power1.out',
+      scrollTrigger: {
+        trigger: root.value,
+        start: 'top center',
+        end: 'center center',
+        scrub: true,
       },
-      { rootMargin: '0px 0px -50% 0px', threshold: 0 },
-    )
-
-    io.observe(img)
+      onUpdate: () => sketch?.redraw(),
+    })
   }
 
   if (source.complete && source.naturalWidth > 0) {
@@ -138,7 +127,6 @@ onMounted(async () => {
 
 onUnmounted(() => {
   sketch?.remove()
-  io?.disconnect()
   ro?.disconnect()
 })
 </script>
