@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Themes } from '@/types/app'
+import IconPixelArrow from '@/assets/icons/pixel-arrow.svg'
 
 interface Props {
   theme?: Themes
@@ -11,7 +12,7 @@ const { theme = 'light', text } = defineProps<Props>()
 
 <template>
   <span
-    class="ui-button select-none inline-flex items-center gap-[0.71em] font-medium leading-none rounded-full py-2.5 md:py-3.75 pr-2.5 md:pr-3.75 pl-5 md:pl-6"
+    class="ui-button select-none inline-flex items-center gap-[0.71em] font-medium leading-none rounded-full py-2.5 md:py-3.75 pr-2.5 md:pr-3.75 pl-5 md:pl-6 transition-colors duration-250 ease-outCubic hover:bg-black hover:text-white"
     :class="[theme ? themeClasses[theme as Themes] : '']"
   >
     <span
@@ -21,7 +22,9 @@ const { theme = 'light', text } = defineProps<Props>()
       {{ text }}
     </span>
 
-    <span class="ui-button__icon size-[1em] rounded-full aspect-square bg-accent" />
+    <span class="ui-button__icon size-[1em] rounded-full aspect-square bg-accent flex items-center justify-center">
+      <IconPixelArrow class="arrow w-5 rotate-45" />
+    </span>
   </span>
 </template>
 
