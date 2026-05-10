@@ -25,6 +25,7 @@ onUnmounted(() => {
 
 <template>
   <div
+    v-editable="block"
     class="wrapper flex flex-col gap-[calc(var(--app-gutter-outer)*2)] md:gap-(--app-gutter-outer)"
     :class="{
       'pt-(--app-vertical-rhythm)': block.spacing_top,
@@ -49,6 +50,7 @@ onUnmounted(() => {
     <div class="flex flex-col gap-1 rounded-20 squircle-40 overflow-hidden -mx-(--app-gutter-outer) md:-mx-15">
       <div
         v-for="step in block.steps"
+        v-editable="step"
         :key="step._uid"
         class="bg-white px-(--app-gutter-outer) py-10 md:px-15 md:py-20 transition-all duration-250 ease-outCubic hover:invert-100"
       >

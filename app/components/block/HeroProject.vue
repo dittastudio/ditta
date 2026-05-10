@@ -9,7 +9,10 @@ const { block } = defineProps<Props>()
 </script>
 
 <template>
-  <div class="h-svh grid w-full grid-cols-1 grid-rows-1">
+  <div
+    v-editable="block"
+    class="h-svh grid w-full grid-cols-1 grid-rows-1"
+  >
     <picture
       v-if="block.image && block.image.filename && storyblokAssetType(block.image.filename) === 'image'"
       class="col-start-1 row-start-1"

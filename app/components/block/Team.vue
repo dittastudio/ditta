@@ -45,6 +45,7 @@ onUnmounted(() => {
 
 <template>
   <div
+    v-editable="block"
     class="@container wrapper"
     :class="{
       'pt-(--app-vertical-rhythm)': block.spacing_top,

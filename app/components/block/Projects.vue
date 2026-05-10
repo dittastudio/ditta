@@ -83,6 +83,7 @@ onUnmounted(() => {
 
 <template>
   <div
+    v-editable="block"
     class="relative overflow-clip"
     :class="{
       'pt-(--app-vertical-rhythm)': block.spacing_top,

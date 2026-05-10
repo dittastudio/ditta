@@ -166,6 +166,7 @@ onUnmounted(() => stopPhysics?.())
 
 <template>
   <div
+    v-editable="block"
     class="wrapper relative overflow-hidden"
     :class="{
       'pt-(--app-vertical-rhythm)': block.spacing_top,

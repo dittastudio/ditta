@@ -10,6 +10,7 @@ const { block } = defineProps<Props>()
 
 <template>
   <div
+    v-editable="block"
     class="wrapper"
     :class="{
       'pt-(--app-vertical-rhythm)': block.spacing_top,

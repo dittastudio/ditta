@@ -10,6 +10,7 @@ const { block } = defineProps<Props>()
 
 <template>
   <div
+    v-editable="block"
     class="wrapper grid grid-cols-1 lg:grid-cols-2 gap-(--app-gutter-inner)"
     :class="{
       'pt-[calc(var(--app-vertical-rhythm)/2)]': block.spacing_top,

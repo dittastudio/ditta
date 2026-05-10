@@ -12,6 +12,7 @@ const button = computed(() => block.button?.[0])
 
 <template>
   <div
+    v-editable="block"
     class="wrapper flex flex-col gap-10 md:gap-18 items-center text-center"
     :class="{
       'pt-(--app-vertical-rhythm)': block.spacing_top,
