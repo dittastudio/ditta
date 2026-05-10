@@ -1,11 +1,28 @@
 <script lang="ts" setup>
 import type { BlockSteps } from '#storyblok-components'
+import IconPixelArrow from '@/assets/icons/pixel-arrow.svg'
 
 interface Props {
   block: BlockSteps
 }
 
 const { block } = defineProps<Props>()
+
+const mouseX = ref(0)
+
+const onMouseX = (event: MouseEvent) => {
+  mouseX.value = event.clientX
+}
+
+const rotation = computed(() => (mouseX.value / window.innerWidth) * 80 - 40)
+
+onMounted(() => {
+  window.addEventListener('mousemove', onMouseX)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('mousemove', onMouseX)
+})
 </script>
 
 <template>
@@ -16,10 +33,20 @@ const { block } = defineProps<Props>()
       'pb-(--app-vertical-rhythm)': block.spacing_bottom,
     }"
   >
-    <UiLockup
-      :heading="block.heading"
-      :copy="block.copy"
-    />
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-5">
+      <UiLockup
+        class="col-span-full md:col-span-8"
+        :heading="block.heading"
+        :copy="block.copy"
+      />
+
+      <div class="col-span-full md:col-span-4">
+        <IconPixelArrow
+          class="arrow w-30 md:w-40 ml-auto"
+          :style="{ transform: `rotate(${rotation}deg)` }"
+        />
+      </div>
+    </div>
 
     <div class="flex flex-col gap-1 rounded-20 squircle-40 overflow-hidden -mx-(--app-gutter-outer) md:-mx-15">
       <div
@@ -36,3 +63,21 @@ const { block } = defineProps<Props>()
     </div>
   </div>
 </template>
+
+<style scoped>
+@keyframes float {
+  0% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 30px;
+  }
+  100% {
+    translate: 0 0;
+  }
+}
+
+.arrow {
+  animation: float 3s ease-in-out infinite;
+}
+</style>
