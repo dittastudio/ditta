@@ -8,20 +8,18 @@ interface Props {
 
 const { block } = defineProps<Props>()
 
-const mouseX = ref(0)
+const rotation = ref(0)
 
-const onMouseX = (event: MouseEvent) => {
-  mouseX.value = event.clientX
+const onMouseMove = (event: MouseEvent) => {
+  rotation.value = (event.clientX / window.innerWidth) * 80 - 40
 }
 
-const rotation = computed(() => (mouseX.value / window.innerWidth) * 80 - 40)
-
 onMounted(() => {
-  window.addEventListener('mousemove', onMouseX)
+  window.addEventListener('mousemove', onMouseMove)
 })
 
 onUnmounted(() => {
-  window.removeEventListener('mousemove', onMouseX)
+  window.removeEventListener('mousemove', onMouseMove)
 })
 </script>
 
@@ -52,7 +50,7 @@ onUnmounted(() => {
       <div
         v-for="step in block.steps"
         :key="step._uid"
-        class="bg-white px-(--app-gutter-outer) py-10 md:px-15 md:py-20"
+        class="bg-white px-(--app-gutter-outer) py-10 md:px-15 md:py-20 transition-all duration-250 ease-outCubic hover:invert-100"
       >
         <UiStep
           :title="step.title"
