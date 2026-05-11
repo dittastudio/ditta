@@ -89,7 +89,9 @@ onUnmounted(() => {
       </div>
 
       <div class="@container/team @4xl:col-span-5 @4xl:col-end-13 @4xl:pt-(--team-para-offset)">
-        <ul class="flex flex-col gap-[calc(var(--app-gutter-inner)*4)] @2xl/team:flex-row">
+        <ul
+          class="flex flex-col gap-[calc(var(--app-gutter-inner)*4)] @2xl/team:gap-(--app-gutter-inner) @2xl/team:flex-row"
+        >
           <li
             v-for="human in humans"
             :key="human.uuid"
