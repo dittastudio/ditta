@@ -50,6 +50,6 @@
   }
 
   strong {
-    font-weight: 570;
+    font-weight: var(--font-weight-medium);
   }
 }

@@ -13,7 +13,7 @@
   --color-black: oklch(0% 0 0);
   --color-pink: oklch(0.8221 0.1207 348.4);
   --color-beige: oklch(0.8643 0.0104 32.52);
-  --color-grey: oklch(0.9731 0 0);
+  --color-grey: oklch(97.315% 0 0);
   --color-olive: oklch(0.7442 0.0554 154.96);
   --color-forest: oklch(0.2505 0.0852 142.5);
   --color-mood: oklch(0.6385 0.0312 42.55);
@@ -30,10 +30,10 @@
 
   --font-weight-\*: initial;
   --font-weight-light: 300;
-  --font-weight-regular: 380;
-  --font-weight-medium: 570;
-  --font-weight-semibold: 670;
-  --font-weight-bold: 790;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
   --font-weight-heavy: 900;
 
   --text-\*: initial;

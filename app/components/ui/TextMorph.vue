@@ -15,8 +15,8 @@ const rootRef = useTemplateRef('rootRef')
 const FALLOFF = 220
 const MIN_WGHT = 300
 const MAX_WGHT = 900
-const MIN_ITAL = 0
-const MAX_ITAL = 10
+const MIN_SLNT = 0
+const MAX_SLNT = -10
 const TWEEN = { duration: 0.3, ease: 'power2.out' }
 const AUTO_TWEEN = { duration: 2, ease: 'power2.inOut' }
 const falloffEase = gsap.parseEase('power2.inOut')
@@ -24,7 +24,7 @@ const falloffEase = gsap.parseEase('power2.inOut')
 let split: SplitText | null = null
 let centers: number[] = []
 let wghtSetters: ((v: number) => gsap.core.Tween)[] = []
-let italSetters: ((v: number) => gsap.core.Tween)[] = []
+let slntSetters: ((v: number) => gsap.core.Tween)[] = []
 let ro: ResizeObserver | null = null
 
 let pointerX = 0
@@ -135,7 +135,7 @@ const tick = () => {
     }
 
     wghtSetters[i]?.(MIN_WGHT + eased * (MAX_WGHT - MIN_WGHT))
-    italSetters[i]?.(MIN_ITAL + eased * (MAX_ITAL - MIN_ITAL))
+    slntSetters[i]?.(MIN_SLNT + eased * (MAX_SLNT - MIN_SLNT))
   }
 }
 
@@ -145,10 +145,10 @@ onMounted(() => {
   split = new SplitText(rootRef.value, { type: 'chars', charsClass: 'text-morph__char' })
   const chars = split.chars
 
-  gsap.set(chars, { '--wght': MIN_WGHT, '--ital': MIN_ITAL })
+  gsap.set(chars, { '--wght': MIN_WGHT, '--slnt': MIN_SLNT })
   const round1dp = (v: string) => String(Math.round(parseFloat(v) * 10) / 10)
   wghtSetters = chars.map((el) => gsap.quickTo(el, '--wght', { ...TWEEN, modifiers: { '--wght': round1dp } }))
-  italSetters = chars.map((el) => gsap.quickTo(el, '--ital', { ...TWEEN, modifiers: { '--ital': round1dp } }))
+  slntSetters = chars.map((el) => gsap.quickTo(el, '--slnt', { ...TWEEN, modifiers: { '--slnt': round1dp } }))
 
   measure()
   startAutoLoop()
@@ -188,7 +188,7 @@ onUnmounted(() => {
 .text-morph__char {
   display: inline-block;
   font-variation-settings:
-    'ital' var(--ital, 0),
+    'slnt' var(--slnt, 0),
     'wght' var(--wght, 300);
   will-change: font-variation-settings;
 }

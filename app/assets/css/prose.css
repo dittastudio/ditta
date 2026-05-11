@@ -12,7 +12,7 @@
   }
 
   & :where(em) {
-    font-variation-settings: 'ital' 10;
+    font-variation-settings: 'slnt' -10;
   }
 }
 
