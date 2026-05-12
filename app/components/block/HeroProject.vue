@@ -48,13 +48,16 @@ const { block } = defineProps<Props>()
       />
     </picture>
 
-    <div class="self-end col-start-1 row-start-1">
-      <div class="hero-project__content wrapper pb-15 md:pb-25 flex flex-col gap-10">
+    <div class="hero-project__content self-end col-start-1 row-start-1">
+      <div class="wrapper pb-15 md:pb-25 flex flex-col gap-10">
         <h1
           v-if="block.heading"
           class="text-display text-balance trim-both mt-20"
         >
-          <UiTextMorph :text="block.heading" />
+          <UiTextMorph
+            :text="block.heading"
+            :min-weight="400"
+          />
         </h1>
 
         <div
