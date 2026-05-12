@@ -11,7 +11,7 @@ const { block } = defineProps<Props>()
 <template>
   <div
     v-editable="block"
-    class="wrapper flex flex-col justify-center min-h-screen"
+    class="wrapper flex flex-col justify-center"
     :class="{
       'pt-(--app-vertical-rhythm)': block.spacing_top,
       'pb-(--app-vertical-rhythm)': block.spacing_bottom,
