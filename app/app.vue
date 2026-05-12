@@ -25,7 +25,7 @@ useSeoMeta({
   <VueLenis
     root
     :options="{
-      duration: 1,
+      duration: 0.75,
       autoRaf: true,
       anchors: {
         duration: 1,

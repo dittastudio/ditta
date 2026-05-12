@@ -17,6 +17,8 @@ const lists = useTemplateRef('lists')
 const isLeft = direction === 'left'
 
 let xTo: ReturnType<typeof gsap.quickTo> | null = null
+let skewXTo: ReturnType<typeof gsap.quickTo> | null = null
+let prevOffset = 0
 // Where the ticker really sits in the page — works even when sticky-pinned.
 let documentTop = Number.POSITIVE_INFINITY
 
@@ -51,7 +53,8 @@ onMounted(() => {
     return
   }
 
-  xTo = gsap.quickTo(container.value, 'x', { duration: 0.5, ease: 'power3' })
+  xTo = gsap.quickTo(container.value, 'x', { duration: 0.5, ease: 'power3.out' })
+  skewXTo = gsap.quickTo(container.value, 'skewX', { duration: 0.6, ease: 'power3.out' })
   refreshDimensions()
   window.addEventListener('resize', refreshDimensions)
 
@@ -64,6 +67,7 @@ onMounted(() => {
   const progress = Math.max(0, (scroll + viewportHeight - documentTop) / range)
   const offset = containerWidth * (progress / 3)
 
+  prevOffset = offset
   gsap.set(container.value, { x: isLeft ? -offset : offset })
 
   lastIsScrollingUp = false
@@ -71,7 +75,7 @@ onMounted(() => {
 })
 
 useLenis((lenis) => {
-  if (!container.value || !xTo) {
+  if (!container.value || !xTo || !skewXTo) {
     return
   }
 
@@ -96,6 +100,10 @@ useLenis((lenis) => {
   // Lower-clamped only — progress is allowed past 1 so momentum continues during sticky pin.
   const progress = Math.max(0, (lenis.scroll + viewportHeight - documentTop) / range)
   const offset = containerWidth * (progress / 3)
+
+  const delta = offset - prevOffset
+  prevOffset = offset
+  skewXTo(gsap.utils.clamp(-8, 8, delta * 0.5))
 
   xTo(isLeft ? -offset : offset)
 })
