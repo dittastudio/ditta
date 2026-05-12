@@ -41,7 +41,7 @@ onUnmounted(() => {
 
       <div class="col-span-full md:col-span-4">
         <IconPixelArrow
-          class="w-30 md:w-40 ml-auto"
+          class="arrow w-30 md:w-40 ml-auto"
           :style="{ transform: `rotate(${rotation}deg)` }"
         />
       </div>
