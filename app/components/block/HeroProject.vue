@@ -48,8 +48,8 @@ const { block } = defineProps<Props>()
       />
     </picture>
 
-    <div class="hero-project__content self-end col-start-1 row-start-1">
-      <div class="wrapper pb-15 md:pb-25 flex flex-col gap-10">
+    <div class="hero-project__content col-start-1 row-start-1">
+      <div class="wrapper pb-15 md:pb-25 h-full flex flex-col justify-end gap-10">
         <h1
           v-if="block.heading"
           class="text-display text-balance trim-both mt-20"
@@ -76,17 +76,27 @@ const { block } = defineProps<Props>()
   position: relative;
   z-index: 1;
 
-  &::before {
+  &::before,
+  &::after {
     content: '';
     position: absolute;
-    bottom: 0;
     left: 0;
     right: 0;
-    height: 200%;
+    height: 50%;
     z-index: -1;
     pointer-events: none;
     backdrop-filter: blur(4px);
     background-color: --alpha(var(--color-black) / 30%);
+    mask-image: linear-gradient(to top, transparent 0%, black 100%);
+  }
+
+  &::before {
+    top: 0;
+    mask-image: linear-gradient(to top, transparent 0%, black 100%);
+  }
+
+  &::after {
+    bottom: 0;
     mask-image: linear-gradient(to bottom, transparent 0%, black 100%);
   }
 }

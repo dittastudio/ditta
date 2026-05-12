@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import IconQuotes from '@/assets/icons/quotes.svg'
 import type { BlockTestimonial } from '#storyblok-components'
 
 interface Props {
@@ -21,13 +20,8 @@ const { block } = defineProps<Props>()
     <figure class="md:col-start-2 md:col-span-10 flex flex-col gap-10 md:gap-25">
       <blockquote
         v-if="storyblokRichTextContent(block.quote)"
-        class="relative prose text-pretty prose-p:text-heading prose-p:trim-both"
+        class="relative prose text-heading text-pretty prose-p:text-heading prose-p:trim-both"
       >
-        <IconQuotes class="text-heading w-[1.05em] h-[0.875em] md:absolute mb-[1em] top-0 left-[-2.5em]" />
-        <IconQuotes
-          class="max-md:hidden text-heading w-[1.05em] h-[0.875em] absolute bottom-0 right-[-2.5em] scale-[-1]"
-        />
-
         <StoryblokText :html="block.quote" />
       </blockquote>
 
@@ -48,9 +42,47 @@ const { block } = defineProps<Props>()
 
         <div class="flex flex-col text-body">
           <strong>{{ block.name }}</strong>
-          <template v-if="block.position">{{ block.position }} </template>
+          <template v-if="block.position">{{ block.position }}</template>
         </div>
       </figcaption>
     </figure>
   </div>
 </template>
+
+<style scoped>
+@reference "@/assets/css/app.css";
+
+blockquote {
+  quotes: '“' '”';
+
+  &::before,
+  &::after {
+    display: block;
+    margin-left: -0.04em;
+    margin-bottom: -0.4em;
+    font-size: 4.1em;
+    line-height: 1;
+  }
+
+  &::before {
+    content: open-quote;
+
+    @variant md {
+      position: absolute;
+      top: -0.172em;
+      left: -0.652em;
+    }
+  }
+
+  &::after {
+    content: close-quote;
+    position: absolute;
+    bottom: -0.195em;
+    right: -0.645em;
+
+    @variant max-md {
+      display: none;
+    }
+  }
+}
+</style>
