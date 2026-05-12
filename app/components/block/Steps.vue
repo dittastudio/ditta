@@ -32,7 +32,7 @@ onUnmounted(() => {
       'pb-(--app-vertical-rhythm)': block.spacing_bottom,
     }"
   >
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-5">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-5">
       <UiLockup
         class="col-span-full md:col-span-8"
         :heading="block.heading"
@@ -41,7 +41,7 @@ onUnmounted(() => {
 
       <div class="col-span-full md:col-span-4">
         <IconPixelArrow
-          class="arrow w-30 md:w-40 ml-auto"
+          class="animate-bob w-30 md:w-40 ml-auto"
           :style="{ transform: `rotate(${rotation}deg)` }"
         />
       </div>
@@ -63,21 +63,3 @@ onUnmounted(() => {
     </div>
   </div>
 </template>
-
-<style scoped>
-@keyframes float {
-  0% {
-    translate: 0 0;
-  }
-  50% {
-    translate: 0 30px;
-  }
-  100% {
-    translate: 0 0;
-  }
-}
-
-.arrow {
-  animation: float 3s ease-in-out infinite;
-}
-</style>

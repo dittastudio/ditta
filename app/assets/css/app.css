@@ -199,6 +199,14 @@
     1.001 87.2%,
     1
   );
+
+  --animate-bob: bob 3s ease-in-out infinite;
+}
+
+@keyframes bob {
+  0% { translate: 0 0; }
+  50% { translate: 0 30px; }
+  100% { translate: 0 0; }
 }
 
 /* New TW way to whitelist classes */

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { Engine, Runner, Bodies, Body, Composite, Mouse, MouseConstraint } from 'matter-js'
 import type { BlockServices } from '#storyblok-components'
+import IconPixelComputer from '@/assets/icons/pixel-computer.svg'
 
 interface Props {
   block: BlockServices
@@ -42,7 +43,15 @@ function makeChipBody(x: number, y: number, w: number, h: number) {
   })
 }
 
+const rotation = ref(0)
+
+const onMouseMove = (event: MouseEvent) => {
+  rotation.value = (event.clientX / window.innerWidth) * 80 - 40
+}
+
 onMounted(() => {
+  window.addEventListener('mousemove', onMouseMove)
+
   const el = containerRef.value
   const chips = chipRefs.value
 
@@ -161,7 +170,10 @@ onMounted(() => {
   stopPhysics = () => intersectionObserver.disconnect()
 })
 
-onUnmounted(() => stopPhysics?.())
+onUnmounted(() => {
+  window.removeEventListener('mousemove', onMouseMove)
+  stopPhysics?.()
+})
 </script>
 
 <template>
@@ -173,12 +185,19 @@ onUnmounted(() => stopPhysics?.())
       'pb-(--app-vertical-rhythm)': block.spacing_bottom,
     }"
   >
-    <div class="relative z-1 pb-80 pointer-events-none">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-5 relative z-1 pb-80 pointer-events-none">
       <UiLockup
+        class="col-span-full md:col-span-8 *:pointer-events-auto"
         :heading="block.heading"
         :copy="block.copy"
-        class="*:pointer-events-auto"
       />
+
+      <div class="col-span-full md:col-span-4">
+        <IconPixelComputer
+          class="animate-bob w-50 md:w-60 mx-auto md:ml-auto"
+          :style="{ transform: `rotate(${rotation}deg)` }"
+        />
+      </div>
     </div>
 
     <ul
