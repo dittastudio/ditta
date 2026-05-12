@@ -20,8 +20,6 @@ export interface BlockHeroProject {
   copy?: StoryblokRichtext;
   theme?: number | string;
   id?: string;
-  spacing_top?: boolean;
-  spacing_bottom?: boolean;
   component: "block_hero_project";
   _uid: string;
 }

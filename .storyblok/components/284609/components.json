@@ -75,7 +75,7 @@
     "display_name": "Hero Project",
     "description": null,
     "created_at": "2026-05-05T20:52:52.575Z",
-    "updated_at": "2026-05-06T15:50:34.112Z",
+    "updated_at": "2026-05-12T16:31:42.198Z",
     "id": 173362268478563,
     "schema": {
       "image": {
@@ -130,22 +130,6 @@
         "pos": 5,
         "display_name": "ID",
         "id": "lRHJ3CXqQrWQyVlHp2wg8Q"
-      },
-      "spacing_top": {
-        "type": "boolean",
-        "pos": 6,
-        "default_value": true,
-        "inline_label": true,
-        "display_name": "Spacing Top",
-        "id": "olqF_yiRSTm2zAQwSePDAA"
-      },
-      "spacing_bottom": {
-        "type": "boolean",
-        "pos": 7,
-        "default_value": true,
-        "inline_label": true,
-        "display_name": "Spacing Bottom",
-        "id": "9KPtCVH8ScKJuI_4wxuCIA"
       }
     },
     "image": null,
@@ -1273,7 +1257,7 @@
     "display_name": null,
     "description": null,
     "created_at": "2026-04-28T14:01:45.750Z",
-    "updated_at": "2026-05-06T16:38:34.989Z",
+    "updated_at": "2026-05-12T13:58:05.058Z",
     "id": 170783972357679,
     "schema": {
       "client": {
@@ -1329,15 +1313,17 @@
         "component_tag_whitelist": [],
         "component_tag_denylist": []
       },
-      "title": {
-        "type": "text",
+      "tab-277cdce5-532c-4f5c-8c6f-d10a5d70ca9f": {
+        "display_name": "Project",
+        "keys": [
+          "client",
+          "Credits",
+          "services"
+        ],
         "pos": 4,
-        "id": "QDDZJR-sSZ6EesCIlI_03g"
-      },
-      "media": {
-        "type": "asset",
-        "pos": 5,
-        "id": "_BusU_2qT3yDcDBhPpe83w"
+        "type": "tab",
+        "name": "tab-277cdce5-532c-4f5c-8c6f-d10a5d70ca9f",
+        "id": "J3zc5VMsT1yMb9EKXXDKnw"
       },
       "tab-554f4d6b-1445-4095-a716-160ff3edcf74": {
         "display_name": "SEO",
@@ -1346,7 +1332,7 @@
           "seo_description",
           "seo_image"
         ],
-        "pos": 6,
+        "pos": 5,
         "type": "tab",
         "id": "VU9NaxRFQJWnFhYP8-3PdA",
         "name": "tab-554f4d6b-1445-4095-a716-160ff3edcf74"
@@ -1357,28 +1343,38 @@
           "media",
           "title"
         ],
-        "pos": 7,
+        "pos": 6,
         "type": "tab",
         "name": "tab-6aa7f8d0-ec3e-453b-a4ae-fee0363bbd0a",
         "id": "aqf40Ow-RTukrv7gNju9Cg"
       },
+      "title": {
+        "type": "text",
+        "pos": 7,
+        "id": "QDDZJR-sSZ6EesCIlI_03g"
+      },
+      "media": {
+        "type": "asset",
+        "pos": 8,
+        "id": "_BusU_2qT3yDcDBhPpe83w"
+      },
       "seo_title": {
         "type": "text",
-        "pos": 8,
+        "pos": 9,
         "id": "cOLSOMqqSKCsh7L2xWHwnA",
         "required": true,
         "display_name": "Title"
       },
       "seo_description": {
         "type": "text",
-        "pos": 9,
+        "pos": 10,
         "id": "qcOA9qamSeOqJl7K5u2oAw",
         "required": true,
         "display_name": "Description"
       },
       "seo_image": {
         "type": "asset",
-        "pos": 10,
+        "pos": 11,
         "required": true,
         "display_name": "Image",
         "description": "For best results, use an image size of 1200px by 630px.",
