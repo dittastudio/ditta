@@ -9,7 +9,7 @@ interface Props {
 
 const { theme = 'light', text } = defineProps<Props>()
 
-const root = ref<HTMLElement | null>(null)
+const root = useTemplateRef('root')
 const width = ref(0)
 const height = ref(0)
 
