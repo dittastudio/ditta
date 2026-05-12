@@ -4,7 +4,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const headerTheme = useHeaderTheme()
 
   try {
-    const story = await usePageStory(to.path)
+    const story = await usePageStory(to.path, to.query)
 
     if (isProject(story.value)) {
       const first = story.value.content.blocks?.[0]
