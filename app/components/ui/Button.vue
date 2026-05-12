@@ -49,21 +49,9 @@ onUnmounted(() => {
 
     <span
       v-if="text"
-      class="opacity-0 mt-[-0.15em] mb-[-0.1em]"
-      aria-hidden="true"
+      class="mt-[-0.15em] mb-[-0.1em]"
     >
       {{ text }}
-    </span>
-
-    <span
-      v-if="text"
-      class="absolute mt-[-0.15em] mb-[-0.1em]"
-    >
-      <UiTextMorph
-        :text="text"
-        :auto-animate="false"
-        :min-weight="500"
-      />
     </span>
 
     <span
