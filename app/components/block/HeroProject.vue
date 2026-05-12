@@ -71,7 +71,7 @@ const { block } = defineProps<Props>()
   </div>
 </template>
 
-<style>
+<style scoped>
 .hero-project__content {
   position: relative;
   z-index: 1;
