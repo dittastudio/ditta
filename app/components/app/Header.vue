@@ -6,7 +6,7 @@ interface Props {
 const { tagline } = defineProps<Props>()
 
 const headerTheme = useHeaderTheme()
-const textClass = computed(() => (headerTheme.value === 'dark' ? 'text-grey' : 'text-black'))
+const textClass = computed(() => (headerTheme.value === 'dark' ? 'text-white' : 'text-black'))
 </script>
 
 <template>
