@@ -33,21 +33,12 @@ useSeoMeta({
       },
     }"
   >
-    <header class="absolute top-0 z-10 w-full">
-      <div class="wrapper flex justify-between items-start pt-(--app-gutter-outer) md:pt-20">
-        <p
-          v-if="settings.content.tagline"
-          class="text-navigation"
-        >
-          {{ settings.content.tagline }}
-        </p>
-
-        <AppNavigation
-          v-if="settings.content.navigation"
-          :items="settings.content.navigation"
-        />
-      </div>
-    </header>
+    <AppHeader :tagline="settings.content.tagline">
+      <AppNavigation
+        v-if="settings.content.navigation"
+        :items="settings.content.navigation"
+      />
+    </AppHeader>
 
     <NuxtPage />
 

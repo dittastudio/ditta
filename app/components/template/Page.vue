@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import type { Themes } from '@/types/app'
 import type { Page } from '#storyblok-components'
 import type { ISbStoryData } from '@storyblok/js'
 

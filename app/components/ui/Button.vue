@@ -74,7 +74,7 @@ onUnmounted(() => {
   </span>
 </template>
 
-<style>
+<style scoped>
 @reference "@/assets/css/app.css";
 
 .ui-button {
@@ -86,7 +86,7 @@ onUnmounted(() => {
   transform: translateZ(0);
   transition: scale 0.8s var(--ease-spring-3);
 
-  a:hover & {
+  .ui-button:hover & {
     transition: scale 0.4s var(--ease-out);
     scale: var(--scale-x) var(--scale-y);
   }
@@ -97,7 +97,7 @@ onUnmounted(() => {
 }
 
 .ui-button__arrow {
-  a:hover & {
+  .ui-button:hover & {
     animation: arrow-fire 0.8s both;
   }
 }
