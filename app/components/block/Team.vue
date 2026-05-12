@@ -13,9 +13,9 @@ const button = computed(() => block.cta?.[0])
 const contentRef = useTemplateRef('content')
 const headingRef = useTemplateRef('heading')
 
-const fitsViewport = ref<boolean>(true)
-const paraOffset = ref<string>('0px')
-const stickyTop = ref<string>('0px')
+const fitsViewport = ref(true)
+const paraOffset = ref('0px')
+const stickyTop = ref('0px')
 
 function update() {
   if (!contentRef.value || !headingRef.value) return
