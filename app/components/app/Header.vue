@@ -11,7 +11,7 @@ const textClass = computed(() => (headerTheme.value === 'dark' ? 'text-grey' : '
 
 <template>
   <header
-    class="absolute top-0 z-10 w-full transition-colors duration-1000 ease-out"
+    class="absolute top-0 z-10 overflow-x-clip w-full transition-colors duration-1000 ease-out"
     :class="textClass"
   >
     <div class="wrapper flex justify-between items-start pt-(--app-gutter-outer) md:pt-20">
@@ -19,7 +19,10 @@ const textClass = computed(() => (headerTheme.value === 'dark' ? 'text-grey' : '
         v-if="tagline"
         class="max-lg:hidden text-navigation"
       >
-        <NuxtLink to="/">
+        <NuxtLink
+          class="block p-5 -m-5 relative z-1"
+          to="/"
+        >
           {{ tagline }}
         </NuxtLink>
       </p>

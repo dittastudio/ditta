@@ -9,8 +9,8 @@ const { items } = defineProps<Props>()
 </script>
 
 <template>
-  <nav class="overflow-hidden grow">
-    <ul class="group flex justify-between lg:justify-end flex-wrap text-navigation -m-5">
+  <nav class="grow">
+    <ul class="group flex justify-between lg:justify-end flex-wrap text-navigation -my-5 -mr-5">
       <li
         v-for="item in items"
         :key="item._uid"
