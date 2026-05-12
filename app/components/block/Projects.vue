@@ -3,6 +3,8 @@ import type { BlockProjects } from '#storyblok-components'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
+gsap.registerPlugin(ScrollTrigger)
+
 interface Props {
   block: BlockProjects
 }
@@ -17,8 +19,8 @@ const brightnessStep = 10
 
 let ctx: gsap.Context | null = null
 
-onMounted(() => {
-  gsap.registerPlugin(ScrollTrigger)
+onMounted(async () => {
+  await nextTick()
 
   ctx = gsap.context(() => {
     projectRefs.value?.forEach((el, index) => {
@@ -74,6 +76,8 @@ onMounted(() => {
       })
     })
   })
+
+  ScrollTrigger.refresh()
 })
 
 onUnmounted(() => {
