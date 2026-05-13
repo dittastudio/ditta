@@ -71,6 +71,48 @@
     "metadata": {}
   },
   {
+    "name": "block_hero",
+    "display_name": "Hero",
+    "description": null,
+    "created_at": "2026-05-13T09:51:08.937Z",
+    "updated_at": "2026-05-13T09:51:45.974Z",
+    "id": 176030797570660,
+    "schema": {
+      "theme": {
+        "type": "option",
+        "pos": 4,
+        "use_uuid": true,
+        "source": "internal",
+        "datasource_slug": "themes",
+        "exclude_empty_option": true,
+        "default_value": "light",
+        "display_name": "Theme",
+        "id": "t-3jA2PIR-aJrU-zhZrPPw"
+      },
+      "id": {
+        "type": "text",
+        "pos": 5,
+        "display_name": "ID",
+        "id": "lRHJ3CXqQrWQyVlHp2wg8Q"
+      }
+    },
+    "image": null,
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Hero",
+    "component_group_uuid": "c56a9133-c409-488d-9f91-40d75d6e78cd",
+    "color": null,
+    "icon": null,
+    "internal_tags_list": [],
+    "internal_tag_ids": [],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
     "name": "block_hero_project",
     "display_name": "Hero Project",
     "description": null,
@@ -153,7 +195,7 @@
     "display_name": "Media",
     "description": null,
     "created_at": "2024-06-18T17:57:58.986Z",
-    "updated_at": "2026-05-05T16:53:30.934Z",
+    "updated_at": "2026-05-13T10:02:01.703Z",
     "id": 5945698,
     "schema": {
       "media": {
@@ -167,7 +209,8 @@
         "restrict_type": "",
         "restrict_components": true,
         "component_whitelist": [
-          "element_media_image"
+          "element_media_image",
+          "element_media_autoplay"
         ],
         "component_denylist": [],
         "minimum": 1
@@ -989,6 +1032,68 @@
     "metadata": {}
   },
   {
+    "name": "element_media_autoplay",
+    "display_name": "Autoplay Video",
+    "description": "",
+    "created_at": "2026-05-13T09:59:47.023Z",
+    "updated_at": "2026-05-13T10:01:42.217Z",
+    "id": 176032919720702,
+    "schema": {
+      "layout": {
+        "type": "option",
+        "pos": 0,
+        "use_uuid": true,
+        "options": [
+          {
+            "_uid": "ea6e8178-632c-4f50-87ee-7eed08d0c3a7",
+            "name": "Half",
+            "value": "half"
+          },
+          {
+            "_uid": "9255d7a0-3d3a-4070-995a-d3f86a4e3493",
+            "value": "wide",
+            "name": "Wide"
+          },
+          {
+            "_uid": "4bdfd8cf-c909-4d21-8e16-4eef7924d96a",
+            "value": "full",
+            "name": "Full"
+          }
+        ],
+        "exclude_empty_option": true,
+        "id": "ez1_rK8FSYKLnolcGf_3Yg",
+        "required": true,
+        "default_value": "wide"
+      },
+      "video": {
+        "type": "asset",
+        "pos": 1,
+        "filetypes": [
+          "videos"
+        ],
+        "id": "PzzPWOxVQBWNSkgJBPYjHg",
+        "required": true,
+        "asset_folder_id": 173375575949929,
+        "display_name": "Video"
+      }
+    },
+    "image": null,
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Autoplay Video",
+    "component_group_uuid": "a4bb317a-f2a8-450c-95ee-324278de45c2",
+    "color": null,
+    "icon": null,
+    "internal_tags_list": [],
+    "internal_tag_ids": [],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
     "name": "element_media_image",
     "display_name": "Image",
     "description": "",
@@ -1131,7 +1236,7 @@
     "display_name": null,
     "description": null,
     "created_at": "2024-04-12T15:16:30.902Z",
-    "updated_at": "2026-05-06T16:38:03.212Z",
+    "updated_at": "2026-05-13T09:52:00.368Z",
     "id": 5647533,
     "schema": {
       "blocks": {
@@ -1145,7 +1250,8 @@
           "block_services",
           "block_statement",
           "block_steps",
-          "block_team"
+          "block_team",
+          "block_hero"
         ],
         "component_group_whitelist": [],
         "id": "TEthTDcMRGOFSALxUXkDOA",

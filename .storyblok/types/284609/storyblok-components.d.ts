@@ -13,6 +13,13 @@ export interface BlockCta {
   _uid: string;
 }
 
+export interface BlockHero {
+  theme?: number | string;
+  id?: string;
+  component: "block_hero";
+  _uid: string;
+}
+
 export interface BlockHeroProject {
   image: StoryblokAsset;
   image_desktop?: StoryblokAsset;
@@ -25,7 +32,7 @@ export interface BlockHeroProject {
 }
 
 export interface BlockMedia {
-  media: ElementMediaImage[];
+  media: (ElementMediaImage | ElementMediaAutoplay)[];
   id?: string;
   theme?: number | string;
   spacing_top?: boolean;
@@ -148,6 +155,13 @@ export interface ElementLink {
   _uid: string;
 }
 
+export interface ElementMediaAutoplay {
+  layout: "half" | "wide" | "full";
+  video: StoryblokAsset;
+  component: "element_media_autoplay";
+  _uid: string;
+}
+
 export interface ElementMediaImage {
   layout: "half" | "wide" | "full";
   image: StoryblokAsset;
@@ -170,7 +184,7 @@ export interface ElementTitle {
 }
 
 export interface Page {
-  blocks?: (BlockCta | BlockProjects | BlockServices | BlockStatement | BlockSteps | BlockTeam)[];
+  blocks?: (BlockCta | BlockProjects | BlockServices | BlockStatement | BlockSteps | BlockTeam | BlockHero)[];
   seo_title: string;
   seo_description: string;
   seo_image: StoryblokAsset;

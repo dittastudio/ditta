@@ -1,7 +1,14 @@
 <script lang="ts" setup>
-const route = useRoute()
+import type { Page, Project } from '#storyblok-components'
 
-const story = await usePageStory(route.path)
+const route = useRoute()
+const relations = ['block_team.humans', 'block_projects.projects']
+
+const story = await useStory<Page | Project>(
+  route.path,
+  { resolve_relations: relations },
+  { resolveRelations: relations },
+)
 
 const { seo_title, seo_description, seo_image } = story.value.content
 const imageOptions = { width: 1200, height: 630, format: 'jpg', smart: true, quality: 90 }
