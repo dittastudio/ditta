@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { Themes } from '@/types/app'
 import type { Page } from '#storyblok-components'
 import type { ISbStoryData } from '@storyblok/js'
 
@@ -35,6 +36,7 @@ const { story } = defineProps<Props>()
       v-else-if="block.component === 'block_statement'"
       :block="block"
     />
+
     <BlockServices
       v-else-if="block.component === 'block_services'"
       :block="block"
