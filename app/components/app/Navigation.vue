@@ -9,7 +9,7 @@ const { items } = defineProps<Props>()
 </script>
 
 <template>
-  <nav class="grow">
+  <nav class="lg-max:grow">
     <ul class="group flex justify-between lg:justify-end flex-wrap text-navigation max-lg:-ml-5 -my-5 -mr-5">
       <li
         v-for="item in items"
