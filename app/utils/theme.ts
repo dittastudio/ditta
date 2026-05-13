@@ -9,4 +9,22 @@ const themeClasses: Record<Themes, string> = {
   accent: 'bg-accent text-black',
 }
 
-export { themeClasses }
+const themeTextClasses: Record<Themes, string> = {
+  dark: 'text-grey',
+  light: 'text-black',
+  white: 'text-black',
+  pink: 'text-black',
+  beige: 'text-black',
+  accent: 'text-black',
+}
+
+const themeBgClasses: Record<Themes, string> = {
+  dark: 'bg-black',
+  light: 'bg-grey',
+  white: 'bg-white',
+  pink: 'bg-pink',
+  beige: 'bg-beige',
+  accent: 'bg-accent',
+}
+
+export { themeClasses, themeTextClasses, themeBgClasses }
