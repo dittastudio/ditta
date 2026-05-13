@@ -195,7 +195,7 @@
     "display_name": "Media",
     "description": null,
     "created_at": "2024-06-18T17:57:58.986Z",
-    "updated_at": "2026-05-05T16:53:30.934Z",
+    "updated_at": "2026-05-13T10:02:01.703Z",
     "id": 5945698,
     "schema": {
       "media": {
@@ -209,7 +209,8 @@
         "restrict_type": "",
         "restrict_components": true,
         "component_whitelist": [
-          "element_media_image"
+          "element_media_image",
+          "element_media_autoplay"
         ],
         "component_denylist": [],
         "minimum": 1
@@ -1022,6 +1023,68 @@
     "all_presets": [],
     "preset_id": null,
     "real_name": "Link",
+    "component_group_uuid": "a4bb317a-f2a8-450c-95ee-324278de45c2",
+    "color": null,
+    "icon": null,
+    "internal_tags_list": [],
+    "internal_tag_ids": [],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "element_media_autoplay",
+    "display_name": "Autoplay Video",
+    "description": "",
+    "created_at": "2026-05-13T09:59:47.023Z",
+    "updated_at": "2026-05-13T10:01:42.217Z",
+    "id": 176032919720702,
+    "schema": {
+      "layout": {
+        "type": "option",
+        "pos": 0,
+        "use_uuid": true,
+        "options": [
+          {
+            "_uid": "ea6e8178-632c-4f50-87ee-7eed08d0c3a7",
+            "name": "Half",
+            "value": "half"
+          },
+          {
+            "_uid": "9255d7a0-3d3a-4070-995a-d3f86a4e3493",
+            "value": "wide",
+            "name": "Wide"
+          },
+          {
+            "_uid": "4bdfd8cf-c909-4d21-8e16-4eef7924d96a",
+            "value": "full",
+            "name": "Full"
+          }
+        ],
+        "exclude_empty_option": true,
+        "id": "ez1_rK8FSYKLnolcGf_3Yg",
+        "required": true,
+        "default_value": "wide"
+      },
+      "video": {
+        "type": "asset",
+        "pos": 1,
+        "filetypes": [
+          "videos"
+        ],
+        "id": "PzzPWOxVQBWNSkgJBPYjHg",
+        "required": true,
+        "asset_folder_id": 173375575949929,
+        "display_name": "Video"
+      }
+    },
+    "image": null,
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Autoplay Video",
     "component_group_uuid": "a4bb317a-f2a8-450c-95ee-324278de45c2",
     "color": null,
     "icon": null,

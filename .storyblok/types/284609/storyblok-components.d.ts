@@ -32,7 +32,7 @@ export interface BlockHeroProject {
 }
 
 export interface BlockMedia {
-  media: ElementMediaImage[];
+  media: (ElementMediaImage | ElementMediaAutoplay)[];
   id?: string;
   theme?: number | string;
   spacing_top?: boolean;
@@ -152,6 +152,13 @@ export interface ElementLink {
   text: string;
   link: Exclude<StoryblokMultilink, {linktype?: "asset"}>;
   component: "element_link";
+  _uid: string;
+}
+
+export interface ElementMediaAutoplay {
+  layout: "half" | "wide" | "full";
+  video: StoryblokAsset;
+  component: "element_media_autoplay";
   _uid: string;
 }
 
