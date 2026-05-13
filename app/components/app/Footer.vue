@@ -1,125 +1,49 @@
 <script lang="ts" setup>
-import type { Settings } from '@@/.storyblok/types/284609/storyblok-components'
-import { gsap } from 'gsap'
-import { SplitText } from 'gsap/SplitText'
-import IconDitta from '@/assets/icons/ditta.svg'
+import type { StoryblokRichtext } from '#storyblok-types'
 
-gsap.registerPlugin(SplitText)
+interface Props {
+  text?: StoryblokRichtext
+}
 
-const story = await useStory<Settings>('/settings')
-const footerEmailRef = ref<HTMLElement | null>(null)
-let splitText: SplitText | null = null
+const { text } = defineProps<Props>()
 
-onMounted(() => {
-  if (!footerEmailRef.value)
-    return
-
-  // Split text into characters
-  splitText = new SplitText(footerEmailRef.value, {
-    type: 'chars',
-    smartWrap: true,
-  })
-
-  const chars = splitText.chars
-
-  // Set initial styles
-  gsap.set(chars, {
-    fontVariationSettings: '"wght" 380, "ital" 0',
-  })
-
-  // Mouse move handler
-  const handleMouseMove = (e: MouseEvent) => {
-    const rect = footerEmailRef.value!.getBoundingClientRect()
-    const mouseX = e.clientX - rect.left
-    const progress = mouseX / rect.width
-    const hoveredIndex = Math.round(progress * (chars.length - 1))
-
-    chars.forEach((char, index) => {
-      const distance = Math.abs(index - hoveredIndex)
-
-      let weight = 380
-      let italic = 0
-
-      if (distance === 0) {
-        weight = 900
-        italic = 10
-      }
-      else if (distance === 1) {
-        weight = 790
-        italic = 7
-      }
-      else if (distance === 2) {
-        weight = 670
-        italic = 5
-      }
-      else if (distance === 3) {
-        weight = 570
-        italic = 2
-      }
-
-      gsap.to(char, {
-        fontVariationSettings: `"wght" ${weight}, "ital" ${italic}`,
-        duration: 0.3,
-        ease: 'power2.out',
-      })
-    })
-  }
-
-  // Mouse leave handler
-  const handleMouseLeave = () => {
-    gsap.to(chars, {
-      fontVariationSettings: '"wght" 380, "ital" 0',
-      duration: 0.3,
-      ease: 'power2.out',
-    })
-  }
-
-  // Add event listeners
-  footerEmailRef.value.addEventListener('mousemove', handleMouseMove)
-  footerEmailRef.value.addEventListener('mouseleave', handleMouseLeave)
-})
-
-// Cleanup
-onUnmounted(() => {
-  if (splitText) {
-    splitText.revert()
-  }
-})
+const email = 'hello@ditta.studio'
 </script>
 
 <template>
-  <footer class="flex flex-col items-start justify-between min-h-screen">
-    <UiTicker
-      :copy="['Say Hello']"
-      duration="65s"
-      direction="right"
-      is-last
-    />
-
-    <div class="wrapper py-[var(--app-outer-gutter)]">
+  <footer
+    id="contact"
+    class="bg-black text-grey min-h-screen flex"
+  >
+    <div class="wrapper w-full pt-25 md:pt-(--app-gutter-outer) pb-10 flex flex-col justify-between gap-6">
       <div
-        v-if="story.content"
-        class="prose mb-16 [&_p]:max-w-[40ch]"
+        v-if="storyblokRichTextContent(text)"
+        :class="[
+          'prose',
+          'text-pretty',
+          'prose-h2:text-heading',
+          'prose-h2:max-w-[18em]',
+          'prose-p:text-lead',
+          'prose-p:text-beige',
+          'prose-p:max-w-[23em]',
+        ]"
       >
-        <StoryblokText :html="story.content.footer_copy" />
-
-        <p>
-          <a
-            ref="footerEmailRef"
-            href="mailto:hello@ditta.studio"
-            class="inline-block p-4 -m-4"
-            data-hover-color="var(--color-pink)"
-          >
-            hello@ditta.studio
-          </a>
-        </p>
+        <StoryblokText :html="text" />
       </div>
 
-      <IconDitta class="block w-10 h-3.5 mb-4" />
-
-      <p class="text-10 font-bold max-w-[40ch] text-balance opacity-20">
-        ditta ltd. is a company registered in England and Wales with company number 15648076.
-      </p>
+      <a
+        class="footer__link block whitespace-nowrap text-center"
+        href="mailto:hello@ditta.studio"
+        aria-label="Email Ditta at hello@ditta.studio"
+      >
+        <UiTextMorph :text="email" />
+      </a>
     </div>
   </footer>
 </template>
+
+<style scoped>
+.footer__link {
+  font-size: min(calc(9.5vw + 6px), 176px); /* magic number */
+}
+</style>

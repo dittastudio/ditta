@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { BlockText } from '@@/.storyblok/types/284609/storyblok-components'
+import type { BlockText } from '#storyblok-components'
 
 interface Props {
   block: BlockText
@@ -11,15 +11,20 @@ const { block } = defineProps<Props>()
 <template>
   <div
     v-editable="block"
-    class="block-text wrapper max-w-[var(--breakpoint-2xl)] py-[calc(var(--app-outer-gutter)*5)] flex flex-col justify-center"
+    class="wrapper grid grid-cols-1 lg:grid-cols-2 gap-(--app-gutter-inner)"
+    :class="{
+      'pt-[calc(var(--app-vertical-rhythm)/2)]': block.spacing_top,
+      'pb-[calc(var(--app-vertical-rhythm)/2)]': block.spacing_bottom,
+    }"
   >
-    <div class="type-fluid-md max-w-[26ch]">
-      <div
-        v-if="storyblokRichTextContent(block.text)"
-        class="type-inherit"
-      >
-        <StoryblokText :html="block.text" />
-      </div>
+    <div
+      v-if="storyblokRichTextContent(block.text)"
+      class="col-span-1 prose prose-headings:text-body prose-headings:font-medium prose-headings:text-balance prose-p:text-body prose-p:text-pretty max-w-[60ch]"
+      :class="{
+        'lg:col-start-2': block.align_right,
+      }"
+    >
+      <StoryblokText :html="block.text" />
     </div>
   </div>
 </template>
