@@ -57,7 +57,11 @@ function getSizes(layout: string | undefined) {
         }"
       >
         <NuxtImg
-          v-if="media.image && media.image.filename && storyblokAssetType(media.image.filename) === 'image'"
+          v-if="
+            media.component === 'element_media_image' &&
+            media.image.filename &&
+            storyblokAssetType(media.image.filename) === 'image'
+          "
           class="block w-full"
           :class="{
             'rounded-[2px]': media.layout !== 'full',
@@ -68,6 +72,20 @@ function getSizes(layout: string | undefined) {
           :height="storyblokImageDimensions(media.image.filename).height"
           :sizes="getSizes(media.layout)"
           loading="lazy"
+        />
+
+        <UiMuxVideo
+          v-else-if="media.component === 'element_media_autoplay' && media.playback_id"
+          class="w-full h-full aspect-video"
+          :class="{
+            'rounded-[2px] overflow-hidden': media.layout !== 'full',
+          }"
+          :playback-id="media.playback_id"
+          :is-cover="true"
+          playsinline
+          autoplay
+          muted
+          loop
         />
       </div>
     </div>

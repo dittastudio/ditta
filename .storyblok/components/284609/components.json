@@ -1036,7 +1036,7 @@
     "display_name": "Autoplay Video",
     "description": "",
     "created_at": "2026-05-13T09:59:47.023Z",
-    "updated_at": "2026-05-13T10:01:42.217Z",
+    "updated_at": "2026-05-13T11:07:33.744Z",
     "id": 176032919720702,
     "schema": {
       "layout": {
@@ -1065,16 +1065,20 @@
         "required": true,
         "default_value": "wide"
       },
-      "video": {
+      "poster": {
         "type": "asset",
         "pos": 1,
         "filetypes": [
-          "videos"
+          "images"
         ],
-        "id": "PzzPWOxVQBWNSkgJBPYjHg",
-        "required": true,
         "asset_folder_id": 173375575949929,
-        "display_name": "Video"
+        "id": "_Nzl7lYaTK-7ROMC53f9ZA"
+      },
+      "playback_id": {
+        "type": "text",
+        "pos": 2,
+        "id": "2-UkGu1bQKyqw3g8EUNaOg",
+        "required": true
       }
     },
     "image": null,

@@ -157,7 +157,8 @@ export interface ElementLink {
 
 export interface ElementMediaAutoplay {
   layout: "half" | "wide" | "full";
-  video: StoryblokAsset;
+  poster?: StoryblokAsset;
+  playback_id: string;
   component: "element_media_autoplay";
   _uid: string;
 }
