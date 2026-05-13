@@ -5,6 +5,7 @@ import svgLoader from 'vite-svg-loader'
 export default defineNuxtConfig({
   modules: [
     '@nuxtjs/seo',
+    'lenis/nuxt',
     'nuxt-ai-ready',
     [
       '@nuxt/image',
@@ -57,6 +58,15 @@ export default defineNuxtConfig({
         { rel: 'manifest', href: '/site.webmanifest' },
         { rel: 'preload', type: 'font/woff2', href: '/fonts/SaansVF.woff2', as: 'font', crossorigin: '' },
       ],
+    },
+  },
+  routeRules: {
+    '/**': { prerender: process.env.NUXT_PRERENDER === 'true' },
+  },
+  nitro: {
+    prerender: {
+      crawlLinks: true,
+      routes: ['/'],
     },
   },
   vue: {
