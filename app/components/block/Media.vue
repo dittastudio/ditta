@@ -57,11 +57,7 @@ function getSizes(layout: string | undefined) {
         }"
       >
         <NuxtImg
-          v-if="
-            media.component === 'element_media_image' &&
-            media.image.filename &&
-            storyblokAssetType(media.image.filename) === 'image'
-          "
+          v-if="isMediaImage(media) && media.image?.filename && storyblokAssetType(media.image.filename) === 'image'"
           class="block w-full"
           :class="{
             'rounded-[2px]': media.layout !== 'full',
@@ -75,7 +71,7 @@ function getSizes(layout: string | undefined) {
         />
 
         <UiMuxVideo
-          v-else-if="media.component === 'element_media_autoplay' && media.playback_id"
+          v-else-if="isMediaAutoplay(media) && media.playback_id"
           class="w-full h-full aspect-video"
           :class="{
             'rounded-[2px] overflow-hidden': media.layout !== 'full',

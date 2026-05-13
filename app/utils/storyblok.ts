@@ -1,4 +1,4 @@
-import type { Page, Project } from '#storyblok-components'
+import type { Page, Project, ElementMediaImage, ElementMediaAutoplay } from '#storyblok-components'
 import type { StoryblokRichtext } from '#storyblok-types'
 import type { ImageModifiers } from '@nuxt/image'
 import type { ISbStoryData } from '@storyblok/js'
@@ -26,7 +26,7 @@ const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg', 'avi
 const videoExtensions = ['mp4', 'webm', 'ogg']
 
 const storyblokAssetType = (filename: string): 'image' | 'video' | 'other' => {
-  if (typeof filename !== 'string' || !filename?.trim().length) {
+  if (!filename || typeof filename !== 'string' || !filename?.trim().length) {
     return 'other'
   }
 
@@ -46,7 +46,10 @@ const storyblokRichTextContent = (richtext: StoryblokRichtext | undefined): bool
 
 const storyblokSlug = (path: string): string => (['', '/'].includes(path) ? '/home' : path.replace(/\/+$/, ''))
 
-// const isImageComponent = (media: Image): media is Image => media.component === 'image'
+const isMediaImage = (media: ElementMediaImage | ElementMediaAutoplay): media is ElementMediaImage =>
+  media.component === 'element_media_image'
+const isMediaAutoplay = (media: ElementMediaImage | ElementMediaAutoplay): media is ElementMediaAutoplay =>
+  media.component === 'element_media_autoplay'
 
 type ContentTypes = Page | Project
 
@@ -96,7 +99,8 @@ const storyblokImageDimensions = (filename: string | null | undefined): { width:
 
 export {
   getCategoryEntry,
-  // isImageComponent,
+  isMediaImage,
+  isMediaAutoplay,
   isPage,
   isProject,
   storyblokAssetType,
