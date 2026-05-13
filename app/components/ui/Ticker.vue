@@ -1,164 +1,155 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useLenis } from 'lenis/vue'
 
-gsap.registerPlugin(ScrollTrigger)
-
-const REPEAT_COUNT = 9
-const SKEW_CLAMP_MIN = -20
-const SKEW_CLAMP_MAX = 20
-const VELOCITY_DIVISOR = -250
-const SKEW_DURATION = 1
-
-export interface Props {
-  copy: string[]
+interface Props {
   duration?: string
   direction?: 'left' | 'right'
-  isLast?: boolean
+  spacingClasses?: string
 }
 
-const { copy, direction = 'left', duration = '60s', isLast = false } = defineProps<Props>()
+const { direction = 'left', duration = '60s', spacingClasses = 'gap-80 px-40' } = defineProps<Props>()
 
-const container = ref<HTMLElement | null>(null)
-const wrappers = ref<HTMLElement[]>([])
-const lists = ref<HTMLElement[]>([])
-let scrollTrigger: ScrollTrigger | null = null
+const container = useTemplateRef('container')
+const wrappers = useTemplateRef('wrappers')
+const lists = useTemplateRef('lists')
 
-// Optimize array creation
-const multipleWords = computed(() => {
-  return Array.from({ length: REPEAT_COUNT }).fill(copy).flat()
-})
+const isLeft = direction === 'left'
+
+let xTo: ReturnType<typeof gsap.quickTo> | null = null
+let skewXTo: ReturnType<typeof gsap.quickTo> | null = null
+let prevOffset = 0
+// Where the ticker really sits in the page — works even when sticky-pinned.
+let documentTop = Number.POSITIVE_INFINITY
+
+let viewportHeight = 0
+let containerWidth = 0
+let lastIsScrollingUp: boolean | null = null
+
+const refreshDimensions = () => {
+  if (!container.value) {
+    return
+  }
+
+  viewportHeight = window.innerHeight
+  containerWidth = container.value.clientWidth
+}
+
+const setPlayState = (isScrollingUp: boolean) => {
+  const flip = isLeft === isScrollingUp
+  const wrapperState = flip ? 'running' : 'paused'
+  const listState = flip ? 'paused' : 'running'
+
+  wrappers.value?.forEach((el) => {
+    el.style.animationPlayState = wrapperState
+  })
+  lists.value?.forEach((el) => {
+    el.style.animationPlayState = listState
+  })
+}
 
 onMounted(() => {
-  if (!container.value)
+  if (!container.value) {
     return
+  }
 
-  const proxy = { skew: 0 }
-  const skewSetter = gsap.quickSetter(container.value, 'skewX', 'deg')
-  const clamp = gsap.utils.clamp(SKEW_CLAMP_MIN, SKEW_CLAMP_MAX)
-  let lastProgress = 0
+  xTo = gsap.quickTo(container.value, 'x', { duration: 0.5, ease: 'power3.out' })
+  skewXTo = gsap.quickTo(container.value, 'skewX', { duration: 0.6, ease: 'power3.out' })
+  refreshDimensions()
+  window.addEventListener('resize', refreshDimensions)
 
-  scrollTrigger = ScrollTrigger.create({
-    onUpdate: (self) => {
-      if (!container.value)
-        return
+  const rect = container.value.getBoundingClientRect()
+  const scroll = window.scrollY
 
-      const skew = clamp(self.getVelocity() / VELOCITY_DIVISOR)
+  documentTop = rect.top + scroll
 
-      if (Math.abs(skew) > Math.abs(proxy.skew)) {
-        proxy.skew = skew
-        gsap.to(proxy, {
-          skew: 0,
-          duration: SKEW_DURATION,
-          ease: 'power3',
-          overwrite: true,
-          onUpdate: () => skewSetter(proxy.skew),
-        })
-      }
+  const range = viewportHeight + rect.height
+  const progress = Math.max(0, (scroll + viewportHeight - documentTop) / range)
+  const offset = containerWidth * (progress / 3)
 
-      const progress = self.progress
-      const isScrollingUp = progress < lastProgress
+  prevOffset = offset
+  gsap.set(container.value, { x: isLeft ? -offset : offset })
 
-      // Update animation states
-      wrappers.value.forEach((wrapper) => {
-        wrapper.style.animationPlayState = isScrollingUp
-          ? (direction === 'left' ? 'running' : 'paused')
-          : (direction === 'left' ? 'paused' : 'running')
-      })
+  lastIsScrollingUp = false
+  setPlayState(false)
+})
 
-      lists.value.forEach((list) => {
-        list.style.animationPlayState = isScrollingUp
-          ? (direction === 'left' ? 'paused' : 'running')
-          : (direction === 'left' ? 'running' : 'paused')
-      })
+useLenis((lenis) => {
+  if (!container.value || !xTo || !skewXTo) {
+    return
+  }
 
-      lastProgress = progress
+  const isScrollingUp = lenis.direction === -1
 
-      gsap.to(container.value, {
-        x: direction === 'left'
-          ? -container.value.clientWidth * progress + 1
-          : container.value.clientWidth * progress - 1,
-      })
-    },
-  })
+  if (isScrollingUp !== lastIsScrollingUp) {
+    setPlayState(isScrollingUp)
+    lastIsScrollingUp = isScrollingUp
+  }
+
+  const rect = container.value.getBoundingClientRect()
+  const naturalTop = rect.top + lenis.scroll
+  if (naturalTop < documentTop) {
+    documentTop = naturalTop
+  }
+
+  if (rect.bottom < 0 || rect.top > viewportHeight) {
+    return
+  }
+
+  const range = viewportHeight + rect.height
+  // Lower-clamped only — progress is allowed past 1 so momentum continues during sticky pin.
+  const progress = Math.max(0, (lenis.scroll + viewportHeight - documentTop) / range)
+  const offset = containerWidth * (progress / 3)
+
+  const delta = offset - prevOffset
+  prevOffset = offset
+  skewXTo(gsap.utils.clamp(-8, 8, delta * 0.5))
+
+  xTo(isLeft ? -offset : offset)
 })
 
 onUnmounted(() => {
-  if (scrollTrigger) {
-    scrollTrigger.kill()
-    scrollTrigger = null
+  window.removeEventListener('resize', refreshDimensions)
+
+  if (container.value) {
+    gsap.set(container.value, { clearProps: 'all' })
   }
 })
 </script>
 
 <template>
-  <div
-    v-if="copy"
-    class="ui-ticker contain-layout w-full isolate"
-    :class="{ 'ui-ticker--last': isLast }"
-  >
-    <div
+  <div class="ui-ticker relative contain-layout w-full isolate">
+    <ul
       ref="container"
       class="flex justify-center transform-gpu"
     >
-      <div
+      <li
         v-for="i in 4"
         :key="i"
         ref="wrappers"
-        class="ui-ticker__wrapper type-fluid-lg lowercase min-w-full shrink-0 transform-gpu"
+        class="ui-ticker__wrapper min-w-full shrink-0"
       >
         <div
           ref="lists"
-          class="ui-ticker__list select-none flex justify-center shrink-0 min-w-full transform-gpu"
+          class="ui-ticker__list select-none flex justify-center shrink-0 min-w-full"
         >
           <div
-            class="ui-ticker__words flex shrink-0 items-center justify-around min-w-full"
+            :class="spacingClasses"
+            class="flex shrink-0 items-center justify-around min-w-full"
           >
-            <p
-              v-for="(word, index) in multipleWords"
-              :key="index"
-              class="ui-ticker__copy block font-[inherit]"
-            >
-              {{ word }}
-            </p>
+            <slot />
           </div>
         </div>
-      </div>
-    </div>
+      </li>
+    </ul>
   </div>
 </template>
 
-<style lang="postcss" scoped>
+<style scoped>
+@reference "@/assets/css/app.css";
+
 .ui-ticker {
   --duration: v-bind(duration);
-
-  position: relative;
-
-  &::before,
-  &::after {
-    position: absolute;
-    right: 0;
-    left: 0;
-
-    width: calc(100% - (var(--app-outer-gutter) * 2));
-    height: 1px;
-    margin-inline: auto;
-
-    opacity: 0.2;
-    background-color: currentColor;
-  }
-
-  &::before {
-    content: '';
-    top: 0;
-  }
-
-  &--last {
-    &::after {
-      content: '';
-      bottom: 0;
-    }
-  }
 }
 
 .ui-ticker__wrapper {
@@ -167,17 +158,6 @@ onUnmounted(() => {
 
 .ui-ticker__list {
   animation: ticker-left var(--duration) linear infinite paused;
-}
-
-.ui-ticker__words {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.3em;
-  padding: 0.2em 0.15em;
-}
-
-.ui-ticker__copy {
-  margin-block: -0.147em -0.013em;
 }
 
 @keyframes ticker-left {

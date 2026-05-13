@@ -1,20 +1,11 @@
-@layer theme {
+@layer base {
   html {
-    color: var(--color-black);
-    background-color: var(--color-pink);
+    color: var(--color-grey);
+    background-color: var(--color-black);
   }
 
   body {
     font-family: var(--font-sans);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .wrapper {
-    width: 100%;
-    max-width: var(--breakpoint-2xl);
-    margin-inline: auto;
-    padding-inline: var(--app-outer-gutter);
+    font-feature-settings: 'ss02', 'ss03', 'ss04', 'ss07';
   }
 }

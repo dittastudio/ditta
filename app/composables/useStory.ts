@@ -1,30 +1,46 @@
-import type { ISbStoriesParams } from 'storyblok-js-client'
+import type { ISbStoriesParams, ISbStoryData, StoryblokBridgeConfigV2 } from '@storyblok/js'
+import type { LocationQuery } from 'vue-router'
 
-export const useStory = async (
+type UseAsyncDataOptions = Omit<Parameters<typeof useAsyncStoryblok>[1], 'api' | 'bridge'>
+
+export async function useStory<T>(
   slug: string = '',
-  options: ISbStoriesParams = {},
-) => {
+  api: ISbStoriesParams = {},
+  bridge: StoryblokBridgeConfigV2 = {},
+  options: UseAsyncDataOptions = {},
+  query?: LocationQuery,
+) {
   const runtimeConfig = useRuntimeConfig()
-  const route = useRoute()
+  const resolvedQuery = query ?? useRoute().query
+  const isDraft = runtimeConfig.public.NUXT_STORYBLOK_VERSION !== 'published'
 
-  const defaultOptions: ISbStoriesParams = {
-    version: runtimeConfig.public.STORYBLOK_VERSION === 'published' ? 'published' : 'draft',
-    from_release: String(route.query?._storyblok_release) || undefined,
-    resolve_relations: [],
-  }
+  const { story, error } = await useAsyncStoryblok(storyblokSlug(slug), {
+    api: {
+      version: isDraft ? 'draft' : 'published',
+      from_release:
+        typeof resolvedQuery?._storyblok_release === 'string' ? resolvedQuery?._storyblok_release : undefined,
+      ...api,
+    },
+    bridge: {
+      resolveLinks: 'url',
+      preventClicks: true,
+      ...bridge,
+    },
+    transform: (input) => {
+      return input
+    },
+    deep: true,
+    ...options,
+  })
 
-  const story = await useAsyncStoryblok(
-    storyblokSlug(slug),
-    { ...defaultOptions, ...options },
-  )
-
-  if (!story.value) {
+  if (error.value) {
     throw createError({
-      statusCode: 404,
-      statusMessage: `Page not found`,
+      statusCode: error.value.status || 404,
+      statusMessage: `Page not found${slug ? ` for: ${slug}` : ''}`,
       fatal: true,
+      cause: error.value,
     })
   }
 
-  return story
+  return story as ComputedRef<ISbStoryData<T>>
 }

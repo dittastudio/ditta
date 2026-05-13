@@ -1,21 +1,65 @@
 @utility prose {
-  p {
-    font-size: utopia.clamp(20, 32);
-    line-height: var(--leading-normal);
-    letter-spacing: var(--tracking-tight);
-    text-wrap: balance;
+  & :where(h1, h2, h3, h4, h5, h6):has(+ :where(p, ul, ol)) {
+    margin-bottom: 0.6lh;
   }
 
-  & p + p {
-    margin-block-start: 1.3em;
-    margin-block-start: 1lh;
+  & :where(p + p) {
+    margin-top: 1lh;
   }
 
-  & p a {
-    transition: opacity 0.3s var(--ease-in-out);
+  & :where(b, strong) {
+    font-weight: var(--font-weight-heavy);
+  }
 
-    &:hover {
-      opacity: 0.6;
-    }
+  & :where(em) {
+    font-variation-settings: 'slnt' -10;
+  }
+}
+
+@custom-variant prose-headings {
+  & :where(h1, h2, h3, h4, h5, h6) {
+    @slot;
+  }
+}
+
+@custom-variant prose-h1 {
+  & :where(h1) {
+    @slot;
+  }
+}
+
+@custom-variant prose-h2 {
+  & :where(h2) {
+    @slot;
+  }
+}
+
+@custom-variant prose-h3 {
+  & :where(h3) {
+    @slot;
+  }
+}
+
+@custom-variant prose-h4 {
+  & :where(h4) {
+    @slot;
+  }
+}
+
+@custom-variant prose-h5 {
+  & :where(h5) {
+    @slot;
+  }
+}
+
+@custom-variant prose-h6 {
+  & :where(h6) {
+    @slot;
+  }
+}
+
+@custom-variant prose-p {
+  & :where(p) {
+    @slot;
   }
 }

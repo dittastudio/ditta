@@ -1,0 +1,23 @@
+@custom-variant only-hover (@media (hover: hover));
+
+@custom-variant only-touch (@media (hover: none));
+
+@utility wrapper {
+  width: 100%;
+  max-width: var(--breakpoint-2xl);
+  margin-inline: auto;
+  padding-inline: var(--app-gutter-outer);
+}
+
+@utility trim-both {
+  text-box: trim-both cap alphabetic;
+}
+
+@utility squircle-40 {
+  @supports (corner-shape: squircle) {
+    && {
+      corner-shape: squircle;
+      border-radius: 40px;
+    }
+  }
+}

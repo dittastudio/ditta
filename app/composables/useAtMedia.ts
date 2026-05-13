@@ -1,6 +1,6 @@
 export default function useAtMedia(query: string) {
   const mediaQuery = ref<MediaQueryList | undefined>(undefined)
-  const matches = ref<boolean>(false)
+  const matches = ref(false)
 
   const setMatches = (value: boolean) => {
     matches.value = value

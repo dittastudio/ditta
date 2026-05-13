@@ -1,4 +1,28 @@
 @layer base {
+  ::selection {
+    color: --alpha(var(--color-white) / 99%);
+    background-color: var(--color-black);
+  }
+
+  .bg-black {
+    ::selection {
+      color: --alpha(var(--color-black) / 99%);
+      background-color: var(--color-white);
+    }
+  }
+
+  .is-storyblok-editor {
+    a {
+      pointer-events: none !important;
+    }
+  }
+
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
+  }
+
   button {
     text-transform: inherit;
     letter-spacing: inherit;
@@ -14,5 +38,18 @@
   svg {
     display: block;
     fill: currentcolor;
+  }
+
+  blockquote,
+  figcaption,
+  figure,
+  cite,
+  address,
+  em {
+    font-style: normal;
+  }
+
+  strong {
+    font-weight: var(--font-weight-medium);
   }
 }
