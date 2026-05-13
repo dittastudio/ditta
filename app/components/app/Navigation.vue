@@ -10,14 +10,14 @@ const { items } = defineProps<Props>()
 
 <template>
   <nav class="max-lg:grow">
-    <ul class="group flex justify-between lg:justify-end flex-wrap text-navigation max-lg:-ml-5 -my-5 -mr-5">
+    <ul class="group flex justify-between lg:justify-end flex-wrap text-navigation max-lg:-mx-1 -my-5 -mr-5">
       <li
         v-for="item in items"
         :key="item._uid"
       >
         <StoryblokLink
           :item="item.link"
-          class="block max-lg:py-2.5 p-5 group-hover:not-hover:opacity-50 transition-opacity duration-200 ease-out"
+          class="block max-lg:px-1 p-5 group-hover:not-hover:opacity-50 transition-opacity duration-200 ease-out"
         >
           {{ item.text }}
         </StoryblokLink>
