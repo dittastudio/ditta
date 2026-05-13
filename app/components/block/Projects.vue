@@ -165,6 +165,6 @@ onUnmounted(() => {
 }
 
 .project__ticker {
-  font-size: utopia.clamp(120, 160);
+  font-size: utopia.clamp(90, 160);
 }
 </style>
