@@ -1,5 +1,12 @@
 <script lang="ts" setup>
+import type { BlockHero } from '#storyblok-components'
 import IconLogo from '@/assets/icons/ditta.svg'
+
+interface Props {
+  block: BlockHero
+}
+
+defineProps<Props>()
 </script>
 
 <template>
