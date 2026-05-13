@@ -77,14 +77,16 @@ export default defineNuxtConfig({
   vite: {
     optimizeDeps: {
       include: [
-        '@vue/devtools-core',
-        '@vue/devtools-kit',
+        '@mux/mux-player',
         '@storyblok/vue',
         '@tiptap/core',
-        'gsap/SplitText',
-        'lenis/vue',
+        '@vue/devtools-core',
+        '@vue/devtools-kit',
+        '@vueuse/core',
         'gsap',
         'gsap/ScrollTrigger',
+        'gsap/SplitText',
+        'lenis/vue',
         'matter-js',
       ],
     },
