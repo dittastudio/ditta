@@ -10,7 +10,7 @@ defineProps<Props>()
 </script>
 
 <template>
-  <div class="wrapper min-h-svh flex flex-col justify-end">
+  <div class="wrapper min-h-svh flex flex-col justify-end pt-40">
     <IconLogo class="w-full h-auto -mb-1.5" />
   </div>
 </template>
