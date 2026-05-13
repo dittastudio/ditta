@@ -1,7 +1,7 @@
 @layer base {
   html {
-    color: var(--color-black);
-    background-color: var(--color-accent);
+    color: var(--color-grey);
+    background-color: var(--color-black);
   }
 
   body {
