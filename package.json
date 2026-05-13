@@ -21,6 +21,7 @@
     "prepare": "vp config"
   },
   "dependencies": {
+    "@mux/mux-player": "^3.13.0",
     "@nuxt/image": "^2.0.0",
     "@resvg/resvg-js": "^2.6.2",
     "@storyblok/nuxt": "^10.1.4",

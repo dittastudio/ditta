@@ -59,6 +59,11 @@ export default defineNuxtConfig({
       ],
     },
   },
+  vue: {
+    compilerOptions: {
+      isCustomElement: (tag) => tag.startsWith('mux-'),
+    },
+  },
   compatibilityDate: '2025-07-15',
   ssr: true,
   css: ['~/assets/css/app.css'],
