@@ -41,10 +41,11 @@ onUnmounted(() => {
     ref="root"
     :style="{ '--scale-x': scaleX, '--scale-y': scaleY }"
     class="ui-button relative isolate select-none inline-flex items-center gap-[0.71em] font-medium leading-none rounded-full py-2.5 md:py-3.75 pr-2.5 md:pr-3.75 pl-5 md:pl-6"
+    :class="[theme ? themeTextClasses[theme as Themes] : '']"
   >
     <span
       class="ui-button__bg absolute inset-0 -z-1 rounded-[inherit]"
-      :class="[theme ? themeClasses[theme as Themes] : '']"
+      :class="[theme ? themeBgClasses[theme as Themes] : '']"
     />
 
     <span
