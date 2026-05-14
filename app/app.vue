@@ -19,6 +19,13 @@ useSeoMeta({
   titleTemplate: (title) => (title ? `${title} - ditta` : 'ditta'),
   robots: 'index, follow',
 })
+
+if (!import.meta.dev) {
+  useScriptPlausibleAnalytics({
+    domain: 'ditta.studio',
+    extension: ['file-downloads', 'outbound-links'],
+  })
+}
 </script>
 
 <template>

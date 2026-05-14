@@ -5,6 +5,7 @@ import svgLoader from 'vite-svg-loader'
 export default defineNuxtConfig({
   modules: [
     '@nuxtjs/seo',
+    '@nuxt/scripts',
     'lenis/nuxt',
     'nuxt-ai-ready',
     [
