@@ -23,6 +23,7 @@
   "dependencies": {
     "@mux/mux-player": "^3.13.0",
     "@nuxt/image": "^2.0.0",
+    "@nuxtjs/plausible": "^3.0.2",
     "@resvg/resvg-js": "^2.6.2",
     "@storyblok/nuxt": "^10.1.5",
     "gsap": "^3.15.0",

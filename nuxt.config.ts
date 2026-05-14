@@ -5,6 +5,16 @@ import svgLoader from 'vite-svg-loader'
 export default defineNuxtConfig({
   modules: [
     '@nuxtjs/seo',
+    [
+      '@nuxtjs/plausible',
+      {
+        domain: 'ditta.studio',
+        autoOutboundTracking: true,
+        fileDownloads: true,
+        formSubmissions: true,
+        ignoredHostnames: ['localhost', 'netlify.app', 'vercel.app'],
+      },
+    ],
     'lenis/nuxt',
     'nuxt-ai-ready',
     [
