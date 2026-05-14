@@ -15,7 +15,7 @@ const projects = computed(() => block.projects?.filter((project) => typeof proje
 
 const projectRefs = useTemplateRef('project')
 
-const brightnessStep = 10
+const opacityStep = 0.1
 
 let ctx: gsap.Context | null = null
 
@@ -53,16 +53,14 @@ onMounted(async () => {
 
       const subsequent = projectRefs.value?.slice(index + 1) ?? []
       subsequent.forEach((triggerEl, stepsBelow) => {
-        const fromBrightness = Math.max(0, 100 - stepsBelow * brightnessStep)
-        const toBrightness = Math.max(0, 100 - (stepsBelow + 1) * brightnessStep)
+        const fromOpacity = Math.min(1, stepsBelow * opacityStep)
+        const toOpacity = Math.min(1, (stepsBelow + 1) * opacityStep)
 
         gsap.fromTo(
           el,
+          { '--overlay-opacity': fromOpacity },
           {
-            filter: `brightness(${fromBrightness}%)`,
-          },
-          {
-            filter: `brightness(${toBrightness}%)`,
+            '--overlay-opacity': toOpacity,
             ease: 'power2.in',
             immediateRender: false,
             scrollTrigger: {
@@ -119,6 +117,8 @@ onUnmounted(() => {
       </div>
     </div>
 
+    <!-- <div class="h-[200vh] w-full"></div> -->
+
     <div class="wrapper grid grid-cols-1 md:grid-cols-12 gap-(--app-gutter-inner)">
       <ul class="col-span-1 md:col-start-2 md:col-span-10">
         <li
@@ -137,17 +137,17 @@ onUnmounted(() => {
                   v-if="
                     project.content.media?.filename && storyblokAssetType(project.content.media.filename) === 'image'
                   "
-                  class="block size-full object-cover rounded-20 squircle-40 shadow-lg"
+                  class="block size-full object-cover"
                   :src="project.content.media.filename"
                   :alt="project.content.title || project.content.media.alt"
                   width="16"
                   height="9"
                   sizes="
-                  xs:100vw
-                  sm:100vw
-                  lg:66vw
-                  2xl:1180px
-                "
+                    xs:100vw
+                    sm:100vw
+                    lg:66vw
+                    2xl:1180px
+                  "
                   loading="lazy"
                 />
               </UiCardProject>
