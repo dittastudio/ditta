@@ -117,8 +117,6 @@ onUnmounted(() => {
       </div>
     </div>
 
-    <!-- <div class="h-[200vh] w-full"></div> -->
-
     <div class="wrapper grid grid-cols-1 md:grid-cols-12 gap-(--app-gutter-inner)">
       <ul class="col-span-1 md:col-start-2 md:col-span-10">
         <li
