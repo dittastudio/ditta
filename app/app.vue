@@ -24,6 +24,9 @@ if (!import.meta.dev) {
   useScriptPlausibleAnalytics({
     domain: 'ditta.studio',
     extension: ['file-downloads', 'outbound-links'],
+    scriptInput: {
+      'data-api': 'https://plausible.io/api/event',
+    },
   })
 }
 </script>
