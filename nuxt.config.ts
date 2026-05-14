@@ -12,11 +12,7 @@ export default defineNuxtConfig({
         autoOutboundTracking: true,
         fileDownloads: true,
         formSubmissions: true,
-        proxy: true,
         ignoredHostnames: ['localhost', 'netlify.app', 'vercel.app'],
-        // scriptInput: {
-        //   'data-api': 'https://plausible.io/api/event',
-        // },
       },
     ],
     'lenis/nuxt',
