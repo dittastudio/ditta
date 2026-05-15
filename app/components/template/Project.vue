@@ -16,13 +16,9 @@ const firstBlockTheme = computed<Themes | null>(() => {
   return first && 'theme' in first ? (first.theme as Themes) : null
 })
 
-watch(
-  firstBlockTheme,
-  (value) => {
-    headerTheme.value = value
-  },
-  { immediate: true },
-)
+watchEffect(() => {
+  headerTheme.value = firstBlockTheme.value
+})
 
 const services = await useDatasource('services', story.content.services)
 </script>

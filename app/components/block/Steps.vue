@@ -15,7 +15,7 @@ const onMouseMove = (event: MouseEvent) => {
 }
 
 onMounted(() => {
-  window.addEventListener('mousemove', onMouseMove)
+  window.addEventListener('mousemove', onMouseMove, { passive: true })
 })
 
 onUnmounted(() => {
@@ -47,12 +47,12 @@ onUnmounted(() => {
       </div>
     </div>
 
-    <div class="flex flex-col gap-1 rounded-20 squircle-40 overflow-hidden -mx-(--app-gutter-outer) md:-mx-15">
+    <div class="flex flex-col gap-1 rounded-20 squircle-40 overflow-hidden md:-mx-15">
       <div
         v-for="step in block.steps"
         v-editable="step"
         :key="step._uid"
-        class="bg-white px-(--app-gutter-outer) py-10 md:px-15 md:py-20 transition-all duration-250 ease-outCubic hover:invert-100"
+        class="bg-white px-(--app-gutter-outer) py-10 md:px-15 md:py-20 transition-[filter] duration-250 ease-outCubic hover:invert-100"
       >
         <UiStep
           :title="step.title"

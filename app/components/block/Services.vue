@@ -11,7 +11,7 @@ const { block } = defineProps<Props>()
 
 const containerRef = useTemplateRef('container')
 const chipRefs = useTemplateRef('chipRef')
-const transforms = ref<string[]>([])
+const transforms = shallowRef<string[]>([])
 const ready = ref(false)
 
 const services = await useDatasource('services', block.services)
@@ -50,7 +50,7 @@ const onMouseMove = (event: MouseEvent) => {
 }
 
 onMounted(() => {
-  window.addEventListener('mousemove', onMouseMove)
+  window.addEventListener('mousemove', onMouseMove, { passive: true })
 
   const el = containerRef.value
   const chips = chipRefs.value
@@ -213,6 +213,7 @@ onUnmounted(() => {
         :style="transforms[i] ? { transform: transforms[i] } : {}"
       >
         <UiChip
+          v-memo="[service.name]"
           :text="service.name"
           size="large"
           theme="light"

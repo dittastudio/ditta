@@ -56,7 +56,7 @@ onMounted(() => {
   xTo = gsap.quickTo(container.value, 'x', { duration: 0.5, ease: 'power3.out' })
   skewXTo = gsap.quickTo(container.value, 'skewX', { duration: 0.6, ease: 'power3.out' })
   refreshDimensions()
-  window.addEventListener('resize', refreshDimensions)
+  window.addEventListener('resize', refreshDimensions, { passive: true })
 
   const rect = container.value.getBoundingClientRect()
   const scroll = window.scrollY

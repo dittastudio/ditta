@@ -33,7 +33,7 @@ let ro: ResizeObserver
 onMounted(() => {
   ro = new ResizeObserver(update)
   ro.observe(contentRef.value as HTMLDivElement)
-  window.addEventListener('resize', update)
+  window.addEventListener('resize', update, { passive: true })
   update()
 })
 
@@ -95,6 +95,7 @@ onUnmounted(() => {
           <li
             v-for="human in humans"
             :key="human.uuid"
+            v-memo="[human.uuid]"
           >
             <UiPerson
               :image="human.content.image"
