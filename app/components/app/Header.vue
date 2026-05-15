@@ -11,7 +11,7 @@ const textClass = computed(() => (headerTheme.value === 'dark' ? 'text-white' : 
 
 <template>
   <header
-    class="absolute top-0 z-10 overflow-x-clip w-full transition-colors duration-500 ease-out delay-500"
+    class="absolute top-0 z-10 overflow-x-clip w-full transition-colors duration-500 ease-out"
     :class="textClass"
   >
     <div class="wrapper flex justify-between items-start pt-(--app-gutter-outer) md:pt-20">

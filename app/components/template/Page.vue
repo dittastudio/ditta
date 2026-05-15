@@ -8,6 +8,17 @@ interface Props {
 }
 
 const { story } = defineProps<Props>()
+
+const headerTheme = useHeaderTheme()
+
+const firstBlockTheme = computed<Themes | null>(() => {
+  const first = story.content.blocks?.[0]
+  return first && 'theme' in first ? (first.theme as Themes) : null
+})
+
+watchEffect(() => {
+  headerTheme.value = firstBlockTheme.value
+})
 </script>
 
 <template>
