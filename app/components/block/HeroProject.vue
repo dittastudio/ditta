@@ -18,23 +18,20 @@ const { block } = defineProps<Props>()
       class="col-start-1 row-start-1"
     >
       <MediaSource
-        v-if="
-          block.image_desktop &&
-          block.image_desktop.filename &&
-          storyblokAssetType(block.image_desktop.filename) === 'image'
-        "
         media="(orientation: landscape)"
         :width="16"
         :height="9"
-        :src="block.image_desktop.filename"
+        :src="block.image.filename"
+        :focus="block.image.focus"
         sizes="sm:100vw md:100vw lg:100vw"
       />
 
       <MediaSource
-        :media="block.image.filename ? '(orientation: portrait)' : undefined"
+        media="(orientation: portrait)"
         :width="10"
         :height="16"
         :src="block.image.filename"
+        :focus="block.image.focus"
         sizes="2xs:100vw xs:100vw sm:100vw"
       />
 
@@ -43,6 +40,7 @@ const { block } = defineProps<Props>()
         class="size-full object-cover"
         :src="block.image.filename"
         :alt="block.image.alt"
+        :modifiers="block.image.focus ? { filters: { focal: block.image.focus } } : undefined"
         loading="eager"
         preload
       />

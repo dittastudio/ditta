@@ -25,11 +25,11 @@ export default defineNuxtConfig({
           baseURL: 'https://a2.storyblok.com',
           modifiers: {
             smart: true,
+            format: 'webp',
           },
         },
-        format: ['webp'],
         domains: ['storyblok.com', 'ditta.studio'],
-        quality: 85,
+        quality: 90,
         screens: {
           '2xs': 375,
           xs: 480,

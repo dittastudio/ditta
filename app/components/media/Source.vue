@@ -5,9 +5,10 @@ interface Props {
   width: number
   height: number
   sizes?: string
+  focus?: string | null
 }
 
-const { src, media, width, height, sizes } = defineProps<Props>()
+const { src, media, width, height, sizes, focus } = defineProps<Props>()
 
 const cSizes = computed(() => {
   const img = useImage()
@@ -18,6 +19,11 @@ const cSizes = computed(() => {
     modifiers: {
       width,
       height,
+      smart: true,
+      filters: {
+        format: 'webp',
+        ...(focus ? { focal: focus } : {}),
+      },
     },
   })
 })

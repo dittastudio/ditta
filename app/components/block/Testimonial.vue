@@ -34,8 +34,8 @@ const { block } = defineProps<Props>()
           class="block size-14 md:size-18 object-cover rounded-full"
           :src="block.image.filename"
           :alt="block.name || block.image.alt"
-          width="80"
-          height="80"
+          width="72"
+          height="72"
           density="1x, 2x"
           loading="lazy"
         />
