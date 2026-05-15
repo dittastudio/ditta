@@ -1,6 +1,7 @@
 import { fileURLToPath } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'
 import svgLoader from 'vite-svg-loader'
+import { breakpoints } from './app/utils/breakpoints'
 
 export default defineNuxtConfig({
   modules: [
@@ -30,15 +31,7 @@ export default defineNuxtConfig({
         },
         domains: ['storyblok.com', 'ditta.studio'],
         quality: 90,
-        screens: {
-          '2xs': 375,
-          xs: 480,
-          sm: 600,
-          md: 800,
-          lg: 1200,
-          xl: 1440,
-          '2xl': 1800,
-        },
+        screens: breakpoints,
       },
     ],
     [

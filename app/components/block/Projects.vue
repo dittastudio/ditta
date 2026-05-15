@@ -117,7 +117,9 @@ onUnmounted(() => {
       </div>
     </div>
 
-    <div class="wrapper grid grid-cols-1 md:grid-cols-12 gap-(--app-gutter-inner)">
+    <div
+      class="wrapper max-md:px-[calc(var(--app-gutter-outer)*2)] grid grid-cols-1 md:grid-cols-12 gap-(--app-gutter-inner)"
+    >
       <ul class="col-span-1 md:col-start-2 md:col-span-10">
         <li
           v-for="(project, index) in projects"
@@ -125,29 +127,48 @@ onUnmounted(() => {
           ref="project"
           class="project__wrapper sticky top-0 h-screen w-full flex flex-col items-center py-10 pointer-events-none"
         >
-          <div class="flex flex-col justify-center max-w-full h-full aspect-video">
+          <div class="flex flex-col justify-center max-w-full h-full aspect-3/4 md:aspect-video">
             <NuxtLink
               class="block pointer-events-auto"
               :to="`/${project.full_slug}`"
             >
-              <UiCardProject :title="project.content.title">
-                <NuxtImg
+              <UiCardProject
+                :title="project.content.title"
+                class="aspect-3/4 md:aspect-video"
+              >
+                <picture
                   v-if="
                     project.content.media?.filename && storyblokAssetType(project.content.media.filename) === 'image'
                   "
-                  class="block size-full object-cover"
-                  :src="project.content.media.filename"
-                  :alt="project.content.title || project.content.media.alt"
-                  width="16"
-                  height="9"
-                  sizes="
-                    xs:100vw
-                    sm:100vw
-                    lg:66vw
-                    2xl:1180px
-                  "
-                  loading="lazy"
-                />
+                >
+                  <MediaSource
+                    :media="getMediaQuery('md')"
+                    :width="16"
+                    :height="9"
+                    :src="project.content.media.filename"
+                    :focus="project.content.media.focus"
+                    sizes="md:66vw lg:66vw 2xl:1180px"
+                  />
+
+                  <MediaSource
+                    :width="3"
+                    :height="4"
+                    :src="project.content.media.filename"
+                    :focus="project.content.media.focus"
+                    sizes="2xs:85vw xs:85vw sm:85vw"
+                  />
+
+                  <NuxtImg
+                    srcset=""
+                    class="size-full object-cover"
+                    :src="project.content.media.filename"
+                    :alt="project.content.media.alt"
+                    :modifiers="
+                      project.content.media.focus ? { filters: { focal: project.content.media.focus } } : undefined
+                    "
+                    loading="lazy"
+                  />
+                </picture>
               </UiCardProject>
             </NuxtLink>
           </div>

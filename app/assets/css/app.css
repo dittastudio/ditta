@@ -20,7 +20,15 @@
   --color-crema: oklch(0.8102 0.0532 66.96);
   --color-accent: var(--color-pink);
 
+  /* Breakpoints — keep in sync with app/utils/breakpoints.ts */
   --breakpoint-\*: initial;
+  --breakpoint-2xs: 375px;
+  --breakpoint-xs: 480px;
+  --breakpoint-sm: 600px;
+  --breakpoint-md: 800px;
+  --breakpoint-lg: 1200px;
+  --breakpoint-xl: 1440px;
+  --breakpoint-2xl: 1800px;
 
   --spacing-\*: initial;
   --spacing: 4px;
@@ -204,20 +212,15 @@
 }
 
 @keyframes bob {
-  0% { translate: 0 0; }
-  50% { translate: 0 30px; }
-  100% { translate: 0 0; }
-}
-
-/* New TW way to whitelist classes */
-@theme static {
-  --breakpoint-2xs: 375px;
-  --breakpoint-xs: 480px;
-  --breakpoint-sm: 600px;
-  --breakpoint-md: 800px;
-  --breakpoint-lg: 1200px;
-  --breakpoint-xl: 1440px;
-  --breakpoint-2xl: 1800px;
+  0% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 30px;
+  }
+  100% {
+    translate: 0 0;
+  }
 }
 
 @layer theme {
