@@ -33,12 +33,19 @@ useSeoMeta({
       },
     }"
   >
+    <AppDock
+      :tagline="settings.content.tagline"
+      :items="settings.content.navigation"
+    />
+
+    <!--
     <AppHeader :tagline="settings.content.tagline">
       <AppNavigation
         v-if="settings.content.navigation"
         :items="settings.content.navigation"
       />
     </AppHeader>
+    -->
 
     <NuxtPage />
 

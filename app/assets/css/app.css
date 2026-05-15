@@ -37,6 +37,7 @@
   --font-weight-heavy: 900;
 
   --text-\*: initial;
+  --text-11: 0.6875rem;
   --text-14: 0.875rem;
   --text-16: 1rem;
   --text-20: 1.25rem;
@@ -204,9 +205,15 @@
 }
 
 @keyframes bob {
-  0% { translate: 0 0; }
-  50% { translate: 0 30px; }
-  100% { translate: 0 0; }
+  0% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 30px;
+  }
+  100% {
+    translate: 0 0;
+  }
 }
 
 /* New TW way to whitelist classes */
