@@ -101,9 +101,12 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
                 <li>
                   <NuxtLink
                     to="mailto:hello@ditta.studio"
-                    class="block pt-5"
+                    class="block py-5"
                   >
-                    <UiButton text="Talk to us" />
+                    <UiButton
+                      text="Talk to us"
+                      size="medium"
+                    />
                   </NuxtLink>
                 </li>
               </ul>
