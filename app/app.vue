@@ -47,12 +47,7 @@ const themeClass = computed(() => (headerTheme.value === 'dark' ? 'text-white' :
       :class="[themeClass]"
     >
       <p class="wrapper text-center text-16 md:text-navigation">
-        <NuxtLink
-          class="block"
-          to="/"
-        >
-          {{ settings.content.tagline }}
-        </NuxtLink>
+        {{ settings.content.tagline }}
       </p>
     </div>
 
