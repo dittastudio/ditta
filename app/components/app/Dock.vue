@@ -49,7 +49,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
           :class="{ 'pointer-events-auto': !isHidden }"
         >
           <p class="flex items-center gap-1.5 pl-5">
-            🌧️ <span class="text-tiny">21&deg;C<span class="max-xs:sr-only"> — London</span></span>
+            🌧️ <span class="text-tiny">21&deg;C<span class="max-xs:sr-only"> — LDN</span></span>
           </p>
 
           <NuxtLink
