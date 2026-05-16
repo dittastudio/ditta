@@ -5,6 +5,8 @@ import svgLoader from 'vite-svg-loader'
 export default defineNuxtConfig({
   modules: [
     '@nuxtjs/seo',
+    '@pinia/nuxt',
+    'pinia-plugin-persistedstate/nuxt',
     [
       '@nuxtjs/plausible',
       {

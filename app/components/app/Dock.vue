@@ -109,6 +109,9 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
                     />
                   </NuxtLink>
                 </li>
+                <li>
+                  <AppTheme />
+                </li>
               </ul>
             </nav>
           </div>

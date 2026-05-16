@@ -9,9 +9,13 @@ const globalClasses = computed(() => ({
   'is-storyblok-editor': storyblokEditor(route.query),
 }))
 
+const appStore = useAppStore()
+const { theme } = storeToRefs(appStore)
+
 useHead({
   htmlAttrs: {
     class: globalClasses,
+    style: computed(() => `--color-accent: var(--color-${theme.value})`),
   },
 })
 
