@@ -4,11 +4,10 @@ import IconLogo from '@/assets/icons/ditta.svg'
 import IconBurger from '@/assets/icons/burger.svg'
 
 interface Props {
-  tagline?: string
   items?: ElementLink[]
 }
 
-const { tagline, items } = defineProps<Props>()
+const { items } = defineProps<Props>()
 
 const navigation = useNavigation()
 
@@ -18,33 +17,44 @@ const toggle = () => {
 
 const headerTheme = useHeaderTheme()
 const themeClass = computed(() => (headerTheme.value === 'dark' ? 'text-white' : 'text-black'))
+const isHidden = ref(false)
+
+let lastScrollY = 0
+
+const onScroll = () => {
+  const y = window.scrollY
+  const isDown = y >= 1 && y > lastScrollY
+
+  if (navigation.value && isDown) {
+    navigation.value = false
+  }
+
+  isHidden.value = isDown
+  lastScrollY = y
+}
+
+onMounted(() => window.addEventListener('scroll', onScroll, { passive: true }))
+onUnmounted(() => window.removeEventListener('scroll', onScroll))
 </script>
 
 <template>
   <header
-    class="fixed top-5 left-0 z-10 w-full"
-    :class="themeClass"
+    class="fixed top-5 left-0 z-50 w-full transition-[opacity,translate] duration-300 ease-outCubic pointer-events-none"
+    :class="[themeClass, { '-translate-y-2 opacity-0': isHidden }]"
   >
-    <div class="wrapper text-center md:text-left flex items-center justify-between flex-col md:flex-row gap-8">
-      <p
-        v-if="tagline"
-        class="order-2 md:order-1 text-16 md:text-navigation"
-      >
-        <NuxtLink
-          class="block"
-          to="/"
+    <div class="wrapper">
+      <div class="w-full xs:w-90 mx-auto text-white bg-black rounded-20 overflow-clip">
+        <div
+          class="grid grid-cols-3"
+          :class="{ 'pointer-events-auto': !isHidden }"
         >
-          {{ tagline }}
-        </NuxtLink>
-      </p>
-
-      <div class="w-full md:w-70 order-1 md:order-2 text-white bg-black rounded-20 overflow-clip">
-        <div class="grid grid-cols-[100px_1fr_100px] md:grid-cols-[100px_100px] md:justify-between">
-          <p class="flex items-center gap-1.5 pl-5">🌧️ <span class="text-tiny">21&deg;C</span></p>
+          <p class="flex items-center gap-1.5 pl-5">
+            🌧️ <span class="text-tiny">21&deg;C<span class="max-xs:sr-only"> — London</span></span>
+          </p>
 
           <NuxtLink
             to="/"
-            class="flex flex-col items-center justify-center md:sr-only"
+            class="flex flex-col items-center justify-center"
           >
             <IconLogo class="w-auto h-4" />
             <span class="sr-only">ditta</span>
@@ -63,8 +73,11 @@ const themeClass = computed(() => (headerTheme.value === 'dark' ? 'text-white' :
           class="grid w-full transition-[grid-template-rows] duration-300 ease-inOutCubic"
           :class="navigation ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'"
         >
-          <div class="overflow-clip min-h-0">
-            <nav class="flex flex-col items-center justify-center gap-10 w-full py-10">
+          <div
+            class="w-full overflow-clip min-h-0"
+            :class="{ 'pointer-events-auto': !isHidden }"
+          >
+            <nav class="w-full py-10">
               <ul class="flex flex-col w-full text-28 text-center">
                 <li>
                   <NuxtLink
@@ -85,11 +98,15 @@ const themeClass = computed(() => (headerTheme.value === 'dark' ? 'text-white' :
                     {{ item.text }}
                   </StoryblokLink>
                 </li>
+                <li>
+                  <NuxtLink
+                    to="mailto:hello@ditta.studio"
+                    class="block pt-5"
+                  >
+                    <UiButton text="Talk to us" />
+                  </NuxtLink>
+                </li>
               </ul>
-
-              <NuxtLink to="mailto:hello@ditta.studio">
-                <UiButton text="Talk to us" />
-              </NuxtLink>
             </nav>
           </div>
         </div>

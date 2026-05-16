@@ -19,6 +19,9 @@ useSeoMeta({
   titleTemplate: (title) => (title ? `${title} - ditta` : 'ditta'),
   robots: 'index, follow',
 })
+
+const headerTheme = useHeaderTheme()
+const themeClass = computed(() => (headerTheme.value === 'dark' ? 'text-white' : 'text-black'))
 </script>
 
 <template>
@@ -37,6 +40,21 @@ useSeoMeta({
       :tagline="settings.content.tagline"
       :items="settings.content.navigation"
     />
+
+    <div
+      v-if="settings.content.tagline"
+      class="absolute top-0 left-0 z-10 pt-20 w-full"
+      :class="[themeClass]"
+    >
+      <p class="wrapper text-center text-16 md:text-navigation">
+        <NuxtLink
+          class="block"
+          to="/"
+        >
+          {{ settings.content.tagline }}
+        </NuxtLink>
+      </p>
+    </div>
 
     <NuxtPage />
 
