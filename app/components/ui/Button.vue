@@ -2,12 +2,10 @@
 import type { Themes } from '@/types/app'
 import IconPixelArrow from '@/assets/icons/pixel-arrow.svg'
 
-type Size = 'large' | 'medium'
-
 interface Props {
   theme?: Themes
   text?: string
-  size?: Size
+  size?: 'large' | 'medium'
 }
 
 const { theme = 'light', text, size = 'large' } = defineProps<Props>()
