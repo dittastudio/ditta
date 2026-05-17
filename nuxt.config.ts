@@ -64,7 +64,10 @@ export default defineNuxtConfig({
     },
   },
   routeRules: {
-    '/**': { prerender: process.env.NUXT_PRERENDER === 'true' },
+    '/**': {
+      prerender: process.env.NUXT_PRERENDER === 'true',
+      swr: 300,
+    },
   },
   nitro: {
     prerender: {
