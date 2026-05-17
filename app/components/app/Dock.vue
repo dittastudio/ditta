@@ -82,6 +82,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
             @click="toggle"
           >
             <IconBurger class="w-4 h-auto ml-auto" />
+            <span class="sr-only">{{ navigation ? 'Close Menu' : 'Open Menu' }}</span>
           </button>
         </div>
 
