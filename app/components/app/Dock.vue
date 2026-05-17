@@ -10,7 +10,7 @@ interface Props {
 
 const { items } = defineProps<Props>()
 
-const { data: weather } = await useFetch('/api/weather')
+const { data: weather, status: weatherStatus } = await useLazyFetch('/api/weather')
 const navigation = useNavigation()
 const dock = useTemplateRef('dock')
 
@@ -57,10 +57,15 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
           :class="{ 'pointer-events-auto': !isHidden }"
         >
           <p class="flex items-center gap-1.5 pl-5">
-            {{ weather?.emoji ?? '😎' }}
-            <span class="text-tiny"
-              >{{ weather?.temperature ?? 0 }}&deg;C<span class="max-xs:sr-only"> — LDN</span></span
-            >
+            <template v-if="weatherStatus === 'pending'">
+              🌧️ <span class="text-tiny">0&deg;C<span class="max-xs:sr-only"> — LDN</span></span>
+            </template>
+            <template v-else>
+              {{ weather?.emoji ?? '😎' }}
+              <span class="text-tiny">
+                {{ weather?.temperature ?? 0 }}&deg;C<span class="max-xs:sr-only"> — LDN</span>
+              </span>
+            </template>
           </p>
 
           <NuxtLink
