@@ -5,9 +5,10 @@ import IconPixelArrow from '@/assets/icons/pixel-arrow.svg'
 interface Props {
   theme?: Themes
   text?: string
+  size?: 'large' | 'medium'
 }
 
-const { theme = 'light', text } = defineProps<Props>()
+const { theme = 'light', text, size = 'large' } = defineProps<Props>()
 
 const root = useTemplateRef('root')
 const width = ref(0)
@@ -40,8 +41,12 @@ onUnmounted(() => {
   <span
     ref="root"
     :style="{ '--scale-x': scaleX, '--scale-y': scaleY }"
-    class="ui-button relative isolate select-none inline-flex items-center gap-[0.71em] font-medium leading-none rounded-full py-2.5 md:py-3.75 pr-2.5 md:pr-3.75 pl-5 md:pl-6"
-    :class="[theme ? themeTextClasses[theme as Themes] : '']"
+    class="ui-button relative isolate select-none inline-flex items-center gap-[0.71em] font-medium leading-none rounded-full"
+    :class="[
+      `ui-button--${size}`,
+      size === 'large' ? 'py-2.5 md:py-3.75 pr-2.5 md:pr-3.75 pl-5 md:pl-6' : 'py-2 pr-2 pl-4',
+      theme ? themeTextClasses[theme as Themes] : '',
+    ]"
   >
     <span
       class="ui-button__bg absolute inset-0 -z-1 rounded-[inherit]"
@@ -66,8 +71,20 @@ onUnmounted(() => {
 <style scoped>
 @reference "@/assets/css/app.css";
 
-.ui-button {
+.ui-button--large {
   font-size: utopia.clamp(16, 28);
+
+  .ui-button__icon {
+    font-size: utopia.clamp(30, 40);
+  }
+}
+
+.ui-button--medium {
+  font-size: utopia.clamp(14, 18);
+
+  .ui-button__icon {
+    font-size: utopia.clamp(24, 30);
+  }
 }
 
 .ui-button__bg {
@@ -79,10 +96,6 @@ onUnmounted(() => {
     transition: scale 0.4s var(--ease-out);
     scale: var(--scale-x) var(--scale-y);
   }
-}
-
-.ui-button__icon {
-  font-size: utopia.clamp(30, 40);
 }
 
 .ui-button__arrow {

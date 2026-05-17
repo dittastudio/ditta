@@ -9,9 +9,13 @@ const globalClasses = computed(() => ({
   'is-storyblok-editor': storyblokEditor(route.query),
 }))
 
+const theme = useTheme()
+const straplineClass = computed(() => (theme.value.strapline === 'dark' ? 'text-white' : 'text-black'))
+
 useHead({
   htmlAttrs: {
     class: globalClasses,
+    style: computed(() => `--color-accent: var(--color-${theme.value.accent})`),
   },
 })
 
@@ -33,12 +37,20 @@ useSeoMeta({
       },
     }"
   >
-    <AppHeader :tagline="settings.content.tagline">
-      <AppNavigation
-        v-if="settings.content.navigation"
-        :items="settings.content.navigation"
-      />
-    </AppHeader>
+    <AppDock
+      :tagline="settings.content.tagline"
+      :items="settings.content.navigation"
+    />
+
+    <div
+      v-if="settings.content.tagline"
+      class="absolute top-0 left-0 z-10 pt-20 w-full"
+      :class="[straplineClass]"
+    >
+      <p class="wrapper text-center text-16 md:text-navigation transition-colors duration-500 ease-outCubic">
+        {{ settings.content.tagline }}
+      </p>
+    </div>
 
     <NuxtPage />
 

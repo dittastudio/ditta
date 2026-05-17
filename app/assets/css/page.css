@@ -2,6 +2,7 @@
   html {
     color: var(--color-grey);
     background-color: var(--color-black);
+    interpolate-size: allow-keywords;
   }
 
   body {
