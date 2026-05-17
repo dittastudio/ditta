@@ -21,11 +21,11 @@ const ringClass: Record<SelectableTheme, string> = {
   olive: 'ring-olive',
 }
 
-const store = useAppStore()
-const { theme } = storeToRefs(store)
+const theme = useTheme()
 </script>
 
 <template>
+  <pre>{{ theme }}</pre>
   <ul class="flex gap-2 items-center justify-center">
     <li
       v-for="option in options"
@@ -33,12 +33,12 @@ const { theme } = storeToRefs(store)
     >
       <button
         type="button"
-        @click="store.setTheme(option.value)"
+        @click="theme = { ...theme, accent: option.value }"
       >
         <span class="sr-only">{{ option.label }}</span>
         <span
           class="block aspect-square w-5 rounded-full ring-2 ring-offset-2 ring-offset-black transition-[ring-color] duration-200"
-          :class="[bgClass[option.value], theme === option.value ? ringClass[option.value] : 'ring-transparent']"
+          :class="[bgClass[option.value], theme.accent === option.value ? ringClass[option.value] : 'ring-transparent']"
         />
       </button>
     </li>

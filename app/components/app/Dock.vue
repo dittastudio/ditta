@@ -15,8 +15,6 @@ const toggle = () => {
   navigation.value = !navigation.value
 }
 
-const headerTheme = useHeaderTheme()
-const themeClass = computed(() => (headerTheme.value === 'dark' ? 'text-white' : 'text-black'))
 const isHidden = ref(false)
 
 let lastScrollY = 0
@@ -40,7 +38,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 <template>
   <header
     class="fixed top-5 left-0 z-50 w-full transition-[opacity,translate] duration-300 ease-outCubic pointer-events-none"
-    :class="[themeClass, { '-translate-y-2 opacity-0': isHidden }]"
+    :class="[{ '-translate-y-2 opacity-0': isHidden }]"
   >
     <div class="wrapper">
       <div class="w-full xs:w-90 mx-auto text-white bg-black rounded-20 overflow-clip">

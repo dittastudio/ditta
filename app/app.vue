@@ -9,13 +9,13 @@ const globalClasses = computed(() => ({
   'is-storyblok-editor': storyblokEditor(route.query),
 }))
 
-const appStore = useAppStore()
-const { theme } = storeToRefs(appStore)
+const theme = useTheme()
+const straplineClass = computed(() => (theme.value.strapline === 'dark' ? 'text-white' : 'text-black'))
 
 useHead({
   htmlAttrs: {
     class: globalClasses,
-    style: computed(() => `--color-accent: var(--color-${theme.value})`),
+    style: computed(() => `--color-accent: var(--color-${theme.value.accent})`),
   },
 })
 
@@ -23,9 +23,6 @@ useSeoMeta({
   titleTemplate: (title) => (title ? `${title} - ditta` : 'ditta'),
   robots: 'index, follow',
 })
-
-const headerTheme = useHeaderTheme()
-const themeClass = computed(() => (headerTheme.value === 'dark' ? 'text-white' : 'text-black'))
 </script>
 
 <template>
@@ -48,7 +45,7 @@ const themeClass = computed(() => (headerTheme.value === 'dark' ? 'text-white' :
     <div
       v-if="settings.content.tagline"
       class="absolute top-0 left-0 z-10 pt-20 w-full"
-      :class="[themeClass]"
+      :class="[straplineClass]"
     >
       <p class="wrapper text-center text-16 md:text-navigation">
         {{ settings.content.tagline }}
