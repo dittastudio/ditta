@@ -66,17 +66,19 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
             <IconBurger class="w-4 h-auto ml-auto" />
           </button>
         </div>
-
+        <!-- [&:has(a:hover)_a:not(:hover)]:text-mood -->
         <div
           class="w-full h-0 overflow-clip transition-[height] duration-500 ease-inOutQuint"
           :class="{ 'h-auto starting:h-0': navigation, 'pointer-events-auto': !isHidden }"
         >
-          <nav class="w-full py-10">
-            <ul class="flex flex-col w-full text-28 text-center">
+          <nav class="w-full pt-10 pb-14 flex flex-col gap-14">
+            <ul
+              class="flex flex-col w-full text-28 text-center has-hover:[&_a:not(:hover)]:text-mood has-focus:[&_a:not(:focus)]:text-mood"
+            >
               <li>
                 <NuxtLink
                   to="/"
-                  class="block w-full"
+                  class="block w-full transition-colors duration-300 ease-outCubic focus:outline-0"
                 >
                   Index
                 </NuxtLink>
@@ -87,15 +89,18 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
               >
                 <StoryblokLink
                   :item="item.link"
-                  class="block w-full"
+                  class="block w-full transition-colors duration-300 ease-outCubic focus:outline-0"
                 >
                   {{ item.text }}
                 </StoryblokLink>
               </li>
+            </ul>
+
+            <ul class="flex flex-col items-center justify-center gap-10 w-full">
               <li>
                 <NuxtLink
                   to="mailto:hello@ditta.studio"
-                  class="block py-5"
+                  class="block"
                 >
                   <UiButton
                     text="Talk to us"
@@ -103,7 +108,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
                   />
                 </NuxtLink>
               </li>
-              <li class="pb-5">
+              <li>
                 <AppTheme />
               </li>
             </ul>
