@@ -9,7 +9,17 @@ export default defineNuxtRouteMiddleware(async (to) => {
     const first = story.value.content.blocks?.[0]
 
     if (first && 'theme' in first) {
-      theme.value = { ...theme.value, strapline: first.theme as Themes }
+      const newStrapline = first.theme as Themes
+
+      if (import.meta.server) {
+        theme.value = { ...theme.value, strapline: newStrapline }
+      } else {
+        const router = useRouter()
+        const stop = router.afterEach(() => {
+          theme.value = { ...theme.value, strapline: newStrapline }
+          stop()
+        })
+      }
     }
   } catch (error: any) {
     console.log(error)

@@ -47,7 +47,7 @@ useSeoMeta({
       class="absolute top-0 left-0 z-10 pt-20 w-full"
       :class="[straplineClass]"
     >
-      <p class="wrapper text-center text-16 md:text-navigation">
+      <p class="wrapper text-center text-16 md:text-navigation transition-colors duration-500 ease-outCubic">
         {{ settings.content.tagline }}
       </p>
     </div>

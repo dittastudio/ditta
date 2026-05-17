@@ -1,21 +1,21 @@
 <script lang="ts" setup>
 import type { Themes } from '@/types/app'
 
-type SelectableTheme = Extract<Themes, 'pink' | 'mood' | 'olive'>
+type Accent = Extract<Themes, 'pink' | 'mood' | 'olive'>
 
-const options: Array<{ value: SelectableTheme; label: string }> = [
+const options: Array<{ value: Accent; label: string }> = [
   { value: 'pink', label: 'Pink' },
-  { value: 'mood', label: 'Yellow' },
-  { value: 'olive', label: 'Green' },
+  { value: 'mood', label: 'Mood' },
+  { value: 'olive', label: 'Olive' },
 ]
 
-const bgClass: Record<SelectableTheme, string> = {
+const bgClass: Record<Accent, string> = {
   pink: 'bg-pink',
   mood: 'bg-mood',
   olive: 'bg-olive',
 }
 
-const ringClass: Record<SelectableTheme, string> = {
+const ringClass: Record<Accent, string> = {
   pink: 'ring-pink',
   mood: 'ring-mood',
   olive: 'ring-olive',
@@ -25,7 +25,6 @@ const theme = useTheme()
 </script>
 
 <template>
-  <pre>{{ theme }}</pre>
   <ul class="flex gap-2 items-center justify-center">
     <li
       v-for="option in options"
