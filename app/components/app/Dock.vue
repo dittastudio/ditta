@@ -68,51 +68,46 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
         </div>
 
         <div
-          class="grid w-full transition-[grid-template-rows] duration-300 ease-inOutCubic"
-          :class="navigation ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'"
+          class="w-full h-0 overflow-clip transition-[height] duration-500 ease-inOutQuint"
+          :class="{ 'h-auto starting:h-0': navigation, 'pointer-events-auto': !isHidden }"
         >
-          <div
-            class="w-full overflow-clip min-h-0"
-            :class="{ 'pointer-events-auto': !isHidden }"
-          >
-            <nav class="w-full py-10">
-              <ul class="flex flex-col w-full text-28 text-center">
-                <li>
-                  <NuxtLink
-                    to="/"
-                    class="block w-full"
-                  >
-                    Index
-                  </NuxtLink>
-                </li>
-                <li
-                  v-for="item in items"
-                  :key="item._uid"
+          <nav class="w-full py-10">
+            <ul class="flex flex-col w-full text-28 text-center">
+              <li>
+                <NuxtLink
+                  to="/"
+                  class="block w-full"
                 >
-                  <StoryblokLink
-                    :item="item.link"
-                    class="block w-full"
-                  >
-                    {{ item.text }}
-                  </StoryblokLink>
-                </li>
-                <li>
-                  <NuxtLink
-                    to="mailto:hello@ditta.studio"
-                    class="block py-5"
-                  >
-                    <UiButton
-                      text="Talk to us"
-                      size="medium"
-                    />
-                  </NuxtLink>
-                </li>
-                <li>
-                  <AppTheme />
-                </li>
-              </ul>
-            </nav>
-          </div>
+                  Index
+                </NuxtLink>
+              </li>
+              <li
+                v-for="item in items"
+                :key="item._uid"
+              >
+                <StoryblokLink
+                  :item="item.link"
+                  class="block w-full"
+                >
+                  {{ item.text }}
+                </StoryblokLink>
+              </li>
+              <li>
+                <NuxtLink
+                  to="mailto:hello@ditta.studio"
+                  class="block py-5"
+                >
+                  <UiButton
+                    text="Talk to us"
+                    size="medium"
+                  />
+                </NuxtLink>
+              </li>
+              <li class="pb-5">
+                <AppTheme />
+              </li>
+            </ul>
+          </nav>
         </div>
       </div>
     </div>
