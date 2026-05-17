@@ -15,10 +15,10 @@ const bgClass: Record<Accent, string> = {
   olive: 'bg-olive',
 }
 
-const ringClass: Record<Accent, string> = {
-  pink: 'ring-pink',
-  mood: 'ring-mood',
-  olive: 'ring-olive',
+const outlineClass: Record<Accent, string> = {
+  pink: 'outline-pink',
+  mood: 'outline-mood',
+  olive: 'outline-olive',
 }
 
 const theme = useTheme()
@@ -36,8 +36,11 @@ const theme = useTheme()
       >
         <span class="sr-only">{{ option.label }}</span>
         <span
-          class="block aspect-square w-5 rounded-full ring-2 ring-offset-2 ring-offset-black transition-[ring-color] duration-200"
-          :class="[bgClass[option.value], theme.accent === option.value ? ringClass[option.value] : 'ring-transparent']"
+          class="block size-5 rounded-full outline-2 outline-offset-2 transition-colors duration-300 ease-outCubic"
+          :class="[
+            bgClass[option.value],
+            theme.accent === option.value ? outlineClass[option.value] : 'outline-transparent',
+          ]"
         />
       </button>
     </li>
