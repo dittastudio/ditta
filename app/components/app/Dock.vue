@@ -36,11 +36,11 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 </script>
 
 <template>
-  <header
-    class="fixed top-5 left-0 z-50 w-full transition-[opacity,translate] duration-300 ease-outCubic pointer-events-none"
-    :class="[{ '-translate-y-2 opacity-0': isHidden }]"
-  >
-    <div class="wrapper">
+  <header class="fixed top-0 left-0 z-50 size-full pt-5 pointer-events-none">
+    <div
+      class="wrapper transition-[opacity,translate] duration-300 ease-outCubic"
+      :class="[{ '-translate-y-2 opacity-0': isHidden }]"
+    >
       <div class="w-full xs:w-90 mx-auto text-white bg-black rounded-20 overflow-clip">
         <div
           class="grid grid-cols-3"
