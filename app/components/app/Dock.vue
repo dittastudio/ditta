@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { onClickOutside } from '@vueuse/core'
 import type { ElementLink } from '#storyblok-components'
 import IconLogo from '@/assets/icons/ditta.svg'
 import IconBurger from '@/assets/icons/burger.svg'
@@ -10,6 +11,11 @@ interface Props {
 const { items } = defineProps<Props>()
 
 const navigation = useNavigation()
+const dock = useTemplateRef('dock')
+
+onClickOutside(dock, () => {
+  navigation.value = false
+})
 
 const toggle = () => {
   navigation.value = !navigation.value
@@ -41,7 +47,10 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
       class="wrapper transition-[opacity,translate] duration-300 ease-outCubic"
       :class="[{ '-translate-y-2 opacity-0': isHidden }]"
     >
-      <div class="w-full xs:w-90 mx-auto text-white bg-black rounded-20 overflow-clip">
+      <div
+        ref="dock"
+        class="w-full xs:w-90 mx-auto text-white bg-black rounded-20 overflow-clip"
+      >
         <div
           class="grid grid-cols-3"
           :class="{ 'pointer-events-auto': !isHidden }"
@@ -66,7 +75,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
             <IconBurger class="w-4 h-auto ml-auto" />
           </button>
         </div>
-        <!-- [&:has(a:hover)_a:not(:hover)]:text-mood -->
+
         <div
           class="w-full h-0 overflow-clip transition-[height] duration-500 ease-inOutQuint"
           :class="{ 'h-auto starting:h-0': navigation, 'pointer-events-auto': !isHidden }"
