@@ -15,9 +15,11 @@ export const useTheme = () => {
 
   const theme = useState<Theme>('theme', () => themeCookie.value)
 
-  watch(theme, (value) => {
-    themeCookie.value = value
-  })
+  if (import.meta.client) {
+    watch(theme, (value) => {
+      themeCookie.value = value
+    })
+  }
 
   return theme
 }
