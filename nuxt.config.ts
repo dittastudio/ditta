@@ -68,6 +68,9 @@ export default defineNuxtConfig({
       prerender: process.env.NUXT_PRERENDER === 'true',
       swr: 300,
     },
+    '/api/**': {
+      swr: false,
+    },
   },
   nitro: {
     prerender: {

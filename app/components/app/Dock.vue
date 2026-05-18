@@ -10,7 +10,7 @@ interface Props {
 
 const { items } = defineProps<Props>()
 
-const { data: weather, status: weatherStatus } = useLazyFetch('/api/weather')
+const { data: weather, status: weatherStatus } = useLazyFetch('/api/weather', { server: false })
 const navigation = useNavigation()
 const dock = useTemplateRef('dock')
 
