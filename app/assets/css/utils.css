@@ -21,3 +21,21 @@
     }
   }
 }
+
+@utility squircle-20 {
+  @supports (corner-shape: squircle) {
+    && {
+      corner-shape: squircle;
+      border-radius: 20px;
+    }
+  }
+}
+
+@utility corner-shape-inherit {
+  @supports (corner-shape: squircle) {
+    && {
+      corner-shape: inherit;
+      border-radius: inherit;
+    }
+  }
+}

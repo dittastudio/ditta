@@ -10,13 +10,19 @@ interface Props {
 const { story } = defineProps<Props>()
 
 const services = await useDatasource('services', story.content.services)
+
+const scrollTheme = useBlockTheme()
+
+onUnmounted(() => {
+  scrollTheme.value = null
+})
 </script>
 
 <template>
-  <section
+  <UiTheme
     v-for="block in story.content.blocks"
     :key="block._uid"
-    :class="['theme' in block ? themeClasses[block.theme as Themes] : '']"
+    :theme="'theme' in block ? (block.theme as Themes) : undefined"
   >
     <BlockHeroProject
       v-if="block.component === 'block_hero_project'"
@@ -70,5 +76,5 @@ const services = await useDatasource('services', story.content.services)
       v-else-if="block.component === 'block_text'"
       :block="block"
     />
-  </section>
+  </UiTheme>
 </template>

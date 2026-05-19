@@ -37,11 +37,6 @@ useSeoMeta({
       },
     }"
   >
-    <AppDock
-      :tagline="settings.content.tagline"
-      :items="settings.content.navigation"
-    />
-
     <div
       v-if="settings.content.tagline"
       class="absolute top-0 left-0 z-10 pt-20 w-full"
@@ -51,6 +46,8 @@ useSeoMeta({
         {{ settings.content.tagline }}
       </p>
     </div>
+
+    <AppDock :items="settings.content.navigation" />
 
     <NuxtPage />
 

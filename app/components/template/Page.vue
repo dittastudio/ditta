@@ -8,14 +8,20 @@ interface Props {
 }
 
 const { story } = defineProps<Props>()
+
+const scrollTheme = useBlockTheme()
+
+onUnmounted(() => {
+  scrollTheme.value = null
+})
 </script>
 
 <template>
-  <section
+  <UiTheme
     v-for="block in story.content.blocks"
     :key="block._uid"
     :id="block?.id"
-    :class="['theme' in block ? themeClasses[block.theme as Themes] : '']"
+    :theme="'theme' in block ? (block.theme as Themes) : undefined"
   >
     <BlockCta
       v-if="block.component === 'block_cta'"
@@ -51,5 +57,5 @@ const { story } = defineProps<Props>()
       v-else-if="block.component === 'block_team'"
       :block="block"
     />
-  </section>
+  </UiTheme>
 </template>

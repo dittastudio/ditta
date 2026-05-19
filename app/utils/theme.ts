@@ -6,6 +6,8 @@ const themeClasses: Record<Themes, string> = {
   white: 'bg-white text-black',
   pink: 'bg-pink text-black',
   beige: 'bg-beige text-black',
+  mood: 'bg-mood text-black',
+  olive: 'bg-olive text-black',
   accent: 'bg-accent text-black',
 }
 
@@ -15,6 +17,8 @@ const themeTextClasses: Record<Themes, string> = {
   white: 'text-black',
   pink: 'text-black',
   beige: 'text-black',
+  mood: 'text-black',
+  olive: 'text-black',
   accent: 'text-black',
 }
 
@@ -24,6 +28,8 @@ const themeBgClasses: Record<Themes, string> = {
   white: 'bg-white',
   pink: 'bg-pink',
   beige: 'bg-beige',
+  mood: 'bg-mood',
+  olive: 'bg-olive',
   accent: 'bg-accent',
 }
 
