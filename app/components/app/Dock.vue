@@ -98,14 +98,14 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
       class="wrapper pt-5"
     >
       <div
-        class="w-full max-w-90 mx-auto rounded-20 squircle-20 transition-[backdrop-filter,scale] duration-300 ease-out"
+        class="w-full max-w-90 mx-auto rounded-20 corner-shape-squircle transition-[backdrop-filter,scale] duration-300 ease-out"
         :class="{
           'backdrop-blur-none scale-95': isHidden,
           'backdrop-blur-md scale-100': !isHidden,
         }"
       >
         <div
-          class="shadow-2xl corner-shape-inherit transition-opacity duration-300 ease-out"
+          class="shadow-2xl rounded-[inherit] corner-shape-inherit transition-opacity duration-300 ease-out"
           :class="{
             'opacity-0': isHidden,
             'opacity-100': !isHidden,
@@ -113,11 +113,11 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
         >
           <div
             ref="dock"
-            class="w-full corner-shape-inherit transition-colors duration-300 ease-out"
+            class="w-full rounded-[inherit] corner-shape-inherit transition-colors duration-300 ease-out"
             :class="dockClasses[navigation ? 'navigationOpen' : activeTheme]"
           >
             <div
-              class="grid grid-cols-3 corner-shape-inherit"
+              class="grid grid-cols-3 rounded-[inherit] corner-shape-inherit"
               :class="{ 'pointer-events-auto': !isHidden }"
             >
               <p class="flex items-center gap-1.5 pl-5">
@@ -150,19 +150,19 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
               </button>
             </div>
 
-            <div
-              class="w-full h-0 overflow-clip transition-[height] duration-300 ease-inOutQuint"
+            <UiExpandable
+              :is-open="navigation"
+              transition-classes="duration-500 ease-spring-1"
               :class="{
-                'h-auto starting:h-0': navigation,
                 'pointer-events-auto': !isHidden,
               }"
             >
               <nav
                 data-lenis-prevent
-                class="w-full pt-10 pb-14 flex flex-col gap-14 transition-opacity scroll-y max-h-[calc(100svh-var(--dock-height)-20px)]"
+                class="w-full pt-10 pb-14 flex flex-col gap-14 transition-opacity scroll-y max-h-[calc(100svh-var(--dock-height)-20px)] text-grey"
                 :class="{
-                  'opacity-0 duration-150 ease-out': !navigation,
-                  'opacity-100 duration-300 ease-out': navigation,
+                  'opacity-0 duration-100 ease-out': !navigation,
+                  'opacity-100 duration-500 ease-out delay-150': navigation,
                 }"
                 @click.capture="handleNavClick"
               >
@@ -210,7 +210,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
                   </li>
                 </ul>
               </nav>
-            </div>
+            </UiExpandable>
           </div>
         </div>
       </div>
