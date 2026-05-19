@@ -25,6 +25,7 @@ const dockClasses: Record<Themes | 'navigationOpen', string> = {
 }
 
 const lenis = useLenis()
+const route = useRoute()
 const navigation = useNavigation()
 const scrollTheme = useBlockTheme()
 const activeTheme = computed(() => scrollTheme.value ?? 'dark')
@@ -45,6 +46,10 @@ const handleNavClick = (e: MouseEvent) => {
   const anchor = (e.target as HTMLElement).closest('a')
   const hash = anchor?.hash
   if (!hash) return
+  if (anchor.pathname !== route.path) {
+    navigation.value = false
+    return
+  }
   e.preventDefault()
   pendingAnchor.value = hash
   navigation.value = false
