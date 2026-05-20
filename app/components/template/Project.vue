@@ -10,12 +10,6 @@ interface Props {
 const { story } = defineProps<Props>()
 
 const services = await useDatasource('services', story.content.services)
-
-const scrollTheme = useBlockTheme()
-
-onUnmounted(() => {
-  scrollTheme.value = null
-})
 </script>
 
 <template>

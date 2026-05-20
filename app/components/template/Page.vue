@@ -8,12 +8,6 @@ interface Props {
 }
 
 const { story } = defineProps<Props>()
-
-const scrollTheme = useBlockTheme()
-
-onUnmounted(() => {
-  scrollTheme.value = null
-})
 </script>
 
 <template>
