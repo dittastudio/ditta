@@ -14,8 +14,8 @@ const { items } = defineProps<Props>()
 const dock = useTemplateRef('dock')
 const wrapper = useTemplateRef('wrapper')
 
-const blockTheme = useBlockTheme()
-const activeTheme = computed(() => blockTheme.value || 'dark')
+const appStore = useAppStore()
+
 const dockClasses: Record<Themes | 'navigationOpen', string> = {
   navigationOpen: 'bg-black text-grey outline outline-1 outline-white/15',
   dark: 'bg-black/50 text-grey outline outline-1 outline-white/15',
@@ -92,7 +92,7 @@ defineExpose({
           <div
             ref="dock"
             class="w-full rounded-[inherit] corner-shape-inherit transition-colors duration-300 ease-out"
-            :class="dockClasses[navigation ? 'navigationOpen' : activeTheme]"
+            :class="dockClasses[navigation ? 'navigationOpen' : appStore.getTheme]"
           >
             <div
               class="grid grid-cols-3 rounded-[inherit] corner-shape-inherit"
@@ -183,7 +183,7 @@ defineExpose({
                   </li>
 
                   <li>
-                    <AppTheme />
+                    <AppAccent />
                   </li>
                 </ul>
               </nav>

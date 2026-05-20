@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import type { Themes } from '@/types/app'
-
-type Accent = Extract<Themes, 'pink' | 'mood' | 'olive'>
+import type { Accent } from '@/stores/app'
 
 const options: Array<{ value: Accent; label: string }> = [
   { value: 'pink', label: 'Pink' },
@@ -21,7 +19,7 @@ const outlineClass: Record<Accent, string> = {
   olive: 'outline-olive',
 }
 
-const theme = useTheme()
+const appStore = useAppStore()
 </script>
 
 <template>
@@ -41,14 +39,14 @@ const theme = useTheme()
             name="accent"
             class="sr-only"
             :value="option.value"
-            v-model="theme.accent"
+            v-model="appStore.accent"
           />
 
           <span
             class="block size-5 rounded-full outline-2 outline-offset-2 transition-colors duration-300 ease-outCubic"
             :class="[
               bgClass[option.value],
-              theme.accent === option.value ? outlineClass[option.value] : 'outline-transparent',
+              appStore.accent === option.value ? outlineClass[option.value] : 'outline-transparent',
             ]"
           />
         </label>

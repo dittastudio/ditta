@@ -5,6 +5,8 @@ import { breakpoints } from './app/utils/breakpoints'
 
 export default defineNuxtConfig({
   modules: [
+    '@pinia/nuxt',
+    'pinia-plugin-persistedstate/nuxt',
     '@nuxtjs/seo',
     [
       '@nuxtjs/plausible',

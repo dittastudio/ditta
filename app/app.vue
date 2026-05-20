@@ -10,13 +10,13 @@ const globalClasses = computed(() => ({
   'is-storyblok-editor': storyblokEditor(route.query),
 }))
 
-const theme = useTheme()
-const straplineClass = computed(() => (theme.value.strapline === 'dark' ? 'text-white' : 'text-black'))
+const appStore = useAppStore()
+const themeClass = computed(() => (appStore.getTheme === 'dark' ? 'text-white' : 'text-black'))
 
 useHead({
   htmlAttrs: {
     class: globalClasses,
-    style: computed(() => `--color-accent: var(--color-${theme.value.accent})`),
+    style: computed(() => `--color-accent: var(--color-${appStore.getAccent})`),
   },
 })
 
@@ -34,13 +34,12 @@ router.afterEach(() => {
 
 <template>
   <VueLenis
-    ref="lenny"
     root
     :options="{
       duration: 0.75,
       autoRaf: true,
       anchors: {
-        duration: 1,
+        duration: 1.5,
         offset: 1,
       },
     }"
@@ -48,7 +47,7 @@ router.afterEach(() => {
     <div
       v-if="settings.content.tagline"
       class="absolute top-0 left-0 z-10 pt-20 w-full"
-      :class="[straplineClass]"
+      :class="[themeClass]"
     >
       <p class="wrapper text-center text-16 md:text-navigation transition-colors duration-500 ease-outCubic">
         {{ settings.content.tagline }}
