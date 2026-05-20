@@ -6,24 +6,11 @@ type Theme = {
 }
 
 export const useTheme = () => {
-  const themeCookie = useCookie<Theme>('theme', {
+  return useCookie<Theme>('theme', {
     default: () => ({
       accent: 'pink',
       strapline: 'dark',
     }),
+    watch: true,
   })
-
-  const theme = useState<Theme>('theme', () => themeCookie.value)
-
-  if (import.meta.client) {
-    watch(
-      theme,
-      (value) => {
-        themeCookie.value = value
-      },
-      { deep: true },
-    )
-  }
-
-  return theme
 }

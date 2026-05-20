@@ -17,7 +17,6 @@ const dock = useTemplateRef('dock')
 const wrapper = useTemplateRef('wrapper')
 
 // Theme
-
 const blockTheme = useBlockTheme()
 const activeTheme = computed(() => blockTheme.value || 'dark')
 const dockClasses: Record<Themes | 'navigationOpen', string> = {
@@ -39,11 +38,18 @@ const { data: weather } = useLazyFetch('/api/weather', { server: false })
 const navigation = useNavigation()
 const lenis = useLenis()
 const route = useRoute()
-const pendingAnchor = ref<string | null>(null)
-const pendingScrollTop = ref(false)
+const pendingScroll = ref<string | number | null>(null)
 
 const toggle = () => {
   navigation.value = !navigation.value
+}
+
+const scrollTo = (target: string | number) => {
+  if (navigation.value) {
+    pendingScroll.value = target
+  } else {
+    lenis.value?.scrollTo(target, { duration: 1 })
+  }
 }
 
 const handleNavClick = (e: MouseEvent) => {
@@ -52,10 +58,10 @@ const handleNavClick = (e: MouseEvent) => {
 
   if (hash && anchor.pathname === route.path) {
     e.preventDefault()
-    pendingAnchor.value = hash
+    scrollTo(hash)
   } else if (!hash && route.path === '/' && anchor?.pathname === '/') {
     e.preventDefault()
-    pendingScrollTop.value = true
+    scrollTo(0)
   }
 
   navigation.value = false
@@ -70,16 +76,11 @@ watch(navigation, async (isOpen) => {
     lenis.value?.stop()
   } else {
     lenis.value?.start()
-    if (pendingAnchor.value) {
-      const target = pendingAnchor.value
-      pendingAnchor.value = null
+    if (pendingScroll.value !== null) {
+      const target = pendingScroll.value
+      pendingScroll.value = null
       await nextTick()
       lenis.value?.scrollTo(target, { duration: 1 })
-    }
-    if (pendingScrollTop.value) {
-      pendingScrollTop.value = false
-      await nextTick()
-      lenis.value?.scrollTo(0, { duration: 1 })
     }
   }
 })
@@ -151,6 +152,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
               <NuxtLink
                 to="/"
                 class="flex flex-col items-center justify-center"
+                @click="handleNavClick"
               >
                 <IconLogo class="w-auto h-4" />
                 <span class="sr-only">ditta</span>
