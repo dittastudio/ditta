@@ -9,14 +9,14 @@ interface Props {
 
 const { tag = 'section', theme, id } = defineProps<Props>()
 
-const scrollTheme = useBlockTheme()
+const blockTheme = useBlockTheme()
 const el = useTemplateRef<HTMLElement>('el')
 
 onMounted(() => {
   if (!theme || !el.value) return
 
-  if (scrollTheme.value === null) {
-    scrollTheme.value = theme
+  if (blockTheme.value === null) {
+    blockTheme.value = theme
   }
 
   const height = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dock-height'))
@@ -27,7 +27,7 @@ onMounted(() => {
 
   const observer = new IntersectionObserver(
     ([entry]) => {
-      if (entry?.isIntersecting) scrollTheme.value = theme
+      if (entry?.isIntersecting) blockTheme.value = theme
     },
     { rootMargin, threshold: 0 },
   )
