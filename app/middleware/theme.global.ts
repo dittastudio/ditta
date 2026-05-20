@@ -3,7 +3,7 @@ import type { Themes } from '@/types/app'
 
 export default defineNuxtRouteMiddleware(async (to) => {
   const theme = useTheme()
-  const scrollTheme = useBlockTheme()
+  const blockTheme = useBlockTheme()
 
   try {
     const story = await useStory<Page | Project>(to.path, {}, {}, {}, to.query)
@@ -14,7 +14,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
       if (import.meta.server) {
         theme.value = { ...theme.value, strapline: firstTheme }
-        scrollTheme.value = firstTheme
+        blockTheme.value = firstTheme
       } else {
         const router = useRouter()
         const stop = router.afterEach(() => {

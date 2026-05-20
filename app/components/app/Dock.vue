@@ -17,8 +17,9 @@ const dock = useTemplateRef('dock')
 const wrapper = useTemplateRef('wrapper')
 
 // Theme
-const scrollTheme = useBlockTheme()
-const activeTheme = computed(() => scrollTheme.value ?? 'dark')
+
+const blockTheme = useBlockTheme()
+const activeTheme = computed(() => blockTheme.value || 'dark')
 const dockClasses: Record<Themes | 'navigationOpen', string> = {
   navigationOpen: 'bg-black text-grey outline outline-1 outline-white/15',
   dark: 'bg-black/50 text-grey outline outline-1 outline-white/15',
