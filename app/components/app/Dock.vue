@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { onClickOutside } from '@vueuse/core'
-import { useLenis } from 'lenis/vue'
 import type { ElementLink } from '#storyblok-components'
 import type { Themes } from '@/types/app'
 import IconLogo from '@/assets/icons/ditta.svg'
@@ -12,11 +11,9 @@ interface Props {
 
 const { items } = defineProps<Props>()
 
-// Template refs
 const dock = useTemplateRef('dock')
 const wrapper = useTemplateRef('wrapper')
 
-// Theme
 const blockTheme = useBlockTheme()
 const activeTheme = computed(() => blockTheme.value || 'dark')
 const dockClasses: Record<Themes | 'navigationOpen', string> = {
@@ -31,39 +28,14 @@ const dockClasses: Record<Themes | 'navigationOpen', string> = {
   accent: 'bg-accent/50 text-black outline outline-1 outline-black/5',
 }
 
-// Weather
 const { data: weather } = useLazyFetch('/api/weather', { server: false })
-
-// Navigation
 const navigation = useNavigation()
-const lenis = useLenis()
-const route = useRoute()
-const pendingScroll = ref<string | number | null>(null)
 
 const toggle = () => {
   navigation.value = !navigation.value
 }
 
-const scrollTo = (target: string | number) => {
-  if (navigation.value) {
-    pendingScroll.value = target
-  } else {
-    lenis.value?.scrollTo(target, { duration: 1 })
-  }
-}
-
-const handleNavClick = (e: MouseEvent) => {
-  const anchor = (e.target as HTMLElement).closest('a')
-  const hash = anchor?.hash
-
-  if (hash && anchor.pathname === route.path) {
-    e.preventDefault()
-    scrollTo(hash)
-  } else if (!hash && route.path === '/' && anchor?.pathname === '/') {
-    e.preventDefault()
-    scrollTo(0)
-  }
-
+const close = () => {
   navigation.value = false
 }
 
@@ -71,21 +43,6 @@ onClickOutside(dock, () => {
   navigation.value = false
 })
 
-watch(navigation, async (isOpen) => {
-  if (isOpen) {
-    lenis.value?.stop()
-  } else {
-    lenis.value?.start()
-    if (pendingScroll.value !== null) {
-      const target = pendingScroll.value
-      pendingScroll.value = null
-      await nextTick()
-      lenis.value?.scrollTo(target, { duration: 1 })
-    }
-  }
-})
-
-// Scroll
 let lastScrollY = 0
 const isHidden = ref(false)
 
@@ -93,19 +50,23 @@ const onScroll = () => {
   const y = window.scrollY
   const isDown = y >= 1 && y > lastScrollY
 
-  if (navigation.value && isDown) navigation.value = false
-  if (isHidden.value !== isDown) isHidden.value = isDown
+  if (!navigation.value) {
+    if (isHidden.value !== isDown) isHidden.value = isDown
+  }
 
   lastScrollY = y
 }
 
-// Lifecycle
 onMounted(() => {
   if (wrapper.value) document.documentElement.style.setProperty('--dock-height', `${wrapper.value.offsetHeight}px`)
   window.addEventListener('scroll', onScroll, { passive: true })
 })
 
 onUnmounted(() => window.removeEventListener('scroll', onScroll))
+
+defineExpose({
+  close,
+})
 </script>
 
 <template>
@@ -152,7 +113,6 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
               <NuxtLink
                 to="/"
                 class="flex flex-col items-center justify-center"
-                @click="handleNavClick"
               >
                 <IconLogo class="w-auto h-4" />
                 <span class="sr-only">ditta</span>
@@ -182,7 +142,6 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
                   'opacity-0 duration-100 ease-out': !navigation,
                   'opacity-100 duration-500 ease-out delay-150': navigation,
                 }"
-                @click.capture="handleNavClick"
               >
                 <ul
                   class="flex flex-col w-full text-28 text-center has-hover:[&_a:not(:hover)]:text-current/30 has-focus:[&_a:not(:focus)]:text-current/30"

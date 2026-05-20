@@ -4,6 +4,7 @@ import { VueLenis } from 'lenis/vue'
 
 const settings = await useStory<Settings>('/settings')
 const route = useRoute()
+const router = useRouter()
 
 const globalClasses = computed(() => ({
   'is-storyblok-editor': storyblokEditor(route.query),
@@ -23,10 +24,17 @@ useSeoMeta({
   titleTemplate: (title) => (title ? `${title} - ditta` : 'ditta'),
   robots: 'index, follow',
 })
+
+const dock = useTemplateRef('dock')
+
+router.afterEach(() => {
+  dock.value?.close()
+})
 </script>
 
 <template>
   <VueLenis
+    ref="lenny"
     root
     :options="{
       duration: 0.75,
@@ -47,7 +55,10 @@ useSeoMeta({
       </p>
     </div>
 
-    <AppDock :items="settings.content.navigation" />
+    <AppDock
+      ref="dock"
+      :items="settings.content.navigation"
+    />
 
     <NuxtPage />
 
