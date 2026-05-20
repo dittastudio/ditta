@@ -14,6 +14,7 @@ const { block } = defineProps<Props>()
 const projects = computed(() => block.projects?.filter((project) => typeof project !== 'string') || [])
 
 const projectRefs = useTemplateRef('project')
+const overlayRefs = useTemplateRef('overlay')
 
 const opacityStep = 0.1
 
@@ -52,15 +53,16 @@ onMounted(async () => {
         )
 
       const subsequent = projectRefs.value?.slice(index + 1) ?? []
+      const overlayEl = overlayRefs.value?.[index]
       subsequent.forEach((triggerEl, stepsBelow) => {
         const fromOpacity = Math.min(1, stepsBelow * opacityStep)
         const toOpacity = Math.min(1, (stepsBelow + 1) * opacityStep)
 
         gsap.fromTo(
-          el,
-          { '--overlay-opacity': fromOpacity },
+          overlayEl,
+          { opacity: fromOpacity },
           {
-            '--overlay-opacity': toOpacity,
+            opacity: toOpacity,
             ease: 'power2.in',
             immediateRender: false,
             scrollTrigger: {
@@ -125,7 +127,7 @@ onUnmounted(() => {
           v-for="(project, index) in projects"
           :key="`${project.uuid}-${index}`"
           ref="project"
-          class="project__wrapper sticky top-0 h-screen w-full flex flex-col items-center py-10 pointer-events-none"
+          class="project__wrapper sticky top-0 h-screen w-full flex flex-col items-center py-10 pointer-events-none will-change-transform"
         >
           <div class="flex flex-col justify-center max-w-full h-full aspect-3/4 md:aspect-video">
             <NuxtLink
@@ -136,6 +138,12 @@ onUnmounted(() => {
                 :title="project.content.title"
                 class="aspect-3/4 md:aspect-video"
               >
+                <div
+                  ref="overlay"
+                  aria-hidden="true"
+                  class="absolute inset-0 z-1 bg-black opacity-0 pointer-events-none rounded-20 squircle-40 transform-gpu"
+                />
+
                 <picture
                   v-if="
                     project.content.media?.filename && storyblokAssetType(project.content.media.filename) === 'image'

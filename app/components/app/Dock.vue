@@ -12,6 +12,13 @@ interface Props {
 
 const { items } = defineProps<Props>()
 
+// Template refs
+const dock = useTemplateRef('dock')
+const wrapper = useTemplateRef('wrapper')
+
+// Theme
+const scrollTheme = useBlockTheme()
+const activeTheme = computed(() => scrollTheme.value ?? 'dark')
 const dockClasses: Record<Themes | 'navigationOpen', string> = {
   navigationOpen: 'bg-black text-grey outline outline-1 outline-white/15',
   dark: 'bg-black/50 text-grey outline outline-1 outline-white/15',
@@ -24,19 +31,15 @@ const dockClasses: Record<Themes | 'navigationOpen', string> = {
   accent: 'bg-accent/50 text-black outline outline-1 outline-black/5',
 }
 
+// Weather
+const { data: weather } = useLazyFetch('/api/weather', { server: false })
+
+// Navigation
+const navigation = useNavigation()
 const lenis = useLenis()
 const route = useRoute()
-const navigation = useNavigation()
-const scrollTheme = useBlockTheme()
-const activeTheme = computed(() => scrollTheme.value ?? 'dark')
-
-const dock = useTemplateRef('dock')
-const wrapper = useTemplateRef('wrapper')
-
-const { data: weather } = useLazyFetch('/api/weather', { server: false })
 const pendingAnchor = ref<string | null>(null)
-const isHidden = ref(false)
-let lastScrollY = 0
+const pendingScrollTop = ref(false)
 
 const toggle = () => {
   navigation.value = !navigation.value
@@ -45,24 +48,16 @@ const toggle = () => {
 const handleNavClick = (e: MouseEvent) => {
   const anchor = (e.target as HTMLElement).closest('a')
   const hash = anchor?.hash
-  if (!hash) return
-  if (anchor.pathname !== route.path) {
-    navigation.value = false
-    return
+
+  if (hash && anchor.pathname === route.path) {
+    e.preventDefault()
+    pendingAnchor.value = hash
+  } else if (!hash && route.path === '/' && anchor?.pathname === '/') {
+    e.preventDefault()
+    pendingScrollTop.value = true
   }
-  e.preventDefault()
-  pendingAnchor.value = hash
+
   navigation.value = false
-}
-
-const onScroll = () => {
-  const y = window.scrollY
-  const isDown = y >= 1 && y > lastScrollY
-
-  if (navigation.value && isDown) navigation.value = false
-  if (isHidden.value !== isDown) isHidden.value = isDown
-
-  lastScrollY = y
 }
 
 onClickOutside(dock, () => {
@@ -80,9 +75,29 @@ watch(navigation, async (isOpen) => {
       await nextTick()
       lenis.value?.scrollTo(target, { duration: 1 })
     }
+    if (pendingScrollTop.value) {
+      pendingScrollTop.value = false
+      await nextTick()
+      lenis.value?.scrollTo(0, { duration: 1 })
+    }
   }
 })
 
+// Scroll
+let lastScrollY = 0
+const isHidden = ref(false)
+
+const onScroll = () => {
+  const y = window.scrollY
+  const isDown = y >= 1 && y > lastScrollY
+
+  if (navigation.value && isDown) navigation.value = false
+  if (isHidden.value !== isDown) isHidden.value = isDown
+
+  lastScrollY = y
+}
+
+// Lifecycle
 onMounted(() => {
   if (wrapper.value) document.documentElement.style.setProperty('--dock-height', `${wrapper.value.offsetHeight}px`)
   window.addEventListener('scroll', onScroll, { passive: true })

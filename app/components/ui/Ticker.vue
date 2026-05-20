@@ -24,6 +24,7 @@ let documentTop = Number.POSITIVE_INFINITY
 
 let viewportHeight = 0
 let containerWidth = 0
+let containerHeight = 0
 let lastIsScrollingUp: boolean | null = null
 
 const refreshDimensions = () => {
@@ -33,6 +34,7 @@ const refreshDimensions = () => {
 
   viewportHeight = window.innerHeight
   containerWidth = container.value.clientWidth
+  containerHeight = container.value.offsetHeight
 }
 
 const setPlayState = (isScrollingUp: boolean) => {
@@ -86,17 +88,11 @@ useLenis((lenis) => {
     lastIsScrollingUp = isScrollingUp
   }
 
-  const rect = container.value.getBoundingClientRect()
-  const naturalTop = rect.top + lenis.scroll
-  if (naturalTop < documentTop) {
-    documentTop = naturalTop
-  }
-
-  if (rect.bottom < 0 || rect.top > viewportHeight) {
+  if (lenis.scroll + viewportHeight < documentTop) {
     return
   }
 
-  const range = viewportHeight + rect.height
+  const range = viewportHeight + containerHeight
   // Lower-clamped only — progress is allowed past 1 so momentum continues during sticky pin.
   const progress = Math.max(0, (lenis.scroll + viewportHeight - documentTop) / range)
   const offset = containerWidth * (progress / 3)
