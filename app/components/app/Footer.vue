@@ -11,9 +11,11 @@ const email = 'hello@ditta.studio'
 </script>
 
 <template>
-  <footer
+  <UiTheme
+    tag="footer"
+    theme="dark"
     id="contact"
-    class="bg-black text-grey min-h-screen flex"
+    class="min-h-screen flex"
   >
     <div class="wrapper w-full pt-25 md:pt-(--app-gutter-outer) pb-10 flex flex-col justify-between gap-6">
       <div
@@ -39,7 +41,7 @@ const email = 'hello@ditta.studio'
         <UiTextMorph :text="email" />
       </a>
     </div>
-  </footer>
+  </UiTheme>
 </template>
 
 <style scoped>

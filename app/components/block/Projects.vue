@@ -13,9 +13,12 @@ const { block } = defineProps<Props>()
 
 const projects = computed(() => block.projects?.filter((project) => typeof project !== 'string') || [])
 
+const tickerWrapper = useTemplateRef('tickerWrapper')
 const projectRefs = useTemplateRef('project')
 const overlayRefs = useTemplateRef('overlay')
-const opacityStep = 0.1
+const opacityStep = 0.15
+
+const scrollTriggers: ScrollTrigger[] = []
 
 onMounted(async () => {
   await nextTick()
@@ -25,11 +28,11 @@ onMounted(async () => {
     const rotateFrom = sign * gsap.utils.random(1, 4)
     const rotateTo = -sign * gsap.utils.random(1, 4)
 
-    gsap
+    const tl = gsap
       .timeline({
         scrollTrigger: {
           trigger: el,
-          start: 'top bottom',
+          start: '25% bottom',
           end: 'center center',
           scrub: true,
         },
@@ -41,41 +44,54 @@ onMounted(async () => {
           rotate: rotateFrom,
         },
         {
-          ease: 'power2.in',
+          ease: 'power1.in',
           scale: 1,
           rotate: rotateTo,
         },
+      )
+
+    if (tl.scrollTrigger) scrollTriggers.push(tl.scrollTrigger)
+
+    if (index === 0) return
+
+    const overlayTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: el,
+        start: 'top bottom',
+        end: 'center center',
+        scrub: true,
+      },
+    })
+
+    overlayRefs.value!.slice(0, index).forEach((overlayEl, i) => {
+      const opcaityFrom = Math.min(1, (index - i - 1) * opacityStep)
+      const opacityTo = Math.min(1, (index - i) * opacityStep)
+
+      overlayTl.fromTo(
+        overlayEl,
+        {
+          opacity: opcaityFrom,
+        },
+        {
+          opacity: opacityTo,
+          ease: 'none',
+          immediateRender: false,
+        },
         0,
       )
-
-    const subsequent = projectRefs.value?.slice(index + 1) ?? []
-    const overlayEl = overlayRefs.value?.[index]
-
-    if (!overlayEl) return
-
-    subsequent.forEach((triggerEl, stepsBelow) => {
-      const fromOpacity = Math.min(1, stepsBelow * opacityStep)
-      const toOpacity = Math.min(1, (stepsBelow + 1) * opacityStep)
-
-      gsap.fromTo(
-        overlayEl,
-        { opacity: fromOpacity },
-        {
-          opacity: toOpacity,
-          ease: 'power2.in',
-          immediateRender: false,
-          scrollTrigger: {
-            trigger: triggerEl,
-            start: 'top bottom',
-            end: 'center center',
-            scrub: true,
-          },
-        },
-      )
     })
+
+    if (overlayTl.scrollTrigger) scrollTriggers.push(overlayTl.scrollTrigger)
   })
 
   ScrollTrigger.refresh()
+})
+
+onUnmounted(() => {
+  scrollTriggers.forEach((st) => st.kill())
+  scrollTriggers.length = 0
+  gsap.killTweensOf(projectRefs.value ?? [])
+  gsap.killTweensOf(overlayRefs.value ?? [])
 })
 </script>
 
@@ -88,11 +104,15 @@ onMounted(async () => {
       'pb-(--app-vertical-rhythm)': block.spacing_bottom,
     }"
   >
-    <div class="absolute inset-0">
+    <div
+      ref="tickerWrapper"
+      class="absolute inset-0"
+    >
       <div class="sticky top-0">
         <UiTicker
           v-if="block.ticker"
           spacing-classes="gap-10 px-5"
+          :trigger-el="tickerWrapper"
         >
           <template
             v-for="i in 4"
