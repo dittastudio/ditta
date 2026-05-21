@@ -194,7 +194,7 @@ onUnmounted(() => {
 
       <div class="col-span-full md:col-span-4">
         <IconPixelComputer
-          class="animate-bob w-50 md:w-60 mx-auto md:ml-auto"
+          class="animate-bob w-50 md:w-60 mx-auto md:ml-auto text-accent"
           :style="{ transform: `rotate(${rotation}deg)` }"
         />
       </div>
