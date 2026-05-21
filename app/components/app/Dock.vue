@@ -154,14 +154,14 @@ defineExpose({
 
             <UiExpandable
               :is-open="navigation"
-              transition-classes="duration-300 ease-inOutQuint"
+              transition-classes="duration-500 ease-spring-1"
               :class="{
                 'pointer-events-auto': !isHidden && isReady,
               }"
             >
               <nav
                 data-lenis-prevent
-                class="w-full pt-10 pb-14 flex flex-col gap-14 transition-opacity scroll-y xmax-h-[calc(100svh-var(--dock-height)-20px)] text-grey"
+                class="w-full pt-10 pb-14 flex flex-col gap-14 transition-opacity scroll-y max-h-[calc(100svh-var(--dock-height)-20px)] text-grey"
                 :class="{
                   'opacity-0 duration-100 ease-out': !navigation,
                   'opacity-100 duration-500 ease-out delay-150': navigation,
