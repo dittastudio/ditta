@@ -85,17 +85,16 @@ const { block } = defineProps<Props>()
     pointer-events: none;
     backdrop-filter: blur(4px);
     background-color: --alpha(var(--color-black) / 30%);
-    mask-image: linear-gradient(to top, transparent 0%, black 100%);
   }
 
   &::before {
     top: 0;
-    mask-image: linear-gradient(to top, transparent 0%, black 100%);
+    mask-image: linear-gradient(to top, transparent 0%, var(--color-black) 100%);
   }
 
   &::after {
     bottom: 0;
-    mask-image: linear-gradient(to bottom, transparent 0%, black 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, var(--color-black) 100%);
   }
 }
 </style>

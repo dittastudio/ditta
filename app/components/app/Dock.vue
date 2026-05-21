@@ -31,6 +31,7 @@ const dockClasses: Record<Themes | 'navigationOpen', string> = {
 const appStore = useAppStore()
 const { theme } = storeToRefs(appStore)
 const navigation = useNavigation()
+const isReady = ref(false)
 
 const dockStyles = computed(() => {
   return dockClasses[navigation.value ? 'navigationOpen' : theme.value]
@@ -62,9 +63,16 @@ const onScroll = () => {
   lastScrollY = y
 }
 
-onMounted(() => {
-  if (wrapper.value) document.documentElement.style.setProperty('--dock-height', `${wrapper.value.offsetHeight}px`)
+onMounted(async () => {
+  if (wrapper.value) {
+    document.documentElement.style.setProperty('--dock-height', `${wrapper.value.offsetHeight}px`)
+  }
+
+  lastScrollY = window.scrollY
   window.addEventListener('scroll', onScroll, { passive: true })
+
+  await wait(250)
+  isReady.value = true
 })
 
 onUnmounted(() => window.removeEventListener('scroll', onScroll))
@@ -83,15 +91,15 @@ defineExpose({
       <div
         class="w-full max-w-90 mx-auto rounded-20 corner-shape-squircle transition-[backdrop-filter,scale] duration-300 ease-out"
         :class="{
-          'backdrop-blur-none scale-95': isHidden,
-          'backdrop-blur-md scale-100': !isHidden,
+          'backdrop-blur-none scale-95': isHidden || !isReady,
+          'backdrop-blur-md scale-100': !isHidden && isReady,
         }"
       >
         <div
           class="shadow-2xl rounded-[inherit] corner-shape-inherit transition-opacity duration-300 ease-out"
           :class="{
-            'opacity-0': isHidden,
-            'opacity-100': !isHidden,
+            'opacity-0': isHidden || !isReady,
+            'opacity-100': !isHidden && isReady,
           }"
         >
           <div
@@ -101,7 +109,7 @@ defineExpose({
           >
             <div
               class="grid grid-cols-3 rounded-[inherit] corner-shape-inherit"
-              :class="{ 'pointer-events-auto': !isHidden }"
+              :class="{ 'pointer-events-auto': !isHidden && isReady }"
             >
               <p class="flex items-center gap-1.5 pl-5">
                 <ClientOnly fallback-tag="span">
@@ -137,7 +145,7 @@ defineExpose({
               :is-open="navigation"
               transition-classes="duration-500 ease-spring-1"
               :class="{
-                'pointer-events-auto': !isHidden,
+                'pointer-events-auto': !isHidden && isReady,
               }"
             >
               <nav
@@ -154,7 +162,7 @@ defineExpose({
                   <li>
                     <NuxtLink
                       to="/"
-                      class="block w-full transition-colors duration-300 ease-outCubic focus:outline-0"
+                      class="relative block w-full transition-colors duration-300 ease-outCubic focus:outline-0 font-fallback"
                     >
                       Index
                     </NuxtLink>
