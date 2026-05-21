@@ -16,6 +16,7 @@ const wrapper = useTemplateRef('wrapper')
 
 const blockTheme = useBlockTheme()
 const activeTheme = computed(() => blockTheme.value || 'dark')
+const isDark = computed(() => activeTheme.value === 'dark')
 const isReady = ref(false)
 const dockClasses: Record<Themes | 'navigationOpen', string> = {
   navigationOpen: 'bg-black text-grey outline outline-1 outline-white/15',
@@ -126,14 +127,24 @@ defineExpose({
                 <span class="sr-only">ditta</span>
               </NuxtLink>
 
-              <button
-                class="px-5 py-5"
-                type="button"
-                @click="toggle"
-              >
-                <IconBurger class="w-4 h-auto ml-auto" />
-                <span class="sr-only">{{ navigation ? 'Close Menu' : 'Open Menu' }}</span>
-              </button>
+              <div>
+                <button
+                  class="group ml-auto block p-1"
+                  type="button"
+                  @click="toggle"
+                >
+                  <span
+                    class="block p-4 rounded-[16px] corner-shape-squircle transition-colors duration-300 ease-out"
+                    :class="{
+                      'group-hover:bg-current/15': isDark || navigation,
+                      'group-hover:bg-current/5': !isDark,
+                    }"
+                  >
+                    <IconBurger class="w-4 h-auto ml-auto" />
+                    <span class="sr-only">{{ navigation ? 'Close Menu' : 'Open Menu' }}</span>
+                  </span>
+                </button>
+              </div>
             </div>
 
             <UiExpandable
