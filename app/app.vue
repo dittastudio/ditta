@@ -3,6 +3,7 @@ import type { Settings } from '#storyblok-components'
 import { VueLenis } from 'lenis/vue'
 
 const settings = await useStory<Settings>('/settings')
+
 const route = useRoute()
 const router = useRouter()
 
@@ -11,7 +12,7 @@ const globalClasses = computed(() => ({
 }))
 
 const appStore = useAppStore()
-const themeClass = computed(() => (appStore.getTheme === 'dark' ? 'text-white' : 'text-black'))
+const taglineClass = computed(() => (appStore.getTheme === 'dark' ? 'text-white' : 'text-black'))
 
 useHead({
   htmlAttrs: {
@@ -47,7 +48,7 @@ router.afterEach(() => {
     <div
       v-if="settings.content.tagline"
       class="absolute top-0 left-0 z-10 pt-20 w-full"
-      :class="[themeClass]"
+      :class="[taglineClass]"
     >
       <p class="wrapper text-center text-16 md:text-navigation transition-colors duration-500 ease-outCubic">
         {{ settings.content.tagline }}
