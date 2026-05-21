@@ -62,6 +62,11 @@ export default defineNuxtConfig({
       link: [
         { rel: 'manifest', href: '/site.webmanifest' },
         { rel: 'preload', type: 'font/woff2', href: '/fonts/SaansVF.woff2', as: 'font', crossorigin: '' },
+        {
+          rel: 'icon',
+          type: 'image/svg+xml',
+          href: process.env.CONTEXT === 'production' ? '/favicon.svg' : '/develop.svg',
+        },
       ],
     },
   },
@@ -86,7 +91,6 @@ export default defineNuxtConfig({
   css: ['~/assets/css/app.css'],
   devtools: { enabled: false },
   runtimeConfig: {
-    IS_PRODUCTION: process.env.CONTEXT,
     public: {
       STORYBLOK_TOKEN: process.env.NUXT_STORYBLOK_TOKEN,
       STORYBLOK_VERSION: process.env.NUXT_STORYBLOK_VERSION,

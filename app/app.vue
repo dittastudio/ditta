@@ -11,7 +11,6 @@ const globalClasses = computed(() => ({
   'is-storyblok-editor': storyblokEditor(route.query),
 }))
 
-const config = useRuntimeConfig()
 const appStore = useAppStore()
 const taglineClass = computed(() => (appStore.getTheme === 'dark' ? 'text-white' : 'text-black'))
 
@@ -20,13 +19,6 @@ useHead({
     class: globalClasses,
     style: computed(() => `--color-accent: var(--color-${appStore.getAccent})`),
   },
-  link: [
-    {
-      rel: 'icon',
-      type: 'image/svg+xml',
-      href: config.IS_PRODUCTION === 'production' ? '/favicon.svg' : '/develop.svg',
-    },
-  ],
 })
 
 useSeoMeta({
