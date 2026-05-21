@@ -16,9 +16,9 @@ const taglineClass = computed(() => (appStore.getTheme === 'dark' ? 'text-white'
 
 const { hostname } = useRequestURL()
 const faviconHref = computed(() => {
-  if (hostname === 'localhost' || hostname === '127.0.0.1') return '/local.svg'
+  if (hostname === 'localhost') return '/local.svg'
   if (hostname.includes('develop--ditta.netlify.app')) return '/develop.svg'
-  return null
+  return '/favicon.svg'
 })
 
 useHead({
@@ -26,7 +26,7 @@ useHead({
     class: globalClasses,
     style: computed(() => `--color-accent: var(--color-${appStore.getAccent})`),
   },
-  link: computed(() => (faviconHref.value ? [{ rel: 'icon', type: 'image/svg+xml', href: faviconHref.value }] : [])),
+  link: [{ rel: 'icon', type: 'image/svg+xml', href: faviconHref }],
 })
 
 useSeoMeta({
