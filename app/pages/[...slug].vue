@@ -27,12 +27,13 @@ useSeoMeta({
 })
 
 const appStore = useAppStore()
-const first = story.value.content.blocks?.[0]
+const first = computed(() => story.value.content.blocks?.[0])
 
-if (first && 'theme' in first) {
-  const firstTheme = first.theme as Themes
-  appStore.setTheme(firstTheme)
-}
+onMounted(() => {
+  if (first.value && 'theme' in first.value) {
+    appStore.setTheme(first.value.theme as Themes)
+  }
+})
 </script>
 
 <template>

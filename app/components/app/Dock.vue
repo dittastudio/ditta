@@ -14,7 +14,7 @@ const { items } = defineProps<Props>()
 const dock = useTemplateRef('dock')
 const wrapper = useTemplateRef('wrapper')
 
-const appStore = useAppStore()
+const { data: weather } = useLazyFetch('/api/weather', { server: false })
 
 const dockClasses: Record<Themes | 'navigationOpen', string> = {
   navigationOpen: 'bg-black text-grey outline outline-1 outline-white/15',
@@ -28,8 +28,13 @@ const dockClasses: Record<Themes | 'navigationOpen', string> = {
   accent: 'bg-accent/50 text-black outline outline-1 outline-black/5',
 }
 
-const { data: weather } = useLazyFetch('/api/weather', { server: false })
+const appStore = useAppStore()
+const { theme } = storeToRefs(appStore)
 const navigation = useNavigation()
+
+const dockStyles = computed(() => {
+  return dockClasses[navigation.value ? 'navigationOpen' : theme.value]
+})
 
 const toggle = () => {
   navigation.value = !navigation.value
@@ -50,8 +55,8 @@ const onScroll = () => {
   const y = window.scrollY
   const isDown = y >= 1 && y > lastScrollY
 
-  if (!navigation.value) {
-    if (isHidden.value !== isDown) isHidden.value = isDown
+  if (!navigation.value && isHidden.value !== isDown) {
+    isHidden.value = isDown
   }
 
   lastScrollY = y
@@ -92,7 +97,7 @@ defineExpose({
           <div
             ref="dock"
             class="w-full rounded-[inherit] corner-shape-inherit transition-colors duration-300 ease-out"
-            :class="dockClasses[navigation ? 'navigationOpen' : appStore.getTheme]"
+            :class="dockStyles"
           >
             <div
               class="grid grid-cols-3 rounded-[inherit] corner-shape-inherit"

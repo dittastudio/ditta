@@ -14,7 +14,7 @@ export const useAppStore = defineStore(
       accent.value = value
     }
 
-    const theme = ref<Theme>('light')
+    const theme = ref<Theme>('accent')
     const getTheme = computed(() => theme.value)
 
     function setTheme(value: Theme) {
@@ -32,7 +32,7 @@ export const useAppStore = defineStore(
   },
   {
     persist: {
-      pick: ['accent', 'theme'],
+      pick: ['accent'],
       storage: piniaPluginPersistedstate.cookies(),
     },
   },
