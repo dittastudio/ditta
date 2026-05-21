@@ -13,11 +13,19 @@ const globalClasses = computed(() => ({
 const theme = useTheme()
 const straplineClass = computed(() => (theme.value.strapline === 'dark' ? 'text-white' : 'text-black'))
 
+const { hostname } = useRequestURL()
+const faviconHref = computed(() => {
+  if (hostname === 'localhost' || hostname === '127.0.0.1') return '/local.svg'
+  if (hostname.includes('develop--ditta.netlify.app')) return '/develop.svg'
+  return null
+})
+
 useHead({
   htmlAttrs: {
     class: globalClasses,
     style: computed(() => `--color-accent: var(--color-${theme.value.accent})`),
   },
+  link: computed(() => (faviconHref.value ? [{ rel: 'icon', type: 'image/svg+xml', href: faviconHref.value }] : [])),
 })
 
 useSeoMeta({
