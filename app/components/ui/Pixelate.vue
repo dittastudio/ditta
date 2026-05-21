@@ -109,8 +109,8 @@ onMounted(() => {
       scrollTrigger: {
         trigger: root.value,
         start: 'top center',
-        end: 'center center',
         scrub: false,
+        markers: false,
         toggleActions: 'play none none reverse',
       },
       onUpdate: draw,
