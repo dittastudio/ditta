@@ -10,9 +10,9 @@ export async function useStory<T>(
   options: UseAsyncDataOptions = {},
   query?: LocationQuery,
 ) {
-  const runtimeConfig = useRuntimeConfig()
+  const config = useRuntimeConfig()
   const resolvedQuery = query ?? useRoute().query
-  const isDraft = runtimeConfig.public.NUXT_STORYBLOK_VERSION !== 'published'
+  const isDraft = config.public.NUXT_STORYBLOK_VERSION !== 'published'
 
   const { story, error } = await useAsyncStoryblok(storyblokSlug(slug), {
     api: {

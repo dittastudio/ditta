@@ -86,6 +86,7 @@ export default defineNuxtConfig({
   css: ['~/assets/css/app.css'],
   devtools: { enabled: false },
   runtimeConfig: {
+    IS_PRODUCTION: process.env.CONTEXT,
     public: {
       STORYBLOK_TOKEN: process.env.NUXT_STORYBLOK_TOKEN,
       STORYBLOK_VERSION: process.env.NUXT_STORYBLOK_VERSION,

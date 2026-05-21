@@ -11,22 +11,22 @@ const globalClasses = computed(() => ({
   'is-storyblok-editor': storyblokEditor(route.query),
 }))
 
+const config = useRuntimeConfig()
 const appStore = useAppStore()
 const taglineClass = computed(() => (appStore.getTheme === 'dark' ? 'text-white' : 'text-black'))
-
-const { hostname } = useRequestURL()
-const faviconHref = computed(() => {
-  if (hostname === 'localhost') return '/local.svg'
-  if (hostname.includes('develop--ditta.netlify.app')) return '/develop.svg'
-  return '/favicon.svg'
-})
 
 useHead({
   htmlAttrs: {
     class: globalClasses,
     style: computed(() => `--color-accent: var(--color-${appStore.getAccent})`),
   },
-  link: [{ rel: 'icon', type: 'image/svg+xml', href: faviconHref }],
+  link: [
+    {
+      rel: 'icon',
+      type: 'image/svg+xml',
+      href: config.IS_PRODUCTION === 'production' ? '/favicon.svg' : '/develop.svg',
+    },
+  ],
 })
 
 useSeoMeta({
