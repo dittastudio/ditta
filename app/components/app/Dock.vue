@@ -59,7 +59,11 @@ const onScroll = () => {
 }
 
 onMounted(async () => {
-  if (wrapper.value) document.documentElement.style.setProperty('--dock-height', `${wrapper.value.offsetHeight}px`)
+  if (wrapper.value) {
+    document.documentElement.style.setProperty('--dock-height', `${wrapper.value.offsetHeight}px`)
+  }
+
+  lastScrollY = window.scrollY
   window.addEventListener('scroll', onScroll, { passive: true })
 
   await wait(250)
