@@ -8,10 +8,8 @@ interface Props {
 const { isOpen = false, isDisabled = false, transitionClasses } = defineProps<Props>()
 
 const inner = useTemplateRef('inner')
-const wrapper = useTemplateRef('wrapper')
 const height = ref('0px')
 const canTransition = ref(false)
-const isTransitioning = ref(false)
 
 function measure() {
   if (!inner.value) return
@@ -21,7 +19,6 @@ function measure() {
 watch(
   () => isOpen,
   (open) => {
-    isTransitioning.value = true
     if (open) {
       measure()
     } else {
@@ -30,22 +27,11 @@ watch(
   },
 )
 
-function onTransitionEnd(event: TransitionEvent) {
-  if (event.target === wrapper.value && event.propertyName === 'height') {
-    isTransitioning.value = false
-  }
-}
-
 let observer: ResizeObserver | null = null
 
 onMounted(() => {
-  if (inner.value) {
-    // Force a layout pass on mount so the first open doesn't pay first-paint cost
-    void inner.value.scrollHeight
-
-    if (isOpen) {
-      height.value = `${inner.value.scrollHeight}px`
-    }
+  if (isOpen && inner.value) {
+    height.value = `${inner.value.scrollHeight}px`
   }
 
   nextTick(() => {
@@ -80,16 +66,9 @@ const wrapperStyle = computed(() => {
 
 <template>
   <div
-    ref="wrapper"
-    :class="[
-      transitionStyle,
-      {
-        'overflow-hidden': !isDisabled,
-        'will-change-[height]': isTransitioning,
-      },
-    ]"
+    class="will-change-[height]"
+    :class="[transitionStyle, { 'overflow-hidden': !isDisabled }]"
     :style="wrapperStyle"
-    @transitionend="onTransitionEnd"
   >
     <div ref="inner">
       <slot />

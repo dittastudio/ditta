@@ -154,7 +154,7 @@ defineExpose({
 
             <UiExpandable
               :is-open="navigation"
-              transition-classes="duration-500 ease-spring-1"
+              transition-classes="duration-300 ease-inOutQuint"
               :class="{
                 'pointer-events-auto': !isHidden && isReady,
               }"
