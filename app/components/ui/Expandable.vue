@@ -29,9 +29,7 @@ watch(
 
 let observer: ResizeObserver | null = null
 
-onMounted(async () => {
-  await nextTick()
-
+onMounted(() => {
   if (isOpen && inner.value) {
     height.value = `${inner.value.scrollHeight}px`
   }
