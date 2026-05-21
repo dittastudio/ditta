@@ -72,7 +72,7 @@ onMounted(async () => {
   lastScrollY = window.scrollY
   window.addEventListener('scroll', onScroll, { passive: true })
 
-  await wait(150)
+  await wait(100)
   isReady.value = true
 })
 
