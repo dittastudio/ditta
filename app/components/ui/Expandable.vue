@@ -66,6 +66,7 @@ const wrapperStyle = computed(() => {
 
 <template>
   <div
+    class="will-change-[height]"
     :class="[transitionStyle, { 'overflow-hidden': !isDisabled }]"
     :style="wrapperStyle"
   >
