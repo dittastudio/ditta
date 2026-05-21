@@ -16,7 +16,7 @@ const projects = computed(() => block.projects?.filter((project) => typeof proje
 const tickerWrapper = useTemplateRef('tickerWrapper')
 const projectRefs = useTemplateRef('project')
 const overlayRefs = useTemplateRef('overlay')
-const opacityStep = 0.1
+const opacityStep = 0.15
 
 const scrollTriggers: ScrollTrigger[] = []
 
@@ -63,14 +63,14 @@ onMounted(async () => {
       },
     })
 
-    const opacityFrom = Math.min(1, (index - 1) * opacityStep)
-    const opacityTo = Math.min(1, index * opacityStep)
+    overlayRefs.value!.slice(0, index).forEach((overlayEl, i) => {
+      const opcaityFrom = Math.min(1, (index - i - 1) * opacityStep)
+      const opacityTo = Math.min(1, (index - i) * opacityStep)
 
-    overlayRefs.value?.forEach((overlayEl, i) => {
       overlayTl.fromTo(
         overlayEl,
         {
-          opacity: opacityFrom,
+          opacity: opcaityFrom,
         },
         {
           opacity: opacityTo,
