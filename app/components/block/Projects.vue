@@ -16,73 +16,67 @@ const projects = computed(() => block.projects?.filter((project) => typeof proje
 const tickerWrapper = useTemplateRef('tickerWrapper')
 const projectRefs = useTemplateRef('project')
 const overlayRefs = useTemplateRef('overlay')
-
 const opacityStep = 0.1
-
-let ctx: gsap.Context | null = null
 
 onMounted(async () => {
   await nextTick()
 
-  ctx = gsap.context(() => {
-    projectRefs.value?.forEach((el, index) => {
-      const sign = index % 2 === 0 ? 1 : -1
-      const rotateFrom = sign * gsap.utils.random(1, 4)
-      const rotateTo = -sign * gsap.utils.random(1, 4)
+  projectRefs.value?.forEach((el, index) => {
+    const sign = index % 2 === 0 ? 1 : -1
+    const rotateFrom = sign * gsap.utils.random(1, 4)
+    const rotateTo = -sign * gsap.utils.random(1, 4)
 
-      gsap
-        .timeline({
+    gsap
+      .timeline({
+        scrollTrigger: {
+          trigger: el,
+          start: 'top bottom',
+          end: 'center center',
+          scrub: true,
+        },
+      })
+      .fromTo(
+        el,
+        {
+          scale: 1.1,
+          rotate: rotateFrom,
+        },
+        {
+          ease: 'power2.in',
+          scale: 1,
+          rotate: rotateTo,
+        },
+        0,
+      )
+
+    const subsequent = projectRefs.value?.slice(index + 1) ?? []
+    const overlayEl = overlayRefs.value?.[index]
+
+    if (!overlayEl) return
+
+    subsequent.forEach((triggerEl, stepsBelow) => {
+      const fromOpacity = Math.min(1, stepsBelow * opacityStep)
+      const toOpacity = Math.min(1, (stepsBelow + 1) * opacityStep)
+
+      gsap.fromTo(
+        overlayEl,
+        { opacity: fromOpacity },
+        {
+          opacity: toOpacity,
+          ease: 'power2.in',
+          immediateRender: false,
           scrollTrigger: {
-            trigger: el,
+            trigger: triggerEl,
             start: 'top bottom',
             end: 'center center',
             scrub: true,
           },
-        })
-        .fromTo(
-          el,
-          {
-            scale: 1.1,
-            rotate: rotateFrom,
-          },
-          {
-            ease: 'power2.in',
-            scale: 1,
-            rotate: rotateTo,
-          },
-          0,
-        )
-
-      const subsequent = projectRefs.value?.slice(index + 1) ?? []
-      const overlayEl = overlayRefs.value?.[index]
-      subsequent.forEach((triggerEl, stepsBelow) => {
-        const fromOpacity = Math.min(1, stepsBelow * opacityStep)
-        const toOpacity = Math.min(1, (stepsBelow + 1) * opacityStep)
-
-        gsap.fromTo(
-          overlayEl,
-          { opacity: fromOpacity },
-          {
-            opacity: toOpacity,
-            ease: 'power2.in',
-            immediateRender: false,
-            scrollTrigger: {
-              trigger: triggerEl,
-              start: 'top bottom',
-              end: 'center center',
-              scrub: true,
-            },
-          },
-        )
-      })
+        },
+      )
     })
   })
 
   ScrollTrigger.refresh()
-})
-
-onUnmounted(() => {
-  ctx?.revert()
 })
 </script>
 

@@ -9,15 +9,11 @@ interface Props {
 
 const { tag = 'section', theme, id } = defineProps<Props>()
 
-const blockTheme = useBlockTheme()
+const appStore = useAppStore()
 const el = useTemplateRef<HTMLElement>('el')
 
 onMounted(() => {
   if (!theme || !el.value) return
-
-  if (blockTheme.value === null) {
-    blockTheme.value = theme
-  }
 
   const height = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dock-height'))
   if (!height) return
@@ -27,7 +23,9 @@ onMounted(() => {
 
   const observer = new IntersectionObserver(
     ([entry]) => {
-      if (entry?.isIntersecting) blockTheme.value = theme
+      if (entry?.isIntersecting) {
+        appStore.setTheme(theme)
+      }
     },
     { rootMargin, threshold: 0 },
   )

@@ -3,6 +3,7 @@ import type { Settings } from '#storyblok-components'
 import { VueLenis } from 'lenis/vue'
 
 const settings = await useStory<Settings>('/settings')
+
 const route = useRoute()
 const router = useRouter()
 
@@ -10,8 +11,8 @@ const globalClasses = computed(() => ({
   'is-storyblok-editor': storyblokEditor(route.query),
 }))
 
-const theme = useTheme()
-const straplineClass = computed(() => (theme.value.strapline === 'dark' ? 'text-white' : 'text-black'))
+const appStore = useAppStore()
+const taglineClass = computed(() => (appStore.getTheme === 'dark' ? 'text-white' : 'text-black'))
 
 const { hostname } = useRequestURL()
 const faviconHref = computed(() => {
@@ -23,7 +24,7 @@ const faviconHref = computed(() => {
 useHead({
   htmlAttrs: {
     class: globalClasses,
-    style: computed(() => `--color-accent: var(--color-${theme.value.accent})`),
+    style: computed(() => `--color-accent: var(--color-${appStore.getAccent})`),
   },
   link: computed(() => (faviconHref.value ? [{ rel: 'icon', type: 'image/svg+xml', href: faviconHref.value }] : [])),
 })
@@ -42,21 +43,20 @@ router.afterEach(() => {
 
 <template>
   <VueLenis
-    ref="lenny"
     root
     :options="{
       duration: 0.75,
       autoRaf: true,
       anchors: {
-        duration: 1,
+        duration: 1.5,
         offset: 1,
       },
     }"
   >
     <div
       v-if="settings.content.tagline"
-      class="absolute top-0 left-0 z-10 pt-20 w-full"
-      :class="[straplineClass]"
+      class="absolute top-0 left-0 z-10 pt-24 w-full"
+      :class="[taglineClass]"
     >
       <p class="wrapper text-center text-16 md:text-navigation transition-colors duration-500 ease-outCubic">
         {{ settings.content.tagline }}

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { Page, Project } from '#storyblok-components'
+import type { Themes } from '@/types/app'
 
 const route = useRoute()
 const relations = ['block_team.humans', 'block_projects.projects']
@@ -23,6 +24,15 @@ useSeoMeta({
   twitterTitle: seo_title ?? story.value.name,
   twitterCard: 'summary_large_image',
   twitterImage: storyblokImage(seo_image?.filename, imageOptions) || null,
+})
+
+const appStore = useAppStore()
+const first = computed(() => story.value.content.blocks?.[0])
+
+onMounted(() => {
+  if (first.value && 'theme' in first.value) {
+    appStore.setTheme(first.value.theme as Themes)
+  }
 })
 </script>
 
