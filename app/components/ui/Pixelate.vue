@@ -110,7 +110,8 @@ onMounted(() => {
         trigger: root.value,
         start: 'top center',
         end: 'center center',
-        scrub: true,
+        scrub: false,
+        toggleActions: 'play none none reverse',
       },
       onUpdate: draw,
     })
