@@ -13,6 +13,7 @@ const { block } = defineProps<Props>()
 
 const projects = computed(() => block.projects?.filter((project) => typeof project !== 'string') || [])
 
+const tickerWrapper = useTemplateRef('tickerWrapper')
 const projectRefs = useTemplateRef('project')
 const overlayRefs = useTemplateRef('overlay')
 
@@ -94,11 +95,15 @@ onUnmounted(() => {
       'pb-(--app-vertical-rhythm)': block.spacing_bottom,
     }"
   >
-    <div class="absolute inset-0">
+    <div
+      ref="tickerWrapper"
+      class="absolute inset-0"
+    >
       <div class="sticky top-0">
         <UiTicker
           v-if="block.ticker"
           spacing-classes="gap-10 px-5"
+          :trigger-el="tickerWrapper"
         >
           <template
             v-for="i in 4"

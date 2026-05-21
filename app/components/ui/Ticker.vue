@@ -1,112 +1,130 @@
 <script lang="ts" setup>
+import type { ShallowRef } from 'vue'
 import { gsap } from 'gsap'
-import { useLenis } from 'lenis/vue'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 interface Props {
   duration?: string
   direction?: 'left' | 'right'
   spacingClasses?: string
+  triggerEl?: HTMLElement | null
 }
 
-const { direction = 'left', duration = '60s', spacingClasses = 'gap-80 px-40' } = defineProps<Props>()
+const { direction = 'left', duration = '60s', spacingClasses = 'gap-20 px-10', triggerEl } = defineProps<Props>()
 
 const container = useTemplateRef('container')
 const wrappers = useTemplateRef('wrappers')
 const lists = useTemplateRef('lists')
 
-const isLeft = direction === 'left'
+const MAX_SCROLL_VELOCITY = 3000
 
-let xTo: ReturnType<typeof gsap.quickTo> | null = null
-let skewXTo: ReturnType<typeof gsap.quickTo> | null = null
-let prevOffset = 0
-// Where the ticker really sits in the page — works even when sticky-pinned.
-let documentTop = Number.POSITIVE_INFINITY
-
-let viewportHeight = 0
+let scrollTrigger: ScrollTrigger | null = null
+let slntQuickTo: gsap.QuickToFunc | null = null
+let wghtQuickTo: gsap.QuickToFunc | null = null
+let xQuickSet: ((value: number) => void) | null = null
 let containerWidth = 0
-let containerHeight = 0
-let lastIsScrollingUp: boolean | null = null
+let scrollStopTimer: ReturnType<typeof setTimeout> | null = null
 
-const refreshDimensions = () => {
-  if (!container.value) {
-    return
-  }
-
-  viewportHeight = window.innerHeight
-  containerWidth = container.value.clientWidth
-  containerHeight = container.value.offsetHeight
+const onResize = () => {
+  if (container.value) containerWidth = container.value.clientWidth
 }
 
-const setPlayState = (isScrollingUp: boolean) => {
-  const flip = isLeft === isScrollingUp
-  const wrapperState = flip ? 'running' : 'paused'
-  const listState = flip ? 'paused' : 'running'
-
-  wrappers.value?.forEach((el) => {
-    el.style.animationPlayState = wrapperState
-  })
-  lists.value?.forEach((el) => {
-    el.style.animationPlayState = listState
-  })
+const resetFontAxes = () => {
+  slntQuickTo?.(0)
+  wghtQuickTo?.(400)
+  scrollStopTimer = null
 }
 
 onMounted(() => {
+  gsap.registerPlugin(ScrollTrigger)
+
   if (!container.value) {
     return
   }
 
-  xTo = gsap.quickTo(container.value, 'x', { duration: 0.5, ease: 'power3.out' })
-  skewXTo = gsap.quickTo(container.value, 'skewX', { duration: 0.6, ease: 'power3.out' })
-  refreshDimensions()
-  window.addEventListener('resize', refreshDimensions, { passive: true })
+  gsap.set(container.value, { '--slnt': 0, '--wght': 400 })
+  slntQuickTo = gsap.quickTo(container.value, '--slnt', { duration: 0.4, ease: 'power2.out' })
+  wghtQuickTo = gsap.quickTo(container.value, '--wght', { duration: 0.4, ease: 'power2.out' })
+  xQuickSet = gsap.quickSetter(container.value, 'x', 'px') as (value: number) => void
+  containerWidth = container.value.clientWidth
+  window.addEventListener('resize', onResize, { passive: true })
 
-  const rect = container.value.getBoundingClientRect()
-  const scroll = window.scrollY
+  let lastProgress = 0
 
-  documentTop = rect.top + scroll
+  scrollTrigger = ScrollTrigger.create({
+    trigger: triggerEl ?? container.value,
+    start: 'top bottom',
+    end: 'bottom top',
+    scrub: false,
+    markers: false,
+    onUpdate: (self) => {
+      if (!container.value) {
+        return
+      }
 
-  const range = viewportHeight + rect.height
-  const progress = Math.max(0, (scroll + viewportHeight - documentTop) / range)
-  const offset = containerWidth * (progress / 3)
+      const progress = self.progress
+      const isScrollingUp = progress < lastProgress
 
-  prevOffset = offset
-  gsap.set(container.value, { x: isLeft ? -offset : offset })
+      // Update animation states
+      if (wrappers.value) {
+        wrappers.value.forEach((wrapper) => {
+          wrapper.style.animationPlayState = isScrollingUp
+            ? direction === 'left'
+              ? 'running'
+              : 'paused'
+            : direction === 'left'
+              ? 'paused'
+              : 'running'
+        })
+      }
 
-  lastIsScrollingUp = false
-  setPlayState(false)
+      if (lists.value) {
+        lists.value.forEach((list) => {
+          list.style.animationPlayState = isScrollingUp
+            ? direction === 'left'
+              ? 'paused'
+              : 'running'
+            : direction === 'left'
+              ? 'running'
+              : 'paused'
+        })
+      }
+
+      const velocity = self.getVelocity()
+      const t = Math.min(Math.abs(velocity) / MAX_SCROLL_VELOCITY, 1)
+
+      if (velocity > 0) {
+        slntQuickTo?.(-10 * t)
+        wghtQuickTo?.(400)
+      } else if (velocity < 0) {
+        slntQuickTo?.(0)
+        wghtQuickTo?.(400 + 900 * t)
+      }
+
+      if (scrollStopTimer !== null) clearTimeout(scrollStopTimer)
+      scrollStopTimer = setTimeout(resetFontAxes, 150)
+
+      lastProgress = progress
+
+      xQuickSet?.(direction === 'left' ? -containerWidth * (progress * 2) + 1 : containerWidth * (progress * 2) - 1)
+    },
+  })
 })
 
-useLenis((lenis) => {
-  if (!container.value || !xTo || !skewXTo) {
-    return
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', onResize)
+
+  if (scrollStopTimer !== null) {
+    clearTimeout(scrollStopTimer)
+    scrollStopTimer = null
   }
 
-  const isScrollingUp = lenis.direction === -1
-
-  if (isScrollingUp !== lastIsScrollingUp) {
-    setPlayState(isScrollingUp)
-    lastIsScrollingUp = isScrollingUp
+  if (scrollTrigger) {
+    scrollTrigger.kill()
+    scrollTrigger = null
   }
 
-  if (lenis.scroll + viewportHeight < documentTop) {
-    return
-  }
-
-  const range = viewportHeight + containerHeight
-  // Lower-clamped only — progress is allowed past 1 so momentum continues during sticky pin.
-  const progress = Math.max(0, (lenis.scroll + viewportHeight - documentTop) / range)
-  const offset = containerWidth * (progress / 3)
-
-  const delta = offset - prevOffset
-  prevOffset = offset
-  skewXTo(gsap.utils.clamp(-8, 8, delta * 0.5))
-
-  xTo(isLeft ? -offset : offset)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('resize', refreshDimensions)
-
+  // Reset GSAP properties
   if (container.value) {
     gsap.set(container.value, { clearProps: 'all' })
   }
@@ -115,19 +133,19 @@ onUnmounted(() => {
 
 <template>
   <div class="ui-ticker relative contain-layout w-full isolate">
-    <ul
+    <div
       ref="container"
-      class="flex justify-center transform-gpu"
+      class="ui-ticker__container flex justify-center transform-gpu"
     >
-      <li
+      <div
         v-for="i in 4"
         :key="i"
         ref="wrappers"
-        class="ui-ticker__wrapper min-w-full shrink-0"
+        class="ui-ticker__wrapper min-w-full shrink-0 transform-gpu"
       >
         <div
           ref="lists"
-          class="ui-ticker__list select-none flex justify-center shrink-0 min-w-full"
+          class="ui-ticker__list select-none flex justify-center shrink-0 min-w-full transform-gpu"
         >
           <div
             :class="spacingClasses"
@@ -136,8 +154,8 @@ onUnmounted(() => {
             <slot />
           </div>
         </div>
-      </li>
-    </ul>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -146,6 +164,12 @@ onUnmounted(() => {
 
 .ui-ticker {
   --duration: v-bind(duration);
+}
+
+.ui-ticker__container {
+  font-variation-settings:
+    'slnt' var(--slnt, 0),
+    'wght' var(--wght, 400);
 }
 
 .ui-ticker__wrapper {
