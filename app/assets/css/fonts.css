@@ -6,12 +6,4 @@
     font-display: swap;
     src: url('/fonts/SaansVF.woff2') format('woff2') tech(variations);
   }
-
-  @font-face {
-    font-family: 'Saans fallback';
-    src: local('Helvetica Neue'), local('Arial'), local('Noto Sans');
-    ascent-override: 105%;
-    descent-override: 25%;
-    line-gap-override: 0%;
-  }
 }

@@ -35,7 +35,7 @@
   --spacing: 4px;
 
   --font-\*: initial;
-  --font-sans: 'Saans', 'Saans fallback', sans-serif, system-ui;
+  --font-sans: 'Saans', sans-serif, system-ui;
 
   --font-weight-\*: initial;
   --font-weight-light: 300;

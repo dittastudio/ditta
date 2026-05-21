@@ -29,7 +29,9 @@ watch(
 
 let observer: ResizeObserver | null = null
 
-onMounted(() => {
+onMounted(async () => {
+  await document.fonts.ready
+
   if (isOpen && inner.value) {
     height.value = `${inner.value.scrollHeight}px`
   }
