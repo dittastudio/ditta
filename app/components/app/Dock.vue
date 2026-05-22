@@ -174,7 +174,10 @@ defineExpose({
               <ul
                 class="py-5 flex flex-col w-full text-28 text-center has-hover:[&_a:not(:hover)]:text-current/30 has-focus:[&_a:not(:focus)]:text-current/30"
               >
-                <li>
+                <li
+                  v-for="i in 6"
+                  :key="i"
+                >
                   <NuxtLink
                     to="/"
                     class="relative block w-full"
@@ -183,7 +186,7 @@ defineExpose({
                   </NuxtLink>
                 </li>
 
-                <li
+                <!-- <li
                   v-for="item in items"
                   :key="item._uid"
                 >
@@ -193,7 +196,7 @@ defineExpose({
                   >
                     {{ item.text }}
                   </StoryblokLink>
-                </li>
+                </li> -->
               </ul>
 
               <!-- <nav
