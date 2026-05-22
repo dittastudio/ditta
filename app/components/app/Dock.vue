@@ -206,9 +206,9 @@ defineExpose({
                     </NuxtLink>
                   </li>
 
-                  <li>
+                  <!-- <li>
                     <AppAccent />
-                  </li>
+                  </li> -->
                 </ul>
               </nav>
             </UiExpandable>
