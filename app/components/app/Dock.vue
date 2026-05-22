@@ -176,7 +176,7 @@ defineExpose({
                   >
                     <NuxtLink
                       to="/"
-                      :prefetch-on="{ interaction: true }"
+                      prefetch-on="interaction"
                       class="relative block w-full transition-colors duration-300 ease-outCubic focus:outline-0"
                     >
                       Index
