@@ -170,7 +170,10 @@ defineExpose({
                 <ul
                   class="flex flex-col w-full text-28 text-center has-hover:[&_a:not(:hover)]:text-current/30 has-focus:[&_a:not(:focus)]:text-current/30"
                 >
-                  <li>
+                  <li
+                    v-for="i in 5"
+                    :key="i"
+                  >
                     <NuxtLink
                       to="/"
                       :prefetch-on="{ interaction: true }"
@@ -180,7 +183,7 @@ defineExpose({
                     </NuxtLink>
                   </li>
 
-                  <li
+                  <!-- <li
                     v-for="item in items"
                     :key="item._uid"
                   >
@@ -191,14 +194,15 @@ defineExpose({
                     >
                       {{ item.text }}
                     </StoryblokLink>
-                  </li>
+                  </li> -->
                 </ul>
 
-                <ul class="flex flex-col items-center justify-center gap-10 w-full">
+                <!-- <ul class="flex flex-col items-center justify-center gap-10 w-full">
                   <li>
                     <NuxtLink
                       to="mailto:hello@ditta.studio"
                       class="block"
+                      :prefetch-on="{ interaction: true }"
                     >
                       <UiButton
                         text="Talk to us"
@@ -211,7 +215,7 @@ defineExpose({
                   <li>
                     <AppAccent />
                   </li>
-                </ul>
+                </ul> -->
               </nav>
             </UiExpandable>
           </div>
