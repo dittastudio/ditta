@@ -159,7 +159,7 @@ defineExpose({
                 'pointer-events-auto': !isHidden && isReady,
               }"
             >
-              <div class="bg-[red] text-center flex flex-col">
+              <!-- <div class="bg-[red] text-center flex flex-col">
                 <h2 class="text-display">Hello</h2>
 
                 <h2 class="text-display">Hello</h2>
@@ -169,7 +169,32 @@ defineExpose({
                 <h2 class="text-display">Hello</h2>
 
                 <h2 class="text-display">Hello</h2>
-              </div>
+              </div> -->
+
+              <ul
+                class="py-5 flex flex-col w-full text-28 text-center has-hover:[&_a:not(:hover)]:text-current/30 has-focus:[&_a:not(:focus)]:text-current/30"
+              >
+                <li>
+                  <NuxtLink
+                    to="/"
+                    class="relative block w-full transition-colors duration-300 ease-outCubic focus:outline-0 font-fallback"
+                  >
+                    Index
+                  </NuxtLink>
+                </li>
+
+                <li
+                  v-for="item in items"
+                  :key="item._uid"
+                >
+                  <StoryblokLink
+                    :item="item.link"
+                    class="block w-full transition-colors duration-300 ease-outCubic focus:outline-0"
+                  >
+                    {{ item.text }}
+                  </StoryblokLink>
+                </li>
+              </ul>
 
               <!-- <nav
                 data-lenis-prevent
