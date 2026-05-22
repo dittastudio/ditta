@@ -53,7 +53,7 @@ onUnmounted(() => {
     }"
   >
     <div
-      class="grid grid-cols-1 gap-x-(--app-gutter-inner) gap-y-10 md:gap-y-20 @4xl:grid-cols-12"
+      class="grid grid-cols-1 gap-x-(--app-gutter-inner) gap-y-20 @4xl:grid-cols-12"
       :style="{ '--team-para-offset': paraOffset }"
     >
       <div
