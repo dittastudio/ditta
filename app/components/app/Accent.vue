@@ -27,7 +27,7 @@ const appStore = useAppStore()
     <legend class="sr-only">Accent colour</legend>
 
     <ClientOnly>
-      <ul class="flex gap-2 items-center justify-center">
+      <ul class="flex gap-3 items-center justify-center">
         <li
           v-for="option in options"
           :key="option.value"

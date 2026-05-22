@@ -242,7 +242,7 @@ onMounted(() => {
   slntSetters = chars.map((el) => gsap.quickTo(el, '--slnt', { ...TWEEN, modifiers: { '--slnt': round1dp } }))
 
   measure()
-  document.fonts.ready.then(() => measure())
+
   if (autoAnimate) startAutoLoop()
 
   ro = new ResizeObserver(onResize)
