@@ -11,9 +11,12 @@ const inner = useTemplateRef('inner')
 const height = ref('0px')
 const canTransition = ref(false)
 
-function measure() {
+async function measure() {
   if (!inner.value) return
-  height.value = `${inner.value.scrollHeight}px`
+
+  await nextTick()
+
+  height.value = `${inner.value.getBoundingClientRect().height}px`
 }
 
 watch(
@@ -30,9 +33,7 @@ watch(
 let observer: ResizeObserver | null = null
 
 onMounted(() => {
-  if (isOpen && inner.value) {
-    height.value = `${inner.value.scrollHeight}px`
-  }
+  if (isOpen) measure()
 
   nextTick(() => {
     canTransition.value = true

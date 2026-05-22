@@ -105,7 +105,7 @@ defineExpose({
         >
           <div
             ref="dock"
-            class="w-full rounded-[inherit] corner-shape-inherit transition-colors duration-300 ease-out"
+            class="w-full rounded-[inherit] corner-shape-inherit transition-colors duration-300 ease-out overflow-hidden"
             :class="dockStyles"
           >
             <div
@@ -159,7 +159,19 @@ defineExpose({
                 'pointer-events-auto': !isHidden && isReady,
               }"
             >
-              <nav
+              <div class="bg-[red] text-center flex flex-col">
+                <h2 class="text-display">Hello</h2>
+
+                <h2 class="text-display">Hello</h2>
+
+                <h2 class="text-display">Hello</h2>
+
+                <h2 class="text-display">Hello</h2>
+
+                <h2 class="text-display">Hello</h2>
+              </div>
+
+              <!-- <nav
                 data-lenis-prevent
                 class="w-full pt-10 pb-14 flex flex-col gap-14 transition-opacity scroll-y max-h-[calc(100svh-var(--dock-height)-20px)] text-grey"
                 :class="{
@@ -206,11 +218,11 @@ defineExpose({
                     </NuxtLink>
                   </li>
 
-                  <!-- <li>
+                  <li>
                     <AppAccent />
-                  </li> -->
+                  </li>
                 </ul>
-              </nav>
+              </nav> -->
             </UiExpandable>
           </div>
         </div>
