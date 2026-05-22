@@ -178,12 +178,7 @@ defineExpose({
                   v-for="i in 6"
                   :key="i"
                 >
-                  <NuxtLink
-                    to="/"
-                    class="relative block w-full"
-                  >
-                    Index
-                  </NuxtLink>
+                  Index
                 </li>
 
                 <!-- <li
