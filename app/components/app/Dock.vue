@@ -177,7 +177,7 @@ defineExpose({
                 <li>
                   <NuxtLink
                     to="/"
-                    class="relative block w-full transition-colors duration-300 ease-outCubic focus:outline-0 font-fallback"
+                    class="relative block w-full"
                   >
                     Index
                   </NuxtLink>
@@ -189,7 +189,7 @@ defineExpose({
                 >
                   <StoryblokLink
                     :item="item.link"
-                    class="block w-full transition-colors duration-300 ease-outCubic focus:outline-0"
+                    class="block w-full"
                   >
                     {{ item.text }}
                   </StoryblokLink>
