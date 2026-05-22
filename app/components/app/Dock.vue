@@ -105,7 +105,7 @@ defineExpose({
         >
           <div
             ref="dock"
-            class="w-full rounded-[inherit] corner-shape-inherit transition-colors duration-300 ease-out overflow-hidden"
+            class="w-full rounded-[inherit] corner-shape-inherit transition-colors duration-300 ease-out"
             :class="dockStyles"
           >
             <div
@@ -159,42 +159,7 @@ defineExpose({
                 'pointer-events-auto': !isHidden && isReady,
               }"
             >
-              <!-- <div class="bg-[red] text-center flex flex-col">
-                <h2 class="text-display">Hello</h2>
-
-                <h2 class="text-display">Hello</h2>
-
-                <h2 class="text-display">Hello</h2>
-
-                <h2 class="text-display">Hello</h2>
-
-                <h2 class="text-display">Hello</h2>
-              </div> -->
-
-              <ul
-                class="py-5 flex flex-col w-full text-28 text-center has-hover:[&_a:not(:hover)]:text-current/30 has-focus:[&_a:not(:focus)]:text-current/30"
-              >
-                <li
-                  v-for="i in 6"
-                  :key="i"
-                >
-                  Index
-                </li>
-
-                <!-- <li
-                  v-for="item in items"
-                  :key="item._uid"
-                >
-                  <StoryblokLink
-                    :item="item.link"
-                    class="block w-full"
-                  >
-                    {{ item.text }}
-                  </StoryblokLink>
-                </li> -->
-              </ul>
-
-              <!-- <nav
+              <nav
                 data-lenis-prevent
                 class="w-full pt-10 pb-14 flex flex-col gap-14 transition-opacity scroll-y max-h-[calc(100svh-var(--dock-height)-20px)] text-grey"
                 :class="{
@@ -208,7 +173,8 @@ defineExpose({
                   <li>
                     <NuxtLink
                       to="/"
-                      class="relative block w-full transition-colors duration-300 ease-outCubic focus:outline-0 font-fallback"
+                      :prefetch-on="{ interaction: true }"
+                      class="relative block w-full transition-colors duration-300 ease-outCubic focus:outline-0"
                     >
                       Index
                     </NuxtLink>
@@ -220,6 +186,7 @@ defineExpose({
                   >
                     <StoryblokLink
                       :item="item.link"
+                      :prefetch-on="{ interaction: true }"
                       class="block w-full transition-colors duration-300 ease-outCubic focus:outline-0"
                     >
                       {{ item.text }}
@@ -245,7 +212,7 @@ defineExpose({
                     <AppAccent />
                   </li>
                 </ul>
-              </nav> -->
+              </nav>
             </UiExpandable>
           </div>
         </div>
