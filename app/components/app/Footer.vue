@@ -38,7 +38,10 @@ const email = 'hello@ditta.studio'
         href="mailto:hello@ditta.studio"
         aria-label="Email Ditta at hello@ditta.studio"
       >
-        <UiTextMorph :text="email" />
+        <UiTextMorph
+          :min-weight="400"
+          :text="email"
+        />
       </a>
     </div>
   </UiTheme>
@@ -46,6 +49,6 @@ const email = 'hello@ditta.studio'
 
 <style scoped>
 .footer__link {
-  font-size: min(calc(9.5vw + 6px), 176px); /* magic number */
+  font-size: min(calc(9.5vw + 6px), 177px); /* magic number */
 }
 </style>

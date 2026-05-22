@@ -23,7 +23,6 @@ const MIN_VELOCITY = 50
 let scrollTrigger: ScrollTrigger | null = null
 let resizeObserver: ResizeObserver | null = null
 let slntQuickTo: gsap.QuickToFunc | null = null
-let wghtQuickTo: gsap.QuickToFunc | null = null
 let xQuickSet: ((value: number) => void) | null = null
 let containerWidth = 0
 let lastIsScrollingUp: boolean | null = null
@@ -41,9 +40,8 @@ onMounted(async () => {
     return
   }
 
-  gsap.set(container.value, { '--slnt': 0, '--wght': 400 })
+  gsap.set(container.value, { '--slnt': 0 })
   slntQuickTo = gsap.quickTo(container.value, '--slnt', { duration: 0.4, ease: 'power2.out' })
-  wghtQuickTo = gsap.quickTo(container.value, '--wght', { duration: 0.4, ease: 'power2.out' })
   xQuickSet = gsap.quickSetter(container.value, 'x', 'px') as (value: number) => void
   containerWidth = container.value.clientWidth
 
@@ -93,16 +91,9 @@ onMounted(async () => {
 
       if (absVelocity > MIN_VELOCITY) {
         const t = Math.min(absVelocity / MAX_SCROLL_VELOCITY, 1)
-        if (velocity > 0) {
-          slntQuickTo?.(-10 * t)
-          wghtQuickTo?.(400)
-        } else {
-          slntQuickTo?.(0)
-          wghtQuickTo?.(400 + 500 * t)
-        }
+        slntQuickTo?.(-10 * t)
       } else {
         slntQuickTo?.(0)
-        wghtQuickTo?.(400)
       }
 
       lastProgress = progress
@@ -163,9 +154,7 @@ onUnmounted(() => {
 }
 
 .ui-ticker__container {
-  font-variation-settings:
-    'slnt' var(--slnt, 0),
-    'wght' var(--wght, 400);
+  font-variation-settings: 'slnt' var(--slnt, 0);
 }
 
 .ui-ticker__wrapper {

@@ -83,7 +83,7 @@ const { block } = defineProps<Props>()
     height: 50%;
     z-index: -1;
     pointer-events: none;
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(6px);
     background-color: --alpha(var(--color-black) / 30%);
   }
 

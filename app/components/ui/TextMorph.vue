@@ -4,18 +4,6 @@ import { SplitText } from 'gsap/SplitText'
 
 gsap.registerPlugin(SplitText)
 
-// Shared scroll singleton — one listener + one rAF for all instances on the page
-const scrollCallbacks = new Set<() => void>()
-let _scrollPending = false
-const _onScrollGlobal = () => {
-  if (_scrollPending) return
-  _scrollPending = true
-  requestAnimationFrame(() => {
-    scrollCallbacks.forEach((cb) => cb())
-    _scrollPending = false
-  })
-}
-
 interface Props {
   text: string
   falloff?: number
@@ -26,11 +14,17 @@ interface Props {
 
 const { text, falloff = 1.5, minWeight = 300, maxWeight = 900, autoAnimate = true } = defineProps<Props>()
 
-// em values — negative = pull left (tighten). tune per font.
+const MIN_SLNT = 0
+const MAX_SLNT = -10
+const TWEEN = { duration: 0.3, ease: 'power2.out' }
+const AUTO_TWEEN = { duration: 2, ease: 'power2.inOut' }
+const falloffEase = gsap.parseEase('power2.inOut')
+
+// em offsets — negative pulls left (tighter). tuned per font.
 const KERNING_MAP: Record<string, number> = {
   // ── Cap + Cap ──────────────────────────────────────────────
   AV: -0.08,
-  AW: -0.07,
+  AW: -0.045,
   AT: -0.07,
   AY: -0.08,
   VA: -0.08,
@@ -45,6 +39,8 @@ const KERNING_MAP: Record<string, number> = {
   Av: -0.08,
   Aw: -0.07,
   Ay: -0.08,
+  Lu: -0.015,
+  Pa: -0.015,
   Ta: -0.07,
   Te: -0.07,
   To: -0.07,
@@ -57,21 +53,43 @@ const KERNING_MAP: Record<string, number> = {
   We: -0.05,
   Wo: -0.05,
   Ya: -0.07,
-  Ye: -0.06,
+  Ye: -0.11,
   Yo: -0.06,
+  // ── Space pairs ────────────────────────────────────────────
+  ' W': -0.07,
   // ── lower + lower ──────────────────────────────────────────
-  av: -0.04,
+  av: -0.02,
   aw: -0.04,
   ay: -0.04,
+  el: -0.005,
+  ll: -0.005,
+  lo: -0.015,
+  tu: -0.01,
   va: -0.04,
+  ve: -0.02,
   vo: -0.03,
   wa: -0.04,
   wo: -0.03,
 }
 
 const applyKerning = (chars: Element[]) => {
-  for (let i = 1; i < chars.length; i++) {
-    const prev = chars[i - 1]!.textContent ?? ''
+  const preceding: string[] = []
+  let lastNonSpace = ''
+  let lastWasSpace = false
+
+  for (const c of text) {
+    if (c === ' ') {
+      lastWasSpace = true
+    } else {
+      preceding.push(lastWasSpace ? ' ' : lastNonSpace)
+      lastNonSpace = c
+      lastWasSpace = false
+    }
+  }
+
+  for (let i = 0; i < chars.length; i++) {
+    const prev = preceding[i] ?? ''
+    if (!prev) continue
     const curr = chars[i]!.textContent ?? ''
     const kern = KERNING_MAP[prev + curr]
     if (kern !== undefined) {
@@ -82,40 +100,27 @@ const applyKerning = (chars: Element[]) => {
 
 const rootRef = useTemplateRef('rootRef')
 
-let falloffPx = 220
-const MIN_SLNT = 0
-const MAX_SLNT = -10
-const TWEEN = { duration: 0.3, ease: 'power2.out' }
-const AUTO_TWEEN = { duration: 2, ease: 'power2.inOut' }
-const falloffEase = gsap.parseEase('power2.inOut')
-
 let split: SplitText | null = null
 let centers: number[] = []
-let wghtSetters: ((v: number) => gsap.core.Tween)[] = []
-let slntSetters: ((v: number) => gsap.core.Tween)[] = []
+let wghtSetters: gsap.QuickToFunc[] = []
+let slntSetters: gsap.QuickToFunc[] = []
 let ro: ResizeObserver | null = null
+let io: IntersectionObserver | null = null
+
+let falloffPx = 220
+let autoStartX = 0
+let autoEndX = 0
 
 let pointerX = 0
 let isHovered = false
 let dirty = false
 
-// Auto-sweep uses a normalised 0→1 progress value. tick() converts it to viewport X
-// using autoStartX/autoEndX, which measure() keeps current after every resize.
+// 0 → 1 normalised sweep position; tick() maps it to a viewport X coordinate
 const autoProxy = { progress: 0 }
 let autoActive = false
-let autoStartX = 0
-let autoEndX = 0
 let autoTl: gsap.core.Tween | null = null
 let autoDelayedCall: gsap.core.Tween | null = null
 let resizeTimer: ReturnType<typeof setTimeout> | null = null
-let isVisible = false
-let io: IntersectionObserver | null = null
-let scrollMeasure: (() => void) | null = null
-
-const onResize = () => {
-  if (resizeTimer !== null) clearTimeout(resizeTimer)
-  resizeTimer = setTimeout(measure, 150)
-}
 
 const measure = () => {
   const chars = split?.chars
@@ -130,11 +135,15 @@ const measure = () => {
   dirty = true
 }
 
+const onResize = () => {
+  if (resizeTimer !== null) clearTimeout(resizeTimer)
+  resizeTimer = setTimeout(measure, 150)
+}
+
 const startAutoLoop = () => {
   autoDelayedCall = null
   autoProxy.progress = 0
   autoActive = true
-
   autoTl = gsap.fromTo(
     autoProxy,
     { progress: 0 },
@@ -154,7 +163,32 @@ const startAutoLoop = () => {
   )
 }
 
+const tick = () => {
+  if (!dirty) return
+  dirty = false
+
+  const len = split?.chars.length ?? 0
+  const currentX = isHovered ? pointerX : autoStartX + autoProxy.progress * (autoEndX - autoStartX)
+  const isActive = isHovered || autoActive
+
+  for (let i = 0; i < len; i++) {
+    let eased = 0
+    if (isActive) {
+      const dist = Math.abs(currentX - (centers[i] ?? 0))
+      const proximity = Math.max(0, 1 - dist / falloffPx)
+      eased = falloffEase(proximity)
+      if (eased < 0.01) eased = 0
+    }
+    wghtSetters[i]?.(minWeight + eased * (maxWeight - minWeight))
+    slntSetters[i]?.(MIN_SLNT + eased * (MAX_SLNT - MIN_SLNT))
+  }
+}
+
 const onMove = (e: PointerEvent) => {
+  if (!isHovered) {
+    gsap.set(split?.chars ?? [], { willChange: 'font-variation-settings' })
+  }
+
   pointerX = e.clientX
   isHovered = true
   dirty = true
@@ -167,10 +201,8 @@ const onLeave = () => {
   dirty = true
 
   const exitProgress = Math.max(0, Math.min(1, (pointerX - autoStartX) / (autoEndX - autoStartX)))
-
   autoTl?.kill()
   autoProxy.progress = exitProgress
-
   autoActive = true
 
   autoTl = gsap.fromTo(
@@ -189,33 +221,11 @@ const onLeave = () => {
         } else {
           autoActive = false
           dirty = true
+          gsap.set(split?.chars ?? [], { willChange: 'auto' })
         }
       },
     },
   )
-}
-
-const tick = () => {
-  if (!dirty) return
-  dirty = false
-
-  const len = split?.chars.length ?? 0
-  const currentX = isHovered ? pointerX : autoStartX + autoProxy.progress * (autoEndX - autoStartX)
-  const isActive = isHovered || autoActive
-
-  for (let i = 0; i < len; i++) {
-    let eased = 0
-
-    if (isActive) {
-      const dist = Math.abs(currentX - (centers[i] ?? 0))
-      const proximity = Math.max(0, 1 - dist / falloffPx)
-      eased = falloffEase(proximity)
-      if (eased < 0.01) eased = 0
-    }
-
-    wghtSetters[i]?.(minWeight + eased * (maxWeight - minWeight))
-    slntSetters[i]?.(MIN_SLNT + eased * (MAX_SLNT - MIN_SLNT))
-  }
 }
 
 onMounted(() => {
@@ -226,6 +236,7 @@ onMounted(() => {
 
   gsap.set(chars, { '--wght': minWeight, '--slnt': MIN_SLNT })
   applyKerning(chars)
+
   const round1dp = (v: string) => String(Math.round(parseFloat(v) * 10) / 10)
   wghtSetters = chars.map((el) => gsap.quickTo(el, '--wght', { ...TWEEN, modifiers: { '--wght': round1dp } }))
   slntSetters = chars.map((el) => gsap.quickTo(el, '--slnt', { ...TWEEN, modifiers: { '--slnt': round1dp } }))
@@ -234,25 +245,30 @@ onMounted(() => {
   document.fonts.ready.then(() => measure())
   if (autoAnimate) startAutoLoop()
 
-  ro = new ResizeObserver(measure)
+  ro = new ResizeObserver(onResize)
   ro.observe(rootRef.value)
 
   io = new IntersectionObserver(
     (entries) => {
-      isVisible = entries[0]?.isIntersecting ?? false
-      if (isVisible) measure()
+      if (entries[0]?.isIntersecting) {
+        measure()
+        if (autoAnimate) {
+          gsap.set(chars, { willChange: 'font-variation-settings' })
+          autoDelayedCall?.kill()
+          autoTl?.kill()
+          startAutoLoop()
+        }
+      } else {
+        autoDelayedCall?.kill()
+        autoTl?.kill()
+        autoActive = false
+        dirty = true
+        if (autoAnimate) gsap.set(chars, { willChange: 'auto' })
+      }
     },
     { threshold: 0 },
   )
   io.observe(rootRef.value)
-
-  scrollMeasure = () => {
-    if (isVisible) measure()
-  }
-  scrollCallbacks.add(scrollMeasure)
-  if (scrollCallbacks.size === 1) window.addEventListener('scroll', _onScrollGlobal, { passive: true })
-
-  window.addEventListener('resize', onResize, { passive: true })
 
   gsap.ticker.add(tick)
 })
@@ -262,11 +278,6 @@ onUnmounted(() => {
   autoTl?.kill()
   ro?.disconnect()
   io?.disconnect()
-  if (scrollMeasure) {
-    scrollCallbacks.delete(scrollMeasure)
-    if (scrollCallbacks.size === 0) window.removeEventListener('scroll', _onScrollGlobal)
-  }
-  window.removeEventListener('resize', onResize)
   if (resizeTimer !== null) clearTimeout(resizeTimer)
   gsap.ticker.remove(tick)
   if (split) {
@@ -292,6 +303,5 @@ onUnmounted(() => {
   font-variation-settings:
     'slnt' var(--slnt, 0),
     'wght' var(--wght, 300);
-  will-change: font-variation-settings;
 }
 </style>
