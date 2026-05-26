@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { Themes } from '@/types/app'
 import IconPixelArrow from '@/assets/icons/pixel-arrow.svg'
+import { defineSound } from '@web-kits/audio'
+import { swoosh } from '@@/.web-kits/playful'
 
 interface Props {
   theme?: Themes
@@ -9,6 +11,9 @@ interface Props {
 }
 
 const { theme = 'light', text, size = 'large' } = defineProps<Props>()
+
+const soundSwoosh = defineSound(swoosh)
+const { play } = useAudio()
 
 const root = useTemplateRef('root')
 const width = ref(0)
@@ -42,6 +47,7 @@ onUnmounted(() => {
     ref="root"
     :style="{ '--scale-x': scaleX, '--scale-y': scaleY }"
     class="ui-button relative isolate select-none inline-flex items-center gap-[0.71em] font-medium leading-none rounded-full"
+    @pointerenter="play(soundSwoosh)"
     :class="[
       `ui-button--${size}`,
       size === 'large' ? 'py-2.5 md:py-3.75 pr-2.5 md:pr-3.75 pl-5 md:pl-6' : 'py-2 pr-2 pl-4',

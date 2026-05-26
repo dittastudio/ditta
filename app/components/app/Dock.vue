@@ -1,9 +1,11 @@
 <script lang="ts" setup>
-import { onClickOutside } from '@vueuse/core'
+import { onClickOutside, onKeyStroke } from '@vueuse/core'
 import type { ElementLink } from '#storyblok-components'
 import type { Themes } from '@/types/app'
 import IconLogo from '@/assets/icons/ditta.svg'
 import IconBurger from '@/assets/icons/burger.svg'
+import { defineSound } from '@web-kits/audio'
+import { expand, collapse, hover } from '@@/.web-kits/playful'
 
 interface Props {
   items?: ElementLink[]
@@ -27,6 +29,11 @@ const dockClasses: Record<Themes | 'navigationOpen', string> = {
   accent: 'bg-accent/50 text-black outline outline-1 outline-black/5',
 }
 
+const soundExpand = defineSound(expand)
+const soundCollapse = defineSound(collapse)
+const soundHover = defineSound(hover)
+const { play } = useAudio()
+
 const appStore = useAppStore()
 const { theme } = storeToRefs(appStore)
 const navigation = useNavigation()
@@ -46,7 +53,19 @@ const close = () => {
 }
 
 onClickOutside(dock, () => {
-  navigation.value = false
+  if (navigation.value) close()
+})
+
+onKeyStroke('Escape', () => {
+  if (navigation.value) close()
+})
+
+watch(navigation, (isOpen) => {
+  if (isOpen) {
+    play(soundExpand)
+  } else {
+    play(soundCollapse)
+  }
 })
 
 let lastScrollY = 0
@@ -156,7 +175,7 @@ defineExpose({
               }"
             >
               <div
-                class="dock__inner transition-opacity"
+                class="dock__inner relative transition-opacity"
                 :class="{
                   'opacity-0 duration-100 ease-out': !navigation,
                   'opacity-100 duration-500 ease-out delay-150': navigation,
@@ -174,6 +193,7 @@ defineExpose({
                         to="/"
                         prefetch-on="interaction"
                         class="block w-full transition-colors duration-300 ease-outCubic focus:outline-0"
+                        @pointerenter="play(soundHover)"
                       >
                         Index
                       </NuxtLink>
@@ -187,6 +207,7 @@ defineExpose({
                         :item="item.link"
                         prefetch-on="interaction"
                         class="block w-full transition-colors duration-300 ease-outCubic focus:outline-0"
+                        @pointerenter="play(soundHover)"
                       >
                         {{ item.text }}
                       </StoryblokLink>
@@ -213,6 +234,8 @@ defineExpose({
                     </li>
                   </ul>
                 </nav>
+
+                <UiAudioToggle class="absolute bottom-0 left-0" />
               </div>
             </UiExpandable>
           </div>
@@ -227,8 +250,6 @@ defineExpose({
 
 .dock__inner {
   --gradient-color: black;
-
-  position: relative;
 
   &::after {
     content: '';

@@ -47,7 +47,7 @@ router.afterEach(() => {
   >
     <div
       v-if="settings.content.tagline"
-      class="absolute top-0 left-0 z-10 pt-24 w-full"
+      class="absolute top-0 left-0 z-10 pt-25 w-full"
       :class="[taglineClass]"
     >
       <p class="wrapper text-center text-16 md:text-navigation transition-colors duration-500 ease-outCubic">
