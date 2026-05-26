@@ -175,67 +175,69 @@ defineExpose({
               }"
             >
               <div
-                class="dock__inner relative transition-opacity"
+                class="dock__inner relative transition-opacity text-grey"
                 :class="{
                   'opacity-0 duration-100 ease-out': !navigation,
                   'opacity-100 duration-500 ease-out delay-150': navigation,
                 }"
               >
-                <nav
+                <div
+                  class="dock__scroll scroll-y text-grey pt-10 flex flex-col gap-2"
                   data-lenis-prevent
-                  class="dock__nav w-full pt-10 pb-14 flex flex-col gap-14 scroll-y text-grey"
                 >
-                  <ul
-                    class="flex flex-col w-full text-28 text-center has-hover:[&_a:not(:hover)]:text-current/30 has-focus:[&_a:not(:focus)]:text-current/30"
-                  >
-                    <li>
-                      <NuxtLink
-                        to="/"
-                        prefetch-on="interaction"
-                        class="block w-full transition-colors duration-300 ease-outCubic focus:outline-0"
-                        @pointerenter="play(soundHover)"
-                      >
-                        Index
-                      </NuxtLink>
-                    </li>
-
-                    <li
-                      v-for="item in items"
-                      :key="item._uid"
+                  <nav class="w-full flex flex-col gap-14">
+                    <ul
+                      class="flex flex-col w-full text-28 text-center has-hover:[&_a:not(:hover)]:text-current/30 has-focus:[&_a:not(:focus)]:text-current/30"
                     >
-                      <StoryblokLink
-                        :item="item.link"
-                        prefetch-on="interaction"
-                        class="block w-full transition-colors duration-300 ease-outCubic focus:outline-0"
-                        @pointerenter="play(soundHover)"
+                      <li>
+                        <NuxtLink
+                          to="/"
+                          prefetch-on="interaction"
+                          class="block w-full transition-colors duration-300 ease-outCubic focus:outline-0"
+                          @pointerenter="play(soundHover)"
+                        >
+                          Index
+                        </NuxtLink>
+                      </li>
+
+                      <li
+                        v-for="item in items"
+                        :key="item._uid"
                       >
-                        {{ item.text }}
-                      </StoryblokLink>
-                    </li>
-                  </ul>
+                        <StoryblokLink
+                          :item="item.link"
+                          prefetch-on="interaction"
+                          class="block w-full transition-colors duration-300 ease-outCubic focus:outline-0"
+                          @pointerenter="play(soundHover)"
+                        >
+                          {{ item.text }}
+                        </StoryblokLink>
+                      </li>
+                    </ul>
 
-                  <ul class="flex flex-col items-center justify-center gap-10 w-full">
-                    <li>
-                      <NuxtLink
-                        to="mailto:hello@ditta.studio"
-                        class="block"
-                        prefetch-on="interaction"
-                      >
-                        <UiButton
-                          text="Talk to us"
-                          size="medium"
-                          theme="light"
-                        />
-                      </NuxtLink>
-                    </li>
+                    <ul class="flex flex-col items-center justify-center gap-10 w-full">
+                      <li>
+                        <NuxtLink
+                          to="mailto:hello@ditta.studio"
+                          class="block"
+                          prefetch-on="interaction"
+                        >
+                          <UiButton
+                            text="Talk to us"
+                            size="medium"
+                            theme="light"
+                          />
+                        </NuxtLink>
+                      </li>
 
-                    <li>
-                      <AppAccent />
-                    </li>
-                  </ul>
-                </nav>
+                      <li>
+                        <AppAccent />
+                      </li>
+                    </ul>
+                  </nav>
 
-                <UiAudioToggle class="absolute bottom-0 left-0" />
+                  <UiAudioToggle class="ml-auto" />
+                </div>
               </div>
             </UiExpandable>
           </div>
@@ -281,7 +283,7 @@ defineExpose({
   }
 }
 
-.dock__nav {
+.dock__scroll {
   max-height: calc(100svh - (var(--dock-height) + --spacing(15)));
 }
 </style>
