@@ -18,7 +18,8 @@ onMounted(() => {
   const height = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dock-height'))
   if (!height) return
 
-  const offset = Math.round(height / 2)
+  const halfHeader = Math.round(height / 2)
+  const offset = halfHeader + 30
   const rootMargin = `-${offset}px 0px -${window.innerHeight - offset - 1}px 0px`
 
   const observer = new IntersectionObserver(

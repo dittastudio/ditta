@@ -12,7 +12,6 @@ interface Props {
 const { items } = defineProps<Props>()
 
 const dock = useTemplateRef('dock')
-const wrapper = useTemplateRef('wrapper')
 
 const { data: weather } = useLazyFetch('/api/weather', { server: false })
 
@@ -65,8 +64,8 @@ const onScroll = () => {
 }
 
 onMounted(async () => {
-  if (wrapper.value) {
-    document.documentElement.style.setProperty('--dock-height', `${wrapper.value.offsetHeight}px`)
+  if (dock.value) {
+    document.documentElement.style.setProperty('--dock-height', `${dock.value.clientHeight}px`)
   }
 
   lastScrollY = window.scrollY
@@ -85,10 +84,7 @@ defineExpose({
 
 <template>
   <header class="fixed top-0 left-0 z-50 size-full pointer-events-none">
-    <div
-      ref="wrapper"
-      class="wrapper pt-5"
-    >
+    <div class="wrapper pt-7.5">
       <div
         class="w-full max-w-90 mx-auto rounded-20 corner-shape-squircle transition-[backdrop-filter,scale] duration-300 ease-out"
         :class="{
@@ -159,61 +155,65 @@ defineExpose({
                 'pointer-events-auto': !isHidden && isReady,
               }"
             >
-              <nav
-                data-lenis-prevent
-                class="w-full pt-10 pb-14 flex flex-col gap-14 transition-opacity scroll-y max-h-[calc(100svh-var(--dock-height)-20px)] text-grey"
+              <div
+                class="dock__inner transition-opacity"
                 :class="{
                   'opacity-0 duration-100 ease-out': !navigation,
                   'opacity-100 duration-500 ease-out delay-150': navigation,
                 }"
               >
-                <ul
-                  class="flex flex-col w-full text-28 text-center has-hover:[&_a:not(:hover)]:text-current/30 has-focus:[&_a:not(:focus)]:text-current/30"
+                <nav
+                  data-lenis-prevent
+                  class="dock__nav w-full pt-10 pb-14 flex flex-col gap-14 scroll-y text-grey"
                 >
-                  <li>
-                    <NuxtLink
-                      to="/"
-                      prefetch-on="interaction"
-                      class="relative block w-full transition-colors duration-300 ease-outCubic focus:outline-0"
-                    >
-                      Index
-                    </NuxtLink>
-                  </li>
-
-                  <li
-                    v-for="item in items"
-                    :key="item._uid"
+                  <ul
+                    class="flex flex-col w-full text-28 text-center has-hover:[&_a:not(:hover)]:text-current/30 has-focus:[&_a:not(:focus)]:text-current/30"
                   >
-                    <StoryblokLink
-                      :item="item.link"
-                      prefetch-on="interaction"
-                      class="block w-full transition-colors duration-300 ease-outCubic focus:outline-0"
-                    >
-                      {{ item.text }}
-                    </StoryblokLink>
-                  </li>
-                </ul>
+                    <li>
+                      <NuxtLink
+                        to="/"
+                        prefetch-on="interaction"
+                        class="block w-full transition-colors duration-300 ease-outCubic focus:outline-0"
+                      >
+                        Index
+                      </NuxtLink>
+                    </li>
 
-                <ul class="flex flex-col items-center justify-center gap-10 w-full">
-                  <li>
-                    <NuxtLink
-                      to="mailto:hello@ditta.studio"
-                      class="block"
-                      prefetch-on="interaction"
+                    <li
+                      v-for="item in items"
+                      :key="item._uid"
                     >
-                      <UiButton
-                        text="Talk to us"
-                        size="medium"
-                        theme="light"
-                      />
-                    </NuxtLink>
-                  </li>
+                      <StoryblokLink
+                        :item="item.link"
+                        prefetch-on="interaction"
+                        class="block w-full transition-colors duration-300 ease-outCubic focus:outline-0"
+                      >
+                        {{ item.text }}
+                      </StoryblokLink>
+                    </li>
+                  </ul>
 
-                  <li>
-                    <AppAccent />
-                  </li>
-                </ul>
-              </nav>
+                  <ul class="flex flex-col items-center justify-center gap-10 w-full">
+                    <li>
+                      <NuxtLink
+                        to="mailto:hello@ditta.studio"
+                        class="block"
+                        prefetch-on="interaction"
+                      >
+                        <UiButton
+                          text="Talk to us"
+                          size="medium"
+                          theme="light"
+                        />
+                      </NuxtLink>
+                    </li>
+
+                    <li>
+                      <AppAccent />
+                    </li>
+                  </ul>
+                </nav>
+              </div>
             </UiExpandable>
           </div>
         </div>
@@ -221,3 +221,46 @@ defineExpose({
     </div>
   </header>
 </template>
+
+<style scoped>
+@reference "@/assets/css/app.css";
+
+.dock__inner {
+  --gradient-color: black;
+
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: --spacing(16);
+    pointer-events: none;
+    background-image: linear-gradient(
+      to bottom,
+      --alpha(var(--gradient-color) / 100%) 0%,
+      --alpha(var(--gradient-color) / 98.7%) 8.1%,
+      --alpha(var(--gradient-color) / 95.1%) 15.5%,
+      --alpha(var(--gradient-color) / 89.6%) 22.5%,
+      --alpha(var(--gradient-color) / 82.5%) 29%,
+      --alpha(var(--gradient-color) / 74.1%) 35.3%,
+      --alpha(var(--gradient-color) / 64.8%) 41.2%,
+      --alpha(var(--gradient-color) / 55%) 47.1%,
+      --alpha(var(--gradient-color) / 45%) 52.9%,
+      --alpha(var(--gradient-color) / 35.2%) 58.8%,
+      --alpha(var(--gradient-color) / 25.9%) 64.7%,
+      --alpha(var(--gradient-color) / 17.5%) 71%,
+      --alpha(var(--gradient-color) / 10.4%) 77.5%,
+      --alpha(var(--gradient-color) / 4.9%) 84.5%,
+      --alpha(var(--gradient-color) / 1.3%) 91.9%,
+      --alpha(var(--gradient-color) / 0%) 100%
+    );
+  }
+}
+
+.dock__nav {
+  max-height: calc(100svh - (var(--dock-height) + --spacing(15)));
+}
+</style>
