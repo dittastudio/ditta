@@ -51,5 +51,10 @@ const { story } = defineProps<Props>()
       v-else-if="block.component === 'block_team'"
       :block="block"
     />
+
+    <BlockClients
+      v-else-if="block.component === 'block_clients'"
+      :block="block"
+    />
   </UiTheme>
 </template>

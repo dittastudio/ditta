@@ -8,10 +8,17 @@ interface Props {
   duration?: string
   direction?: 'left' | 'right'
   spacingClasses?: string
+  speed?: number
   triggerEl?: HTMLElement | null
 }
 
-const { direction = 'left', duration = '60s', spacingClasses = 'gap-20 px-10', triggerEl } = defineProps<Props>()
+const {
+  direction = 'left',
+  duration = '60s',
+  spacingClasses = 'gap-20 px-10',
+  speed = 2,
+  triggerEl,
+} = defineProps<Props>()
 
 const container = useTemplateRef('container')
 const wrappers = useTemplateRef('wrappers')
@@ -42,7 +49,7 @@ onMounted(async () => {
 
   gsap.set(container.value, { '--slnt': 0 })
   slntQuickTo = gsap.quickTo(container.value, '--slnt', { duration: 0.4, ease: 'power2.out' })
-  xQuickTo = gsap.quickTo(container.value, 'x', { duration: 0.3, ease: 'power2.out', unit: 'px' })
+  xQuickTo = gsap.quickTo(container.value, 'x', { duration: 0.3, ease: 'power2.out' })
   containerWidth = container.value.clientWidth
 
   resizeObserver = new ResizeObserver(onResize)
@@ -98,7 +105,9 @@ onMounted(async () => {
 
       lastProgress = progress
 
-      xQuickTo?.(direction === 'left' ? -containerWidth * (progress * 2) + 1 : containerWidth * (progress * 2) - 1)
+      xQuickTo?.(
+        direction === 'left' ? -containerWidth * (progress * speed) + 1 : containerWidth * (progress * speed) - 1,
+      )
     },
   })
 })
