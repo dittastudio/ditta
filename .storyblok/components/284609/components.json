@@ -4,7 +4,7 @@
     "display_name": "Companies",
     "description": null,
     "created_at": "2026-05-27T10:35:31.268Z",
-    "updated_at": "2026-05-27T15:49:21.902Z",
+    "updated_at": "2026-05-27T15:52:25.747Z",
     "id": 180996224092151,
     "schema": {
       "heading": {
@@ -21,7 +21,14 @@
         "component_whitelist": [
           "element_ticker"
         ],
-        "id": "XzUhBFQQTVGjWICAzsJMfQ"
+        "id": "XzUhBFQQTVGjWICAzsJMfQ",
+        "component_denylist": [],
+        "restrict_type": "",
+        "component_group_whitelist": [],
+        "component_group_denylist": [],
+        "component_tag_whitelist": [],
+        "component_tag_denylist": [],
+        "minimum": 1
       },
       "theme": {
         "type": "option",
