@@ -120,7 +120,7 @@ defineExpose({
         >
           <div
             ref="dock"
-            class="w-full rounded-[inherit] corner-shape-inherit transition-colors duration-300 ease-out"
+            class="w-full rounded-[inherit] corner-shape-inherit transition-colors duration-150 ease-out"
             :class="dockStyles"
           >
             <div
