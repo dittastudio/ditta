@@ -141,7 +141,7 @@ onUnmounted(() => {
           v-for="(project, index) in projects"
           :key="`${project.uuid}-${index}`"
           ref="project"
-          class="project__wrapper sticky top-0 h-screen w-full flex flex-col items-center py-10 pointer-events-none will-change-transform"
+          class="project__wrapper sticky top-0 h-svh w-full flex flex-col items-center py-10 pointer-events-none will-change-transform"
         >
           <div class="flex flex-col justify-center max-w-full h-full aspect-3/4 md:aspect-video">
             <NuxtLink

@@ -74,7 +74,7 @@ let suppressUntil = 0
 
 const onHashChange = () => {
   isHidden.value = false
-  suppressUntil = Date.now() + 1700
+  suppressUntil = Date.now() + 1700 //matching Lenis's anchors.duration: 1.5 + 200 ms buffer
 }
 
 useLenis(({ direction, scroll }) => {
