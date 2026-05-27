@@ -1,9 +1,12 @@
 <script lang="ts" setup>
-import { onClickOutside } from '@vueuse/core'
+import { onClickOutside, onKeyStroke } from '@vueuse/core'
+import { useLenis } from 'lenis/vue'
 import type { ElementLink } from '#storyblok-components'
 import type { Themes } from '@/types/app'
 import IconLogo from '@/assets/icons/ditta.svg'
 import IconBurger from '@/assets/icons/burger.svg'
+import { defineSound } from '@web-kits/audio'
+import { expand, collapse, hover } from '@@/.web-kits/playful'
 
 interface Props {
   items?: ElementLink[]
@@ -27,6 +30,11 @@ const dockClasses: Record<Themes | 'navigationOpen', string> = {
   accent: 'bg-accent/50 text-black outline outline-1 outline-black/5',
 }
 
+const soundExpand = defineSound(expand)
+const soundCollapse = defineSound(collapse)
+const soundHover = defineSound(hover)
+const { play } = useAudio()
+
 const appStore = useAppStore()
 const { theme } = storeToRefs(appStore)
 const navigation = useNavigation()
@@ -46,36 +54,50 @@ const close = () => {
 }
 
 onClickOutside(dock, () => {
-  navigation.value = false
+  if (navigation.value) close()
 })
 
-let lastScrollY = 0
+onKeyStroke('Escape', () => {
+  if (navigation.value) close()
+})
+
+watch(navigation, (isOpen) => {
+  if (isOpen) {
+    play(soundExpand)
+  } else {
+    play(soundCollapse)
+  }
+})
+
 const isHidden = ref(false)
+let suppressUntil = 0
 
-const onScroll = () => {
-  const y = window.scrollY
-  const isDown = y >= 1 && y > lastScrollY
+const onHashChange = () => {
+  isHidden.value = false
+  suppressUntil = Date.now() + 1700 //matching Lenis's anchors.duration: 1.5 + 200 ms buffer
+}
 
+useLenis(({ direction, scroll }) => {
+  if (Date.now() < suppressUntil) return
+
+  const isDown = direction === 1 && scroll >= 1
   if (!navigation.value && isHidden.value !== isDown) {
     isHidden.value = isDown
   }
-
-  lastScrollY = y
-}
+})
 
 onMounted(async () => {
   if (dock.value) {
     document.documentElement.style.setProperty('--dock-height', `${dock.value.clientHeight}px`)
   }
 
-  lastScrollY = window.scrollY
-  window.addEventListener('scroll', onScroll, { passive: true })
+  window.addEventListener('hashchange', onHashChange)
 
   await wait(100)
   isReady.value = true
 })
 
-onUnmounted(() => window.removeEventListener('scroll', onScroll))
+onUnmounted(() => window.removeEventListener('hashchange', onHashChange))
 
 defineExpose({
   close,
@@ -101,7 +123,7 @@ defineExpose({
         >
           <div
             ref="dock"
-            class="w-full rounded-[inherit] corner-shape-inherit transition-colors duration-300 ease-out"
+            class="w-full rounded-[inherit] corner-shape-inherit transition-colors duration-150 ease-out"
             :class="dockStyles"
           >
             <div
@@ -156,63 +178,69 @@ defineExpose({
               }"
             >
               <div
-                class="dock__inner transition-opacity"
+                class="dock__inner relative transition-opacity text-grey"
                 :class="{
                   'opacity-0 duration-100 ease-out': !navigation,
                   'opacity-100 duration-500 ease-out delay-150': navigation,
                 }"
               >
-                <nav
+                <div
+                  class="dock__scroll scroll-y text-grey pt-10 flex flex-col gap-2"
                   data-lenis-prevent
-                  class="dock__nav w-full pt-10 pb-14 flex flex-col gap-14 scroll-y text-grey"
                 >
-                  <ul
-                    class="flex flex-col w-full text-28 text-center has-hover:[&_a:not(:hover)]:text-current/30 has-focus:[&_a:not(:focus)]:text-current/30"
-                  >
-                    <li>
-                      <NuxtLink
-                        to="/"
-                        prefetch-on="interaction"
-                        class="block w-full transition-colors duration-300 ease-outCubic focus:outline-0"
-                      >
-                        Index
-                      </NuxtLink>
-                    </li>
-
-                    <li
-                      v-for="item in items"
-                      :key="item._uid"
+                  <nav class="w-full flex flex-col gap-14">
+                    <ul
+                      class="flex flex-col w-full text-28 text-center has-hover:[&_a:not(:hover)]:text-current/30 has-focus:[&_a:not(:focus)]:text-current/30"
                     >
-                      <StoryblokLink
-                        :item="item.link"
-                        prefetch-on="interaction"
-                        class="block w-full transition-colors duration-300 ease-outCubic focus:outline-0"
-                      >
-                        {{ item.text }}
-                      </StoryblokLink>
-                    </li>
-                  </ul>
+                      <li>
+                        <NuxtLink
+                          to="/"
+                          prefetch-on="interaction"
+                          class="block w-full transition-colors duration-300 ease-outCubic focus:outline-0"
+                          @pointerenter="play(soundHover)"
+                        >
+                          Index
+                        </NuxtLink>
+                      </li>
 
-                  <ul class="flex flex-col items-center justify-center gap-10 w-full">
-                    <li>
-                      <NuxtLink
-                        to="mailto:hello@ditta.studio"
-                        class="block"
-                        prefetch-on="interaction"
+                      <li
+                        v-for="item in items"
+                        :key="item._uid"
                       >
-                        <UiButton
-                          text="Talk to us"
-                          size="medium"
-                          theme="light"
-                        />
-                      </NuxtLink>
-                    </li>
+                        <StoryblokLink
+                          :item="item.link"
+                          prefetch-on="interaction"
+                          class="block w-full transition-colors duration-300 ease-outCubic focus:outline-0"
+                          @pointerenter="play(soundHover)"
+                        >
+                          {{ item.text }}
+                        </StoryblokLink>
+                      </li>
+                    </ul>
 
-                    <li>
-                      <AppAccent />
-                    </li>
-                  </ul>
-                </nav>
+                    <ul class="flex flex-col items-center justify-center gap-10 w-full">
+                      <li>
+                        <NuxtLink
+                          to="mailto:hello@ditta.studio"
+                          class="block"
+                          prefetch-on="interaction"
+                        >
+                          <UiButton
+                            text="Talk to us"
+                            size="medium"
+                            theme="light"
+                          />
+                        </NuxtLink>
+                      </li>
+
+                      <li>
+                        <AppAccent />
+                      </li>
+                    </ul>
+                  </nav>
+
+                  <UiAudioToggle class="ml-auto" />
+                </div>
               </div>
             </UiExpandable>
           </div>
@@ -227,8 +255,6 @@ defineExpose({
 
 .dock__inner {
   --gradient-color: black;
-
-  position: relative;
 
   &::after {
     content: '';
@@ -260,7 +286,7 @@ defineExpose({
   }
 }
 
-.dock__nav {
+.dock__scroll {
   max-height: calc(100svh - (var(--dock-height) + --spacing(15)));
 }
 </style>

@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import type { Accent } from '@/stores/app'
+import { defineSound } from '@web-kits/audio'
+import { select } from '@@/.web-kits/playful'
 
 const options: Array<{ value: Accent; label: string }> = [
   { value: 'pink', label: 'Pink' },
@@ -18,6 +20,9 @@ const outlineClass: Record<Accent, string> = {
   mood: 'outline-mood',
   olive: 'outline-olive',
 }
+
+const soundSelect = defineSound(select)
+const { play } = useAudio()
 
 const appStore = useAppStore()
 </script>
@@ -41,6 +46,7 @@ const appStore = useAppStore()
               class="sr-only"
               :value="option.value"
               v-model="appStore.accent"
+              @change="play(soundSelect)"
             />
 
             <span

@@ -8,10 +8,17 @@ interface Props {
   duration?: string
   direction?: 'left' | 'right'
   spacingClasses?: string
+  speed?: number
   triggerEl?: HTMLElement | null
 }
 
-const { direction = 'left', duration = '60s', spacingClasses = 'gap-20 px-10', triggerEl } = defineProps<Props>()
+const {
+  direction = 'left',
+  duration = '60s',
+  spacingClasses = 'gap-20 px-10',
+  speed = 2,
+  triggerEl,
+} = defineProps<Props>()
 
 const container = useTemplateRef('container')
 const wrappers = useTemplateRef('wrappers')
@@ -23,7 +30,7 @@ const MIN_VELOCITY = 50
 let scrollTrigger: ScrollTrigger | null = null
 let resizeObserver: ResizeObserver | null = null
 let slntQuickTo: gsap.QuickToFunc | null = null
-let xQuickSet: ((value: number) => void) | null = null
+let xQuickTo: gsap.QuickToFunc | null = null
 let containerWidth = 0
 let lastIsScrollingUp: boolean | null = null
 
@@ -42,7 +49,7 @@ onMounted(async () => {
 
   gsap.set(container.value, { '--slnt': 0 })
   slntQuickTo = gsap.quickTo(container.value, '--slnt', { duration: 0.4, ease: 'power2.out' })
-  xQuickSet = gsap.quickSetter(container.value, 'x', 'px') as (value: number) => void
+  xQuickTo = gsap.quickTo(container.value, 'x', { duration: 0.3, ease: 'power2.out' })
   containerWidth = container.value.clientWidth
 
   resizeObserver = new ResizeObserver(onResize)
@@ -98,7 +105,9 @@ onMounted(async () => {
 
       lastProgress = progress
 
-      xQuickSet?.(direction === 'left' ? -containerWidth * (progress * 2) + 1 : containerWidth * (progress * 2) - 1)
+      xQuickTo?.(
+        direction === 'left' ? -containerWidth * (progress * speed) + 1 : containerWidth * (progress * speed) - 1,
+      )
     },
   })
 })
