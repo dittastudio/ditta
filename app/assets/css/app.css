@@ -17,6 +17,7 @@
   --color-olive: oklch(0.7442 0.0554 154.96);
   --color-forest: oklch(0.2505 0.0852 142.5);
   --color-mood: oklch(0.6385 0.0312 42.55);
+  --color-blue: oklch(0.2038 0.1836 264.05);
   --color-crema: oklch(0.8102 0.0532 66.96);
 
   --color-accent: var(--color-pink);

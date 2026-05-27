@@ -1,7 +1,10 @@
 <script lang="ts" setup>
 import { Engine, Runner, Bodies, Body, Composite, Mouse, MouseConstraint } from 'matter-js'
+import { defineSound } from '@web-kits/audio'
+import { success, warning, confetti } from '@@/.web-kits/core'
+import { useAppStore } from '@/stores/app'
+import type { Accent } from '@/stores/app'
 import type { BlockServices } from '#storyblok-components'
-import IconPixelComputer from '@/assets/icons/pixel-computer.svg'
 
 interface Props {
   block: BlockServices
@@ -15,6 +18,45 @@ const transforms = shallowRef<string[]>([])
 const ready = ref(false)
 
 const services = await useDatasource('services', block.services)
+
+const soundSuccess = defineSound(success)
+const soundWarning = defineSound(warning)
+const soundConfetti = defineSound(confetti)
+const { play } = useAudio()
+
+const accents: Accent[] = ['pink', 'mood', 'olive']
+const appStore = useAppStore()
+
+const clickTimes: number[] = []
+const inRage = ref(false)
+let rageTimeout: ReturnType<typeof setTimeout> | null = null
+
+const onComputerClick = () => {
+  if (inRage.value) return
+
+  const now = Date.now()
+  clickTimes.push(now)
+
+  const cutoff = now - 1500
+  while (clickTimes.length && clickTimes[0]! < cutoff) clickTimes.shift()
+
+  if (clickTimes.length >= 7) {
+    clickTimes.length = 0
+    inRage.value = true
+    play(soundWarning)
+
+    rageTimeout = setTimeout(() => {
+      play(soundConfetti)
+      inRage.value = false
+    }, 2000)
+
+    return
+  }
+
+  const next = (accents.indexOf(appStore.accent) + 1) % accents.length
+  appStore.setAccent(accents[next]!)
+  play(soundSuccess)
+}
 
 let stopPhysics: (() => void) | null = null
 
@@ -173,6 +215,7 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('mousemove', onMouseMove)
   stopPhysics?.()
+  if (rageTimeout) clearTimeout(rageTimeout)
 })
 </script>
 
@@ -193,10 +236,72 @@ onUnmounted(() => {
       />
 
       <div class="col-span-full md:col-span-4">
-        <IconPixelComputer
-          class="animate-bob w-50 md:w-60 mx-auto md:ml-auto text-accent"
+        <IconComputer
+          class="animate-bob w-50 md:w-60 mx-auto md:ml-auto pointer-events-auto text-accent cursor-pointer"
           :style="{ transform: `rotate(${rotation}deg)` }"
-        />
+          @click="onComputerClick"
+        >
+          <template v-if="!inRage">
+            <path
+              d="M95 57h111v74H95V57z"
+              fill="currentColor"
+            />
+            <path
+              d="M180.249 131.336c-4.41 0-7.686-2.226-7.686-6.174 0-4.452 3.864-6.636 8.484-7.098l4.536-.462c1.176-.126 1.806-.882 1.806-1.89 0-1.176-1.218-2.184-3.318-2.184-2.268 0-3.864 1.134-4.2 3.108h-5.964c.588-4.746 5.418-7.77 10.29-7.77 6.258 0 9.996 3.612 8.988 9.45l-1.092 6.216c-.126.756.084 1.512 1.008 1.512.294 0 .546-.042.756-.084l-.882 5.04c-.546.168-1.302.294-2.352.294-2.226 0-3.906-1.176-4.032-2.688-.882 1.596-3.402 2.73-6.342 2.73zm.756-4.536c2.94 0 4.914-1.932 5.46-4.662l.126-.756-4.83.672c-1.89.252-3.192 1.302-3.192 2.814 0 1.176.882 1.932 2.436 1.932zM166.931 131.336c-4.704 0-8.148-2.604-6.972-9.198l1.386-7.854h-3.528l.882-5.082h3.528l1.134-6.342h6.216l-1.134 6.342h4.83l-.882 5.082h-4.83l-1.512 8.568c-.336 1.932.63 3.108 2.352 3.108.924 0 1.47-.126 1.932-.294l-.924 5.376c-.462.126-1.302.294-2.478.294zM151.345 131.336c-4.704 0-8.148-2.604-6.972-9.198l1.386-7.854h-3.528l.882-5.082h3.528l1.134-6.342h6.216l-1.134 6.342h4.83l-.882 5.082h-4.83l-1.512 8.568c-.336 1.932.63 3.108 2.352 3.108.924 0 1.47-.126 1.932-.294l-.924 5.376c-.462.126-1.302.294-2.478.294zM130.802 131l3.864-21.798h6.258L137.06 131h-6.258zm4.284-24.528l1.05-6.006h6.552l-1.092 6.006h-6.51zM114.786 131.336c-4.956 0-8.736-4.158-8.736-9.996 0-6.762 4.368-12.474 11.55-12.474 2.604 0 5.124 1.008 6.342 2.478l1.89-10.962h6.258L126.798 131h-6.258l.462-2.436c-1.092 1.596-3.486 2.772-6.216 2.772zm2.016-5.25c3.864 0 6.006-3.738 6.006-7.14 0-2.982-1.89-4.83-4.662-4.83-3.486 0-5.88 3.024-5.88 6.972 0 2.898 1.89 4.998 4.536 4.998z"
+              fill="#000"
+            />
+          </template>
+
+          <template v-else>
+            <rect
+              x="86"
+              y="131"
+              width="131"
+              height="9"
+              fill="#999999"
+            />
+            <path
+              d="M95 57H206V131H95V57Z"
+              fill="#0C23F4"
+            />
+            <path
+              d="M171 91H128V93H171V91Z"
+              fill="#BBBBBB"
+            />
+            <path
+              d="M174 96H128V98H174V96Z"
+              fill="#BBBBBB"
+            />
+            <path
+              d="M144 101H128V103H144V101Z"
+              fill="#BBBBBB"
+            />
+            <path
+              d="M164 109H128V110H164V109Z"
+              fill="#BBBBBB"
+            />
+            <path
+              d="M128 76H130V78H128V76Z"
+              fill="white"
+            />
+            <path
+              d="M128 82H130V84H128V82Z"
+              fill="white"
+            />
+            <path
+              d="M135 83H137V85H135V83Z"
+              fill="white"
+            />
+            <path
+              d="M135 75H137V77H135V75Z"
+              fill="white"
+            />
+            <path
+              d="M133 77H135V83H133V77Z"
+              fill="white"
+            />
+          </template>
+        </IconComputer>
       </div>
     </div>
 
