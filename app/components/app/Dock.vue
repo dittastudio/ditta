@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { onClickOutside, onKeyStroke } from '@vueuse/core'
+import { useLenis } from 'lenis/vue'
 import type { ElementLink } from '#storyblok-components'
 import type { Themes } from '@/types/app'
 import IconLogo from '@/assets/icons/ditta.svg'
@@ -68,33 +69,35 @@ watch(navigation, (isOpen) => {
   }
 })
 
-let lastScrollY = 0
 const isHidden = ref(false)
+let suppressUntil = 0
 
-const onScroll = () => {
-  const y = window.scrollY
-  const isDown = y >= 1 && y > lastScrollY
+const onHashChange = () => {
+  isHidden.value = false
+  suppressUntil = Date.now() + 1700
+}
 
+useLenis(({ direction, scroll }) => {
+  if (Date.now() < suppressUntil) return
+
+  const isDown = direction === 1 && scroll >= 1
   if (!navigation.value && isHidden.value !== isDown) {
     isHidden.value = isDown
   }
-
-  lastScrollY = y
-}
+})
 
 onMounted(async () => {
   if (dock.value) {
     document.documentElement.style.setProperty('--dock-height', `${dock.value.clientHeight}px`)
   }
 
-  lastScrollY = window.scrollY
-  window.addEventListener('scroll', onScroll, { passive: true })
+  window.addEventListener('hashchange', onHashChange)
 
   await wait(100)
   isReady.value = true
 })
 
-onUnmounted(() => window.removeEventListener('scroll', onScroll))
+onUnmounted(() => window.removeEventListener('hashchange', onHashChange))
 
 defineExpose({
   close,
