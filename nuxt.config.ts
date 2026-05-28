@@ -133,6 +133,9 @@ export default defineNuxtConfig({
       },
     },
   },
+  ogImage: {
+    enabled: false,
+  },
   site: {
     name: 'ditta',
     url: 'https://ditta.studio',
