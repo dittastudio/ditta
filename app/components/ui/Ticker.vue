@@ -1,11 +1,12 @@
 <script lang="ts" setup>
+import { useIntersectionObserver } from '@vueuse/core'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
 interface Props {
-  duration?: string
+  duration?: number
   direction?: 'left' | 'right'
   spacingClasses?: string
   speed?: number
@@ -14,25 +15,36 @@ interface Props {
 
 const {
   direction = 'left',
-  duration = '60s',
+  duration = 60,
   spacingClasses = 'gap-20 px-10',
   speed = 2,
   triggerEl,
 } = defineProps<Props>()
 
+const root = useTemplateRef('root')
 const container = useTemplateRef('container')
 const wrappers = useTemplateRef('wrappers')
 const lists = useTemplateRef('lists')
 
-const MAX_SCROLL_VELOCITY = 3000
+const MAX_SCROLL_VELOCITY = 1000
 const MIN_VELOCITY = 50
 
 let scrollTrigger: ScrollTrigger | null = null
 let resizeObserver: ResizeObserver | null = null
-let slntQuickTo: gsap.QuickToFunc | null = null
+let skewXQuickTo: gsap.QuickToFunc | null = null
 let xQuickTo: gsap.QuickToFunc | null = null
+let wrapperTweens: gsap.core.Tween[] = []
+let listTweens: gsap.core.Tween[] = []
 let containerWidth = 0
 let lastIsScrollingUp: boolean | null = null
+
+useIntersectionObserver(root, ([entry]) => {
+  if (!entry.isIntersecting) {
+    wrapperTweens.forEach((t) => t.pause())
+    listTweens.forEach((t) => t.pause())
+    lastIsScrollingUp = null
+  }
+})
 
 const onResize = () => {
   if (!container.value) return
@@ -47,8 +59,8 @@ onMounted(async () => {
     return
   }
 
-  gsap.set(container.value, { '--slnt': 0 })
-  slntQuickTo = gsap.quickTo(container.value, '--slnt', { duration: 0.4, ease: 'power2.out' })
+  gsap.set(root.value, { skewX: 0 })
+  skewXQuickTo = gsap.quickTo(root.value, 'skewX', { duration: 0.4, ease: 'power2.out' })
   xQuickTo = gsap.quickTo(container.value, 'x', { duration: 0.3, ease: 'power2.out' })
   containerWidth = container.value.clientWidth
 
@@ -56,6 +68,28 @@ onMounted(async () => {
   resizeObserver.observe(container.value)
 
   let lastProgress = 0
+
+  wrapperTweens = (wrappers.value ?? []).map((wrapper) =>
+    gsap.to(wrapper, {
+      xPercent: 100,
+      duration,
+      ease: 'none',
+      repeat: -1,
+      paused: true,
+      force3D: true,
+    }),
+  )
+
+  listTweens = (lists.value ?? []).map((list) =>
+    gsap.to(list, {
+      xPercent: -100,
+      duration,
+      ease: 'none',
+      repeat: -1,
+      paused: true,
+      force3D: true,
+    }),
+  )
 
   scrollTrigger = ScrollTrigger.create({
     trigger: triggerEl ?? container.value,
@@ -72,24 +106,11 @@ onMounted(async () => {
       const isScrollingUp = progress < lastProgress
 
       if (isScrollingUp !== lastIsScrollingUp) {
-        wrappers.value?.forEach((wrapper) => {
-          wrapper.style.animationPlayState = isScrollingUp
-            ? direction === 'left'
-              ? 'running'
-              : 'paused'
-            : direction === 'left'
-              ? 'paused'
-              : 'running'
-        })
-        lists.value?.forEach((list) => {
-          list.style.animationPlayState = isScrollingUp
-            ? direction === 'left'
-              ? 'paused'
-              : 'running'
-            : direction === 'left'
-              ? 'running'
-              : 'paused'
-        })
+        const wrapperRunning = isScrollingUp === (direction === 'left')
+
+        wrapperTweens.forEach((t) => (wrapperRunning ? t.play() : t.pause()))
+        listTweens.forEach((t) => (wrapperRunning ? t.pause() : t.play()))
+
         lastIsScrollingUp = isScrollingUp
       }
 
@@ -98,9 +119,9 @@ onMounted(async () => {
 
       if (absVelocity > MIN_VELOCITY) {
         const t = Math.min(absVelocity / MAX_SCROLL_VELOCITY, 1)
-        slntQuickTo?.(-10 * t)
+        skewXQuickTo?.(isScrollingUp ? -6 * t : 6 * t)
       } else {
-        slntQuickTo?.(0)
+        skewXQuickTo?.(0)
       }
 
       lastProgress = progress
@@ -121,6 +142,15 @@ onUnmounted(() => {
     scrollTrigger = null
   }
 
+  wrapperTweens.forEach((t) => t.kill())
+  listTweens.forEach((t) => t.kill())
+  wrapperTweens = []
+  listTweens = []
+
+  if (root.value) {
+    gsap.set(root.value, { clearProps: 'skewX' })
+  }
+
   if (container.value) {
     gsap.set(container.value, { clearProps: 'all' })
   }
@@ -128,7 +158,10 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="ui-ticker relative contain-layout w-full isolate">
+  <div
+    ref="root"
+    class="ui-ticker relative contain-layout w-full isolate"
+  >
     <div
       ref="container"
       class="ui-ticker__container flex justify-center transform-gpu"
@@ -158,41 +191,13 @@ onUnmounted(() => {
 <style scoped>
 @reference "@/assets/css/app.css";
 
-.ui-ticker {
-  --duration: v-bind(duration);
-}
-
-.ui-ticker__container {
-  font-variation-settings: 'slnt' var(--slnt, 0);
-}
-
 .ui-ticker__wrapper {
   will-change: transform;
-  animation: ticker-right var(--duration) linear infinite paused;
+  backface-visibility: hidden;
 }
 
 .ui-ticker__list {
   will-change: transform;
-  animation: ticker-left var(--duration) linear infinite paused;
-}
-
-@keyframes ticker-left {
-  0% {
-    translate: 0 0 0;
-  }
-
-  100% {
-    translate: -100% 0 0;
-  }
-}
-
-@keyframes ticker-right {
-  0% {
-    translate: 0 0 0;
-  }
-
-  100% {
-    translate: 100% 0 0;
-  }
+  backface-visibility: hidden;
 }
 </style>

@@ -35,7 +35,7 @@ const { block } = defineProps<Props>()
           v-if="ticker.items?.length"
           spacing-classes="gap-10 px-5 md:gap-20 md:px-10"
           :direction="index % 2 === 0 ? 'left' : 'right'"
-          :speed="0.5"
+          :speed="0.1"
         >
           <UiLogoResizer
             v-for="logo in ticker.items"
@@ -55,6 +55,6 @@ const { block } = defineProps<Props>()
 @reference "@/assets/css/app.css";
 
 .companies__tickers {
-  mask-image: linear-gradient(to left, transparent 5%, black 20%, black 80%, transparent 95%);
+  /* mask-image: linear-gradient(to left, transparent 5%, black 20%, black 80%, transparent 95%); */
 }
 </style>
