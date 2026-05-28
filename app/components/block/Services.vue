@@ -86,8 +86,11 @@ const onComputerClick = () => {
   }
 
   const next = (accents.indexOf(appStore.accent) + 1) % accents.length
-  appStore.setAccent(accents[next]!)
-  play(soundClick)
+
+  if (accents[next]) {
+    appStore.setAccent(accents[next])
+    play(soundClick)
+  }
 }
 
 let stopPhysics: (() => void) | null = null

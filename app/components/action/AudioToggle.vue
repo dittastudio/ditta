@@ -1,10 +1,14 @@
 <script lang="ts" setup>
 const { isAudioOn, toggle } = useAudio()
+
+const appStore = useAppStore()
+const { theme, navigation } = storeToRefs(appStore)
+const isDark = computed(() => theme.value === 'dark')
 </script>
 
 <template>
   <button
-    class="audio-toggle group flex items-center justify-center p-1"
+    class="audio-toggle group flex items-center justify-center"
     :class="isAudioOn ? 'is-active' : ''"
     type="button"
     :aria-label="isAudioOn ? 'Mute audio' : 'Enable audio'"
@@ -12,12 +16,14 @@ const { isAudioOn, toggle } = useAudio()
     @click="toggle"
   >
     <span
-      class="block p-3 rounded-[16px] corner-shape-squircle transition-[background-color] duration-300 ease-out group-hover:bg-current/15"
+      class="flex items-center justify-center w-12 h-full rounded-[16px] corner-shape-squircle transition-[background-color] duration-300 ease-out"
+      :class="{
+        'group-hover:bg-current/15': isDark || navigation,
+        'group-hover:bg-current/5': !isDark,
+      }"
     >
       <svg
-        class="audio-toggle__icon w-5 h-auto group-not-[.is-active]:opacity-60 transition-opacity duration-300 ease-out"
-        width="24"
-        height="24"
+        class="audio-toggle__icon w-4.5 h-auto"
         viewBox="0 0 24 24"
         xmlns="http://www.w3.org/2000/svg"
       >

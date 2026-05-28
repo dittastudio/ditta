@@ -3,7 +3,6 @@ import { onClickOutside, onKeyStroke } from '@vueuse/core'
 import type { ElementLink } from '#storyblok-components'
 import type { Themes } from '@/types/app'
 import IconLogo from '@/assets/icons/ditta.svg'
-import IconBurger from '@/assets/icons/burger.svg'
 import { defineSound } from '@web-kits/audio'
 import { expand, collapse, hover } from '@@/.web-kits/playful'
 
@@ -35,8 +34,7 @@ const soundHover = defineSound(hover)
 const { play } = useAudio()
 
 const appStore = useAppStore()
-const { theme } = storeToRefs(appStore)
-const navigation = useNavigation()
+const { theme, navigation } = storeToRefs(appStore)
 const isDark = computed(() => theme.value === 'dark')
 const isReady = ref(false)
 
@@ -44,12 +42,8 @@ const dockStyles = computed(() => {
   return dockClasses[navigation.value ? 'navigationOpen' : theme.value]
 })
 
-const toggle = () => {
-  navigation.value = !navigation.value
-}
-
 const close = () => {
-  navigation.value = false
+  appStore.setNavigation(false)
 }
 
 onClickOutside(dock, () => {
@@ -124,7 +118,7 @@ defineExpose({
             :class="dockStyles"
           >
             <div
-              class="grid grid-cols-3 rounded-[inherit] corner-shape-inherit"
+              class="w-full h-11 grid grid-cols-3 rounded-[inherit] corner-shape-inherit"
               :class="{ 'pointer-events-auto': !isHidden && isReady }"
             >
               <p class="flex items-center gap-1.5 pl-5">
@@ -147,23 +141,10 @@ defineExpose({
                 <span class="sr-only">ditta</span>
               </NuxtLink>
 
-              <div>
-                <button
-                  class="group ml-auto block p-1"
-                  type="button"
-                  @click="toggle"
-                >
-                  <span
-                    class="block p-4 rounded-[16px] corner-shape-squircle transition-colors duration-300 ease-out"
-                    :class="{
-                      'group-hover:bg-current/15': isDark || navigation,
-                      'group-hover:bg-current/5': !isDark,
-                    }"
-                  >
-                    <IconBurger class="w-4 h-auto ml-auto" />
-                    <span class="sr-only">{{ navigation ? 'Close Menu' : 'Open Menu' }}</span>
-                  </span>
-                </button>
+              <div class="flex justify-end p-1">
+                <ActionAudioToggle />
+
+                <ActionNavigationToggle />
               </div>
             </div>
 
@@ -182,7 +163,7 @@ defineExpose({
                 }"
               >
                 <div
-                  class="dock__scroll scroll-y text-grey pt-10 flex flex-col gap-2"
+                  class="dock__scroll scroll-y text-grey py-10 flex flex-col gap-2"
                   data-lenis-prevent
                 >
                   <nav class="w-full flex flex-col gap-14">
@@ -231,12 +212,10 @@ defineExpose({
                       </li>
 
                       <li>
-                        <AppAccent />
+                        <ActionAccent />
                       </li>
                     </ul>
                   </nav>
-
-                  <UiAudioToggle class="ml-auto" />
                 </div>
               </div>
             </UiExpandable>
