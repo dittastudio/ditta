@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useIntersectionObserver } from '@vueuse/core'
+import { useIntersectionObserver, useResizeObserver } from '@vueuse/core'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -30,7 +30,6 @@ const MAX_SCROLL_VELOCITY = 1000
 const MIN_VELOCITY = 50
 
 let scrollTrigger: ScrollTrigger | null = null
-let resizeObserver: ResizeObserver | null = null
 let skewXQuickTo: gsap.QuickToFunc | null = null
 let xQuickTo: gsap.QuickToFunc | null = null
 let wrapperTweens: gsap.core.Tween[] = []
@@ -38,13 +37,41 @@ let listTweens: gsap.core.Tween[] = []
 let containerWidth = 0
 let lastIsScrollingUp: boolean | null = null
 
-useIntersectionObserver(root, ([entry]) => {
-  if (!entry.isIntersecting) {
-    wrapperTweens.forEach((t) => t.pause())
-    listTweens.forEach((t) => t.pause())
-    lastIsScrollingUp = null
-  }
-})
+const createWrapperTween = (el: HTMLElement, duration: number) => {
+  return gsap.to(el, {
+    xPercent: 100,
+    duration,
+    ease: 'none',
+    repeat: -1,
+    paused: true,
+    force3D: true,
+  })
+}
+
+const createListTween = (el: HTMLElement, duration: number) => {
+  return gsap.to(el, {
+    xPercent: -100,
+    duration,
+    ease: 'none',
+    repeat: -1,
+    paused: true,
+    force3D: true,
+  })
+}
+
+useIntersectionObserver(
+  root,
+  ([entry]) => {
+    if (!entry) return
+
+    if (!entry.isIntersecting) {
+      wrapperTweens.forEach((t) => t.pause())
+      listTweens.forEach((t) => t.pause())
+      lastIsScrollingUp = null
+    }
+  },
+  { rootMargin: '200px 0px 200px 0px' },
+)
 
 const onResize = () => {
   if (!container.value) return
@@ -59,37 +86,18 @@ onMounted(async () => {
     return
   }
 
-  gsap.set(root.value, { skewX: 0 })
-  skewXQuickTo = gsap.quickTo(root.value, 'skewX', { duration: 0.4, ease: 'power2.out' })
-  xQuickTo = gsap.quickTo(container.value, 'x', { duration: 0.3, ease: 'power2.out' })
+  gsap.set(root.value, { skewX: 0, force3D: true })
+  gsap.set(container.value, { force3D: true })
+  skewXQuickTo = gsap.quickTo(root.value, 'skewX', { duration: 0.4, ease: 'power2.out', force3D: true })
+  xQuickTo = gsap.quickTo(container.value, 'x', { duration: 0.3, ease: 'power2.out', force3D: true })
   containerWidth = container.value.clientWidth
 
-  resizeObserver = new ResizeObserver(onResize)
-  resizeObserver.observe(container.value)
+  useResizeObserver(container, onResize)
 
   let lastProgress = 0
 
-  wrapperTweens = (wrappers.value ?? []).map((wrapper) =>
-    gsap.to(wrapper, {
-      xPercent: 100,
-      duration,
-      ease: 'none',
-      repeat: -1,
-      paused: true,
-      force3D: true,
-    }),
-  )
-
-  listTweens = (lists.value ?? []).map((list) =>
-    gsap.to(list, {
-      xPercent: -100,
-      duration,
-      ease: 'none',
-      repeat: -1,
-      paused: true,
-      force3D: true,
-    }),
-  )
+  wrapperTweens = (wrappers.value ?? []).map((el) => createWrapperTween(el, duration))
+  listTweens = (lists.value ?? []).map((el) => createListTween(el, duration))
 
   scrollTrigger = ScrollTrigger.create({
     trigger: triggerEl ?? container.value,
@@ -134,9 +142,6 @@ onMounted(async () => {
 })
 
 onUnmounted(() => {
-  resizeObserver?.disconnect()
-  resizeObserver = null
-
   if (scrollTrigger) {
     scrollTrigger.kill()
     scrollTrigger = null
@@ -152,7 +157,7 @@ onUnmounted(() => {
   }
 
   if (container.value) {
-    gsap.set(container.value, { clearProps: 'all' })
+    gsap.set(container.value, { clearProps: 'x' })
   }
 })
 </script>
@@ -164,17 +169,17 @@ onUnmounted(() => {
   >
     <div
       ref="container"
-      class="ui-ticker__container flex justify-center transform-gpu"
+      class="ui-ticker__container flex justify-center"
     >
       <div
         v-for="i in 4"
         :key="i"
         ref="wrappers"
-        class="ui-ticker__wrapper min-w-full shrink-0 transform-gpu"
+        class="ui-ticker__wrapper min-w-full shrink-0"
       >
         <div
           ref="lists"
-          class="ui-ticker__list select-none flex justify-center shrink-0 min-w-full transform-gpu"
+          class="ui-ticker__list select-none flex justify-center shrink-0 min-w-full"
         >
           <div
             :class="spacingClasses"
@@ -187,17 +192,3 @@ onUnmounted(() => {
     </div>
   </div>
 </template>
-
-<style scoped>
-@reference "@/assets/css/app.css";
-
-.ui-ticker__wrapper {
-  will-change: transform;
-  backface-visibility: hidden;
-}
-
-.ui-ticker__list {
-  will-change: transform;
-  backface-visibility: hidden;
-}
-</style>
