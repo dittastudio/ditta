@@ -256,16 +256,6 @@ onUnmounted(() => {
   stopPhysics?.()
   if (rageTimeout) clearTimeout(rageTimeout)
 })
-
-// const wrapper = useTemplateRef('wrapper')
-
-// const chipsActive = () => {
-//   wrapper.value?.classList.add('pointer-events-none')
-// }
-
-// const chipsInactive = () => {
-//   wrapper.value?.classList.remove('pointer-events-none')
-// }
 </script>
 
 <template>
