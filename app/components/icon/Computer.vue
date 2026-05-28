@@ -81,14 +81,6 @@
       fill="#999"
     />
     <path
-      d="M86 225H66v-9h20v9z"
-      fill="#0F0"
-    />
-    <path
-      d="M86 233H66v-8h20v8z"
-      fill="#009A01"
-    />
-    <path
       d="M235 225h-94v-9h94v9zM206 233h-9v-8h9v8z"
       fill="#000"
     />

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Engine, Runner, Bodies, Body, Composite, Mouse, MouseConstraint } from 'matter-js'
 import { defineSound } from '@web-kits/audio'
-import { success, warning, confetti } from '@@/.web-kits/core'
+import { sync } from '@@/.web-kits/core'
 import { useAppStore } from '@/stores/app'
 import type { Accent } from '@/stores/app'
 import type { BlockServices } from '#storyblok-components'
@@ -19,10 +19,36 @@ const ready = ref(false)
 
 const services = await useDatasource('services', block.services)
 
-const soundSuccess = defineSound(success)
-const soundWarning = defineSound(warning)
-const soundConfetti = defineSound(confetti)
-const { play } = useAudio()
+const soundClick = defineSound(sync)
+const { play, isAudioOn } = useAudio()
+
+let audioError: HTMLAudioElement | null = null
+let audioRestart: HTMLAudioElement | null = null
+
+watch(
+  isAudioOn,
+  (on) => {
+    if (!on || audioError) return
+    audioError = new Audio('/sounds/winxperror.opus')
+    audioError.preload = 'auto'
+    audioRestart = new Audio('/sounds/winxpstartup.opus')
+    audioRestart.preload = 'auto'
+  },
+  { immediate: true },
+)
+
+const soundError = () => {
+  if (audioError) {
+    audioError.currentTime = 0
+    audioError.play().catch(() => {})
+  }
+}
+const soundRestart = () => {
+  if (audioRestart) {
+    audioRestart.currentTime = 0
+    audioRestart.play().catch(() => {})
+  }
+}
 
 const accents: Accent[] = ['pink', 'mood', 'olive']
 const appStore = useAppStore()
@@ -43,10 +69,10 @@ const onComputerClick = () => {
   if (clickTimes.length >= 7) {
     clickTimes.length = 0
     inRage.value = true
-    play(soundWarning)
+    play(soundError)
 
     rageTimeout = setTimeout(() => {
-      play(soundConfetti)
+      play(soundRestart)
       inRage.value = false
     }, 2000)
 
@@ -55,7 +81,7 @@ const onComputerClick = () => {
 
   const next = (accents.indexOf(appStore.accent) + 1) % accents.length
   appStore.setAccent(accents[next]!)
-  play(soundSuccess)
+  play(soundClick)
 }
 
 let stopPhysics: (() => void) | null = null
@@ -243,6 +269,14 @@ onUnmounted(() => {
         >
           <template v-if="!inRage">
             <path
+              d="M86 225H66v-9h20v9z"
+              fill="#0F0"
+            />
+            <path
+              d="M86 233H66v-8h20v8z"
+              fill="#009A01"
+            />
+            <path
               d="M95 57h111v74H95V57z"
               fill="currentColor"
             />
@@ -253,6 +287,14 @@ onUnmounted(() => {
           </template>
 
           <template v-else>
+            <path
+              d="M86 225H66v-9h20v9z"
+              fill="#FF9800"
+            />
+            <path
+              d="M86 233H66v-8h20v8z"
+              fill="#B05800"
+            />
             <rect
               x="86"
               y="131"
