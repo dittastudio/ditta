@@ -100,6 +100,7 @@ export default defineNuxtConfig({
     optimizeDeps: {
       include: [
         '@mux/mux-player',
+        '@plausible-analytics/tracker',
         '@storyblok/vue',
         '@tiptap/core',
         '@vue/devtools-core',
@@ -110,7 +111,6 @@ export default defineNuxtConfig({
         'gsap/SplitText',
         'lenis/vue',
         'matter-js',
-        '@web-kits/audio',
       ],
     },
     plugins: [
