@@ -112,7 +112,6 @@ export default defineNuxtConfig({
         'gsap/SplitText',
         'lenis/vue',
         'matter-js',
-        '@web-kits/audio',
       ],
     },
     plugins: [
