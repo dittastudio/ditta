@@ -21,6 +21,13 @@ export const useAppStore = defineStore(
       theme.value = value
     }
 
+    const navigation = ref(false)
+    const getNavigation = computed(() => navigation.value)
+
+    function setNavigation(value: boolean) {
+      navigation.value = value
+    }
+
     return {
       accent,
       getAccent,
@@ -28,6 +35,9 @@ export const useAppStore = defineStore(
       theme,
       getTheme,
       setTheme,
+      navigation,
+      getNavigation,
+      setNavigation,
     }
   },
   {
