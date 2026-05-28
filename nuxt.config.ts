@@ -106,6 +106,7 @@ export default defineNuxtConfig({
         '@vue/devtools-core',
         '@vue/devtools-kit',
         '@vueuse/core',
+        '@web-kits/audio',
         'gsap',
         'gsap/ScrollTrigger',
         'gsap/SplitText',
