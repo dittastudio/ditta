@@ -81,7 +81,7 @@
       fill="#999"
     />
     <path
-      d="M235 225h-94v-9h94v9zM206 233h-9v-8h9v8z"
+      d="M235 225h-94v-9h94v9zM206z"
       fill="#000"
     />
     <path

@@ -20,7 +20,7 @@
     <path d="M235 216h-94v-11h94v11z" fill="#999"/>
     <path d="M86 225H66v-9h20v9z" fill="#0F0"/>
     <path d="M86 233H66v-8h20v8z" fill="#009A01"/>
-    <path d="M235 225h-94v-9h94v9zM206 233h-9v-8h9v8z" fill="#000"/>
+    <path d="M235 225h-94v-9h94v9zM206z" fill="#000"/>
     <path d="M29 253h29v-11H29v11z" fill="#999"/>
     <path d="M66 253h-8v-11h8v11z" fill="#000"/>
     <path d="M66 253h9v-11h-9v11z" fill="#fff"/>
