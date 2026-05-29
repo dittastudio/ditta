@@ -80,6 +80,12 @@ export default defineNuxtConfig({
       crawlLinks: true,
       routes: ['/'],
     },
+    experimental: {
+      wasm: true,
+    },
+    wasm: {
+      esmImport: true,
+    },
   },
   vue: {
     compilerOptions: {
