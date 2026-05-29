@@ -17,11 +17,11 @@ const { block } = defineProps<Props>()
       'pb-(--app-vertical-rhythm)': block.spacing_bottom,
     }"
   >
-    <div class="wrapper w-full">
-      <p
-        v-if="block.heading"
-        class="text-heading max-w-[24ch] text-pretty mx-auto"
-      >
+    <div
+      v-if="block.heading"
+      class="wrapper w-full"
+    >
+      <p class="text-body max-w-[24ch] text-pretty mx-auto uppercase">
         {{ block.heading }}
       </p>
     </div>
@@ -41,9 +41,9 @@ const { block } = defineProps<Props>()
             v-for="logo in ticker.items"
             :key="logo.id"
             :asset="logo"
-            :strength="70"
-            :base-height="2.25"
-            class="opacity-30"
+            :strength="80"
+            :base-height="3"
+            class="invert opacity-50"
           />
         </UiTicker>
       </template>
@@ -55,6 +55,6 @@ const { block } = defineProps<Props>()
 @reference "@/assets/css/app.css";
 
 .companies__tickers {
-  /* mask-image: linear-gradient(to left, transparent 5%, black 20%, black 80%, transparent 95%); */
+  mask-image: linear-gradient(to left, transparent 5%, black 20%, black 80%, transparent 95%);
 }
 </style>
