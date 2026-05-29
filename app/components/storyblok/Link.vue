@@ -35,12 +35,30 @@ const attributes = {
   to: determineHref(item),
   target: (item?.target ?? item?.linktype === 'asset') ? '_blank' : null,
 }
+
+const lenis = useLenis()
+
+const smoothScrollHash = (e: MouseEvent) => {
+  const hashIndex = attributes.to.indexOf('#')
+
+  if (hashIndex === -1) {
+    return
+  }
+
+  const element = document.querySelector(attributes.to.slice(hashIndex)) as HTMLElement | null
+
+  if (element) {
+    e.preventDefault()
+    lenis.value?.scrollTo(element, { offset: 1, duration: 1.5 })
+  }
+}
 </script>
 
 <template>
   <NuxtLink
     v-bind="attributes"
     :class="{ 'router-link-active': isActiveLink }"
+    @click="smoothScrollHash"
   >
     <slot />
   </NuxtLink>

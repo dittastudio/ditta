@@ -38,10 +38,6 @@ router.afterEach(() => {
     :options="{
       duration: 0.75,
       autoRaf: true,
-      anchors: {
-        duration: 1.5,
-        offset: 1,
-      },
     }"
   >
     <AppTagline
