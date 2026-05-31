@@ -23,7 +23,7 @@ const toggle = () => {
         'group-hover:bg-current/5': !isDark,
       }"
     >
-      <IconBurger class="w-4 h-auto" />
+      <IconBurger class="w-[17px] h-auto" />
       <span class="sr-only">{{ navigation ? 'Close Menu' : 'Open Menu' }}</span>
     </span>
   </button>
