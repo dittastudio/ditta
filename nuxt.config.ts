@@ -3,6 +3,11 @@ import tailwindcss from '@tailwindcss/vite'
 import svgLoader from 'vite-svg-loader'
 import { breakpoints } from './app/utils/breakpoints'
 
+const isProduction =
+  process.env.CONTEXT === 'production' || // Netlify
+  process.env.CF_PAGES_BRANCH === 'main' || // Cloudflare Pages
+  process.env.WORKERS_CI_BRANCH === 'main' // Cloudflare Workers (Builds)
+
 export default defineNuxtConfig({
   modules: [
     '@pinia/nuxt',
@@ -65,7 +70,7 @@ export default defineNuxtConfig({
         {
           rel: 'icon',
           type: 'image/svg+xml',
-          href: process.env.CONTEXT === 'production' ? '/favicon.svg' : '/develop.svg',
+          href: !isProduction ? '/develop.svg' : '/favicon.svg',
         },
       ],
     },
@@ -79,6 +84,12 @@ export default defineNuxtConfig({
     prerender: {
       crawlLinks: true,
       routes: ['/'],
+    },
+    experimental: {
+      wasm: true,
+    },
+    wasm: {
+      esmImport: true,
     },
   },
   vue: {
