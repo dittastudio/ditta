@@ -35,14 +35,14 @@ const playD = () => {
   if (!isAudioOn.value) return
 
   play(kickSound)
-  hit(dEl)
+  hit(dEl, 'is-d-hit')
 }
 
 const playI = () => {
   if (!isAudioOn.value) return
 
   play(snareSound)
-  hit(iDotEl, 'is-i-hit')
+  hit(iDotEl, 'is-i-dot-hit')
   hit(iStemEl, 'is-i-stem-hit')
 }
 
@@ -57,7 +57,7 @@ const playA = () => {
   if (!isAudioOn.value) return
 
   play(tomSound)
-  hit(aEl)
+  hit(aEl, 'is-a-hit')
 }
 
 onKeyStroke(['d', 'D'], playD)
@@ -127,7 +127,7 @@ onKeyStroke(['a', 'A'], playA)
   }
 }
 
-@keyframes drum-i-hit {
+@keyframes drum-i-dot-hit {
   0% {
     transform: translateY(0);
   }
@@ -163,14 +163,20 @@ onKeyStroke(['a', 'A'], playA)
   }
 }
 
-.is-hit {
+.is-d-hit {
   animation: drum-hit 0.35s var(--ease-outCubic);
   transform-box: fill-box;
-  transform-origin: center;
+  transform-origin: bottom right;
 }
 
-.is-i-hit {
-  animation: drum-i-hit 0.35s var(--ease-outCubic);
+.is-a-hit {
+  animation: drum-hit 0.35s var(--ease-outCubic);
+  transform-box: fill-box;
+  transform-origin: bottom left;
+}
+
+.is-i-dot-hit {
+  animation: drum-i-dot-hit 0.35s var(--ease-outCubic);
   transform-box: fill-box;
   transform-origin: center;
 }
