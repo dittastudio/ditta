@@ -16,16 +16,28 @@ const dock = useTemplateRef('dock')
 
 const { data: weather } = useLazyFetch('/api/weather', { server: false })
 
-const dockClasses: Record<Themes | 'navigationOpen', string> = {
-  navigationOpen: 'bg-black text-grey outline outline-1 outline-white/15',
-  dark: 'bg-black/50 text-grey outline outline-1 outline-white/15',
-  light: 'bg-grey/50 text-black outline outline-1 outline-black/5',
-  white: 'bg-grey/50 text-black outline outline-1 outline-black/5',
-  pink: 'bg-pink/50 text-black outline outline-1 outline-black/5',
-  beige: 'bg-beige/50 text-black outline outline-1 outline-black/5',
-  mood: 'bg-mood/50 text-black outline outline-1 outline-black/5',
-  olive: 'bg-olive/50 text-black outline outline-1 outline-black/5',
-  accent: 'bg-accent/50 text-black outline outline-1 outline-black/5',
+const dockBgClasses: Record<Themes | 'navigationOpen', string> = {
+  navigationOpen: 'bg-black outline outline-1 outline-white/15',
+  dark: 'bg-black/50 outline outline-1 outline-white/15',
+  light: 'bg-grey/50 outline outline-1 outline-black/5',
+  white: 'bg-grey/50 outline outline-1 outline-black/5',
+  pink: 'bg-pink/50 outline outline-1 outline-black/5',
+  beige: 'bg-beige/50 outline outline-1 outline-black/5',
+  mood: 'bg-mood/50 outline outline-1 outline-black/5',
+  olive: 'bg-olive/50 outline outline-1 outline-black/5',
+  accent: 'bg-accent/50 outline outline-1 outline-black/5',
+}
+
+const dockTextClasses: Record<Themes | 'navigationOpen', string> = {
+  navigationOpen: 'text-grey',
+  dark: 'text-grey',
+  light: 'text-black',
+  white: 'text-black',
+  pink: 'text-black',
+  beige: 'text-black',
+  mood: 'text-black',
+  olive: 'text-black',
+  accent: 'text-black',
 }
 
 const soundExpand = defineSound(expand)
@@ -38,9 +50,8 @@ const { theme, navigation } = storeToRefs(appStore)
 const isDark = computed(() => theme.value === 'dark')
 const isReady = ref(false)
 
-const dockStyles = computed(() => {
-  return dockClasses[navigation.value ? 'navigationOpen' : theme.value]
-})
+const dockBgStyles = computed(() => dockBgClasses[navigation.value ? 'navigationOpen' : theme.value])
+const dockTextStyles = computed(() => dockTextClasses[navigation.value ? 'navigationOpen' : theme.value])
 
 const close = () => {
   appStore.setNavigation(false)
@@ -114,9 +125,14 @@ defineExpose({
         >
           <div
             ref="dock"
-            class="w-full rounded-[inherit] corner-shape-inherit transition-colors duration-150 ease-out"
-            :class="dockStyles"
+            class="w-full relative overflow-visible rounded-[inherit] corner-shape-inherit transition-colors duration-150 ease-out"
+            :class="dockTextStyles"
           >
+            <div
+              class="absolute rounded-20 corner-shape-squircle -z-1 transition-[inset,background-color,outline-color] duration-[300ms,150ms,150ms] ease-out"
+              :class="[dockBgStyles, navigation ? 'inset-[-10px_-10px_0px_-10px]' : 'inset-0']"
+            />
+
             <div
               class="w-full h-11 grid grid-cols-3 rounded-[inherit] corner-shape-inherit"
               :class="{ 'pointer-events-auto': !isHidden && isReady }"

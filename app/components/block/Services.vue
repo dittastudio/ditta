@@ -273,10 +273,12 @@ onUnmounted(() => {
         'pb-(--app-vertical-rhythm)': block.spacing_bottom,
       }"
     >
-      <div class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-5 relativex pb-80">
+      <div
+        :class="isDragging ? '*:pointer-events-none' : '*:pointer-events-auto'"
+        class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-5 relativex pb-80"
+      >
         <UiLockup
-          class="col-span-full md:col-span-8 *:pointer-events-auto"
-          :class="isDragging ? '*:pointer-events-none' : '*:pointer-events-auto'"
+          class="col-span-full md:col-span-8"
           :heading="block.heading"
           :copy="block.copy"
         />
@@ -284,7 +286,7 @@ onUnmounted(() => {
         <div class="col-span-full md:col-span-4">
           <IconComputer
             class="animate-bob w-50 md:w-60 mx-auto md:ml-auto text-accent cursor-pointer"
-            :class="isDragging ? 'pointer-events-none' : 'pointer-events-auto'"
+            :class="{ 'transition-scale duration-150 ease-out active:scale-97': !inRage }"
             :style="{ transform: `rotate(${rotation}deg)` }"
             @click="onComputerClick"
           >

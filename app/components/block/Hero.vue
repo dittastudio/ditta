@@ -18,8 +18,7 @@ const hatSound = defineSound(hatClosed)
 const tomSound = defineSound(tom)
 
 const dEl = ref<SVGElement | null>(null)
-const iDotEl = ref<SVGElement | null>(null)
-const iStemEl = ref<SVGElement | null>(null)
+const iEl = ref<SVGElement | null>(null)
 const tEl = ref<SVGElement | null>(null)
 const aEl = ref<SVGElement | null>(null)
 
@@ -42,8 +41,7 @@ const playI = () => {
   if (!isAudioOn.value) return
 
   play(snareSound)
-  hit(iDotEl, 'is-i-dot-hit')
-  hit(iStemEl, 'is-i-stem-hit')
+  hit(iEl, 'is-i-hit')
 }
 
 const playT = () => {
@@ -70,30 +68,30 @@ onKeyStroke(['a', 'A'], playA)
   <div class="overflow-hidden">
     <div class="wrapper min-h-svh flex flex-col justify-end pt-40">
       <svg
-        class="w-full h-auto -mb-1.5 overflow-visible"
+        class="w-full h-auto -mb-1.5 overflow-visible *:[pointer-events:bounding-box] select-none"
         viewBox="0 0 1802 622"
         xmlns="http://www.w3.org/2000/svg"
         fill="currentColor"
       >
+        <g
+          ref="iEl"
+          @click="playI"
+          :class="{ 'cursor-pointer': isAudioOn }"
+        >
+          <path
+            d="M722.218 65.5554C724.115 31.3 697.883 1.99247 663.628 0.0952894C629.372 -1.8019 600.065 24.4296 598.168 58.6851C596.271 92.9405 622.502 122.248 656.758 124.145C691.013 126.042 720.321 99.8108 722.218 65.5554Z"
+          />
+
+          <path
+            d="M722.879 180.781H540.696L521.477 281.895H582.483L540.696 513.378H473.011L454.627 614.501H714.521L732.906 513.378H663.543L722.879 180.781Z"
+          />
+        </g>
+
         <path
           ref="dEl"
           :class="['logo-d', { 'cursor-pointer': isAudioOn }]"
           d="M386.081 5.28589L347.643 223.403C324.241 193.322 274.94 174.094 225.631 174.094C86.913 174.093 0 287.748 0 423.126C0 539.285 73.538 621.189 168.808 621.189C222.291 621.189 268.252 596.952 289.141 566.027L279.949 614.501H403.631L508.927 5.28589H386.08H386.081ZM209.751 516.727C159.616 516.727 124.517 474.94 124.517 418.117C124.517 338.727 170.478 278.556 237.328 278.556C289.142 278.556 325.076 315.325 325.076 372.991C325.076 441.51 284.132 516.727 209.751 516.727Z"
           @click="playD"
-        />
-
-        <path
-          ref="iDotEl"
-          :class="['logo-i-dot', { 'cursor-pointer': isAudioOn }]"
-          d="M722.218 65.5554C724.115 31.3 697.883 1.99247 663.628 0.0952894C629.372 -1.8019 600.065 24.4296 598.168 58.6851C596.271 92.9405 622.502 122.248 656.758 124.145C691.013 126.042 720.321 99.8108 722.218 65.5554Z"
-          @click="playI"
-        />
-
-        <path
-          ref="iStemEl"
-          :class="['logo-i-stem', { 'cursor-pointer': isAudioOn }]"
-          d="M722.879 180.781H540.696L521.477 281.895H582.483L540.696 513.378H473.011L454.627 614.501H714.521L732.906 513.378H663.543L722.879 180.781Z"
-          @click="playI"
         />
 
         <path
@@ -175,16 +173,18 @@ onKeyStroke(['a', 'A'], playA)
   transform-origin: bottom left;
 }
 
-.is-i-dot-hit {
-  animation: drum-i-dot-hit 0.35s var(--ease-outCubic);
-  transform-box: fill-box;
-  transform-origin: center;
-}
+.is-i-hit {
+  & path:nth-child(1) {
+    animation: drum-i-dot-hit 0.35s var(--ease-outCubic);
+    transform-box: fill-box;
+    transform-origin: center;
+  }
 
-.is-i-stem-hit {
-  animation: drum-i-stem-hit 0.34s var(--ease-outCubic) 0.02s;
-  transform-box: fill-box;
-  transform-origin: bottom center;
+  & path:nth-child(2) {
+    animation: drum-i-stem-hit 0.34s var(--ease-outCubic) 0.02s;
+    transform-box: fill-box;
+    transform-origin: bottom center;
+  }
 }
 
 .is-t-hit {
