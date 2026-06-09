@@ -49,6 +49,8 @@ const appStore = useAppStore()
 const { theme, navigation } = storeToRefs(appStore)
 const isDark = computed(() => theme.value === 'dark')
 const isReady = ref(false)
+const isClosing = ref(false)
+let closingTimer: ReturnType<typeof setTimeout> | null = null
 
 const dockBgStyles = computed(() => dockBgClasses[navigation.value ? 'navigationOpen' : theme.value])
 const dockTextStyles = computed(() => dockTextClasses[navigation.value ? 'navigationOpen' : theme.value])
@@ -65,11 +67,20 @@ onKeyStroke('Escape', () => {
   if (navigation.value) close()
 })
 
+const delay = 420 // 300ms + 100ms delay and 20ms buffer
+
 watch(navigation, (isOpen) => {
   if (isOpen) {
     play(soundExpand)
+    if (closingTimer) clearTimeout(closingTimer)
+    isClosing.value = false
   } else {
     play(soundCollapse)
+    isClosing.value = true
+
+    closingTimer = setTimeout(() => {
+      isClosing.value = false
+    }, delay)
   }
 })
 
@@ -129,8 +140,15 @@ defineExpose({
             :class="dockTextStyles"
           >
             <div
-              class="absolute rounded-20 corner-shape-squircle -z-1 transition-[inset,background-color,outline-color] duration-[300ms,150ms,150ms] ease-out"
-              :class="[dockBgStyles, navigation ? 'inset-[-10px_-10px_0px_-10px]' : 'inset-0']"
+              class="absolute rounded-20 corner-shape-squircle -z-1 transition-[inset,background-color,outline-color]"
+              :class="[
+                dockBgStyles,
+                navigation ? 'inset-[-10px_-10px_0px_-10px]' : 'inset-0',
+                {
+                  'duration-[500ms,150ms,150ms] ease-outBack': !isClosing,
+                  'duration-[300ms,150ms,150ms] delay-[0ms,100ms,100ms] ease-out': isClosing,
+                },
+              ]"
             />
 
             <div
