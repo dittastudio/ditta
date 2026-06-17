@@ -124,7 +124,7 @@ defineExpose({
         class="w-full max-w-90 mx-auto rounded-20 corner-shape-squircle transition-[backdrop-filter,scale] duration-300 ease-out"
         :class="{
           'backdrop-blur-none scale-95': isHidden || !isReady,
-          'backdrop-blur-md scale-100': !isHidden && isReady,
+          'backdrop-blur-sm scale-100': !isHidden && isReady,
         }"
       >
         <div
