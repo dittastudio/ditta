@@ -27,10 +27,21 @@ const services = await useDatasource('services', block.services)
 const soundClick = defineSound(sync)
 const { play, isAudioOn } = useAudio()
 
+const preloadedImgs = new Set<string>()
+
+const preloadImg = (src: string) => {
+  if (preloadedImgs.has(src)) return
+  preloadedImgs.add(src)
+  const img = new Image()
+  img.src = src
+}
+
 let audioError: HTMLAudioElement | null = null
 let audioRestart: HTMLAudioElement | null = null
 let audioPs: HTMLAudioElement | null = null
 let audioNintendo: HTMLAudioElement | null = null
+let audioEpicSax: HTMLAudioElement | null = null
+let jazzInterval: ReturnType<typeof setInterval> | null = null
 
 watch(
   isAudioOn,
@@ -39,12 +50,6 @@ watch(
 
     audioError = new Audio('/sounds/winxperror.opus')
     audioError.preload = 'auto'
-    audioRestart = new Audio('/sounds/winxpstartup.opus')
-    audioRestart.preload = 'auto'
-    audioPs = new Audio('/sounds/ps-startup.opus')
-    audioPs.preload = 'auto'
-    audioNintendo = new Audio('/sounds/nintendo-startup.opus')
-    audioNintendo.preload = 'auto'
   },
   { immediate: true },
 )
@@ -87,6 +92,38 @@ const onComputerClick = () => {
 
   shakeLevel.value = clickTimes.length
 
+  if (clickTimes.length === 1) {
+    preloadImg('/imgs/blue-screen.svg')
+    const upcoming = (rageCount.value + 1) % 4
+    if (upcoming === 1) {
+      preloadImg('/imgs/windowsxp-screen.svg')
+      if (!audioRestart) {
+        audioRestart = new Audio('/sounds/winxpstartup.opus')
+        audioRestart.preload = 'auto'
+      }
+    } else if (upcoming === 2) {
+      preloadImg('/imgs/ps-screen-1.svg')
+      preloadImg('/imgs/ps-screen-2.svg')
+      if (!audioPs) {
+        audioPs = new Audio('/sounds/ps-startup.opus')
+        audioPs.preload = 'auto'
+      }
+    } else if (upcoming === 3) {
+      preloadImg('/imgs/nintendo-screen.svg')
+      if (!audioNintendo) {
+        audioNintendo = new Audio('/sounds/nintendo-startup.opus')
+        audioNintendo.preload = 'auto'
+      }
+    } else {
+      preloadImg('/imgs/jazz-1.svg')
+      preloadImg('/imgs/jazz-2.svg')
+      if (!audioEpicSax) {
+        audioEpicSax = new Audio('/sounds/epicsaxguy.opus')
+        audioEpicSax.preload = 'auto'
+      }
+    }
+  }
+
   if (shakeResetTimeout) clearTimeout(shakeResetTimeout)
   shakeResetTimeout = setTimeout(() => {
     shakeLevel.value = 0
@@ -108,10 +145,9 @@ const onComputerClick = () => {
     }
 
     rageCount.value++
-    const sequence = rageCount.value % 3
+    const sequence = rageCount.value % 4
 
     if (sequence === 1) {
-      // 1st, 4th, … rages: WinXP sequence
       rageTimeout = setTimeout(() => {
         if (!audioRestart) return
 
@@ -128,7 +164,6 @@ const onComputerClick = () => {
         audioRestart.play().catch(() => {})
       }, 2000)
     } else if (sequence === 2) {
-      // 2nd, 5th, … rages: PlayStation sequence
       rageTimeout = setTimeout(() => {
         if (!audioPs) return
 
@@ -152,8 +187,7 @@ const onComputerClick = () => {
         audioPs.addEventListener('ended', currentEndedHandler)
         audioPs.play().catch(() => {})
       }, 2000)
-    } else {
-      // 3rd, 6th, … rages: Nintendo sequence
+    } else if (sequence === 3) {
       rageTimeout = setTimeout(() => {
         if (!audioNintendo) return
 
@@ -168,6 +202,33 @@ const onComputerClick = () => {
 
         audioNintendo.addEventListener('ended', currentEndedHandler)
         audioNintendo.play().catch(() => {})
+      }, 2000)
+    } else {
+      rageTimeout = setTimeout(() => {
+        if (!audioEpicSax) return
+
+        rageScreen.value = '/imgs/jazz-1.svg'
+        audioEpicSax.currentTime = 0
+
+        let jazzToggle = false
+
+        jazzInterval = setInterval(() => {
+          jazzToggle = !jazzToggle
+          rageScreen.value = jazzToggle ? '/imgs/jazz-2.svg' : '/imgs/jazz-1.svg'
+        }, 465)
+
+        currentEndedHandler = () => {
+          if (jazzInterval) {
+            clearInterval(jazzInterval)
+            jazzInterval = null
+          }
+          inRage.value = false
+          audioEpicSax!.removeEventListener('ended', currentEndedHandler!)
+          currentEndedHandler = null
+        }
+
+        audioEpicSax.addEventListener('ended', currentEndedHandler)
+        audioEpicSax.play().catch(() => {})
       }, 2000)
     }
 
@@ -217,7 +278,7 @@ const onMouseMove = (event: MouseEvent) => {
 
 onMounted(() => {
   window.addEventListener('mousemove', onMouseMove, { passive: true })
-  window.addEventListener('pointerup', resetDrag)
+  window.addEventListener('pointerup', resetDrag, { passive: true })
 
   const el = containerRef.value
   const chips = chipRefs.value
@@ -349,14 +410,18 @@ onUnmounted(() => {
   if (rageTimeout) clearTimeout(rageTimeout)
   if (psScreenTimeout) clearTimeout(psScreenTimeout)
   if (shakeResetTimeout) clearTimeout(shakeResetTimeout)
+  if (jazzInterval) clearInterval(jazzInterval)
   if (currentEndedHandler) {
     audioRestart?.removeEventListener('ended', currentEndedHandler)
     audioPs?.removeEventListener('ended', currentEndedHandler)
     audioNintendo?.removeEventListener('ended', currentEndedHandler)
+    audioEpicSax?.removeEventListener('ended', currentEndedHandler)
   }
+  audioError?.pause()
   audioRestart?.pause()
   audioPs?.pause()
   audioNintendo?.pause()
+  audioEpicSax?.pause()
 })
 </script>
 
