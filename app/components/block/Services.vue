@@ -30,6 +30,7 @@ const { play, isAudioOn } = useAudio()
 let audioError: HTMLAudioElement | null = null
 let audioRestart: HTMLAudioElement | null = null
 let audioPs: HTMLAudioElement | null = null
+let audioNintendo: HTMLAudioElement | null = null
 
 watch(
   isAudioOn,
@@ -42,6 +43,8 @@ watch(
     audioRestart.preload = 'auto'
     audioPs = new Audio('/sounds/ps-startup.opus')
     audioPs.preload = 'auto'
+    audioNintendo = new Audio('/sounds/nintendo-startup.opus')
+    audioNintendo.preload = 'auto'
   },
   { immediate: true },
 )
@@ -52,13 +55,6 @@ const soundError = () => {
     audioError.play().catch(() => {})
   }
 }
-const soundRestart = () => {
-  if (audioRestart) {
-    audioRestart.currentTime = 0
-    audioRestart.play().catch(() => {})
-  }
-}
-
 const accents: Accent[] = ['pink', 'mood', 'olive']
 const appStore = useAppStore()
 
@@ -66,9 +62,19 @@ const clickTimes: number[] = []
 const inRage = ref(false)
 const rageCount = ref(0)
 const rageScreen = ref('/imgs/blue-screen.svg')
+const shakeLevel = ref(0)
+
 let rageTimeout: ReturnType<typeof setTimeout> | null = null
 let psScreenTimeout: ReturnType<typeof setTimeout> | null = null
-let psEndedHandler: (() => void) | null = null
+let shakeResetTimeout: ReturnType<typeof setTimeout> | null = null
+let currentEndedHandler: (() => void) | null = null
+
+const shakeClass = computed(() => {
+  if (inRage.value || shakeLevel.value <= 1) return ''
+  if (shakeLevel.value <= 3) return 'computer-shake-1'
+  if (shakeLevel.value <= 5) return 'computer-shake-2'
+  return 'computer-shake-3'
+})
 
 const onComputerClick = () => {
   if (inRage.value) return
@@ -79,21 +85,50 @@ const onComputerClick = () => {
   const cutoff = now - 1500
   while (clickTimes.length && clickTimes[0]! < cutoff) clickTimes.shift()
 
-  if (clickTimes.length >= 5) {
+  shakeLevel.value = clickTimes.length
+
+  if (shakeResetTimeout) clearTimeout(shakeResetTimeout)
+  shakeResetTimeout = setTimeout(() => {
+    shakeLevel.value = 0
+  }, 500)
+
+  if (clickTimes.length >= 7) {
     clickTimes.length = 0
+    shakeLevel.value = 0
+    if (shakeResetTimeout) clearTimeout(shakeResetTimeout)
     inRage.value = true
-    rageCount.value++
     rageScreen.value = '/imgs/blue-screen.svg'
     play(soundError)
 
-    if (rageCount.value % 2 === 1) {
-      // Odd rages: WinXP sequence
+    if (!isAudioOn.value) {
       rageTimeout = setTimeout(() => {
-        play(soundRestart)
         inRage.value = false
       }, 2000)
-    } else {
-      // Even rages: PlayStation sequence
+      return
+    }
+
+    rageCount.value++
+    const sequence = rageCount.value % 3
+
+    if (sequence === 1) {
+      // 1st, 4th, … rages: WinXP sequence
+      rageTimeout = setTimeout(() => {
+        if (!audioRestart) return
+
+        rageScreen.value = '/imgs/windowsxp-screen.svg'
+        audioRestart.currentTime = 0
+
+        currentEndedHandler = () => {
+          inRage.value = false
+          audioRestart!.removeEventListener('ended', currentEndedHandler!)
+          currentEndedHandler = null
+        }
+
+        audioRestart.addEventListener('ended', currentEndedHandler)
+        audioRestart.play().catch(() => {})
+      }, 2000)
+    } else if (sequence === 2) {
+      // 2nd, 5th, … rages: PlayStation sequence
       rageTimeout = setTimeout(() => {
         if (!audioPs) return
 
@@ -104,15 +139,35 @@ const onComputerClick = () => {
           rageScreen.value = '/imgs/ps-screen-2.svg'
         }, 7200)
 
-        psEndedHandler = () => {
+        currentEndedHandler = () => {
+          if (psScreenTimeout) {
+            clearTimeout(psScreenTimeout)
+            psScreenTimeout = null
+          }
           inRage.value = false
-          rageScreen.value = '/imgs/blue-screen.svg'
-          audioPs!.removeEventListener('ended', psEndedHandler!)
-          psEndedHandler = null
+          audioPs!.removeEventListener('ended', currentEndedHandler!)
+          currentEndedHandler = null
         }
 
-        audioPs.addEventListener('ended', psEndedHandler)
+        audioPs.addEventListener('ended', currentEndedHandler)
         audioPs.play().catch(() => {})
+      }, 2000)
+    } else {
+      // 3rd, 6th, … rages: Nintendo sequence
+      rageTimeout = setTimeout(() => {
+        if (!audioNintendo) return
+
+        rageScreen.value = '/imgs/nintendo-screen.svg'
+        audioNintendo.currentTime = 0
+
+        currentEndedHandler = () => {
+          inRage.value = false
+          audioNintendo!.removeEventListener('ended', currentEndedHandler!)
+          currentEndedHandler = null
+        }
+
+        audioNintendo.addEventListener('ended', currentEndedHandler)
+        audioNintendo.play().catch(() => {})
       }, 2000)
     }
 
@@ -293,8 +348,15 @@ onUnmounted(() => {
   stopPhysics?.()
   if (rageTimeout) clearTimeout(rageTimeout)
   if (psScreenTimeout) clearTimeout(psScreenTimeout)
-  if (psEndedHandler && audioPs) audioPs.removeEventListener('ended', psEndedHandler)
+  if (shakeResetTimeout) clearTimeout(shakeResetTimeout)
+  if (currentEndedHandler) {
+    audioRestart?.removeEventListener('ended', currentEndedHandler)
+    audioPs?.removeEventListener('ended', currentEndedHandler)
+    audioNintendo?.removeEventListener('ended', currentEndedHandler)
+  }
+  audioRestart?.pause()
   audioPs?.pause()
+  audioNintendo?.pause()
 })
 </script>
 
@@ -321,17 +383,23 @@ onUnmounted(() => {
         />
 
         <div class="col-span-full md:col-span-4">
-          <IconComputer
-            class="animate-bob w-50 md:w-60 mx-auto md:ml-auto text-accent cursor-pointer"
-            :class="{ 'transition-scale duration-150 ease-out active:scale-97': !inRage }"
-            :style="{ transform: `rotate(${rotation}deg)` }"
-            :in-rage="inRage"
-            :screen-src="rageScreen"
-            @click="onComputerClick"
-          />
+          <div
+            class="w-50 md:w-62.5 mx-auto md:ml-auto"
+            :class="shakeClass"
+          >
+            <IconComputer
+              class="animate-bob w-full text-accent cursor-pointer"
+              :class="{ 'transition-scale duration-150 ease-out hover:scale-102 active:scale-98': !inRage }"
+              :style="{ transform: `rotate(${rotation}deg)` }"
+              :in-rage="inRage"
+              :screen-src="rageScreen"
+              @click="onComputerClick"
+            />
+          </div>
         </div>
       </div>
     </div>
+
     <ul
       ref="container"
       class="absolute inset-0 z-0 select-none"
@@ -354,3 +422,57 @@ onUnmounted(() => {
     </ul>
   </div>
 </template>
+
+<style>
+@keyframes computer-shake {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  10% {
+    translate: calc(var(--shake-x) * -1) calc(var(--shake-y) * -1);
+  }
+  20% {
+    translate: var(--shake-x) var(--shake-y);
+  }
+  30% {
+    translate: calc(var(--shake-x) * -0.7) calc(var(--shake-y) * 1.3);
+  }
+  40% {
+    translate: calc(var(--shake-x) * 1.2) calc(var(--shake-y) * -0.8);
+  }
+  50% {
+    translate: calc(var(--shake-x) * -1.3) var(--shake-y);
+  }
+  60% {
+    translate: var(--shake-x) calc(var(--shake-y) * -1.5);
+  }
+  70% {
+    translate: calc(var(--shake-x) * -0.5) calc(var(--shake-y) * 0.5);
+  }
+  80% {
+    translate: calc(var(--shake-x) * 1.4) calc(var(--shake-y) * -0.3);
+  }
+  90% {
+    translate: calc(var(--shake-x) * -1) calc(var(--shake-y) * 1.2);
+  }
+}
+
+.computer-shake-1 {
+  --shake-x: 1px;
+  --shake-y: 0.5px;
+  animation: computer-shake 0.5s ease-in-out infinite;
+}
+
+.computer-shake-2 {
+  --shake-x: 2.5px;
+  --shake-y: 1px;
+  animation: computer-shake 0.32s ease-in-out infinite;
+}
+
+.computer-shake-3 {
+  --shake-x: 5px;
+  --shake-y: 2.5px;
+  animation: computer-shake 0.18s ease-in-out infinite;
+}
+</style>
