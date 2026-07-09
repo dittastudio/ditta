@@ -202,14 +202,7 @@ export interface ElementTitle {
 
 export interface Page {
   blocks?: (
-    | BlockCta
-    | BlockProjects
-    | BlockServices
-    | BlockStatement
-    | BlockSteps
-    | BlockTeam
-    | BlockHero
-    | BlockCompanies
+    BlockCta | BlockProjects | BlockServices | BlockStatement | BlockSteps | BlockTeam | BlockHero | BlockCompanies
   )[];
   seo_title: string;
   seo_description: string;
