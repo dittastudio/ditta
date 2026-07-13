@@ -11,37 +11,52 @@ interface Props {
 }
 
 const { block } = defineProps<Props>()
+const introRef = useTemplateRef('intro')
+const headingRef = useTemplateRef('heading')
 const cardsRefs = useTemplateRef('card')
 
 onMounted(async () => {
   await nextTick()
+
+  gsap.fromTo(
+    headingRef.value,
+    {
+      scale: 1.1,
+    },
+    {
+      scrollTrigger: {
+        trigger: introRef.value,
+        start: 'top center',
+        end: 'bottom center',
+        scrub: 1,
+      },
+      scale: 1,
+    },
+  )
 
   cardsRefs.value?.forEach((el, index) => {
     const sign = index % 2 === 0 ? 1 : -1
     const rotateFrom = sign * gsap.utils.random(3, 9)
     const rotateTo = -rotateFrom
 
-    gsap
-      .timeline({
+    gsap.fromTo(
+      el,
+      {
+        scale: 1.1,
+        rotate: rotateFrom,
+      },
+      {
         scrollTrigger: {
           trigger: el,
           start: '25% bottom',
           end: 'center center',
           scrub: 2,
         },
-      })
-      .fromTo(
-        el,
-        {
-          scale: 1.1,
-          rotate: rotateFrom,
-        },
-        {
-          ease: 'power1.out',
-          scale: 1,
-          rotate: rotateTo,
-        },
-      )
+        ease: 'power1.out',
+        scale: 1,
+        rotate: rotateTo,
+      },
+    )
   })
 })
 </script>
@@ -51,8 +66,16 @@ onMounted(async () => {
     v-editable="block"
     class="relative"
   >
-    <div class="sticky top-0 h-lvh flex items-center justify-center">
-      <h2 class="text-super text-center whitespace-pre-wrap trim-both uppercase">Our Process</h2>
+    <div
+      ref="intro"
+      class="sticky top-0 h-lvh flex items-center justify-center overflow-clip"
+    >
+      <h2
+        ref="heading"
+        class="text-super text-center whitespace-pre-wrap trim-both uppercase"
+      >
+        Our Process
+      </h2>
     </div>
 
     <div

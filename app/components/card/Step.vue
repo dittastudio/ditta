@@ -43,7 +43,7 @@ const { title, heading, copy } = defineProps<Props>()
 
         <div
           v-if="storyblokRichTextContent(copy)"
-          class="prose text-pretty prose-p:text-body prose-p:max-w-[30em]"
+          class="prose text-pretty prose-p:text-body prose-p:max-w-[30em] opacity-60"
         >
           <StoryblokText :html="copy" />
         </div>
