@@ -1,64 +1,90 @@
 <script lang="ts" setup>
+import type { Themes } from '@/types/app'
 import type { BlockSteps } from '#storyblok-components'
-import IconPixelArrow from '@/assets/icons/pixel-arrow.svg'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+gsap.registerPlugin(ScrollTrigger)
 
 interface Props {
   block: BlockSteps
 }
 
 const { block } = defineProps<Props>()
+const cardsRefs = useTemplateRef('card')
 
-const rotation = ref(0)
+onMounted(async () => {
+  await nextTick()
 
-const onMouseMove = (event: MouseEvent) => {
-  rotation.value = (event.clientX / window.innerWidth) * 80 - 40
-}
+  cardsRefs.value?.forEach((el, index) => {
+    const sign = index % 2 === 0 ? 1 : -1
+    const rotateFrom = sign * gsap.utils.random(3, 9)
+    const rotateTo = -rotateFrom
 
-onMounted(() => {
-  window.addEventListener('mousemove', onMouseMove, { passive: true })
-})
-
-onUnmounted(() => {
-  window.removeEventListener('mousemove', onMouseMove)
+    gsap
+      .timeline({
+        scrollTrigger: {
+          trigger: el,
+          start: '25% bottom',
+          end: 'center center',
+          scrub: 2,
+        },
+      })
+      .fromTo(
+        el,
+        {
+          scale: 1.1,
+          rotate: rotateFrom,
+        },
+        {
+          ease: 'power1.out',
+          scale: 1,
+          rotate: rotateTo,
+        },
+      )
+  })
 })
 </script>
 
 <template>
   <div
     v-editable="block"
-    class="wrapper flex flex-col gap-[calc(var(--app-gutter-outer)*2)] md:gap-(--app-gutter-outer) overflow-clip"
-    :class="{
-      'pt-(--app-vertical-rhythm)': block.spacing_top,
-      'pb-(--app-vertical-rhythm)': block.spacing_bottom,
-    }"
+    class="relative"
   >
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-5">
-      <UiLockup
-        class="col-span-full md:col-span-8"
-        :heading="block.heading"
-        :copy="block.copy"
-      />
-
-      <div class="col-span-full md:col-span-4">
-        <IconPixelArrow
-          class="animate-bob w-30 md:w-40 ml-auto"
-          :style="{ transform: `rotate(${rotation}deg)` }"
-        />
-      </div>
+    <div class="sticky top-0 h-lvh flex items-center justify-center">
+      <h2 class="text-super text-center whitespace-pre-wrap trim-both uppercase">Our Process</h2>
     </div>
 
-    <div class="flex flex-col gap-1 rounded-20 squircle-40 overflow-hidden md:-mx-15">
+    <div
+      v-for="(step, index) in block.steps"
+      v-editable="step"
+      :key="step._uid"
+      class="sticky top-0 h-lvh flex flex-col items-center justify-center"
+    >
       <div
-        v-for="step in block.steps"
-        v-editable="step"
-        :key="step._uid"
-        class="bg-white px-(--app-gutter-outer) py-10 md:px-15 md:py-20 transition-[filter] duration-250 ease-outCubic hover:invert-100"
+        class="wrapper flex flex-col gap-[calc(var(--app-gutter-outer)*2)] md:gap-(--app-gutter-outer)"
+        :class="{
+          'max-md:items-center': true,
+          'md:items-start': index === 0,
+          'md:items-center': index === 1 || index > 2,
+          'md:items-end': index === 2,
+        }"
       >
-        <UiStep
-          :title="step.title"
-          :heading="step.heading"
-          :copy="step.copy"
-        />
+        <div
+          ref="card"
+          class="max-w-120"
+          :style="{
+            paddingTop: `calc(var(--app-gutter-outer) * ${index})`,
+          }"
+        >
+          <CardStep
+            :number="`0${index + 1}`.slice(-2)"
+            :title="step.title"
+            :heading="step.heading"
+            :copy="step.copy"
+            :theme="'theme' in step ? (step.theme as Themes) : undefined"
+          />
+        </div>
       </div>
     </div>
   </div>
