@@ -17,6 +17,8 @@ const listRef = useTemplateRef('list')
 const imagesRef = useTemplateRef('images')
 
 const count = computed(() => block.steps?.length ?? 0)
+const viewportsPerStep = 2
+const bufferViewports = 1
 
 let trigger: ScrollTrigger | undefined
 
@@ -26,6 +28,8 @@ onMounted(async () => {
   if (count.value < 2) return
 
   const travel = ((count.value - 1) / count.value) * 100
+  const scrollViewports = viewportsPerStep * count.value - 1
+  const animateViewports = scrollViewports - bufferViewports * 2
 
   const tl = gsap.timeline({
     scrollTrigger: {
@@ -36,8 +40,21 @@ onMounted(async () => {
     },
   })
 
-  tl.fromTo(listRef.value, { yPercent: 0 }, { yPercent: -travel, ease: 'none' }, 0)
-  tl.fromTo(imagesRef.value, { yPercent: -travel }, { yPercent: 0, ease: 'none' }, 0)
+  tl.fromTo(
+    listRef.value,
+    { yPercent: 0 },
+    { yPercent: -travel, ease: 'none', duration: animateViewports },
+    bufferViewports,
+  )
+
+  tl.fromTo(
+    imagesRef.value,
+    { yPercent: -travel },
+    { yPercent: 0, ease: 'none', duration: animateViewports },
+    bufferViewports,
+  )
+
+  tl.to({}, { duration: bufferViewports })
 
   trigger = tl.scrollTrigger
 })
@@ -59,11 +76,11 @@ onUnmounted(() => {
       '--inset-bottom': block.spacing_bottom ? 'calc(var(--app-vertical-rhythm) / 2)' : '0px',
       paddingTop: 'var(--inset-top)',
       paddingBottom: 'var(--inset-bottom)',
-      height: `calc(200lvh * ${count})`,
+      height: `calc(${viewportsPerStep * 100}lvh * ${count})`,
     }"
   >
     <div
-      class="sticky rounded-20 bg-[salmon] overflow-hidden grid grid-cols-2"
+      class="sticky rounded-20 overflow-hidden grid grid-cols-2"
       :style="{
         top: 'var(--inset-top)',
         height: 'calc(100lvh - var(--inset-top) - var(--inset-bottom))',
@@ -101,7 +118,7 @@ onUnmounted(() => {
         }"
       >
         <li
-          v-for="(step, index) in block.steps"
+          v-for="step in block.steps"
           v-editable="step"
           :key="step._uid"
           class="w-full flex-1"
@@ -113,6 +130,7 @@ onUnmounted(() => {
             :width="step.image.width ?? 0"
             :height="step.image.height ?? 0"
             class="size-full object-cover"
+            loading="lazy"
           />
         </li>
       </ul>
