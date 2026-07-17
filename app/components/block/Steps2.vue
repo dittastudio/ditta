@@ -12,42 +12,41 @@ interface Props {
 
 const { block } = defineProps<Props>()
 const wrapperRef = useTemplateRef('wrapper')
-const containerRef = useTemplateRef('container')
+const listRef = useTemplateRef('list')
+
+const count = computed(() => block.steps?.length ?? 0)
+
+let scrollTrigger: ScrollTrigger | undefined
 
 onMounted(async () => {
   await nextTick()
 
-  ScrollTrigger.create({
-    trigger: wrapperRef.value,
-    start: 'top top',
-    end: 'bottom bottom',
-    markers: true,
-  })
+  if (count.value < 2) return
 
-  // cardsRefs.value?.forEach((el, index) => {
-  //   const sign = index % 2 === 0 ? 1 : -1
-  //   const rotateFrom = sign * gsap.utils.random(3, 9)
-  //   const rotateTo = -rotateFrom
+  const tween = gsap.fromTo(
+    listRef.value,
+    {
+      yPercent: 0,
+    },
+    {
+      scrollTrigger: {
+        trigger: wrapperRef.value,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 1,
+      },
+      ease: 'none',
+      yPercent: -((count.value - 1) / count.value) * 100,
+    },
+  )
 
-  //   gsap.fromTo(
-  //     el,
-  //     {
-  //       scale: 1.1,
-  //       rotate: rotateFrom,
-  //     },
-  //     {
-  //       scrollTrigger: {
-  //         trigger: el,
-  //         start: '25% bottom',
-  //         end: 'center center',
-  //         scrub: 2,
-  //       },
-  //       ease: 'power1.out',
-  //       scale: 1,
-  //       rotate: rotateTo,
-  //     },
-  //   )
-  // })
+  scrollTrigger = tween.scrollTrigger
+})
+
+onUnmounted(() => {
+  scrollTrigger?.kill()
+  scrollTrigger = undefined
+  gsap.killTweensOf(listRef.value)
 })
 </script>
 
@@ -56,27 +55,26 @@ onMounted(async () => {
     v-editable="block"
     ref="wrapper"
     class="wrapper bg-linear-to-b from-mood to-olive"
-    :class="{
-      'pt-[calc(var(--app-vertical-rhythm)/2)]': block.spacing_top,
-      'pb-[calc(var(--app-vertical-rhythm)/2)]': block.spacing_bottom,
-    }"
     :style="{
-      height: `calc(100vh * ${block.steps?.length})`,
+      '--inset-top': block.spacing_top ? 'calc(var(--app-vertical-rhythm) / 2)' : '0px',
+      '--inset-bottom': block.spacing_bottom ? 'calc(var(--app-vertical-rhythm) / 2)' : '0px',
+      paddingTop: 'var(--inset-top)',
+      paddingBottom: 'var(--inset-bottom)',
+      height: `calc(100lvh * ${count})`,
     }"
   >
     <div
-      ref="container"
       class="sticky rounded-20 bg-[salmon] overflow-hidden"
-      :class="{
-        'top-[calc(var(--app-vertical-rhythm)/2)]': block.spacing_top,
-        'bottom-[calc(var(--app-vertical-rhythm)/2)]': block.spacing_bottom,
-        'h-[calc(100vh-var(--app-vertical-rhythm))]': block.spacing_top && block.spacing_bottom,
+      :style="{
+        top: 'var(--inset-top)',
+        height: 'calc(100lvh - var(--inset-top) - var(--inset-bottom))',
       }"
     >
       <ul
+        ref="list"
         class="w-full bg-[green] grid grid-cols-1"
         :style="{
-          height: `calc((100vh - var(--app-vertical-rhythm)) * ${block.steps?.length})`,
+          height: `calc((100lvh - var(--inset-top) - var(--inset-bottom)) * ${count})`,
         }"
       >
         <li
