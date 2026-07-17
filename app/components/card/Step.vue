@@ -10,12 +10,18 @@ interface Props {
   theme?: Themes
 }
 
-const { title, heading, copy } = defineProps<Props>()
+const { number, title, heading, copy, theme } = defineProps<Props>()
+
+defineOptions({
+  inheritAttrs: false,
+})
+
+const mergedAttrs = useMergedAttrs('step-card w-full flex flex-col gap-y-20 rounded-20')
 </script>
 
 <template>
   <div
-    class="step-card w-full flex flex-col gap-y-20 rounded-20 squircle-40"
+    v-bind="mergedAttrs"
     :class="theme ? themeClasses[theme] : ''"
   >
     <p

@@ -105,7 +105,7 @@ onUnmounted(() => {
             :heading="step.heading"
             :copy="step.copy"
             :theme="'theme' in step ? (step.theme as Themes) : undefined"
-            class="rounded-none! h-full!"
+            class="rounded-0 h-full"
           />
         </li>
       </ul>

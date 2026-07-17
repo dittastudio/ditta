@@ -18,6 +18,7 @@
   --color-mood: oklch(0.6385 0.0312 42.55);
   --color-olive: oklch(0.7442 0.0554 154.96);
   --color-pink: oklch(0.8221 0.1207 348.4);
+  --color-red: oklch(64.645% 0.12902 21.246);
 
   --color-accent: var(--color-pink);
 
@@ -60,6 +61,7 @@
 
   --radius-\*: initial;
   --radius-full: 9999px;
+  --radius-0: 0px;
   --radius-20: 20px;
 
   --ease-inQuad: cubic-bezier(0.55, 0.085, 0.68, 0.53);

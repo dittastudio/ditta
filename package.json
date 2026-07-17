@@ -51,6 +51,7 @@
     "postcss-utopia": "^1.1.0",
     "rolldown": "^1.1.5",
     "storyblok": "^4.19.0",
+    "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4.3.2",
     "vite-plus": "latest",
     "vite-svg-loader": "^5.1.1"
