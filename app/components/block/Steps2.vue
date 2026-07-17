@@ -64,9 +64,55 @@ onMounted(async () => {
 <template>
   <div
     v-editable="block"
-    class="relative overflow-clip"
+    class="wrapper bg-linear-to-b from-mood to-olive"
+    :class="{
+      'pt-[calc(var(--app-vertical-rhythm)/2)]': block.spacing_top,
+      'pb-[calc(var(--app-vertical-rhythm)/2)]': block.spacing_bottom,
+    }"
+    :style="{
+      height: `calc(100vh * ${block.steps?.length})`,
+    }"
   >
     <div
+      class="sticky rounded-20 bg-[salmon] overflow-auto"
+      :class="{
+        'top-[calc(var(--app-vertical-rhythm)/2)]': block.spacing_top,
+        'bottom-[calc(var(--app-vertical-rhythm)/2)]': block.spacing_bottom,
+        'h-[calc(100vh-var(--app-vertical-rhythm))]': block.spacing_top && block.spacing_bottom,
+      }"
+    >
+      <ul
+        class="w-full bg-[green] grid grid-cols-1"
+        :style="{
+          height: `calc(100vh * ${block.steps?.length} - var(--app-vertical-rhythm))`,
+        }"
+      >
+        <li
+          v-for="(step, index) in block.steps"
+          v-editable="step"
+          :key="step._uid"
+          class="w-full bg-accent"
+        >
+          <div
+            ref="card"
+            class="max-w-120 bg-[blue]"
+            :style="{
+              paddingTop: `calc(var(--app-gutter-outer) * ${index})`,
+            }"
+          >
+            <CardStep
+              :number="`0${index + 1}`.slice(-2)"
+              :title="step.title"
+              :heading="step.heading"
+              :copy="step.copy"
+              :theme="'theme' in step ? (step.theme as Themes) : undefined"
+              class="rounded-none! h-full!"
+            />
+          </div>
+        </li>
+      </ul>
+    </div>
+    <!-- <div
       ref="intro"
       class="sticky top-0 h-lvh flex items-center justify-center"
     >
@@ -76,9 +122,9 @@ onMounted(async () => {
       >
         Our Process
       </h2>
-    </div>
+    </div> -->
 
-    <div
+    <!-- <div
       v-for="(step, index) in block.steps"
       v-editable="step"
       :key="step._uid"
@@ -109,6 +155,6 @@ onMounted(async () => {
           />
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
