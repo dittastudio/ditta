@@ -184,6 +184,7 @@ export interface ElementStep {
   title: string;
   heading?: string;
   copy?: StoryblokRichtext;
+  image?: StoryblokAsset;
   theme?: number | string;
   component: "element_step";
   _uid: string;

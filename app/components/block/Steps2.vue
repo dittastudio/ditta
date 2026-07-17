@@ -18,62 +18,34 @@ const imagesRef = useTemplateRef('images')
 
 const count = computed(() => block.steps?.length ?? 0)
 
-let listTrigger: ScrollTrigger | undefined
-let imagesTrigger: ScrollTrigger | undefined
+let trigger: ScrollTrigger | undefined
 
 onMounted(async () => {
   await nextTick()
 
   if (count.value < 2) return
 
-  const listTween = gsap.fromTo(
-    listRef.value,
-    {
-      yPercent: 0,
-    },
-    {
-      scrollTrigger: {
-        trigger: wrapperRef.value,
-        start: 'top top',
-        end: 'bottom bottom',
-        scrub: 1,
-      },
-      ease: 'none',
-      yPercent: -((count.value - 1) / count.value) * 100,
-    },
-  )
+  const travel = ((count.value - 1) / count.value) * 100
 
-  listTrigger = listTween.scrollTrigger
-
-  const imagesTween = gsap.fromTo(
-    imagesRef.value,
-    {
-      yPercent: 0,
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: wrapperRef.value,
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: 1,
     },
-    {
-      scrollTrigger: {
-        trigger: wrapperRef.value,
-        start: 'top top',
-        end: 'bottom bottom',
-        scrub: 1,
-      },
-      ease: 'none',
-      yPercent: -((count.value - 1) / count.value) * 100,
-    },
-  )
+  })
 
-  imagesTrigger = imagesTween.scrollTrigger
+  tl.fromTo(listRef.value, { yPercent: 0 }, { yPercent: -travel, ease: 'none' }, 0)
+  tl.fromTo(imagesRef.value, { yPercent: -travel }, { yPercent: 0, ease: 'none' }, 0)
+
+  trigger = tl.scrollTrigger
 })
 
 onUnmounted(() => {
-  ;[listTrigger, imagesTrigger].forEach((trigger) => {
-    if (trigger) {
-      trigger.kill()
-      trigger = undefined
-    }
-  })
-
-  gsap.killTweensOf(listRef.value)
+  trigger?.kill()
+  trigger = undefined
+  gsap.killTweensOf([listRef.value, imagesRef.value])
 })
 </script>
 
@@ -99,16 +71,16 @@ onUnmounted(() => {
     >
       <ul
         ref="list"
-        class="w-full"
+        class="flex w-full flex-col"
+        :style="{
+          height: `calc((100lvh - var(--inset-top) - var(--inset-bottom)) * ${count})`,
+        }"
       >
         <li
           v-for="(step, index) in block.steps"
           v-editable="step"
           :key="step._uid"
-          class="w-full"
-          :style="{
-            height: `calc((100lvh - var(--inset-top) - var(--inset-bottom))`,
-          }"
+          class="w-full flex-1"
         >
           <CardStep
             :number="`0${index + 1}`.slice(-2)"
@@ -123,18 +95,25 @@ onUnmounted(() => {
 
       <ul
         ref="images"
-        class="w-full"
+        class="flex w-full flex-col-reverse"
+        :style="{
+          height: `calc((100lvh - var(--inset-top) - var(--inset-bottom)) * ${count})`,
+        }"
       >
         <li
           v-for="(step, index) in block.steps"
           v-editable="step"
           :key="step._uid"
-          class="w-full"
-          :style="{
-            height: `calc((100lvh - var(--inset-top) - var(--inset-bottom))`,
-          }"
+          class="w-full flex-1"
         >
-          IMAGE {{ index }} WILL GO HERE
+          <NuxtImg
+            v-if="step.image?.filename"
+            :src="step.image.filename"
+            :alt="step.image.alt ?? ''"
+            :width="step.image.width ?? 0"
+            :height="step.image.height ?? 0"
+            class="size-full object-cover"
+          />
         </li>
       </ul>
     </div>
