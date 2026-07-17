@@ -25,7 +25,7 @@ const { title, heading, copy } = defineProps<Props>()
       {{ number }}
     </p>
 
-    <div class="flex flex-col gap-y-14">
+    <div class="flex flex-col gap-y-14 mt-auto">
       <h2
         class="text-heading text-balance trim-both whitespace-pre-wrap"
         v-if="title"
