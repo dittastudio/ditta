@@ -84,6 +84,7 @@ export default defineNuxtConfig({
     prerender: {
       crawlLinks: true,
       routes: ['/'],
+      autoSubfolderIndex: false,
     },
     experimental: {
       wasm: true,
