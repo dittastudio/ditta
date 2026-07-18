@@ -184,6 +184,8 @@ export interface ElementStep {
   title: string;
   heading?: string;
   copy?: StoryblokRichtext;
+  image?: StoryblokAsset;
+  theme?: number | string;
   component: "element_step";
   _uid: string;
 }
@@ -202,14 +204,7 @@ export interface ElementTitle {
 
 export interface Page {
   blocks?: (
-    | BlockCta
-    | BlockProjects
-    | BlockServices
-    | BlockStatement
-    | BlockSteps
-    | BlockTeam
-    | BlockHero
-    | BlockCompanies
+    BlockCta | BlockProjects | BlockServices | BlockStatement | BlockSteps | BlockTeam | BlockHero | BlockCompanies
   )[];
   seo_title: string;
   seo_description: string;
