@@ -28,7 +28,8 @@ onMounted(async () => {
         trigger: introRef.value,
         start: 'top center',
         end: 'bottom center',
-        scrub: 1,
+        scrub: true,
+        markers: false,
       },
       scale: 1,
     },
@@ -42,17 +43,18 @@ onMounted(async () => {
     gsap.fromTo(
       el,
       {
-        scale: 1.1,
+        scale: 1.2,
         rotate: rotateFrom,
       },
       {
         scrollTrigger: {
-          trigger: el,
-          start: '25% bottom',
-          end: 'center center',
-          scrub: 2,
+          trigger: el.parentElement?.parentElement,
+          start: 'top bottom',
+          end: 'bottom bottom',
+          scrub: true,
+          markers: true,
         },
-        ease: 'power1.out',
+        ease: 'power1.in',
         scale: 1,
         rotate: rotateTo,
       },
@@ -68,11 +70,11 @@ onMounted(async () => {
   >
     <div
       ref="intro"
-      class="sticky top-0 h-lvh flex items-center justify-center"
+      class="sticky top-0 h-svh flex items-center justify-center"
     >
       <h2
         ref="heading"
-        class="text-display md:text-center whitespace-pre-wrap trim-both x-uppercase"
+        class="text-display md:text-center whitespace-pre-wrap trim-both"
       >
         Our Process
       </h2>
@@ -82,7 +84,7 @@ onMounted(async () => {
       v-for="(step, index) in block.steps"
       v-editable="step"
       :key="step._uid"
-      class="sticky top-0 h-lvh flex flex-col items-center justify-center"
+      class="sticky top-0 h-svh flex flex-col items-center justify-center"
     >
       <div
         class="wrapper flex flex-col gap-[calc(var(--app-gutter-outer)*2)] md:gap-(--app-gutter-outer)"

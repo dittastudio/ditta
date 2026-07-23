@@ -34,7 +34,7 @@ onMounted(async () => {
           trigger: el,
           start: '25% bottom',
           end: 'center center',
-          scrub: 2,
+          scrub: true,
         },
       })
       .fromTo(
