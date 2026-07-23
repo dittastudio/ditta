@@ -212,7 +212,9 @@
   );
 
   --animate-bob: bob 3s ease-in-out infinite;
+  --animate-mario-jump: mario-jump 0.833s ease-in-out;
 }
+
 
 @keyframes bob {
   0% {
