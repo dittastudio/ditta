@@ -111,7 +111,7 @@ export default defineNuxtConfig({
   vite: {
     optimizeDeps: {
       include: [
-        '@mux/mux-player',
+        '@mux/mux-video',
         '@plausible-analytics/tracker',
         '@storyblok/vue',
         '@tiptap/core',

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useIntersectionObserver } from '@vueuse/core'
-import '@mux/mux-player'
+import '@mux/mux-video'
 
 interface Events {
   (event: 'play'): void
@@ -112,7 +112,7 @@ const playVideo = async () => {
       <div class="mux-video__button-inner">Play</div>
     </button>
 
-    <mux-player
+    <mux-video
       v-if="isInView"
       v-bind="attrs"
       :id="playbackId"
@@ -180,8 +180,8 @@ const playVideo = async () => {
   }
 }
 
-mux-player::part(bottom play button),
-mux-player::part(bottom time display) {
+mux-video::part(bottom play button),
+mux-video::part(bottom time display) {
   display: inline-flex;
 }
 </style>
