@@ -11,6 +11,7 @@ interface Props {
 }
 
 const { block } = defineProps<Props>()
+const containerRef = useTemplateRef('container')
 const introRef = useTemplateRef('intro')
 const headingRef = useTemplateRef('heading')
 const cardsRefs = useTemplateRef('card')
@@ -21,17 +22,18 @@ onMounted(async () => {
   gsap.fromTo(
     headingRef.value,
     {
-      scale: 1.1,
+      scale: 1.2,
     },
     {
       scrollTrigger: {
         trigger: introRef.value,
-        start: 'top center',
-        end: 'bottom center',
+        start: 'center center',
+        end: 'bottom top',
         scrub: true,
-        markers: false,
+        markers: true,
       },
       scale: 1,
+      ease: 'power2.inOut',
     },
   )
 
@@ -52,7 +54,7 @@ onMounted(async () => {
           start: 'top bottom',
           end: 'bottom bottom',
           scrub: true,
-          markers: true,
+          markers: false,
         },
         ease: 'power1.in',
         scale: 1,
@@ -66,18 +68,42 @@ onMounted(async () => {
 <template>
   <div
     v-editable="block"
-    class="relative overflow-clip"
+    class="relative contain-layout"
+    ref="container"
   >
     <div
       ref="intro"
-      class="sticky top-0 h-svh flex items-center justify-center"
+      class="sticky top-0 h-svh text-center flex items-center justify-center px-[calc(var(--app-gutter-outer)*2)]"
     >
       <h2
         ref="heading"
-        class="text-display md:text-center whitespace-pre-wrap trim-both"
+        class="text-display md:text-center trim-both"
       >
         Our Process
       </h2>
+      <!-- <div
+        ref="heading"
+        class="w-full"
+      >
+        <UiTicker
+          :trigger-el="containerRef"
+          spacing-classes="gap-10 px-5"
+        >
+          <template
+            v-for="i in 4"
+            :key="i"
+          >
+            <div class="text-super trim-both">OUR PROCESS</div>
+
+            <div
+              aria-hidden="true"
+              class="text-super trim-both"
+            >
+              &mdash;
+            </div>
+          </template>
+        </UiTicker>
+      </div> -->
     </div>
 
     <div
