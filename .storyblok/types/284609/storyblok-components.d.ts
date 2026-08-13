@@ -11,6 +11,7 @@ export interface BlockCompanies {
   spacing_bottom?: boolean;
   component: "block_companies";
   _uid: string;
+  _editable?: string | undefined;
 }
 
 export interface BlockCta {
@@ -22,6 +23,7 @@ export interface BlockCta {
   spacing_bottom?: boolean;
   component: "block_cta";
   _uid: string;
+  _editable?: string | undefined;
 }
 
 export interface BlockHero {
@@ -29,6 +31,7 @@ export interface BlockHero {
   id?: string;
   component: "block_hero";
   _uid: string;
+  _editable?: string | undefined;
 }
 
 export interface BlockHeroProject {
@@ -39,6 +42,7 @@ export interface BlockHeroProject {
   id?: string;
   component: "block_hero_project";
   _uid: string;
+  _editable?: string | undefined;
 }
 
 export interface BlockMedia {
@@ -49,6 +53,7 @@ export interface BlockMedia {
   spacing_bottom?: boolean;
   component: "block_media";
   _uid: string;
+  _editable?: string | undefined;
 }
 
 export interface BlockProjectOverview {
@@ -60,6 +65,7 @@ export interface BlockProjectOverview {
   spacing_bottom?: boolean;
   component: "block_project_overview";
   _uid: string;
+  _editable?: string | undefined;
 }
 
 export interface BlockProjects {
@@ -71,6 +77,7 @@ export interface BlockProjects {
   spacing_bottom?: boolean;
   component: "block_projects";
   _uid: string;
+  _editable?: string | undefined;
 }
 
 export interface BlockServices {
@@ -83,6 +90,7 @@ export interface BlockServices {
   spacing_bottom?: boolean;
   component: "block_services";
   _uid: string;
+  _editable?: string | undefined;
 }
 
 export interface BlockStatement {
@@ -93,6 +101,7 @@ export interface BlockStatement {
   spacing_bottom?: boolean;
   component: "block_statement";
   _uid: string;
+  _editable?: string | undefined;
 }
 
 export interface BlockSteps {
@@ -105,6 +114,7 @@ export interface BlockSteps {
   spacing_bottom?: boolean;
   component: "block_steps";
   _uid: string;
+  _editable?: string | undefined;
 }
 
 export interface BlockTeam {
@@ -118,6 +128,7 @@ export interface BlockTeam {
   spacing_bottom?: boolean;
   component: "block_team";
   _uid: string;
+  _editable?: string | undefined;
 }
 
 export interface BlockTestimonial {
@@ -131,6 +142,7 @@ export interface BlockTestimonial {
   spacing_bottom?: boolean;
   component: "block_testimonial";
   _uid: string;
+  _editable?: string | undefined;
 }
 
 export interface BlockText {
@@ -142,12 +154,14 @@ export interface BlockText {
   spacing_bottom?: boolean;
   component: "block_text";
   _uid: string;
+  _editable?: string | undefined;
 }
 
 export interface Client {
   name: string;
   component: "client";
   _uid: string;
+  _editable?: string | undefined;
 }
 
 export interface ElementCta {
@@ -156,6 +170,7 @@ export interface ElementCta {
   theme?: number | string;
   component: "element_cta";
   _uid: string;
+  _editable?: string | undefined;
 }
 
 export interface ElementLink {
@@ -163,6 +178,7 @@ export interface ElementLink {
   link: Exclude<StoryblokMultilink, {linktype?: "asset"}>;
   component: "element_link";
   _uid: string;
+  _editable?: string | undefined;
 }
 
 export interface ElementMediaAutoplay {
@@ -171,6 +187,7 @@ export interface ElementMediaAutoplay {
   playback_id: string;
   component: "element_media_autoplay";
   _uid: string;
+  _editable?: string | undefined;
 }
 
 export interface ElementMediaImage {
@@ -178,6 +195,7 @@ export interface ElementMediaImage {
   image: StoryblokAsset;
   component: "element_media_image";
   _uid: string;
+  _editable?: string | undefined;
 }
 
 export interface ElementStep {
@@ -188,18 +206,21 @@ export interface ElementStep {
   theme?: number | string;
   component: "element_step";
   _uid: string;
+  _editable?: string | undefined;
 }
 
 export interface ElementTicker {
   items?: StoryblokMultiasset;
   component: "element_ticker";
   _uid: string;
+  _editable?: string | undefined;
 }
 
 export interface ElementTitle {
   title: string;
   component: "element_title";
   _uid: string;
+  _editable?: string | undefined;
 }
 
 export interface Page {
@@ -211,6 +232,7 @@ export interface Page {
   seo_image: StoryblokAsset;
   component: "page";
   _uid: string;
+  _editable?: string | undefined;
 }
 
 export interface Person {
@@ -219,6 +241,7 @@ export interface Person {
   position?: string;
   component: "person";
   _uid: string;
+  _editable?: string | undefined;
 }
 
 export interface Project {
@@ -242,6 +265,7 @@ export interface Project {
   seo_image: StoryblokAsset;
   component: "project";
   _uid: string;
+  _editable?: string | undefined;
 }
 
 export interface Seo {
@@ -250,6 +274,7 @@ export interface Seo {
   seo_image: StoryblokAsset;
   component: "seo";
   _uid: string;
+  _editable?: string | undefined;
 }
 
 export interface Settings {
@@ -259,6 +284,7 @@ export interface Settings {
   footer_copy_v2?: StoryblokRichtext;
   component: "settings";
   _uid: string;
+  _editable?: string | undefined;
 }
 
 export type ContentType = Client | Page | Person | Project | Settings;

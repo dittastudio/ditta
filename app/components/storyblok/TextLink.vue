@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { SbVueRichTextProps } from '@storyblok/vue'
-import { NuxtLink } from '#components'
 
 defineOptions({ inheritAttrs: false })
 
