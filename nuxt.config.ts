@@ -1,4 +1,5 @@
 import { fileURLToPath } from 'node:url'
+import { readFileSync } from 'node:fs'
 import tailwindcss from '@tailwindcss/vite'
 import svgLoader from 'vite-svg-loader'
 import { breakpoints } from './app/utils/breakpoints'
@@ -109,9 +110,30 @@ export default defineNuxtConfig({
     },
   },
   vite: {
+    vue: {
+      template: {
+        compilerOptions: {
+          isCustomElement: (tag) => tag.startsWith('mux-'),
+        },
+      },
+      // script: {
+      //   fs: {
+      //     fileExists: (path) => {
+      //       try {
+      //         readFileSync(path)
+      //         return true
+      //       }
+      //       catch {
+      //         return false
+      //       }
+      //     },
+      //     readFile: (path) => readFileSync(path, 'utf-8'),
+      //   },
+      // },
+    },
     optimizeDeps: {
       include: [
-        '@mux/mux-player',
+        '@mux/mux-video',
         '@plausible-analytics/tracker',
         '@storyblok/vue',
         '@tiptap/core',

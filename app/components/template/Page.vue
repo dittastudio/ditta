@@ -47,20 +47,10 @@ const { story } = defineProps<Props>()
       :block="block"
     />
 
-    <!-- <BlockSteps
-      v-else-if="block.component === 'block_steps'"
-      :block="block"
-    /> -->
-
     <BlockTeam
       v-else-if="block.component === 'block_team'"
       :block="block"
     />
-
-    <!-- <BlockSteps2
-      v-if="block.component === 'block_steps'"
-      :block="block"
-    /> -->
 
     <BlockSteps
       v-if="block.component === 'block_steps'"

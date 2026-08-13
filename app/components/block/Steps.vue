@@ -107,41 +107,6 @@ onUnmounted(() => {
       </div>
     </div>
 
-    <!-- <div
-      ref="intro"
-      class="sticky top-0 h-svh text-center flex items-center justify-center px-[calc(var(--app-gutter-outer)*2)]"
-    >
-      <h2
-        ref="heading"
-        class="text-display md:text-center trim-both"
-      >
-        Our Process
-      </h2> -->
-    <!-- <div
-        ref="heading"
-        class="w-full"
-      >
-        <UiTicker
-          :trigger-el="containerRef"
-          spacing-classes="gap-10 px-5"
-        >
-          <template
-            v-for="i in 4"
-            :key="i"
-          >
-            <div class="text-super trim-both">OUR PROCESS</div>
-
-            <div
-              aria-hidden="true"
-              class="text-super trim-both"
-            >
-              &mdash;
-            </div>
-          </template>
-        </UiTicker>
-      </div> -->
-    <!-- </div> -->
-
     <div
       v-for="(step, index) in block.steps"
       v-editable="step"
@@ -176,19 +141,3 @@ onUnmounted(() => {
     </div>
   </div>
 </template>
-
-<style>
-@keyframes mario-jump {
-  0% {
-    translate: 0 0;
-    animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  }
-  40% {
-    translate: 0 -400%;
-    animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53);
-  }
-  100% {
-    translate: 0 0;
-  }
-}
-</style>
