@@ -126,7 +126,7 @@ onUnmounted(() => {
           ref="card"
           class="max-w-120"
           :style="{
-            paddingTop: `calc(var(--app-gutter-outer) * ${index * 0.5})`,
+            paddingTop: `calc(var(--app-gutter-outer) * ${index})`,
           }"
         >
           <CardStep
