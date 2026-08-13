@@ -47,13 +47,13 @@ const { story } = defineProps<Props>()
       :block="block"
     />
 
-    <BlockSteps
-      v-else-if="block.component === 'block_steps'"
+    <BlockTeam
+      v-else-if="block.component === 'block_team'"
       :block="block"
     />
 
-    <BlockTeam
-      v-else-if="block.component === 'block_team'"
+    <BlockSteps
+      v-if="block.component === 'block_steps'"
       :block="block"
     />
   </UiTheme>

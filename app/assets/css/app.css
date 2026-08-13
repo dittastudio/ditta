@@ -11,14 +11,14 @@
   --color-\*: initial;
   --color-white: oklch(100% 0 0);
   --color-black: oklch(0% 0 0);
-  --color-pink: oklch(0.8221 0.1207 348.4);
   --color-beige: oklch(0.8643 0.0104 32.52);
-  --color-grey: oklch(97.315% 0 0);
-  --color-olive: oklch(0.7442 0.0554 154.96);
-  --color-forest: oklch(0.2505 0.0852 142.5);
-  --color-mood: oklch(0.6385 0.0312 42.55);
-  --color-blue: oklch(0.2038 0.1836 264.05);
   --color-crema: oklch(0.8102 0.0532 66.96);
+  --color-forest: oklch(0.2505 0.0852 142.5);
+  --color-grey: oklch(97.315% 0 0);
+  --color-mood: oklch(0.6385 0.0312 42.55);
+  --color-olive: oklch(0.7442 0.0554 154.96);
+  --color-pink: oklch(0.8221 0.1207 348.4);
+  --color-red: oklch(64.645% 0.12902 21.246);
 
   --color-accent: var(--color-pink);
 
@@ -61,6 +61,7 @@
 
   --radius-\*: initial;
   --radius-full: 9999px;
+  --radius-0: 0px;
   --radius-20: 20px;
 
   --ease-inQuad: cubic-bezier(0.55, 0.085, 0.68, 0.53);

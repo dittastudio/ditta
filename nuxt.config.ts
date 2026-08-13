@@ -1,4 +1,5 @@
 import { fileURLToPath } from 'node:url'
+import { readFileSync } from 'node:fs'
 import tailwindcss from '@tailwindcss/vite'
 import svgLoader from 'vite-svg-loader'
 import { breakpoints } from './app/utils/breakpoints'
@@ -84,6 +85,7 @@ export default defineNuxtConfig({
     prerender: {
       crawlLinks: true,
       routes: ['/'],
+      autoSubfolderIndex: false,
     },
     experimental: {
       wasm: true,
@@ -108,12 +110,20 @@ export default defineNuxtConfig({
     },
   },
   vite: {
+    vue: {
+      template: {
+        compilerOptions: {
+          isCustomElement: (tag) => tag.startsWith('mux-'),
+        },
+      },
+    },
     optimizeDeps: {
       include: [
-        '@mux/mux-player',
+        '@mux/mux-video',
         '@plausible-analytics/tracker',
         '@storyblok/vue',
         '@tiptap/core',
+        '@unhead/schema-org/vue',
         '@vue/devtools-core',
         '@vue/devtools-kit',
         '@vueuse/core',
@@ -123,6 +133,7 @@ export default defineNuxtConfig({
         'gsap/SplitText',
         'lenis/vue',
         'matter-js',
+        'tailwind-merge',
       ],
     },
     plugins: [

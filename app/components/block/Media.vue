@@ -70,7 +70,7 @@ function getSizes(layout: string | undefined) {
           loading="lazy"
         />
 
-        <UiMuxVideo
+        <LazyUiMuxVideo
           v-else-if="isMediaAutoplay(media) && media.playback_id"
           class="w-full h-full aspect-video"
           :class="{
