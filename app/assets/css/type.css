@@ -1,3 +1,11 @@
+@utility text-super {
+  font-family: var(--font-sans);
+  font-size: utopia.clamp(90, 160);
+  line-height: 1;
+  font-weight: var(--font-weight-regular);
+  letter-spacing: var(--tracking-normal);
+}
+
 @utility text-display {
   font-family: var(--font-sans);
   font-size: utopia.clamp(64, 120);

@@ -64,13 +64,13 @@ onMounted(async () => {
     })
 
     overlayRefs.value!.slice(0, index).forEach((overlayEl, i) => {
-      const opcaityFrom = Math.min(1, (index - i - 1) * opacityStep)
+      const opacityFrom = Math.min(1, (index - i - 1) * opacityStep)
       const opacityTo = Math.min(1, (index - i) * opacityStep)
 
       overlayTl.fromTo(
         overlayEl,
         {
-          opacity: opcaityFrom,
+          opacity: opacityFrom,
         },
         {
           opacity: opacityTo,
@@ -118,13 +118,13 @@ onUnmounted(() => {
             v-for="i in 4"
             :key="i"
           >
-            <div class="project__ticker text-display trim-both">
+            <div class="text-super trim-both">
               {{ block.ticker }}
             </div>
 
             <div
               aria-hidden="true"
-              class="project__ticker text-display trim-both"
+              class="text-super trim-both"
             >
               &mdash;
             </div>
@@ -148,7 +148,7 @@ onUnmounted(() => {
               class="block pointer-events-auto"
               :to="`/${project.full_slug}`"
             >
-              <UiCardProject
+              <CardProject
                 :title="project.content.title"
                 class="aspect-3/4 md:aspect-video"
               >
@@ -191,7 +191,7 @@ onUnmounted(() => {
                     loading="lazy"
                   />
                 </picture>
-              </UiCardProject>
+              </CardProject>
             </NuxtLink>
           </div>
         </li>
@@ -203,9 +203,5 @@ onUnmounted(() => {
 <style scoped>
 .project__wrapper {
   padding-top: utopia.clamp(120, 160);
-}
-
-.project__ticker {
-  font-size: utopia.clamp(90, 160);
 }
 </style>

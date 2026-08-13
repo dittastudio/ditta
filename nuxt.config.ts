@@ -109,6 +109,13 @@ export default defineNuxtConfig({
     },
   },
   vite: {
+    vue: {
+      template: {
+        compilerOptions: {
+          isCustomElement: (tag) => tag.startsWith('mux-'),
+        },
+      },
+    },
     optimizeDeps: {
       include: [
         '@mux/mux-video',
@@ -125,6 +132,7 @@ export default defineNuxtConfig({
         'gsap/SplitText',
         'lenis/vue',
         'matter-js',
+        'tailwind-merge',
       ],
     },
     plugins: [

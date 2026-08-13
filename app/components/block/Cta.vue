@@ -21,7 +21,7 @@ const button = computed(() => block.button?.[0])
   >
     <p
       v-if="block.text"
-      class="text-heading max-w-[24ch] text-pretty mx-auto"
+      class="text-heading max-w-[24ch] text-balance mx-auto"
     >
       {{ block.text }}
     </p>
