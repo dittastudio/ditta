@@ -1,5 +1,4 @@
 import { fileURLToPath } from 'node:url'
-import { readFileSync } from 'node:fs'
 import tailwindcss from '@tailwindcss/vite'
 import svgLoader from 'vite-svg-loader'
 import { breakpoints } from './app/utils/breakpoints'
