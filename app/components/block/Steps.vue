@@ -13,9 +13,6 @@ interface Props {
 }
 
 const { block } = defineProps<Props>()
-// const containerRef = useTemplateRef('container')
-// const introRef = useTemplateRef('intro')
-// const headingRef = useTemplateRef('heading')
 const cardsRefs = useTemplateRef('card')
 
 const rotation = ref(0)
@@ -28,24 +25,6 @@ onMounted(async () => {
   await nextTick()
 
   window.addEventListener('mousemove', onMouseMove, { passive: true })
-
-  // gsap.fromTo(
-  //   headingRef.value,
-  //   {
-  //     scale: 1.2,
-  //   },
-  //   {
-  //     scrollTrigger: {
-  //       trigger: introRef.value,
-  //       start: 'center center',
-  //       end: 'bottom top',
-  //       scrub: true,
-  //       markers: true,
-  //     },
-  //     scale: 1,
-  //     ease: 'power2.inOut',
-  //   },
-  // )
 
   cardsRefs.value?.forEach((el, index) => {
     const sign = index % 2 === 0 ? 1 : -1

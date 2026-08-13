@@ -16,7 +16,9 @@ const dock = useTemplateRef('dock')
 
 const { data: weather } = useLazyFetch('/api/weather', { server: false })
 
-const dockBgClasses: Record<Themes | 'navigationOpen', string> = {
+type DockThemes = Themes | 'navigationOpen'
+
+const dockBgClasses: Record<DockThemes, string> = {
   navigationOpen: 'bg-black outline outline-1 outline-white/15',
   dark: 'bg-black/50 outline outline-1 outline-white/15',
   light: 'bg-grey/50 outline outline-1 outline-black/5',
@@ -26,9 +28,12 @@ const dockBgClasses: Record<Themes | 'navigationOpen', string> = {
   mood: 'bg-mood/50 outline outline-1 outline-black/5',
   olive: 'bg-olive/50 outline outline-1 outline-black/5',
   accent: 'bg-accent/50 outline outline-1 outline-black/5',
+  crema: 'bg-crema/50 outline outline-1 outline-black/5',
+  forest: 'bg-forest/50 outline outline-1 outline-black/5',
+  grey: 'bg-grey/50 outline outline-1 outline-black/5',
 }
 
-const dockTextClasses: Record<Themes | 'navigationOpen', string> = {
+const dockTextClasses: Record<DockThemes, string> = {
   navigationOpen: 'text-grey',
   dark: 'text-grey',
   light: 'text-black',
@@ -38,6 +43,9 @@ const dockTextClasses: Record<Themes | 'navigationOpen', string> = {
   mood: 'text-black',
   olive: 'text-black',
   accent: 'text-black',
+  crema: 'text-black',
+  forest: 'text-black',
+  grey: 'text-black',
 }
 
 const soundExpand = defineSound(expand)
@@ -204,17 +212,6 @@ defineExpose({
                     <ul
                       class="flex flex-col w-full text-28 text-center has-hover:[&_a:not(:hover)]:text-current/30 has-focus:[&_a:not(:focus)]:text-current/30"
                     >
-                      <li>
-                        <NuxtLink
-                          to="/"
-                          prefetch-on="interaction"
-                          class="block w-full transition-colors duration-300 ease-outCubic focus:outline-0"
-                          @pointerenter="play(soundHover)"
-                        >
-                          Index
-                        </NuxtLink>
-                      </li>
-
                       <li
                         v-for="item in items"
                         :key="item._uid"
