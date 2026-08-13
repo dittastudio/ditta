@@ -86,7 +86,7 @@ onUnmounted(() => {
 <template>
   <div
     v-editable="block"
-    class="wrapper flex flex-col gap-[calc(var(--app-gutter-outer)*2)] md:gap-(--app-gutter-outer) overflow-clip"
+    class="wrapper flex flex-col gap-(--app-gutter-outer) overflow-clip"
     :class="{
       'pt-(--app-vertical-rhythm)': block.spacing_top,
       'pb-(--app-vertical-rhythm)': block.spacing_bottom,
@@ -111,7 +111,7 @@ onUnmounted(() => {
       v-for="(step, index) in block.steps"
       v-editable="step"
       :key="step._uid"
-      class="sticky top-0 h-svh flex flex-col items-center justify-center"
+      class="sticky top-0 h-svh flex flex-col items-center justify-center max-md:px-(--app-gutter-outer)"
     >
       <div
         class="w-full flex flex-col gap-[calc(var(--app-gutter-outer)*2)] md:gap-(--app-gutter-outer)"
@@ -126,7 +126,7 @@ onUnmounted(() => {
           ref="card"
           class="max-w-120"
           :style="{
-            paddingTop: `calc(var(--app-gutter-outer) * ${index})`,
+            paddingTop: `calc(var(--app-gutter-outer) * ${index * 0.5})`,
           }"
         >
           <CardStep

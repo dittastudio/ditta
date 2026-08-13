@@ -116,20 +116,6 @@ export default defineNuxtConfig({
           isCustomElement: (tag) => tag.startsWith('mux-'),
         },
       },
-      // script: {
-      //   fs: {
-      //     fileExists: (path) => {
-      //       try {
-      //         readFileSync(path)
-      //         return true
-      //       }
-      //       catch {
-      //         return false
-      //       }
-      //     },
-      //     readFile: (path) => readFileSync(path, 'utf-8'),
-      //   },
-      // },
     },
     optimizeDeps: {
       include: [
