@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 interface Props {
   text?: string
+  as?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p'
 }
 
-const { text } = defineProps<Props>()
+const { text, as = 'p' } = defineProps<Props>()
 
 const appStore = useAppStore()
 const taglineReady = ref(false)
@@ -27,8 +28,11 @@ const taglineClass = computed(() => ({
     class="w-full transition-[opacity,scale] duration-500 ease-out"
     :class="taglineClass"
   >
-    <p class="wrapper text-center text-16 md:text-navigation transition-colors duration-500 ease-outCubic">
+    <component
+      :is="as"
+      class="wrapper text-center text-16 md:text-navigation transition-colors duration-500 ease-outCubic"
+    >
       {{ text }}
-    </p>
+    </component>
   </div>
 </template>
