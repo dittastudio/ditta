@@ -20,10 +20,9 @@ useSeoMeta({
   ogTitle: seo_title ?? story.value.name,
   ogDescription: seo_description,
   ogImage: storyblokImage(seo_image?.filename, imageOptions) || null,
+  ogImageWidth: imageOptions.width,
+  ogImageHeight: imageOptions.height,
   ogType: 'website',
-  twitterTitle: seo_title ?? story.value.name,
-  twitterCard: 'summary_large_image',
-  twitterImage: storyblokImage(seo_image?.filename, imageOptions) || null,
 })
 
 const appStore = useAppStore()

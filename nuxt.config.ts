@@ -158,6 +158,9 @@ export default defineNuxtConfig({
   ogImage: {
     enabled: false,
   },
+  seo: {
+    automaticOgAndTwitterTags: false,
+  },
   site: {
     name: 'ditta',
     url: 'https://ditta.studio',
