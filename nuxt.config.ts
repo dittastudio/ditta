@@ -8,6 +8,8 @@ const isProduction =
   process.env.CF_PAGES_BRANCH === 'main' || // Cloudflare Pages
   process.env.WORKERS_CI_BRANCH === 'main' // Cloudflare Workers (Builds)
 
+const isSpa = process.env.IS_SPA === 'true'
+
 export default defineNuxtConfig({
   modules: [
     '@pinia/nuxt',
@@ -77,20 +79,15 @@ export default defineNuxtConfig({
   },
   routeRules: {
     '/**': {
-      prerender: process.env.NUXT_PRERENDER === 'true',
+      prerender: !isSpa,
     },
   },
   nitro: {
     prerender: {
-      crawlLinks: true,
-      routes: ['/'],
+      crawlLinks: !isSpa,
+      routes: isSpa ? [] : ['/'],
       autoSubfolderIndex: false,
-    },
-    experimental: {
-      wasm: true,
-    },
-    wasm: {
-      esmImport: true,
+      ignore: [(route) => route.includes('?')],
     },
   },
   vue: {
@@ -99,7 +96,7 @@ export default defineNuxtConfig({
     },
   },
   compatibilityDate: '2025-07-15',
-  ssr: true,
+  ssr: !isSpa,
   css: ['~/assets/css/app.css'],
   devtools: { enabled: false },
   runtimeConfig: {
