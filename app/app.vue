@@ -43,7 +43,7 @@ router.afterEach(() => {
     <AppTagline
       v-if="settings.content.tagline"
       :text="settings.content.tagline"
-      :as="route.fullPath === '/' ? 'h1' : 'p'"
+      :as="route.path === '/' ? 'h1' : 'p'"
       class="absolute top-0 left-0 z-2 pt-25"
     />
 
