@@ -35,8 +35,8 @@
     "nuxt": "^4.5.2",
     "pinia-plugin-persistedstate": "^4.7.1",
     "satori": "^0.33.4",
-    "vue": "^3.5.41",
-    "vue-router": "^5.2.0"
+    "vue": "^3.5.42",
+    "vue-router": "^5.3.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.2",
@@ -50,12 +50,12 @@
     "nuxt-ai-ready": "^2.0.1",
     "postcss-nested": "^8.0.1",
     "postcss-utopia": "^1.1.0",
-    "rolldown": "^1.2.5",
+    "rolldown": "^1.2.6",
     "storyblok": "^4.22.3",
     "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4.3.3",
     "typescript": "^7.0.2",
     "vite-plus": "^0.3.0",
-    "vite-svg-loader": "^5.1.1"
+    "vite-svg-loader": "^5.1.2"
   }
 }
