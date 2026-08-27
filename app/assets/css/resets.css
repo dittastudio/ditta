@@ -52,4 +52,28 @@
   strong {
     font-weight: var(--font-weight-medium);
   }
+
+  details {
+    interpolate-size: allow-keywords;
+  }
+
+  details::details-content {
+    height: 0;
+    overflow: hidden;
+    transition:
+      height 0.5s var(--ease-inOutCubic),
+      content-visibility 0.5s var(--ease-inOutCubic) allow-discrete;
+  }
+
+  details[open]::details-content {
+    height: auto;
+  }
+
+  summary {
+    list-style: none;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+  }
 }

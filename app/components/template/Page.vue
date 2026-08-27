@@ -22,8 +22,13 @@ const { story } = defineProps<Props>()
       :block="block"
     /> -->
 
+    <BlockAccordion
+      v-if="block.component === 'block_accordion'"
+      :block="block"
+    />
+
     <BlockCta
-      v-if="block.component === 'block_cta'"
+      v-else-if="block.component === 'block_cta'"
       :block="block"
     />
 
@@ -53,7 +58,7 @@ const { story } = defineProps<Props>()
     />
 
     <BlockSteps
-      v-if="block.component === 'block_steps'"
+      v-else-if="block.component === 'block_steps'"
       :block="block"
     />
   </UiTheme>
