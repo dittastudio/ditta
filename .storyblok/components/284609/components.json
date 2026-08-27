@@ -1,5 +1,90 @@
 [
   {
+    "name": "block_accordion",
+    "display_name": "Accordion",
+    "description": null,
+    "created_at": "2026-08-27T17:54:19.061Z",
+    "updated_at": "2026-08-27T17:59:39.652Z",
+    "id": 213662347519041,
+    "schema": {
+      "heading": {
+        "type": "textarea",
+        "pos": 0,
+        "id": "g58tjM2jSS62QObgv4QfRA",
+        "required": true
+      },
+      "copy": {
+        "type": "richtext",
+        "pos": 1,
+        "customize_toolbar": true,
+        "toolbar": [
+          "bold",
+          "italic",
+          "unset",
+          "paragraph"
+        ],
+        "id": "ldXNXw9_TYeSt4-Mb4Jx0Q",
+        "required": false
+      },
+      "theme": {
+        "type": "option",
+        "pos": 2,
+        "use_uuid": true,
+        "source": "internal",
+        "datasource_slug": "themes",
+        "exclude_empty_option": true,
+        "default_value": "light",
+        "id": "s0Y15-G2SWWvbCcYVOmmww"
+      },
+      "items": {
+        "type": "bloks",
+        "pos": 3,
+        "restrict_components": true,
+        "component_whitelist": [
+          "element_accordion"
+        ],
+        "id": "Yc-r0rD8Tz2imAJCTMZSaA",
+        "component_denylist": []
+      },
+      "id": {
+        "type": "text",
+        "pos": 4,
+        "id": "x6uhsQzzTK6_WsAXlr8yOw"
+      },
+      "spacing_top": {
+        "type": "boolean",
+        "display_name": "Spacing Top",
+        "pos": 5,
+        "default_value": true,
+        "inline_label": true,
+        "id": "a69b-V43T7msZmrMalOQFg"
+      },
+      "spacing_bottom": {
+        "type": "boolean",
+        "display_name": "Spacing Bottom",
+        "pos": 6,
+        "default_value": true,
+        "inline_label": true,
+        "id": "TscKdTYNQ5CpEAGSaDmYqA"
+      }
+    },
+    "image": null,
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Accordion",
+    "component_group_uuid": "c56a9133-c409-488d-9f91-40d75d6e78cd",
+    "color": null,
+    "icon": null,
+    "internal_tags_list": [],
+    "internal_tag_ids": [],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
     "name": "block_companies",
     "display_name": "Companies",
     "description": null,
@@ -1021,6 +1106,54 @@
     "metadata": {}
   },
   {
+    "name": "element_accordion",
+    "display_name": null,
+    "description": "",
+    "created_at": "2026-08-27T17:56:47.422Z",
+    "updated_at": "2026-08-27T17:58:00.470Z",
+    "id": 213662955205700,
+    "schema": {
+      "heading": {
+        "type": "text",
+        "pos": 0,
+        "required": true,
+        "id": "HD_dJgKgQxSG5YwaCCilpw"
+      },
+      "copy": {
+        "type": "richtext",
+        "pos": 1,
+        "required": true,
+        "customize_toolbar": true,
+        "allow_target_blank": true,
+        "toolbar": [
+          "bold",
+          "list",
+          "unset",
+          "italic",
+          "link",
+          "olist",
+          "paragraph"
+        ],
+        "id": "mfk126IKQRKA8rotnYX-FQ"
+      }
+    },
+    "image": null,
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "element_accordion",
+    "component_group_uuid": "a4bb317a-f2a8-450c-95ee-324278de45c2",
+    "color": null,
+    "icon": null,
+    "internal_tags_list": [],
+    "internal_tag_ids": [],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
     "name": "element_cta",
     "display_name": "CTA",
     "description": null,
@@ -1364,7 +1497,7 @@
     "display_name": null,
     "description": null,
     "created_at": "2024-04-12T15:16:30.902Z",
-    "updated_at": "2026-05-27T15:49:22.257Z",
+    "updated_at": "2026-08-27T17:59:10.300Z",
     "id": 5647533,
     "schema": {
       "blocks": {
@@ -1380,7 +1513,8 @@
           "block_steps",
           "block_team",
           "block_hero",
-          "block_companies"
+          "block_companies",
+          "block_accordion"
         ],
         "component_group_whitelist": [],
         "id": "TEthTDcMRGOFSALxUXkDOA",
