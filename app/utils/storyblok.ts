@@ -1,5 +1,5 @@
 import type { Page, Project, ElementMediaImage, ElementMediaAutoplay } from '#storyblok-components'
-import type { StoryblokRichtext } from '#storyblok-types'
+import type { StoryblokRichTextDoc } from '#storyblok-types'
 import type { ImageModifiers } from '@nuxt/image'
 import type { ISbStoryData } from '@storyblok/js'
 import type { LocationQuery } from 'vue-router'
@@ -41,7 +41,7 @@ const storyblokAssetType = (filename: string): 'image' | 'video' | 'other' => {
   return 'other'
 }
 
-const storyblokRichTextContent = (richtext: StoryblokRichtext | undefined): boolean =>
+const storyblokRichTextContent = (richtext: StoryblokRichTextDoc | undefined): boolean =>
   Boolean(richtext?.content?.[0]?.content?.length)
 
 const storyblokSlug = (path: string): string => (['', '/'].includes(path) ? '/home' : path.replace(/\/+$/, ''))

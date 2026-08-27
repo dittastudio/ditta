@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { StoryblokRichtext } from '#storyblok-types'
+import type { StoryblokRichTextDoc } from '#storyblok-types'
 
 interface Props {
   title?: string
   heading?: string
-  copy?: StoryblokRichtext
+  copy?: StoryblokRichTextDoc
 }
 
 const { title, heading, copy } = defineProps<Props>()

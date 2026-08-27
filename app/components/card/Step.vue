@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import type { Themes } from '@/types/app'
-import type { StoryblokRichtext } from '#storyblok-types'
+import type { StoryblokRichTextDoc } from '#storyblok-types'
 
 interface Props {
   number?: string
   title?: string
   heading?: string
-  copy?: StoryblokRichtext
+  copy?: StoryblokRichTextDoc
   theme?: Themes
 }
 
