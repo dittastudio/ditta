@@ -38,11 +38,11 @@ const { block } = defineProps<Props>()
       <div class="w-full grid gap-1 rounded-20 overflow-hidden">
         <template
           v-for="item in block.items"
-          v-editable="item"
           :key="item._uid"
         >
           <UiAccordionItem
             v-if="item.heading && storyblokRichTextContent(item.copy)"
+            v-editable="item"
             :heading="item.heading"
             :copy="item.copy"
           />
