@@ -11,7 +11,7 @@ const { heading, copy } = defineProps<Props>()
 </script>
 
 <template>
-  <details class="accordion-item group w-full bg-white/10">
+  <details class="accordion-item group w-full bg-white/5">
     <summary
       v-if="heading"
       class="w-full p-6 md:p-8 select-none cursor-pointer flex items-center justify-start gap-6 md:gap-8 text-20 font-medium trim-both"
