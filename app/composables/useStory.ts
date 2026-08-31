@@ -12,11 +12,11 @@ export async function useStory<T>(
 ) {
   const config = useRuntimeConfig()
   const resolvedQuery = query ?? useRoute().query
-  const isDraft = config.public.NUXT_STORYBLOK_VERSION !== 'published'
+  const isPublished = config.public.STORYBLOK_VERSION === 'published'
 
   const { story, error } = await useAsyncStoryblok(storyblokSlug(slug), {
     api: {
-      version: isDraft ? 'draft' : 'published',
+      version: isPublished ? 'published' : 'draft',
       from_release:
         typeof resolvedQuery?._storyblok_release === 'string' ? resolvedQuery?._storyblok_release : undefined,
       ...api,
