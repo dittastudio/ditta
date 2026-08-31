@@ -22,13 +22,13 @@ const { story } = defineProps<Props>()
       :block="block"
     /> -->
 
-    <!-- <BlockAccordion
+    <BlockAccordion
       v-if="block.component === 'block_accordion'"
       :block="block"
-    /> -->
+    />
 
     <BlockCta
-      v-if="block.component === 'block_cta'"
+      v-else-if="block.component === 'block_cta'"
       :block="block"
     />
 
