@@ -94,14 +94,19 @@ watch(navigation, (isOpen) => {
 
 let lastScrollY = 0
 const isHidden = ref(false)
+const isShadowVisible = ref(false)
+const shadowVisibleOffset = 20
 
 const onScroll = () => {
   const y = window.scrollY
   const isDown = y >= 1 && y > lastScrollY
+  const isScrollingUp = y < lastScrollY
 
   if (!navigation.value && isHidden.value !== isDown) {
     isHidden.value = isDown
   }
+
+  isShadowVisible.value = isScrollingUp && y > shadowVisibleOffset
 
   lastScrollY = y
 }
@@ -136,10 +141,12 @@ defineExpose({
         }"
       >
         <div
-          class="shadow-2xl rounded-[inherit] corner-shape-inherit transition-opacity duration-300 ease-out"
+          class="relative rounded-[inherit] corner-shape-inherit transition-opacity duration-300 ease-out before:absolute before:inset-0 before:rounded-[inherit] before:corner-shape-inherit before:shadow-2xl before:pointer-events-none before:transition-opacity before:duration-1000 before:ease-out"
           :class="{
             'opacity-0': isHidden || !isReady,
             'opacity-100': !isHidden && isReady,
+            'before:opacity-0': !isShadowVisible,
+            'before:opacity-100': isShadowVisible,
           }"
         >
           <div

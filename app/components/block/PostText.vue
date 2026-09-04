@@ -11,7 +11,11 @@ const { block } = defineProps<Props>()
 <template>
   <div
     v-editable="block"
-    class="wrapper max-w-295 py-20 min-h-svh"
+    class="wrapper max-w-295 min-h-svh"
+    :class="{
+      'pt-(--app-vertical-rhythm)': block.spacing_top,
+      'pb-(--app-vertical-rhythm)': block.spacing_bottom,
+    }"
   >
     <div
       v-if="storyblokRichTextContent(block.text)"

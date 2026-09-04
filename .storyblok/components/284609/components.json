@@ -473,7 +473,7 @@
     "display_name": "Post Text",
     "description": "",
     "created_at": "2026-09-04T12:31:17.815Z",
-    "updated_at": "2026-09-04T12:34:29.366Z",
+    "updated_at": "2026-09-04T14:54:20.513Z",
     "id": 216414117135881,
     "schema": {
       "text": {
@@ -498,6 +498,19 @@
           "paragraph",
           "unset"
         ]
+      },
+      "spacing_top": {
+        "type": "boolean",
+        "pos": 1,
+        "inline_label": true,
+        "id": "Eqdluak-QE-yHBp7VoaFqA"
+      },
+      "spacing_bottom": {
+        "type": "boolean",
+        "pos": 2,
+        "id": "2SqSp3zwRcuEXTyyGkhyQg",
+        "inline_label": true,
+        "default_value": true
       }
     },
     "image": null,
