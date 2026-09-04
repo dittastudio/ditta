@@ -1,11 +1,17 @@
 <script lang="ts" setup>
-import type { BlockPosts } from '#storyblok-components'
+import type { BlockPosts, Post } from '#storyblok-components'
 
 interface Props {
   block: BlockPosts
 }
 
 const { block } = defineProps<Props>()
+
+const posts = await useStories<Post>('/blog', {
+  content_type: 'post',
+  sort_by: 'first_published_at:desc',
+  per_page: 100,
+})
 </script>
 
 <template>
@@ -17,6 +23,17 @@ const { block } = defineProps<Props>()
       'pb-(--app-vertical-rhythm)': block.spacing_bottom,
     }"
   >
-    <pre>{{ block }}</pre>
+    <ul v-if="posts.length">
+      <li
+        v-for="post in posts"
+        :key="post.uuid"
+      >
+        <NuxtLink :to="`/${post.full_slug}`">
+          <h2>
+            {{ post.name }}
+          </h2>
+        </NuxtLink>
+      </li>
+    </ul>
   </div>
 </template>
