@@ -425,6 +425,78 @@
     "metadata": {}
   },
   {
+    "name": "block_posts",
+    "display_name": "Posts",
+    "description": "",
+    "created_at": "2026-09-04T11:57:35.889Z",
+    "updated_at": "2026-09-04T12:32:47.418Z",
+    "id": 216405835335063,
+    "schema": {},
+    "image": null,
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Posts",
+    "component_group_uuid": "c56a9133-c409-488d-9f91-40d75d6e78cd",
+    "color": "var(--sb-color-accent-background-white)",
+    "icon": "layout-list",
+    "internal_tags_list": [],
+    "internal_tag_ids": [],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
+    "name": "block_post_text",
+    "display_name": "Post Text",
+    "description": "",
+    "created_at": "2026-09-04T12:31:17.815Z",
+    "updated_at": "2026-09-04T12:34:29.366Z",
+    "id": 216414117135881,
+    "schema": {
+      "text": {
+        "type": "richtext",
+        "pos": 0,
+        "id": "5Y5XNUjLQg22TAj0_qkBYQ",
+        "customize_toolbar": true,
+        "toolbar": [
+          "bold",
+          "list",
+          "code",
+          "h1",
+          "h2",
+          "h3",
+          "h4",
+          "h5",
+          "h6",
+          "hrule",
+          "italic",
+          "link",
+          "olist",
+          "paragraph",
+          "unset"
+        ]
+      }
+    },
+    "image": null,
+    "preview_field": null,
+    "is_root": false,
+    "preview_tmpl": null,
+    "is_nestable": true,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Post Text",
+    "component_group_uuid": "c56a9133-c409-488d-9f91-40d75d6e78cd",
+    "color": "var(--sb-color-accent-background-white)",
+    "icon": "align-left",
+    "internal_tags_list": [],
+    "internal_tag_ids": [],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
     "name": "block_project_overview",
     "display_name": "Project Overview",
     "description": "",
@@ -1497,29 +1569,19 @@
     "display_name": null,
     "description": null,
     "created_at": "2024-04-12T15:16:30.902Z",
-    "updated_at": "2026-08-27T17:59:10.300Z",
+    "updated_at": "2026-09-04T11:56:52.098Z",
     "id": 5647533,
     "schema": {
       "blocks": {
         "type": "bloks",
         "pos": 1,
-        "restrict_type": "",
+        "restrict_type": "groups",
         "restrict_components": true,
-        "component_whitelist": [
-          "block_cta",
-          "block_projects",
-          "block_services",
-          "block_statement",
-          "block_steps",
-          "block_team",
-          "block_hero",
-          "block_companies",
-          "block_accordion"
+        "component_group_whitelist": [
+          "c56a9133-c409-488d-9f91-40d75d6e78cd"
         ],
-        "component_group_whitelist": [],
         "id": "TEthTDcMRGOFSALxUXkDOA",
         "component_group_denylist": [],
-        "component_denylist": [],
         "component_tag_whitelist": [],
         "component_tag_denylist": []
       },
@@ -1619,6 +1681,80 @@
     "internal_tags_list": [],
     "internal_tag_ids": [],
     "content_type_asset_preview": "image",
+    "metadata": {}
+  },
+  {
+    "name": "post",
+    "display_name": "Post",
+    "description": null,
+    "created_at": "2026-09-04T11:55:08.747Z",
+    "updated_at": "2026-09-04T11:56:34.379Z",
+    "id": 216405232633205,
+    "schema": {
+      "blocks": {
+        "type": "bloks",
+        "pos": 1,
+        "restrict_type": "groups",
+        "restrict_components": true,
+        "component_group_whitelist": [
+          "c56a9133-c409-488d-9f91-40d75d6e78cd"
+        ],
+        "id": "TEthTDcMRGOFSALxUXkDOA",
+        "component_group_denylist": [],
+        "component_tag_whitelist": [],
+        "component_tag_denylist": []
+      },
+      "tab-554f4d6b-1445-4095-a716-160ff3edcf74": {
+        "display_name": "SEO",
+        "keys": [
+          "seo_title",
+          "seo_description",
+          "seo_image"
+        ],
+        "pos": 2,
+        "type": "tab",
+        "id": "VU9NaxRFQJWnFhYP8-3PdA"
+      },
+      "seo_title": {
+        "type": "text",
+        "pos": 3,
+        "id": "cOLSOMqqSKCsh7L2xWHwnA",
+        "required": true,
+        "display_name": "Title"
+      },
+      "seo_description": {
+        "type": "text",
+        "pos": 4,
+        "id": "qcOA9qamSeOqJl7K5u2oAw",
+        "required": true,
+        "display_name": "Description"
+      },
+      "seo_image": {
+        "type": "asset",
+        "pos": 5,
+        "required": true,
+        "display_name": "Image",
+        "description": "For best results, use an image size of 1200px by 630px.",
+        "filetypes": [
+          "images"
+        ],
+        "id": "EXxMDdMTQ3OoxC9ZY_nMJg"
+      }
+    },
+    "image": null,
+    "preview_field": null,
+    "is_root": true,
+    "preview_tmpl": null,
+    "is_nestable": false,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Post",
+    "component_group_uuid": "67a899e1-7a4c-4a22-ad69-551d9227880c",
+    "color": null,
+    "icon": null,
+    "internal_tags_list": [],
+    "internal_tag_ids": [],
+    "content_type_asset_preview": null,
     "metadata": {}
   },
   {

@@ -37,6 +37,7 @@
 
   --font-\*: initial;
   --font-sans: 'Saans', sans-serif, system-ui;
+  --font-mono: 'JetBrains Mono', monospace, system-ui;
 
   --font-weight-\*: initial;
   --font-weight-light: 300;
@@ -48,8 +49,10 @@
 
   --text-\*: initial;
   --text-11: 0.6875rem;
+  --text-12: 0.75rem;
   --text-14: 0.875rem;
   --text-16: 1rem;
+  --text-18: 1.125rem;
   --text-20: 1.25rem;
   --text-24: 1.5rem;
   --text-28: 1.75rem;

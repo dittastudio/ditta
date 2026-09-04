@@ -40,12 +40,17 @@ router.afterEach(() => {
       autoRaf: true,
     }"
   >
-    <AppTagline
-      v-if="settings.content.tagline"
-      :text="settings.content.tagline"
-      :as="route.path === '/' ? 'h1' : 'p'"
-      class="absolute top-0 left-0 z-2 pt-25"
-    />
+    <Transition
+      name="fade"
+      mode="out-in"
+    >
+      <AppTagline
+        v-if="settings.content.tagline && !route.path.startsWith('/blog')"
+        :text="settings.content.tagline"
+        :as="route.path === '/' ? 'h1' : 'p'"
+        class="absolute top-0 left-0 z-2 pt-25"
+      />
+    </Transition>
 
     <AppDock
       ref="dock"

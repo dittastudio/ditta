@@ -73,3 +73,35 @@
   font-weight: var(--font-weight-semibold);
   letter-spacing: var(--tracking-normal);
 }
+
+@utility text-mono-title {
+  font-family: var(--font-mono);
+  font-size: utopia.clamp(20, 32);
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+@utility text-mono-body {
+  font-family: var(--font-mono);
+  font-size: var(--text-16);
+  line-height: 1.6;
+  font-weight: var(--font-weight-regular);
+  letter-spacing: -0.02em;
+
+  @variant md {
+    font-size: var(--text-18);
+  }
+}
+
+@utility text-mono-small {
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  line-height: 1.4;
+  font-weight: var(--font-weight-regular);
+  letter-spacing: -0.02em;
+
+  @variant md {
+    font-size: var(--text-14);
+  }
+}

@@ -1,4 +1,4 @@
-import type { Page, Project, ElementMediaImage, ElementMediaAutoplay } from '#storyblok-components'
+import type { Page, Project, Post, ElementMediaImage, ElementMediaAutoplay } from '#storyblok-components'
 import type { StoryblokRichTextDoc } from '#storyblok-types'
 import type { ImageModifiers } from '@nuxt/image'
 import type { ISbStoryData } from '@storyblok/js'
@@ -51,13 +51,16 @@ const isMediaImage = (media: ElementMediaImage | ElementMediaAutoplay): media is
 const isMediaAutoplay = (media: ElementMediaImage | ElementMediaAutoplay): media is ElementMediaAutoplay =>
   media.component === 'element_media_autoplay'
 
-type ContentTypes = Page | Project
+type ContentTypes = Page | Project | Post
 
 const isPage = (story: ISbStoryData<ContentTypes> | null | undefined): story is ISbStoryData<Page> =>
   Boolean(story?.content?.component === 'page')
 
 const isProject = (story: ISbStoryData<ContentTypes> | null | undefined): story is ISbStoryData<Project> =>
   Boolean(story?.content?.component === 'project')
+
+const isPost = (story: ISbStoryData<ContentTypes> | null | undefined): story is ISbStoryData<Post> =>
+  Boolean(story?.content?.component === 'post')
 
 const storyblokImage = (filename: string | null | undefined, modifiers?: Partial<ImageModifiers>): string => {
   const image = useImage()
@@ -103,6 +106,7 @@ export {
   isMediaAutoplay,
   isPage,
   isProject,
+  isPost,
   storyblokAssetType,
   storyblokEditor,
   storyblokImage,

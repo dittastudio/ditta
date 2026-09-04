@@ -6,4 +6,12 @@
     font-display: swap;
     src: url('/fonts/SaansVF.woff2') format('woff2') tech(variations);
   }
+
+  @font-face {
+    font-family: 'JetBrains Mono';
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+    src: url('/fonts/JetBrainsMonoVF.woff2') format('woff2') tech(variations);
+  }
 }
