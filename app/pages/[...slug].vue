@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import type { Page, Project } from '#storyblok-components'
+import type { Page, Post, Project } from '#storyblok-components'
 import type { Themes } from '@/types/app'
 
 const route = useRoute()
 const relations = ['block_team.humans', 'block_projects.projects']
 
-const story = await useStory<Page | Project>(
+const story = await useStory<Page | Post | Project>(
   route.path,
   { resolve_relations: relations },
   { resolveRelations: relations },
@@ -39,6 +39,11 @@ onMounted(() => {
   <main class="w-full min-h-svh">
     <TemplatePage
       v-if="isPage(story)"
+      :story="story"
+    />
+
+    <TemplatePost
+      v-else-if="isPost(story)"
       :story="story"
     />
 
