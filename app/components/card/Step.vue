@@ -16,7 +16,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const mergedAttrs = useMergedAttrs('step-card w-full flex flex-col gap-y-20 rounded-20')
+const mergedAttrs = useMergedAttrs('step-card w-full flex flex-col gap-y-20 rounded-20 squircle-40')
 </script>
 
 <template>

@@ -35,8 +35,8 @@ const { block } = defineProps<Props>()
         />
       </div>
 
-      <div class="w-full grid gap-1 rounded-20 overflow-hidden">
-        <template
+      <ul class="w-full flex flex-col gap-1 rounded-20 overflow-hidden">
+        <li
           v-for="item in block.items"
           :key="item._uid"
         >
@@ -46,8 +46,8 @@ const { block } = defineProps<Props>()
             :heading="item.heading"
             :copy="item.copy"
           />
-        </template>
-      </div>
+        </li>
+      </ul>
     </div>
   </div>
 </template>

@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { StoryblokRichTextDoc } from '#storyblok-types'
 import IconPlus from '@/assets/icons/plus.svg'
+import { defineSound } from '@web-kits/audio'
+import { drawerOpen, drawerClose, hover } from '@@/.web-kits/core'
 
 interface Props {
   heading?: string
@@ -8,21 +10,35 @@ interface Props {
 }
 
 const { heading, copy } = defineProps<Props>()
+
+const soundPageEnter = defineSound(drawerOpen)
+const soundPageExit = defineSound(drawerClose)
+const soundHover = defineSound(hover)
+const { play } = useAudio()
+
+function handleToggle(event: Event) {
+  const details = event.target as HTMLDetailsElement
+  play(details.open ? soundPageEnter : soundPageExit)
+}
 </script>
 
 <template>
-  <details class="accordion-item group w-full bg-white/5">
+  <details
+    class="accordion-item group w-full bg-white/7.5"
+    @toggle="handleToggle"
+    @pointerenter="play(soundHover)"
+  >
     <summary
       v-if="heading"
-      class="w-full p-6 md:p-8 select-none cursor-pointer flex items-center justify-start gap-6 md:gap-8 text-20 font-medium trim-both"
+      class="w-full p-6 pr-8 md:p-8 md:pr-10 select-none cursor-pointer flex items-start gap-6 md:gap-8 text-20 font-medium trim-both"
     >
-      <IconPlus class="accordion-item__cross block size-6" />
-      {{ heading }}
+      <IconPlus class="accordion-item__cross shrink-0 relative top-[0.09em] size-6" />
+      <span class="block mt-[-0.08em]">{{ heading }}</span>
     </summary>
 
     <div
       v-if="storyblokRichTextContent(copy)"
-      class="w-full pl-18 pr-6 pb-6 md:pl-21.5 md:pr-8 md:pb-8 opacity-0 transition-opacity duration-250 ease-out delay-0 group-open:starting:opacity-0 group-open:opacity-60 group-open:duration-500 group-open:delay-200 prose text-balance"
+      class="w-full pl-18 pr-10 pb-10 md:pl-21.5 md:pr-12 md:pb-12 opacity-0 transition-opacity duration-250 ease-out delay-0 group-open:starting:opacity-0 group-open:opacity-60 group-open:duration-500 group-open:delay-200 prose text-balance"
     >
       <StoryblokText :html="copy" />
     </div>
