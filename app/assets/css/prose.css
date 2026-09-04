@@ -16,6 +16,24 @@
   }
 }
 
+@utility prose-links {
+  & :where(a) {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    text-decoration-color: --alpha(currentColor / 50%);
+    transition: opacity 0.2s var(--ease-out);
+  }
+
+  & :where(a:hover) {
+    opacity: 0.6;
+  }
+
+  & :where(a:visited) {
+    opacity: --alpha(currentColor / 50%);
+  }
+}
+
 @custom-variant prose-headings {
   & :where(h1, h2, h3, h4, h5, h6) {
     @slot;

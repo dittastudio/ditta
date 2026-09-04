@@ -18,12 +18,13 @@ const publishedDate = useDateFormat(story.created_at, 'Do MMMM YYYY')
     itemtype="https://schema.org/BlogPosting"
   >
     <UiTheme theme="light">
-      <div class="wrapper max-w-295 flex flex-col gap-20 pt-60 pb-20">
+      <div class="wrapper max-w-295 flex flex-col gap-20 pt-50 md:pt-60 pb-20">
         <h1
           itemprop="headline"
           class="text-mono-title trim-both"
         >
           <UiTextMorph
+            :disable-kerning="true"
             :min-weight="600"
             :text="story.name"
           />

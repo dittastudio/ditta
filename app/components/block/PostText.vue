@@ -19,7 +19,7 @@ const { block } = defineProps<Props>()
   >
     <div
       v-if="storyblokRichTextContent(block.text)"
-      class="prose prose-headings:text-mono-title prose-headings:text-balance prose-p:text-mono-body prose-p:text-pretty max-w-[80ch]"
+      class="prose prose-links prose-headings:text-mono-title prose-headings:text-balance prose-p:text-mono-body prose-p:text-pretty max-w-[80ch]"
     >
       <StoryblokText :html="block.text" />
     </div>

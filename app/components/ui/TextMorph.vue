@@ -10,9 +10,17 @@ interface Props {
   minWeight?: number
   maxWeight?: number
   autoAnimate?: boolean
+  disableKerning?: boolean
 }
 
-const { text, falloff = 1.5, minWeight = 300, maxWeight = 900, autoAnimate = true } = defineProps<Props>()
+const {
+  text,
+  falloff = 1.5,
+  minWeight = 300,
+  maxWeight = 900,
+  autoAnimate = true,
+  disableKerning = false,
+} = defineProps<Props>()
 
 const MIN_SLNT = 0
 const MAX_SLNT = -10
@@ -235,7 +243,7 @@ onMounted(() => {
   const chars = split.chars
 
   gsap.set(chars, { '--wght': minWeight, '--slnt': MIN_SLNT })
-  applyKerning(chars)
+  if (!disableKerning) applyKerning(chars)
 
   const round1dp = (v: string) => String(Math.round(parseFloat(v) * 10) / 10)
   wghtSetters = chars.map((el) => gsap.quickTo(el, '--wght', { ...TWEEN, modifiers: { '--wght': round1dp } }))

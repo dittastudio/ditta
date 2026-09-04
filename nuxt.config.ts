@@ -69,6 +69,7 @@ export default defineNuxtConfig({
       link: [
         { rel: 'manifest', href: '/site.webmanifest' },
         { rel: 'preload', type: 'font/woff2', href: '/fonts/SaansVF.woff2', as: 'font', crossorigin: '' },
+        { rel: 'preload', type: 'font/woff2', href: '/fonts/JetBrainsMonoVF.woff2', as: 'font', crossorigin: '' },
         {
           rel: 'icon',
           type: 'image/svg+xml',
