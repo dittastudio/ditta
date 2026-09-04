@@ -429,9 +429,29 @@
     "display_name": "Posts",
     "description": "",
     "created_at": "2026-09-04T11:57:35.889Z",
-    "updated_at": "2026-09-04T12:32:47.418Z",
+    "updated_at": "2026-09-04T14:08:49.612Z",
     "id": 216405835335063,
-    "schema": {},
+    "schema": {
+      "id": {
+        "type": "text",
+        "pos": 0,
+        "id": "6k_DOmgtQQKX2f2kDJxHMw"
+      },
+      "spacing_top": {
+        "type": "boolean",
+        "pos": 1,
+        "default_value": true,
+        "id": "c0GYUSH5SI2F5adZ9n5hrQ",
+        "inline_label": true
+      },
+      "spacing_bottom": {
+        "type": "boolean",
+        "pos": 2,
+        "default_value": true,
+        "id": "8zve-Ox-SCS9MwpO1Cqo8w",
+        "inline_label": true
+      }
+    },
     "image": null,
     "preview_field": null,
     "is_root": false,
@@ -1569,21 +1589,37 @@
     "display_name": null,
     "description": null,
     "created_at": "2024-04-12T15:16:30.902Z",
-    "updated_at": "2026-09-04T11:56:52.098Z",
+    "updated_at": "2026-09-04T14:11:00.465Z",
     "id": 5647533,
     "schema": {
       "blocks": {
         "type": "bloks",
         "pos": 1,
-        "restrict_type": "groups",
+        "restrict_type": "",
         "restrict_components": true,
-        "component_group_whitelist": [
-          "c56a9133-c409-488d-9f91-40d75d6e78cd"
-        ],
+        "component_group_whitelist": [],
         "id": "TEthTDcMRGOFSALxUXkDOA",
         "component_group_denylist": [],
         "component_tag_whitelist": [],
-        "component_tag_denylist": []
+        "component_tag_denylist": [],
+        "component_whitelist": [
+          "block_accordion",
+          "block_companies",
+          "block_cta",
+          "block_hero",
+          "block_hero_project",
+          "block_media",
+          "block_posts",
+          "block_project_overview",
+          "block_projects",
+          "block_services",
+          "block_statement",
+          "block_steps",
+          "block_team",
+          "block_testimonial",
+          "block_text"
+        ],
+        "component_denylist": []
       },
       "tab-554f4d6b-1445-4095-a716-160ff3edcf74": {
         "display_name": "SEO",

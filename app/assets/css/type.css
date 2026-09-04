@@ -85,7 +85,7 @@
 @utility text-mono-body {
   font-family: var(--font-mono);
   font-size: var(--text-16);
-  line-height: 1.6;
+  line-height: 1.75;
   font-weight: var(--font-weight-regular);
   letter-spacing: -0.02em;
 

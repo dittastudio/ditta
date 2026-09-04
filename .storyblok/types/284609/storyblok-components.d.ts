@@ -70,6 +70,9 @@ export interface BlockMedia {
 }
 
 export interface BlockPosts {
+  id?: string;
+  spacing_top?: boolean;
+  spacing_bottom?: boolean;
   component: "block_posts";
   _uid: string;
   _editable?: string | undefined;
@@ -266,7 +269,6 @@ export interface Page {
     | BlockHeroProject
     | BlockMedia
     | BlockPosts
-    | BlockPostText
     | BlockProjectOverview
     | BlockProjects
     | BlockServices
