@@ -25,12 +25,12 @@ const publishedDate = useDateFormat(story.created_at, 'Do MMMM YYYY')
         >
           <UiTextMorph
             :disable-kerning="true"
-            :min-weight="600"
+            :min-weight="500"
             :text="story.name"
           />
         </h1>
 
-        <div class="flex flex-col text-mono-small opacity-70">
+        <div class="flex flex-col text-mono-small opacity-60">
           <time
             itemprop="datePublished"
             :datetime="story.created_at"

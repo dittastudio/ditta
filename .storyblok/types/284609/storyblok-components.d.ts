@@ -71,6 +71,7 @@ export interface BlockMedia {
 
 export interface BlockPosts {
   id?: string;
+  theme?: number | string;
   spacing_top?: boolean;
   spacing_bottom?: boolean;
   component: "block_posts";
@@ -298,6 +299,7 @@ export interface Person {
 }
 
 export interface Post {
+  summary?: string;
   blocks?: (
     | BlockAccordion
     | BlockCompanies

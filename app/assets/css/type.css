@@ -78,7 +78,7 @@
   font-family: var(--font-mono);
   font-size: utopia.clamp(20, 32);
   line-height: 1.15;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: -0.02em;
 }
 
@@ -86,7 +86,7 @@
   font-family: var(--font-mono);
   font-size: var(--text-16);
   line-height: 1.667;
-  font-weight: var(--font-weight-regular);
+  font-weight: 360;
   letter-spacing: -0.02em;
 
   @variant md {
