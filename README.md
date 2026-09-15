@@ -53,6 +53,7 @@ app/
   assets/css/                # Tailwind entry + design tokens
   assets/icons/              # SVGs, imported as Vue components
 server/api/                  # sitemap, weather
+.storyblok/schema/           # the Storyblok schema, in TypeScript — see below
 ```
 
 Nuxt auto-imports everything in `composables/`, `utils/`, and `components/` — **don't write explicit imports for them**.
@@ -71,9 +72,14 @@ interface Props {
 }
 ```
 
-Nested blocks, relations and field types all resolve from the same definitions. Note that optional fields are `T | null | undefined` — the CDN sends `null` for a field the editor left empty.
+Nested blocks and field types resolve from the same definitions, so `block.items` inside an accordion is typed as the element blocks its schema allows, with no casting.
 
-To change a block, edit its file under `.storyblok/schema/` and push:
+Two things the types can't infer on their own:
+
+- **Optional fields are `T | null | undefined`.** The CDN sends `null` for a field the editor left empty, so a prop receiving one declares `| null` rather than coercing at the call site.
+- **Relation fields are typed as UUID strings**, because that is what the API returns without `resolve_relations`. Read them through `storyblokRelations<'project'>(block.projects)`, which widens to the resolved stories and drops anything the CDN left unresolved.
+
+To change a block, edit its file under `.storyblok/schema/` and push. Changing it in the Storyblok UI instead will drift from these files and won't reach the app's types.
 
 ```bash
 npm run sb:login             # once, to authenticate the CLI
@@ -82,7 +88,11 @@ npm run sb:schema-diff       # show what a push would change, applying nothing
 npm run sb:schema-push       # push local schema to the space
 ```
 
-Run the diff first — a push writes to the live space. Every push saves a changeset to `.storyblok/schema/changesets/` capturing the pre-push state; `npm run sb:schema-rollback` replays one to undo a push, so those files are worth committing.
+Run the diff first — a push writes to the live space, and it only creates and updates: a block deleted locally survives remotely until someone passes `--delete`.
+
+Every push saves a changeset to `.storyblok/schema/changesets/` capturing the pre-push state; `npm run sb:schema-rollback` replays one to undo a push, so those files are worth committing.
+
+(`sb:schema-init`, which bootstrapped `.storyblok/schema/` from the space, is a one-time command that **overwrites** that directory. It has already been run — don't run it again without coordination.)
 
 ### Content migrations
 
@@ -97,8 +107,6 @@ npm run sb:migrations-run -- block_text        # apply it
 Migrations live in `.storyblok/migrations/284609/` and are plain JS modules that transform a block's content. A push offers to scaffold them for breaking changes, but the scaffolds are starting points — read them before running. Each run snapshots content first, so `npm run sb:migrations-rollback` can undo it.
 
 Runs save as draft; pass `--publish published` to republish stories that were already live.
-
-Changing a block in the Storyblok UI instead will drift from these files and won't reach the app's types.
 
 There's also an optional Storyblok MCP server for AI agents — copy `.mcp.json.example` to `.mcp.json` and add a personal access token.
 
@@ -133,12 +141,26 @@ The default Tailwind palette, spacing, breakpoints and font scales are **reset t
 
 ## Code style
 
-Linting, type-checking and formatting go through **vite-plus** (`vp`) and **oxfmt**:
+Linting and formatting go through **vite-plus** (`vp`) and **oxfmt**:
 
 - No semicolons, single quotes, 120 char width
 - One attribute per line in templates when there's more than one
 
 Run `vp check` (or `vp check --fix`) before pushing. A staged-files hook is configured in `vite.config.ts`, but note the Husky `pre-commit` hook is currently empty, so **linting does not run automatically on commit** — only commitlint does, via `commit-msg`.
+
+### Type checking
+
+`vp check` type-checks `.ts` files, but **not the `<template>` half of a `.vue` file**. A type error in a template — the wrong prop type passed to a component, a null reaching a prop that doesn't accept one — will pass `vp check` and still break the build's type contract. Your editor's Vue plugin catches these; the terminal does not.
+
+No type checker is installed, so `nuxt typecheck` will not run as-is. To check templates across the whole project, run one through npx:
+
+```bash
+npx -y -p typescript@5.9 -p vue-tsc@2.2 vue-tsc --noEmit -p .nuxt/tsconfig.app.json
+```
+
+The pinned versions matter: `vue-tsc` cannot load the TypeScript 7 that this repo installs, so it needs its own TypeScript 5 alongside it.
+
+There are currently **10 known errors** from this command, all pre-existing and unrelated to Storyblok — `useTemplateRef` inferring a single element instead of an array (`Projects.vue`, `Steps.vue`, `Ticker.vue`), a `DevGuide` prop, and a missing `defineSitemapEventHandler` export in `server/api/sitemap.ts`. Treat that as the baseline: new work shouldn't add to it.
 
 Commits follow [Conventional Commits](https://www.conventionalcommits.org). If the commit hook complains, fix the underlying issue rather than passing `--no-verify`.
 
