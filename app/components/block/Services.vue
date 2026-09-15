@@ -4,10 +4,10 @@ import { defineSound } from '@web-kits/audio'
 import { sync } from '@@/.web-kits/core'
 import { useAppStore } from '@/stores/app'
 import type { Accent } from '@/stores/app'
-import type { BlockServices } from '#storyblok-components'
+import type { Block } from '#storyblok-schema'
 
 interface Props {
-  block: BlockServices
+  block: Block<'block_services'>
 }
 
 const { block } = defineProps<Props>()

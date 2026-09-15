@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { StoryblokAsset } from '#storyblok-types'
+import type { AssetFieldValue } from '@storyblok/schema'
 
 interface Props {
-  name?: string
-  position?: string
-  image?: StoryblokAsset
+  name?: string | null
+  position?: string | null
+  image?: AssetFieldValue | null
 }
 
 const { name, position } = defineProps<Props>()

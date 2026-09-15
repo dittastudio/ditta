@@ -1,17 +1,17 @@
 <script lang="ts" setup>
-import type { BlockProjects } from '#storyblok-components'
+import type { Block } from '#storyblok-schema'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
 interface Props {
-  block: BlockProjects
+  block: Block<'block_projects'>
 }
 
 const { block } = defineProps<Props>()
 
-const projects = computed(() => block.projects?.filter((project) => typeof project !== 'string') || [])
+const projects = computed(() => storyblokRelations<'project'>(block.projects))
 
 const tickerWrapper = useTemplateRef('tickerWrapper')
 const projectRefs = useTemplateRef('project')

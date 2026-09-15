@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import type { Page, Project } from '#storyblok-components'
+import type { Block } from '#storyblok-schema'
 import type { Themes } from '@/types/app'
 
 const route = useRoute()
 const relations = ['block_team.humans', 'block_projects.projects']
 
-const story = await useStory<Page | Project>(
+const story = await useStory<Block<'page'> | Block<'project'>>(
   route.path,
   { resolve_relations: relations },
   { resolveRelations: relations },

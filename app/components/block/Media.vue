@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { BlockMedia } from '#storyblok-components'
+import type { Block } from '#storyblok-schema'
 
 interface Props {
-  block: BlockMedia
+  block: Block<'block_media'>
 }
 
 const { block } = defineProps<Props>()

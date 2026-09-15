@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { onClickOutside, onKeyStroke } from '@vueuse/core'
-import type { ElementLink } from '#storyblok-components'
+import type { Block } from '#storyblok-schema'
 import type { Themes } from '@/types/app'
 import IconLogo from '@/assets/icons/ditta.svg'
 import { defineSound } from '@web-kits/audio'
 import { expand, collapse, hover } from '@@/.web-kits/playful'
 
 interface Props {
-  items?: ElementLink[]
+  items?: Block<'element_link'>[] | null
 }
 
 const { items } = defineProps<Props>()

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { Themes } from '@/types/app'
-import type { BlockSteps } from '#storyblok-components'
+import type { Block } from '#storyblok-schema'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -9,7 +9,7 @@ import IconPixelArrow from '@/assets/icons/pixel-arrow.svg'
 gsap.registerPlugin(ScrollTrigger)
 
 interface Props {
-  block: BlockSteps
+  block: Block<'block_steps'>
 }
 
 const { block } = defineProps<Props>()

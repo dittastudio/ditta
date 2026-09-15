@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import type { Themes } from '@/types/app'
-import type { BlockTeam } from '#storyblok-components'
+import type { Block } from '#storyblok-schema'
 
 interface Props {
-  block: BlockTeam
+  block: Block<'block_team'>
 }
 
 const { block } = defineProps<Props>()
-const humans = computed(() => block.humans?.filter((human) => typeof human !== 'string') || [])
+const humans = computed(() => storyblokRelations<'person'>(block.humans))
 const button = computed(() => block.cta?.[0])
 
 const contentRef = useTemplateRef('content')

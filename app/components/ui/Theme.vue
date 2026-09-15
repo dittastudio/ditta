@@ -4,7 +4,7 @@ import type { Themes } from '@/types/app'
 interface Props {
   tag?: string
   theme?: Themes
-  id?: string
+  id?: string | null
 }
 
 const { tag = 'section', theme, id } = defineProps<Props>()
