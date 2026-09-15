@@ -14,6 +14,7 @@ export const pageBlock = defineBlock({
     defineField('blocks', {
       allow: [
         'block_accordion',
+        'block_ai_quote',
         'block_companies',
         'block_cta',
         'block_hero',

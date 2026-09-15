@@ -3,6 +3,7 @@ import type { Schema as InferSchema, Story as InferStory } from '@storyblok/sche
 import type { BlockContent, MapiStory as InferStoryMapi } from '@storyblok/schema';
 
 import { blockAccordionBlock } from './blocks/blocks/block-accordion';
+import { blockAiQuoteBlock }  from './blocks/blocks/block-ai-quote';
 import { blockCompaniesBlock } from './blocks/blocks/block-companies';
 import { blockCtaBlock } from './blocks/blocks/block-cta';
 import { blockHeroBlock } from './blocks/blocks/block-hero';
@@ -43,6 +44,7 @@ import { blocksFolder, elementsFolder, typesFolder } from './folders';
 export const schema = defineSchema({
   blocks: {
     blockAccordionBlock,
+    blockAiQuoteBlock,
     blockCompaniesBlock,
     blockCtaBlock,
     blockHeroBlock,
