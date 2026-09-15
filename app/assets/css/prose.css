@@ -14,6 +14,25 @@
   & :where(em) {
     font-variation-settings: 'slnt' -10;
   }
+
+  & :where(hr) {
+    display: block;
+    margin-block: 3lh;
+    border-top: 1px solid currentColor;
+    opacity: 0.25;
+  }
+}
+
+@utility prose-post {
+  & :where(em) {
+    font-style: italic;
+  }
+
+  & :where(em:has(b, strong)),
+  & :where(b, strong) em {
+    font-style: normal;
+    font-variation-settings: 'slnt' -10;
+  }
 }
 
 @utility prose-links {
@@ -78,6 +97,18 @@
 
 @custom-variant prose-p {
   & :where(p) {
+    @slot;
+  }
+}
+
+@custom-variant prose-bold {
+  & :where(b, strong) {
+    @slot;
+  }
+}
+
+@custom-variant prose-italic {
+  & :where(em) {
     @slot;
   }
 }

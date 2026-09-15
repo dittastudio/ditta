@@ -34,7 +34,7 @@ const placeholders = Array.from({ length: placeholderCount }, (_, index) => inde
       <li
         v-for="post in posts"
         :key="post.uuid"
-        class="flex flex-wrap gap-4 items-baseline justify-between"
+        class="flex flex-col gap-2"
       >
         <NuxtLink :to="`/${post.full_slug}`">
           <h2>{{ post.name }}</h2>
@@ -42,38 +42,25 @@ const placeholders = Array.from({ length: placeholderCount }, (_, index) => inde
           <p class="opacity-60">{{ post.content.summary }}</p>
         </NuxtLink>
 
-        <div class="flex flex-col text-mono-small text-11 opacity-60">
+        <div class="flex flex-col text-mono-small text-11 opacity-40">
           <time
             itemprop="datePublished"
-            :datetime="post.created_at"
+            :datetime="post.published_at || post.created_at"
           >
-            {{ useDateFormat(post.created_at, 'Do MMMM YYYY') }}
+            {{ useDateFormat(post.published_at || post.created_at, 'Do MMMM YYYY') }}
           </time>
-
-          <ClientOnly>
-            <time
-              itemprop="dateModified"
-              :datetime="post.updated_at"
-            >
-              Updated {{ formatTimeAgo(new Date(post.updated_at ?? post.created_at)) }}
-            </time>
-          </ClientOnly>
         </div>
       </li>
 
       <li
         v-for="placeholder in placeholders"
         :key="`placeholder-${placeholder}`"
-        class="flex flex-wrap gap-4 items-baseline justify-between opacity-40"
+        class="flex flex-col gap-2 opacity-50"
       >
         <div>
           <h2>Coming soon</h2>
 
           <p class="opacity-60">New writing is on its way.</p>
-        </div>
-
-        <div class="flex flex-col text-mono-small text-11 opacity-60">
-          <span>Coming soon</span>
         </div>
       </li>
     </ul>

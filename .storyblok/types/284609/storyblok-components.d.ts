@@ -81,6 +81,7 @@ export interface BlockPosts {
 
 export interface BlockPostText {
   text?: StoryblokRichTextDoc;
+  isSummary?: boolean;
   spacing_top?: boolean;
   spacing_bottom?: boolean;
   component: "block_post_text";
@@ -300,6 +301,7 @@ export interface Person {
 
 export interface Post {
   summary?: string;
+  tags?: (number | string)[];
   blocks?: (
     | BlockAccordion
     | BlockCompanies

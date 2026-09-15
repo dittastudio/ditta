@@ -9,7 +9,9 @@ interface Props {
 
 const { story } = defineProps<Props>()
 
-const publishedDate = useDateFormat(story.created_at, 'Do MMMM YYYY')
+const publishedDate = useDateFormat(story.published_at || story.created_at, 'Do MMMM YYYY')
+
+const tags = await useDatasource('tags', story.content.tags)
 </script>
 
 <template>
@@ -33,7 +35,7 @@ const publishedDate = useDateFormat(story.created_at, 'Do MMMM YYYY')
         <div class="flex flex-col text-mono-small opacity-60">
           <time
             itemprop="datePublished"
-            :datetime="story.created_at"
+            :datetime="story.published_at || story.created_at"
           >
             {{ publishedDate }}
           </time>
@@ -54,11 +56,31 @@ const publishedDate = useDateFormat(story.created_at, 'Do MMMM YYYY')
       v-for="block in story.content.blocks"
       :key="block._uid"
       theme="light"
+      :class="`section--${block.component}`"
     >
       <BlockPostText
         v-if="block.component === 'block_post_text'"
         :block="block"
       />
+    </UiTheme>
+
+    <UiTheme
+      v-if="story.content.tags"
+      theme="light"
+    >
+      <ul class="wrapper max-w-295 flex flex-wrap gap-2 pt-20 pb-(--app-vertical-rhythm)">
+        <li
+          v-for="tag in tags"
+          :key="tag.id"
+        >
+          <UiChip
+            :text="tag.name"
+            class="capitalize"
+            size="medium"
+            theme="white"
+          />
+        </li>
+      </ul>
     </UiTheme>
   </article>
 </template>
