@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { BlockTestimonial } from '#storyblok-components'
+import type { Block } from '#storyblok-schema'
 
 interface Props {
-  block: BlockTestimonial
+  block: Block<'block_testimonial'>
 }
 
 const { block } = defineProps<Props>()

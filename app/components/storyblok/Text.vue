@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import type { StoryblokRichTextInput  } from '@storyblok/richtext'
-import type { StoryblokRichTextDoc } from '#storyblok-types'
+import type { StoryblokRichTextInput } from '@storyblok/richtext'
+import type { RichTextFieldValue } from '@storyblok/schema'
 import { StoryblokTextLink } from '#components'
 
 interface Props {
-  html?: StoryblokRichTextDoc
+  html?: RichTextFieldValue | null
 }
 
 const { html } = defineProps<Props>()
@@ -15,7 +15,7 @@ const render = useStoryblokRichText({
   },
 })
 
-const richText = computed(() => (html ? () => render(html as StoryblokRichTextInput ) : null))
+const richText = computed(() => (html ? () => render(html as StoryblokRichTextInput) : null))
 </script>
 
 <template>
@@ -24,4 +24,3 @@ const richText = computed(() => (html ? () => render(html as StoryblokRichTextIn
     v-if="richText"
   />
 </template>
-

@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import type { StoryblokRichTextDoc } from '#storyblok-types'
+import type { RichTextFieldValue } from '@storyblok/schema'
 import IconPlus from '@/assets/icons/plus.svg'
 import { defineSound } from '@web-kits/audio'
 import { drawerOpen, drawerClose, hover } from '@@/.web-kits/core'
 
 interface Props {
-  heading?: string
-  copy?: StoryblokRichTextDoc
+  heading?: string | null
+  copy?: RichTextFieldValue | null
 }
 
 const { heading, copy } = defineProps<Props>()

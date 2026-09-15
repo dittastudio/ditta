@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import type { BlockHero } from '#storyblok-components'
+import type { Block } from '#storyblok-schema'
 import { onKeyStroke } from '@vueuse/core'
 import { defineSound } from '@web-kits/audio'
 import { kick, snare, hatClosed, tom } from '@@/.web-kits/drums'
 
 interface Props {
-  block: BlockHero
+  block: Block<'block_hero'>
 }
 
 defineProps<Props>()

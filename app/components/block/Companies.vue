@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { BlockCompanies, ElementTicker } from '#storyblok-components'
+import type { Block } from '#storyblok-schema'
 
 interface Props {
-  block: BlockCompanies
+  block: Block<'block_companies'>
 }
 
 const { block } = defineProps<Props>()
@@ -28,7 +28,7 @@ const { block } = defineProps<Props>()
 
     <div class="companies__tickers relative overflow-hidden w-full flex flex-col gap-10 md:gap-15">
       <template
-        v-for="(ticker, index) in block.blocks as ElementTicker[]"
+        v-for="(ticker, index) in block.blocks"
         :key="ticker._uid"
       >
         <UiTicker
@@ -39,7 +39,7 @@ const { block } = defineProps<Props>()
         >
           <UiLogoResizer
             v-for="logo in ticker.items"
-            :key="logo.id"
+            :key="logo.id ?? logo.filename"
             :asset="logo"
             :strength="80"
             :base-height="3"

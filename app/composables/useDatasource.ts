@@ -14,7 +14,7 @@ type Datasource = {
   total: number
 }
 
-export async function useDatasource(slug: string = '', items: (string | number)[] = []) {
+export async function useDatasource(slug: string = '', items: (string | number)[] | null = []) {
   const storyblokApi = useStoryblokApi()
 
   const { data } = await useAsyncData(
@@ -31,7 +31,7 @@ export async function useDatasource(slug: string = '', items: (string | number)[
     if (!datasource) return []
 
     const entries = datasource.data.datasource_entries
-    if (!entries) return []
+    if (!entries || !items) return []
 
     return items.map((item) => entries.find((entry) => entry.value === item)).filter((entry): entry is Entry => !!entry)
   })

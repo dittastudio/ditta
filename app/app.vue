@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { Settings } from '#storyblok-components'
+import type { Block } from '#storyblok-schema'
 import { VueLenis } from 'lenis/vue'
 
-const settings = await useStory<Settings>('/settings')
+const settings = await useStory<Block<'settings'>>('/settings')
 
 const route = useRoute()
 const router = useRouter()

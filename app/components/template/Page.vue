@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import type { Themes } from '@/types/app'
-import type { Page } from '#storyblok-components'
+import type { Block } from '#storyblok-schema'
 import type { ISbStoryData } from '@storyblok/js'
 
 interface Props {
-  story: ISbStoryData<Page>
+  story: ISbStoryData<Block<'page'>>
 }
 
 const { story } = defineProps<Props>()

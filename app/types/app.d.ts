@@ -1,7 +1,7 @@
-import type { Page } from '#storyblok-components'
+import type { Block } from '#storyblok-schema'
 
-type BlockTypes = NonNullable<Page['blocks']>[number]
+type PageBlockTypes = NonNullable<Block<'page'>['blocks']>[number]
 
 type Themes = 'dark' | 'light' | 'white' | 'beige' | 'crema' | 'forest' | 'grey' | 'mood' | 'olive' | 'pink' | 'accent'
 
-export { BlockTypes, Themes }
+export { PageBlockTypes, Themes }

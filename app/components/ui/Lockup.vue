@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { StoryblokRichTextDoc } from '#storyblok-types'
+import type { RichTextFieldValue } from '@storyblok/schema'
 
 interface Props {
-  heading?: string
-  copy?: StoryblokRichTextDoc
+  heading?: string | null
+  copy?: RichTextFieldValue | null
 }
 
 const { heading, copy } = defineProps<Props>()

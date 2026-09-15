@@ -1,7 +1,7 @@
-import type { Page, Project, Post, ElementMediaImage, ElementMediaAutoplay } from '#storyblok-components'
-import type { StoryblokRichTextDoc } from '#storyblok-types'
-import type { ImageModifiers } from '@nuxt/image'
+import type { Block, Blocks } from '#storyblok-schema'
 import type { ISbStoryData } from '@storyblok/js'
+import type { RichTextFieldValue } from '@storyblok/schema'
+import type { ImageModifiers } from '@nuxt/image'
 import type { LocationQuery } from 'vue-router'
 
 interface Entry {
@@ -41,26 +41,38 @@ const storyblokAssetType = (filename: string): 'image' | 'video' | 'other' => {
   return 'other'
 }
 
-const storyblokRichTextContent = (richtext: StoryblokRichTextDoc | undefined): boolean =>
-  Boolean(richtext?.content?.[0]?.content?.length)
+const storyblokRichTextContent = (richtext?: RichTextFieldValue | null): boolean => {
+  const node = richtext?.content?.[0]
+  return Boolean(node && 'content' in node && node.content?.length)
+}
+
+// `options` fields with `source: 'internal_stories'` are typed as UUID strings, because
+// that is what the API returns by default. Asking for the field in `resolve_relations`
+// swaps each UUID for the full story inline — a substitution the schema cannot express,
+// so widen here and drop any UUID the CDN left unresolved.
+const storyblokRelations = <TName extends Blocks['name']>(
+  uuids: string[] | null | undefined,
+): ISbStoryData<Block<TName>>[] => {
+  const entries = (uuids ?? []) as unknown as (ISbStoryData<Block<TName>> | string)[]
+  return entries.filter((entry): entry is ISbStoryData<Block<TName>> => typeof entry !== 'string')
+}
 
 const storyblokSlug = (path: string): string => (['', '/'].includes(path) ? '/home' : path.replace(/\/+$/, ''))
 
-const isMediaImage = (media: ElementMediaImage | ElementMediaAutoplay): media is ElementMediaImage =>
-  media.component === 'element_media_image'
-const isMediaAutoplay = (media: ElementMediaImage | ElementMediaAutoplay): media is ElementMediaAutoplay =>
-  media.component === 'element_media_autoplay'
+const isMediaImage = (
+  media: Block<'element_media_image'> | Block<'element_media_autoplay'>,
+): media is Block<'element_media_image'> => media.component === 'element_media_image'
+const isMediaAutoplay = (
+  media: Block<'element_media_image'> | Block<'element_media_autoplay'>,
+): media is Block<'element_media_autoplay'> => media.component === 'element_media_autoplay'
 
-type ContentTypes = Page | Project | Post
+type ContentTypes = Block<'page'> | Block<'project'>
 
-const isPage = (story: ISbStoryData<ContentTypes> | null | undefined): story is ISbStoryData<Page> =>
+const isPage = (story: ISbStoryData<ContentTypes> | null | undefined): story is ISbStoryData<Block<'page'>> =>
   Boolean(story?.content?.component === 'page')
 
-const isProject = (story: ISbStoryData<ContentTypes> | null | undefined): story is ISbStoryData<Project> =>
+const isProject = (story: ISbStoryData<ContentTypes> | null | undefined): story is ISbStoryData<Block<'project'>> =>
   Boolean(story?.content?.component === 'project')
-
-const isPost = (story: ISbStoryData<ContentTypes> | null | undefined): story is ISbStoryData<Post> =>
-  Boolean(story?.content?.component === 'post')
 
 const storyblokImage = (filename: string | null | undefined, modifiers?: Partial<ImageModifiers>): string => {
   const image = useImage()
@@ -106,11 +118,11 @@ export {
   isMediaAutoplay,
   isPage,
   isProject,
-  isPost,
   storyblokAssetType,
   storyblokEditor,
   storyblokImage,
   storyblokImageDimensions,
+  storyblokRelations,
   storyblokRichTextContent,
   storyblokSlug,
 }

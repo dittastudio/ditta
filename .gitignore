@@ -13,6 +13,9 @@ node_modules
 logs
 *.log
 
+# Storyblok CLI run artefacts
+.storyblok/reports
+
 # Misc
 .DS_Store
 .fleet
