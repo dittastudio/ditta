@@ -46,5 +46,10 @@ onMounted(() => {
       v-else-if="isProject(story)"
       :story="story"
     />
+
+    <TemplatePost
+      v-else-if="isPost(story)"
+      :story="story"
+    />
   </main>
 </template>

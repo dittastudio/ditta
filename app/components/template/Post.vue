@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { formatTimeAgo, useDateFormat } from '@vueuse/core'
-import type { Post } from '#storyblok-components'
+import type { Block } from '#storyblok-schema'
 import type { ISbStoryData } from '@storyblok/js'
 
 interface Props {
-  story: ISbStoryData<Post>
+  story: ISbStoryData<Block<'post'>>
 }
 
 const { story } = defineProps<Props>()

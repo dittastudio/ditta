@@ -66,13 +66,16 @@ const isMediaAutoplay = (
   media: Block<'element_media_image'> | Block<'element_media_autoplay'>,
 ): media is Block<'element_media_autoplay'> => media.component === 'element_media_autoplay'
 
-type ContentTypes = Block<'page'> | Block<'project'>
+type ContentTypes = Block<'page'> | Block<'project'> | Block<'post'>
 
 const isPage = (story: ISbStoryData<ContentTypes> | null | undefined): story is ISbStoryData<Block<'page'>> =>
   Boolean(story?.content?.component === 'page')
 
 const isProject = (story: ISbStoryData<ContentTypes> | null | undefined): story is ISbStoryData<Block<'project'>> =>
   Boolean(story?.content?.component === 'project')
+
+const isPost = (story: ISbStoryData<ContentTypes> | null | undefined): story is ISbStoryData<Block<'post'>> =>
+  Boolean(story?.content?.component === 'post')
 
 const storyblokImage = (filename: string | null | undefined, modifiers?: Partial<ImageModifiers>): string => {
   const image = useImage()
@@ -118,6 +121,7 @@ export {
   isMediaAutoplay,
   isPage,
   isProject,
+  isPost,
   storyblokAssetType,
   storyblokEditor,
   storyblokImage,
