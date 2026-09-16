@@ -12,6 +12,7 @@ const { story } = defineProps<Props>()
 const publishedDate = useDateFormat(story.published_at || story.created_at, 'Do MMMM YYYY')
 
 const tags = await useDatasource('tags', story.content.tags)
+const author = computed(() => storyblokRelation<'person'>(story.content.author))
 </script>
 
 <template>
@@ -68,19 +69,27 @@ const tags = await useDatasource('tags', story.content.tags)
       v-if="story.content.tags"
       theme="light"
     >
-      <ul class="wrapper max-w-295 flex flex-wrap gap-2 pt-20 pb-(--app-vertical-rhythm)">
-        <li
-          v-for="tag in tags"
-          :key="tag.id"
-        >
-          <UiChip
-            :text="tag.name"
-            class="capitalize"
-            size="medium"
-            theme="white"
-          />
-        </li>
-      </ul>
+      <div class="wrapper max-w-295 flex flex-col gap-y-20 pt-20 pb-(--app-vertical-rhythm)">
+        <UiAvatar
+          v-if="author"
+          :image="author.content.image"
+          :name="author.content.name"
+        />
+
+        <ul class="flex flex-wrap gap-2">
+          <li
+            v-for="tag in tags"
+            :key="tag.id"
+          >
+            <UiChip
+              :text="tag.name"
+              class="capitalize"
+              size="medium"
+              theme="white"
+            />
+          </li>
+        </ul>
+      </div>
     </UiTheme>
   </article>
 </template>

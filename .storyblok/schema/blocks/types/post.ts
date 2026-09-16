@@ -21,6 +21,15 @@ export const postBlock = defineBlock({
       source: 'internal',
       type: 'options',
     }),
+    defineField('author', {
+      filter_content_type: [
+        'person',
+      ],
+      required: true,
+      source: 'internal_stories',
+      type: 'option',
+      use_uuid: true,
+    }),
     defineField('blocks', {
       allow: [
         blocksFolder,

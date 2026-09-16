@@ -57,6 +57,16 @@ const storyblokRelations = <TName extends Blocks['name']>(
   return entries.filter((entry): entry is ISbStoryData<Block<TName>> => typeof entry !== 'string')
 }
 
+// Singular counterpart to `storyblokRelations`, for `option` (not `options`) relation
+// fields — resolved to a full story when requested via `resolve_relations`, otherwise
+// left as the raw UUID string the schema types it as.
+const storyblokRelation = <TName extends Blocks['name']>(
+  uuid: string | null | undefined,
+): ISbStoryData<Block<TName>> | undefined => {
+  const entry = uuid as unknown as ISbStoryData<Block<TName>> | string | undefined
+  return typeof entry === 'string' || !entry ? undefined : entry
+}
+
 const storyblokSlug = (path: string): string => (['', '/'].includes(path) ? '/home' : path.replace(/\/+$/, ''))
 
 const isMediaImage = (
@@ -126,6 +136,7 @@ export {
   storyblokEditor,
   storyblokImage,
   storyblokImageDimensions,
+  storyblokRelation,
   storyblokRelations,
   storyblokRichTextContent,
   storyblokSlug,

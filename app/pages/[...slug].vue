@@ -3,7 +3,7 @@ import type { Block } from '#storyblok-schema'
 import type { Themes } from '@/types/app'
 
 const route = useRoute()
-const relations = ['block_team.humans', 'block_projects.projects']
+const relations = ['block_team.humans', 'block_projects.projects', 'post.author']
 
 const story = await useStory<Block<'page'> | Block<'project'>>(
   route.path,

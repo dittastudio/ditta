@@ -25,25 +25,12 @@ const { block } = defineProps<Props>()
         <StoryblokText :html="block.quote" />
       </blockquote>
 
-      <figcaption
-        v-if="block.name"
-        class="flex items-center gap-5"
-      >
-        <NuxtImg
-          v-if="block.image && block.image.filename && storyblokAssetType(block.image.filename) === 'image'"
-          class="block size-14 md:size-18 object-cover rounded-full"
-          :src="block.image.filename"
-          :alt="block.name || block.image.alt"
-          width="72"
-          height="72"
-          density="1x, 2x"
-          loading="lazy"
+      <figcaption v-if="block.name">
+        <UiAvatar
+          :image="block.image"
+          :name="block.name"
+          :position="block.position"
         />
-
-        <div class="flex flex-col text-body">
-          <strong>{{ block.name }}</strong>
-          <template v-if="block.position">{{ block.position }}</template>
-        </div>
       </figcaption>
     </figure>
   </div>
