@@ -226,25 +226,31 @@ onUnmounted(() => {
           class="max-lg:grow max-lg:w-full flex flex-col items-center justify-center max-lg:py-[calc(var(--app-vertical-rhythm)*0.5)] gap-6"
         >
           <div
-            class="footer__robot relative lg:left-[-2.5%] h-36 md:h-50 aspect-336/278"
-            :class="shakeClass"
-            :style="{
-              transform: `rotate(${rotation}deg)`,
-              '--mouse-x-percent': mouseXPercent,
-              '--mouse-y-percent': mouseYPercent,
-            }"
+            class="cursor-pointer"
             @click="onRobotClick"
           >
-            <div class="relative animate-bob">
-              <IconRobot
-                class="w-full h-full"
-                :in-rage="inRage"
-                :leg-colors="legColors"
-                :flickering-legs="flickeringLegs"
-              />
+            <div :class="{ 'transition-scale duration-150 ease-out hover:scale-102 active:scale-98': !inRage }">
+              <div
+                class="footer__robot relative lg:left-[-2.5%] h-36 md:h-50 aspect-336/278"
+                :class="shakeClass"
+                :style="{
+                  transform: `rotate(${rotation}deg)`,
+                  '--mouse-x-percent': mouseXPercent,
+                  '--mouse-y-percent': mouseYPercent,
+                }"
+              >
+                <div class="relative animate-bob">
+                  <IconRobot
+                    class="w-full h-full"
+                    :in-rage="inRage"
+                    :leg-colors="legColors"
+                    :flickering-legs="flickeringLegs"
+                  />
 
-              <span class="footer__eye footer__eye--left" />
-              <span class="footer__eye footer__eye--right" />
+                  <span class="footer__eye footer__eye--left" />
+                  <span class="footer__eye footer__eye--right" />
+                </div>
+              </div>
             </div>
           </div>
         </div>
