@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { Block } from '#storyblok-schema'
-import { onKeyStroke, useResizeObserver } from '@vueuse/core'
+import { onKeyStroke, useIntersectionObserver, useResizeObserver } from '@vueuse/core'
 import { defineSound } from '@web-kits/audio'
 import { kick, snare, hatClosed, tom } from '@@/.web-kits/drums'
 import IconSmiley from '@/assets/icons/pixel-smiley.svg'
@@ -293,12 +293,26 @@ const tickSmiley = (time: number) => {
   smileyRafId = requestAnimationFrame(tickSmiley)
 }
 
+const startSmileyLoop = () => {
+  if (smileyRafId !== null) return
+
+  smileyLastTime = 0 // reset so dt doesn't spike after being paused
+  smileyRafId = requestAnimationFrame(tickSmiley)
+}
+
+const stopSmileyLoop = () => {
+  if (smileyRafId === null) return
+
+  cancelAnimationFrame(smileyRafId)
+  smileyRafId = null
+}
+
 onMounted(() => {
   measureSmileyBounds()
   smileyCenter.x = Math.max(heroBounds.width - smileyRadius.value - 24, smileyRadius.value)
   smileyCenter.y = smileyRadius.value + 24
   clampSmileyPosition()
-  smileyRafId = requestAnimationFrame(tickSmiley)
+  startSmileyLoop()
 
   // Wait a frame so the initial position is painted before fading in, avoiding a top-left flash.
   requestAnimationFrame(() => {
@@ -309,10 +323,20 @@ onMounted(() => {
     measureSmileyBounds()
     clampSmileyPosition()
   })
+
+  // Pause the rAF loop while the hero is scrolled out of view — the collision/hit-test math and
+  // reactive position writes are pure waste when nothing is visible.
+  useIntersectionObserver(wrapperEl, ([entry]) => {
+    if (entry?.isIntersecting) {
+      startSmileyLoop()
+    } else {
+      stopSmileyLoop()
+    }
+  })
 })
 
 onUnmounted(() => {
-  if (smileyRafId !== null) cancelAnimationFrame(smileyRafId)
+  stopSmileyLoop()
 })
 </script>
 
