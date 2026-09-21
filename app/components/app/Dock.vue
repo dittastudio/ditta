@@ -54,7 +54,7 @@ const soundHover = defineSound(hover)
 const { play } = useAudio()
 
 const appStore = useAppStore()
-const { theme, navigation } = storeToRefs(appStore)
+const { theme, navigation, isSmileyDragging } = storeToRefs(appStore)
 const isDark = computed(() => theme.value === 'dark')
 const isReady = ref(false)
 const isClosing = ref(false)
@@ -62,6 +62,8 @@ let closingTimer: ReturnType<typeof setTimeout> | null = null
 
 const dockBgStyles = computed(() => dockBgClasses[navigation.value ? 'navigationOpen' : theme.value])
 const dockTextStyles = computed(() => dockTextClasses[navigation.value ? 'navigationOpen' : theme.value])
+
+const isInteractive = computed(() => !isHidden.value && isReady.value && !isSmileyDragging.value)
 
 const close = () => {
   appStore.setNavigation(false)
@@ -168,7 +170,7 @@ defineExpose({
 
             <div
               class="w-full h-11 grid grid-cols-3 rounded-[inherit] corner-shape-inherit"
-              :class="{ 'pointer-events-auto': !isHidden && isReady }"
+              :class="{ 'pointer-events-auto': isInteractive }"
             >
               <p class="flex items-center gap-1.5 pl-5">
                 <ClientOnly fallback-tag="span">
@@ -201,7 +203,7 @@ defineExpose({
               :is-open="navigation"
               transition-classes="duration-500 ease-spring-1"
               :class="{
-                'pointer-events-auto': !isHidden && isReady,
+                'pointer-events-auto': isInteractive,
               }"
             >
               <div

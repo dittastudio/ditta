@@ -28,6 +28,13 @@ export const useAppStore = defineStore(
       navigation.value = value
     }
 
+    const isSmileyDragging = ref(false)
+    const getIsSmileyDragging = computed(() => isSmileyDragging.value)
+
+    function setIsSmileyDragging(value: boolean) {
+      isSmileyDragging.value = value
+    }
+
     return {
       accent,
       getAccent,
@@ -38,6 +45,9 @@ export const useAppStore = defineStore(
       navigation,
       getNavigation,
       setNavigation,
+      isSmileyDragging,
+      getIsSmileyDragging,
+      setIsSmileyDragging,
     }
   },
   {

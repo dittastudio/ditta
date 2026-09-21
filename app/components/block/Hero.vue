@@ -1,8 +1,11 @@
 <script lang="ts" setup>
 import type { Block } from '#storyblok-schema'
 import { onKeyStroke, useIntersectionObserver, useResizeObserver } from '@vueuse/core'
+import { Engine, Bodies, Body, Composite, Mouse, MouseConstraint, Events } from 'matter-js'
+import type { IEventCollision } from 'matter-js'
 import { defineSound } from '@web-kits/audio'
 import { kick, snare, hatClosed, tom } from '@@/.web-kits/drums'
+import { useAppStore } from '@/stores/app'
 import IconSmiley from '@/assets/icons/pixel-smiley.svg'
 
 interface Props {
@@ -12,6 +15,7 @@ interface Props {
 defineProps<Props>()
 
 const { play, isAudioOn } = useAudio()
+const appStore = useAppStore()
 
 const kickSound = defineSound(kick)
 const snareSound = defineSound(snare)
@@ -31,9 +35,16 @@ const smileyEl = ref<HTMLElement | null>(null)
 const SMILEY_SPEED = 160 // px/second
 const SMILEY_SPIN_SPEED_MIN = 10 // deg/second
 const SMILEY_SPIN_SPEED_MAX = 120 // deg/second
+const SMILEY_FLING_SPEED_MULTIPLIER_MAX = 5 // cap on release speed, as a multiple of SMILEY_SPEED
+const SMILEY_DECAY_DURATION = 5 // seconds for fling speed to blend back to SMILEY_SPEED
+const SMILEY_DECAY_SNAP_THRESHOLD = 4 // px/second; end decay early once this close to SMILEY_SPEED
+const SMILEY_WALL_PAD = 100 // px, wall body thickness/offset around the hero bounds
+const SMILEY_VELOCITY_UNIT = 60 // matter-js normalises body.velocity to px per (1000/60)ms — multiply by this for px/second
+const SMILEY_MAX_DT = 0.1 // seconds; clamp a stale/backgrounded-tab frame gap so matter-js's velocity
+// correction (proportional to how much the new delta differs from the last one) can't spike and tunnel the body through a wall in one step
+const SMILEY_WALL_CATEGORY = 0x0002 // collision category so wall collision can be toggled off while dragging
 
-const smileyCenter = reactive({ x: 0, y: 0 }) // px, relative to wrapperEl
-const smileyVelocity = reactive({ x: SMILEY_SPEED, y: SMILEY_SPEED })
+const smileyCenter = reactive({ x: 0, y: 0 }) // px, relative to wrapperEl — mirrors smileyBody.position for the template
 const smileyRadius = ref(0)
 const smileyRotation = ref(0)
 const heroBounds = reactive({ width: 0, height: 0 })
@@ -54,6 +65,8 @@ const SMILEY_SAMPLE_COUNT = 20 // points sampled around the circle's edge for sh
 const SMILEY_PUSH_STEP = 3 // px/frame nudge to push the circle back out of a letter it's touching
 
 const smileyReady = ref(false)
+const isDraggingSmiley = ref(false)
+const canDragSmiley = useAtMedia('(pointer: fine)')
 
 let logoLetters: LogoLetter[] = []
 let wrapperOrigin = { left: 0, top: 0 }
@@ -62,6 +75,13 @@ let smileyRafId: number | null = null
 let smileyLastTime = 0
 let smileySpinDirection = 1 // 1 = clockwise, -1 = counter-clockwise
 let smileySpinSpeed = SMILEY_SPIN_SPEED_MIN // deg/second, randomised on each bounce
+let smileyDecayElapsed: number | null = null // seconds since a fling release, null when not decaying
+let wallBounceThisFrame = false
+
+let engine: Engine | null = null
+let smileyBody: Body | null = null
+let smileyWalls: Body[] = []
+let mouseConstraint: MouseConstraint | null = null
 
 const smileyStyle = computed(() => ({
   transform: `translate3d(${smileyCenter.x - smileyRadius.value}px, ${smileyCenter.y - smileyRadius.value}px, 0)`,
@@ -214,71 +234,246 @@ const findLetterContactNormal = (cx: number, cy: number, r: number, paths: SVGPa
   if (len > 0) return { x: -normalX / len, y: -normalY / len }
 
   // Sample points inside the shape cancelled out (roughly symmetric overlap) — bounce straight back.
-  const speed = Math.hypot(smileyVelocity.x, smileyVelocity.y) || 1
-  return { x: -smileyVelocity.x / speed, y: -smileyVelocity.y / speed }
+  const velocity = smileyBody?.velocity ?? { x: 0, y: 0 }
+  const speed = Math.hypot(velocity.x, velocity.y) || 1
+  return { x: -velocity.x / speed, y: -velocity.y / speed }
+}
+
+const buildSmileyWalls = (w: number, h: number) => {
+  const wallOptions = { isStatic: true, collisionFilter: { category: SMILEY_WALL_CATEGORY } }
+  return [
+    Bodies.rectangle(w / 2, h + SMILEY_WALL_PAD / 2, w + SMILEY_WALL_PAD * 2, SMILEY_WALL_PAD, wallOptions),
+    Bodies.rectangle(w / 2, -SMILEY_WALL_PAD / 2, w + SMILEY_WALL_PAD * 2, SMILEY_WALL_PAD, wallOptions),
+    Bodies.rectangle(-SMILEY_WALL_PAD / 2, h / 2, SMILEY_WALL_PAD, h + SMILEY_WALL_PAD * 2, wallOptions),
+    Bodies.rectangle(w + SMILEY_WALL_PAD / 2, h / 2, SMILEY_WALL_PAD, h + SMILEY_WALL_PAD * 2, wallOptions),
+  ]
+}
+
+// Wall bounces are resolved by matter-js itself (elastic walls, restitution 1) — this just flags
+// that one happened this frame so the spin-randomisation below still fires, same as a letter bounce.
+const handleSmileyWallCollision = (event: IEventCollision<Engine>) => {
+  if (!smileyBody) return
+
+  const hitWall = event.pairs.some(
+    (pair) =>
+      (pair.bodyA === smileyBody && smileyWalls.includes(pair.bodyB)) ||
+      (pair.bodyB === smileyBody && smileyWalls.includes(pair.bodyA)),
+  )
+
+  if (hitWall) wallBounceThisFrame = true
+}
+
+const handleSmileyDragStart = () => {
+  isDraggingSmiley.value = true
+  smileyDecayElapsed = null
+
+  // AppTagline and AppDock are siblings of the page in app.vue, not descendants of the hero, and
+  // both overlap it (Tagline absolutely, Dock as a fixed full-viewport layer). Without this, dragging
+  // over them selects their text and starves the mouse constraint of mousemove (since those elements
+  // aren't inside wrapperEl, events never bubble to it), leaving the smiley stuck mid-drag.
+  appStore.setIsSmileyDragging(true)
+
+  // Unlike letters (blocked but not bounced while dragging — see tickSmiley), the walls are a real
+  // matter-js body with restitution, so without this a fast drag toward the edge has the mouse
+  // constraint pulling one way and the wall's restitution pushing back the other, fighting for a
+  // frame and reading as a wrong-direction bounce. Let a drag go anywhere; walls re-engage on release.
+  if (smileyBody) smileyBody.collisionFilter.mask = ~SMILEY_WALL_CATEGORY
+}
+
+const handleSmileyDragEnd = () => {
+  isDraggingSmiley.value = false
+  appStore.setIsSmileyDragging(false)
+
+  if (!smileyBody) return
+
+  const speed = Math.hypot(smileyBody.velocity.x, smileyBody.velocity.y)
+  const speedPxPerSecond = speed * SMILEY_VELOCITY_UNIT
+  const maxFlingSpeed = SMILEY_SPEED * SMILEY_FLING_SPEED_MULTIPLIER_MAX
+
+  if (speedPxPerSecond > maxFlingSpeed) {
+    const capScale = maxFlingSpeed / speedPxPerSecond
+    Body.setVelocity(smileyBody, { x: smileyBody.velocity.x * capScale, y: smileyBody.velocity.y * capScale })
+  }
+
+  // Belt-and-braces: the circle's visible spin is driven entirely by smileyRotation, never by
+  // smileyBody.angle, but zeroing this out too means no stray torque can linger into the next drag.
+  Body.setAngularVelocity(smileyBody, 0)
+
+  // Re-engage wall collision now that the drag (which disabled it) is over.
+  smileyBody.collisionFilter.mask = 0xffffffff
+
+  smileyDecayElapsed = 0
+}
+
+// matter-js's Mouse only listens for mouseup on the element it was created with — if the button is
+// released after the cursor has left that element (e.g. dragged out past the viewport edge), that
+// mouseup is never seen, so the constraint never releases and the smiley stays glued to the cursor.
+// Feeding the same event into the mouse's own handler from a window-level listener closes that gap.
+let releaseSmileyMouseUp: ((event: MouseEvent) => void) | null = null
+
+// Only rebuilds the mouse/constraint pair — the underlying Engine/body/walls stay alive for the
+// component's whole lifetime, gated only by canDragSmiley so touch devices attach nothing at all.
+const attachSmileyDrag = () => {
+  if (!engine || !wrapperEl.value || mouseConstraint) return
+
+  const mouse = Mouse.create(wrapperEl.value)
+  // matter-js registers 'wheel' with passive: false and calls preventDefault — remove it so page scroll works
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  mouse.element.removeEventListener('wheel', (mouse as any).mousewheel as EventListener)
+
+  mouseConstraint = MouseConstraint.create(engine, {
+    mouse,
+    constraint: { stiffness: 0.2, damping: 0.1 },
+  })
+  Composite.add(engine.world, mouseConstraint)
+
+  Events.on(mouseConstraint, 'startdrag', handleSmileyDragStart)
+  Events.on(mouseConstraint, 'enddrag', handleSmileyDragEnd)
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  releaseSmileyMouseUp = (event) => (mouse as any).mouseup(event)
+  window.addEventListener('mouseup', releaseSmileyMouseUp)
+}
+
+const detachSmileyDrag = () => {
+  if (!engine || !mouseConstraint) return
+
+  Events.off(mouseConstraint, 'startdrag', handleSmileyDragStart)
+  Events.off(mouseConstraint, 'enddrag', handleSmileyDragEnd)
+  Composite.remove(engine.world, mouseConstraint)
+  mouseConstraint = null
+
+  if (releaseSmileyMouseUp) window.removeEventListener('mouseup', releaseSmileyMouseUp)
+  releaseSmileyMouseUp = null
+}
+
+const forceEndSmileyDrag = () => {
+  if (!isDraggingSmiley.value) return
+  handleSmileyDragEnd()
+}
+
+const setupSmileyEngine = () => {
+  engine = Engine.create({ gravity: { x: 0, y: 0 } })
+
+  smileyWalls = buildSmileyWalls(heroBounds.width, heroBounds.height)
+  Composite.add(engine.world, smileyWalls)
+
+  smileyBody = Bodies.circle(smileyCenter.x, smileyCenter.y, smileyRadius.value, {
+    restitution: 1,
+    frictionAir: 0,
+  })
+  Body.setVelocity(smileyBody, { x: SMILEY_SPEED / SMILEY_VELOCITY_UNIT, y: SMILEY_SPEED / SMILEY_VELOCITY_UNIT })
+  Composite.add(engine.world, smileyBody)
+
+  Events.on(engine, 'collisionStart', handleSmileyWallCollision)
+
+  if (canDragSmiley.value) attachSmileyDrag()
+}
+
+// A resize swaps in a freshly-sized body/walls rather than resizing in place — matter-js circles
+// aren't cheaply resizable, and Services.vue's chip-resize handling already establishes this
+// recreate-preserving-velocity pattern in this codebase.
+const rebuildSmileyPhysicsBounds = () => {
+  if (!engine || !smileyBody) return
+
+  Composite.remove(engine.world, smileyWalls)
+  smileyWalls = buildSmileyWalls(heroBounds.width, heroBounds.height)
+  Composite.add(engine.world, smileyWalls)
+
+  const r = smileyRadius.value
+  const maxX = Math.max(r, heroBounds.width - r)
+  const maxY = Math.max(r, heroBounds.height - r)
+  const x = Math.min(Math.max(smileyBody.position.x, r), maxX)
+  const y = Math.min(Math.max(smileyBody.position.y, r), maxY)
+  const velocity = smileyBody.velocity
+
+  Composite.remove(engine.world, smileyBody)
+  smileyBody = Bodies.circle(x, y, r, { restitution: 1, frictionAir: 0 })
+  Body.setVelocity(smileyBody, velocity)
+  Composite.add(engine.world, smileyBody)
+
+  smileyCenter.x = x
+  smileyCenter.y = y
 }
 
 const tickSmiley = (time: number) => {
+  if (!engine || !smileyBody) {
+    smileyRafId = requestAnimationFrame(tickSmiley)
+    return
+  }
+
   if (!smileyLastTime) smileyLastTime = time
-  const dt = (time - smileyLastTime) / 1000
+  const dt = Math.min((time - smileyLastTime) / 1000, SMILEY_MAX_DT)
   smileyLastTime = time
 
-  let { x, y } = smileyCenter
-  x += smileyVelocity.x * dt
-  y += smileyVelocity.y * dt
+  if (!isDraggingSmiley.value && smileyDecayElapsed !== null) {
+    smileyDecayElapsed += dt
+    const speed = Math.hypot(smileyBody.velocity.x, smileyBody.velocity.y)
+    const speedPxPerSecond = speed * SMILEY_VELOCITY_UNIT
 
-  const r = smileyRadius.value
-  const maxX = heroBounds.width - r
-  const maxY = heroBounds.height - r
-
-  let bounced = false
-
-  if (x <= r) {
-    x = r
-    smileyVelocity.x = Math.abs(smileyVelocity.x)
-    bounced = true
-  } else if (x >= maxX) {
-    x = maxX
-    smileyVelocity.x = -Math.abs(smileyVelocity.x)
-    bounced = true
-  }
-
-  if (y <= r) {
-    y = r
-    smileyVelocity.y = Math.abs(smileyVelocity.y)
-    bounced = true
-  } else if (y >= maxY) {
-    y = maxY
-    smileyVelocity.y = -Math.abs(smileyVelocity.y)
-    bounced = true
-  }
-
-  let touchingLetterIndex: number | null = null
-
-  for (let i = 0; i < logoLetters.length; i++) {
-    const letter = logoLetters[i]
-    if (!circleOverlapsRect(x, y, r, letter.rect)) continue
-
-    const normal = findLetterContactNormal(x, y, r, letter.paths)
-    if (!normal) continue
-
-    // Only reflect once per contact — while still overlapping on later frames, just keep pushing
-    // out so a shallow graze doesn't get reflected over and over into a jitter.
-    if (activeLetterIndex !== i) {
-      const dot = smileyVelocity.x * normal.x + smileyVelocity.y * normal.y
-      smileyVelocity.x -= 2 * dot * normal.x
-      smileyVelocity.y -= 2 * dot * normal.y
-      bounced = true
+    if (
+      smileyDecayElapsed >= SMILEY_DECAY_DURATION ||
+      Math.abs(speedPxPerSecond - SMILEY_SPEED) <= SMILEY_DECAY_SNAP_THRESHOLD
+    ) {
+      smileyDecayElapsed = null
     }
 
-    x += normal.x * SMILEY_PUSH_STEP
-    y += normal.y * SMILEY_PUSH_STEP
-    touchingLetterIndex = i
-
-    break
+    if (speed > 0) {
+      const decayRate = 3 / SMILEY_DECAY_DURATION // ~95% of the gap closes within SMILEY_DECAY_DURATION
+      const lerpFactor = 1 - Math.exp(-decayRate * dt)
+      const targetSpeed = SMILEY_SPEED / SMILEY_VELOCITY_UNIT
+      const newSpeed = speed + (targetSpeed - speed) * lerpFactor
+      const decayScale = newSpeed / speed
+      Body.setVelocity(smileyBody, {
+        x: smileyBody.velocity.x * decayScale,
+        y: smileyBody.velocity.y * decayScale,
+      })
+    }
   }
 
-  activeLetterIndex = touchingLetterIndex
+  wallBounceThisFrame = false
+  Engine.update(engine, dt * 1000)
+
+  let bounced = wallBounceThisFrame
+
+  // Runs while dragging too — a dragged smiley should be blocked by the letters, not pass through
+  // them. Dragging only skips the velocity-reflect/spin branch below (there's no free velocity to
+  // bounce mid-drag, the mouse constraint owns position); the push-out step still runs every frame
+  // it's overlapping, so the letter acts as a solid stop the mouse constraint can't pull it past —
+  // it settles right at the boundary rather than jittering, same as it already does for a graze.
+  {
+    const r = smileyRadius.value
+    const { x, y } = smileyBody.position
+
+    let touchingLetterIndex: number | null = null
+
+    for (let i = 0; i < logoLetters.length; i++) {
+      const letter = logoLetters[i]
+      if (!circleOverlapsRect(x, y, r, letter.rect)) continue
+
+      const normal = findLetterContactNormal(x, y, r, letter.paths)
+      if (!normal) continue
+
+      // Only reflect once per contact — while still overlapping on later frames, just keep pushing
+      // out so a shallow graze doesn't get reflected over and over into a jitter.
+      if (!isDraggingSmiley.value && activeLetterIndex !== i) {
+        const velocity = smileyBody.velocity
+        const dot = velocity.x * normal.x + velocity.y * normal.y
+        Body.setVelocity(smileyBody, {
+          x: velocity.x - 2 * dot * normal.x,
+          y: velocity.y - 2 * dot * normal.y,
+        })
+        bounced = true
+      }
+
+      Body.translate(smileyBody, { x: normal.x * SMILEY_PUSH_STEP, y: normal.y * SMILEY_PUSH_STEP })
+      touchingLetterIndex = i
+
+      break
+    }
+
+    activeLetterIndex = touchingLetterIndex
+  }
 
   if (bounced) {
     smileySpinDirection *= -1
@@ -287,8 +482,8 @@ const tickSmiley = (time: number) => {
 
   smileyRotation.value += smileySpinDirection * smileySpinSpeed * dt
 
-  smileyCenter.x = x
-  smileyCenter.y = y
+  smileyCenter.x = smileyBody.position.x
+  smileyCenter.y = smileyBody.position.y
 
   smileyRafId = requestAnimationFrame(tickSmiley)
 }
@@ -312,6 +507,8 @@ onMounted(() => {
   smileyCenter.x = Math.max(heroBounds.width - smileyRadius.value - 24, smileyRadius.value)
   smileyCenter.y = smileyRadius.value + 24
   clampSmileyPosition()
+
+  setupSmileyEngine()
   startSmileyLoop()
 
   // Wait a frame so the initial position is painted before fading in, avoiding a top-left flash.
@@ -320,12 +517,15 @@ onMounted(() => {
   })
 
   useResizeObserver(wrapperEl, () => {
+    // A resize swaps in a fresh body/walls sized from stale mid-drag geometry would be wrong — end
+    // any active drag first so there's a single code path for how a drag ends.
+    forceEndSmileyDrag()
     measureSmileyBounds()
-    clampSmileyPosition()
+    rebuildSmileyPhysicsBounds()
   })
 
   // Pause the rAF loop while the hero is scrolled out of view — the collision/hit-test math and
-  // reactive position writes are pure waste when nothing is visible.
+  // physics stepping are pure waste when nothing is visible.
   useIntersectionObserver(wrapperEl, ([entry]) => {
     if (entry?.isIntersecting) {
       startSmileyLoop()
@@ -333,10 +533,27 @@ onMounted(() => {
       stopSmileyLoop()
     }
   })
+
+  // Drag capability can change at runtime (e.g. a mouse plugged into a touch device) — keep the
+  // MouseConstraint in sync with it rather than only checking once at mount.
+  watch(canDragSmiley, (canDrag) => {
+    if (canDrag) attachSmileyDrag()
+    else detachSmileyDrag()
+  })
 })
 
 onUnmounted(() => {
   stopSmileyLoop()
+  detachSmileyDrag()
+
+  if (engine) {
+    Events.off(engine, 'collisionStart', handleSmileyWallCollision)
+    Engine.clear(engine)
+  }
+
+  engine = null
+  smileyBody = null
+  smileyWalls = []
 })
 </script>
 
@@ -393,8 +610,11 @@ onUnmounted(() => {
       <div
         ref="smileyEl"
         :style="smileyStyle"
-        :class="{ 'opacity-0': !smileyReady }"
-        class="absolute top-0 left-0 w-20 md:w-30 pointer-events-none will-change-transform transition-opacity duration-500 ease-outCubic"
+        :class="[
+          { 'opacity-0': !smileyReady },
+          canDragSmiley ? 'pointer-events-auto cursor-grab active:cursor-grabbing' : 'pointer-events-none',
+        ]"
+        class="absolute top-0 left-0 w-20 md:w-40 will-change-transform transition-opacity duration-500 ease-outCubic"
       >
         <div
           :style="smileySpinStyle"

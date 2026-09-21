@@ -20,6 +20,7 @@ const taglineClass = computed(() => ({
   'text-black': appStore.getTheme !== 'dark',
   'opacity-0 scale-95': !taglineReady.value,
   'opacity-100 scale-100': taglineReady.value,
+  'pointer-events-none': appStore.getIsSmileyDragging,
 }))
 </script>
 
