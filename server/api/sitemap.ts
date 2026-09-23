@@ -1,6 +1,5 @@
 import type { ISbStoryData } from 'storyblok-js-client'
 import type { SitemapUrlInput } from '#sitemap/types'
-import { defineSitemapEventHandler } from '#imports'
 import StoryblokClient from 'storyblok-js-client'
 
 export default defineSitemapEventHandler(async () => {

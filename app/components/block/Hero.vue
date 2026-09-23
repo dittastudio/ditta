@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { Block } from '#storyblok-schema'
+import type { Ref } from 'vue'
 import { onKeyStroke, useIntersectionObserver, useResizeObserver } from '@vueuse/core'
 import { Engine, Bodies, Body, Composite, Mouse, MouseConstraint, Events } from 'matter-js'
-import type { IEventCollision } from 'matter-js'
 import { defineSound } from '@web-kits/audio'
 import { kick, snare, hatClosed, tom } from '@@/.web-kits/drums'
 import { useAppStore } from '@/stores/app'
@@ -34,62 +34,54 @@ const smileyEl = ref<HTMLElement | null>(null)
 const smileySpinEl = ref<HTMLElement | null>(null)
 const logoEl = ref<SVGSVGElement | null>(null)
 
-const SMILEY_SPEED = 160 // px/second
-const SMILEY_SPIN_SPEED_MIN = 10 // deg/second
-const SMILEY_SPIN_SPEED_MAX = 120 // deg/second
-const SMILEY_FLING_SPEED_MULTIPLIER_MAX = 5 // cap on release speed, as a multiple of SMILEY_SPEED
-const SMILEY_DECAY_DURATION = 5 // seconds for fling speed to blend back to SMILEY_SPEED
-const SMILEY_DECAY_SNAP_THRESHOLD = 4 // px/second; end decay early once this close to SMILEY_SPEED
-const SMILEY_WALL_PAD = 100 // px, wall body thickness/offset around the hero bounds
-const SMILEY_VELOCITY_UNIT = 60 // matter-js normalises body.velocity to px per (1000/60)ms — multiply by this for px/second
-const SMILEY_MAX_DT = 0.1 // seconds; clamp a stale/backgrounded-tab frame gap so matter-js's velocity
-// correction (proportional to how much the new delta differs from the last one) can't spike and tunnel the body through a wall in one step
-const SMILEY_PHYSICS_STEP = 1000 / 60 // ms; matter-js's recommended max delta per Engine.update — longer frames are split into sub-steps
-const SMILEY_WALL_CATEGORY = 0x0002 // collision category so wall collision can be toggled off while dragging
+const SMILEY_SPEED = 160 // px/s
+const SMILEY_SPIN_SPEED_MIN = 10 // deg/s
+const SMILEY_SPIN_SPEED_MAX = 120 // deg/s
+const SMILEY_FLING_SPEED_MULTIPLIER_MAX = 5
+const SMILEY_DECAY_DURATION = 5 // s
+const SMILEY_DECAY_SNAP_THRESHOLD = 4 // px/s
+const SMILEY_VELOCITY_UNIT = 60 // matter-js velocity is px per 1/60s
+const SMILEY_MAX_DT = 0.1 // s; clamp tab-switch gaps
+const SMILEY_PHYSICS_STEP = 1000 / 60 // max ms per Engine.update
+// Walls/logo collisions are handled manually
+const SMILEY_BODY_OPTIONS = { restitution: 1, frictionAir: 0, friction: 0, frictionStatic: 0, inertia: Infinity }
 
-// Per-frame state is deliberately non-reactive: the transforms are written straight to the DOM in
-// applySmileyTransform, so the rAF loop never re-runs this component's render (and its logo SVG diff).
-const smileyCenter = { x: 0, y: 0 } // px, relative to wrapperEl — mirrors smileyBody.position
+// Non-reactive: transforms are written straight to the DOM
+const smileyCenter = { x: 0, y: 0 }
 let smileyRadius = 0
 let smileyRotation = 0
 const heroBounds = { width: 0, height: 0 }
 
-interface Rect {
-  left: number
-  top: number
-  right: number
-  bottom: number
-}
+const logoViewBox = { left: 0, top: 0, scaleX: 1, scaleY: 1, originY: 0 }
 
-interface LogoLetter {
-  rect: Rect // combined bounding box, used as a cheap broad-phase check before the exact shape test
-  paths: Path2D[] // in the SVG's viewBox coordinates
-}
+// Logo collides as a solid skyline (topmost filled y per column, viewBox units)
+const LOGO_SKYLINE_UNIT = 2
+const LOGO_PUSH_MAX_ITERATIONS = 3
+const LOGO_PUSH_EPSILON = 0.5 // px
+const LOGO_TOUCH_MARGIN = 2 // px
+const LOGO_HIT_MIN_SPEED = 60 // px/s
+const LOGO_BUMPER_BOOST = 3.5
+const LOGO_BUMPER_DECAY_DURATION = 8 // s
+let logoSkyline = new Float32Array(0)
+let logoSkylineLetter = new Int8Array(0)
+let logoSkylineTop = Infinity
 
-// Maps wrapper-relative px into the logo SVG's viewBox coordinates. Wrapper-relative (rather than
-// client) coordinates don't shift when the page scrolls, so this only needs refreshing on resize.
-const logoViewBox = { left: 0, top: 0, scaleX: 1, scaleY: 1, originX: 0, originY: 0 }
-let hitTestContext: CanvasRenderingContext2D | null = null // offscreen, only used for isPointInPath
-
-const SMILEY_SAMPLE_COUNT = 20 // points sampled around the circle's edge for shape hit-testing
-const SMILEY_PUSH_STEP = 3 // px/frame nudge to push the circle back out of a letter it's touching
+const SMILEY_DRAG_MAX_STEP_RATIO = 0.5
 
 const smileyReady = ref(false)
 const isDraggingSmiley = ref(false)
 const canDragSmiley = useAtMedia('(pointer: fine)')
 
-let logoLetters: LogoLetter[] = []
-let activeLetterIndex: number | null = null
+let isTouchingLogo = false
 let smileyRafId: number | null = null
 let smileyLastTime = 0
-let smileySpinDirection = 1 // 1 = clockwise, -1 = counter-clockwise
-let smileySpinSpeed = SMILEY_SPIN_SPEED_MIN // deg/second, randomised on each bounce
-let smileyDecayElapsed: number | null = null // seconds since a fling release, null when not decaying
-let wallBounceThisFrame = false
+let smileySpinDirection = 1
+let smileySpinSpeed = SMILEY_SPIN_SPEED_MIN
+let smileyDecayElapsed: number | null = null
+let smileyDecayDuration = SMILEY_DECAY_DURATION
 
 let engine: Engine | null = null
 let smileyBody: Body | null = null
-let smileyWalls: Body[] = []
 let mouseConstraint: MouseConstraint | null = null
 
 const applySmileyTransform = () => {
@@ -100,7 +92,7 @@ const applySmileyTransform = () => {
   if (smileySpinEl.value) smileySpinEl.value.style.transform = `rotate(${smileyRotation}deg)`
 }
 
-const hit = (el: typeof dEl, cls = 'is-hit') => {
+const hit = (el: Ref<SVGElement | null>, cls = 'is-hit') => {
   if (!el.value) return
 
   el.value.classList.remove(cls)
@@ -141,6 +133,22 @@ onKeyStroke(['i', 'I'], playI)
 onKeyStroke(['t', 'T'], playT)
 onKeyStroke(['a', 'A'], playA)
 
+// Order matches letterGroups in buildLogoSkyline
+const LOGO_LETTER_HITS = [
+  { el: dEl, cls: 'is-d-hit', sound: kickSound },
+  { el: iEl, cls: 'is-i-hit', sound: snareSound },
+  { el: tEl, cls: 'is-t-hit', sound: hatSound },
+  { el: aEl, cls: 'is-a-hit', sound: tomSound },
+]
+
+const hitLogoLetter = (index: number) => {
+  const letter = LOGO_LETTER_HITS[index]
+  if (!letter) return
+
+  hit(letter.el, letter.cls)
+  if (isAudioOn.value) play(letter.sound)
+}
+
 const measureSmileyBounds = () => {
   if (!wrapperEl.value || !smileyEl.value) return
 
@@ -158,44 +166,61 @@ const measureSmileyBounds = () => {
     logoViewBox.top = logoRect.top - wrapperRect.top
     logoViewBox.scaleX = viewBox.width / logoRect.width
     logoViewBox.scaleY = viewBox.height / logoRect.height
-    logoViewBox.originX = viewBox.x
     logoViewBox.originY = viewBox.y
   }
+}
 
-  const letterGroups: (SVGPathElement | null)[][] = [
-    [dEl.value],
-    [iDotEl.value, iStemEl.value],
-    [tEl.value],
-    [aEl.value],
-  ]
+const buildLogoSkyline = () => {
+  if (!logoEl.value) return
 
-  logoLetters = letterGroups
-    .map((group) => group.filter((path): path is SVGPathElement => !!path))
-    .filter((paths) => paths.length > 0)
-    .map((paths) => {
-      let left = Infinity
-      let top = Infinity
-      let right = -Infinity
-      let bottom = -Infinity
+  const viewBox = logoEl.value.viewBox.baseVal
+  const canvas = document.createElement('canvas')
+  canvas.width = Math.ceil(viewBox.width / LOGO_SKYLINE_UNIT)
+  canvas.height = Math.ceil(viewBox.height / LOGO_SKYLINE_UNIT)
 
-      for (const path of paths) {
-        const pathRect = path.getBoundingClientRect()
-        left = Math.min(left, pathRect.left)
-        top = Math.min(top, pathRect.top)
-        right = Math.max(right, pathRect.right)
-        bottom = Math.max(bottom, pathRect.bottom)
-      }
+  const ctx = canvas.getContext('2d', { willReadFrequently: true })
+  if (!ctx) return
 
-      return {
-        paths: paths.map((path) => new Path2D(path.getAttribute('d') ?? '')),
-        rect: {
-          left: left - wrapperRect.left,
-          top: top - wrapperRect.top,
-          right: right - wrapperRect.left,
-          bottom: bottom - wrapperRect.top,
-        },
-      }
-    })
+  ctx.scale(1 / LOGO_SKYLINE_UNIT, 1 / LOGO_SKYLINE_UNIT)
+  ctx.translate(-viewBox.x, -viewBox.y)
+  for (const path of logoEl.value.querySelectorAll('path')) ctx.fill(new Path2D(path.getAttribute('d') ?? ''))
+
+  const { data, width, height } = ctx.getImageData(0, 0, canvas.width, canvas.height)
+  logoSkyline = new Float32Array(width).fill(Infinity)
+
+  for (let column = 0; column < width; column++) {
+    for (let row = 0; row < height; row++) {
+      if ((data[(row * width + column) * 4 + 3] ?? 0) <= 127) continue
+
+      logoSkyline[column] = viewBox.y + row * LOGO_SKYLINE_UNIT
+      break
+    }
+  }
+
+  logoSkylineTop = Math.min(...logoSkyline)
+
+  // Tag each column with its letter (reset: isPointInPath applies the current transform)
+  const letterGroups = [[dEl.value], [iDotEl.value, iStemEl.value], [tEl.value], [aEl.value]].map((group) =>
+    group.flatMap((path) => (path ? [new Path2D(path.getAttribute('d') ?? '')] : [])),
+  )
+  ctx.resetTransform()
+  logoSkylineLetter = new Int8Array(width).fill(-1)
+
+  for (let column = 0; column < width; column++) {
+    const skylineY = logoSkyline[column]
+    if (skylineY === undefined || skylineY === Infinity) continue
+
+    const x = viewBox.x + (column + 0.5) * LOGO_SKYLINE_UNIT
+    const y = skylineY + LOGO_SKYLINE_UNIT
+    logoSkylineLetter[column] = letterGroups.findIndex((paths) => paths.some((path) => ctx.isPointInPath(path, x, y)))
+  }
+
+  // Anti-aliased edges miss every path; borrow the neighbour's letter
+  for (let column = 1; column < width; column++) {
+    if (logoSkylineLetter[column] === -1 && logoSkyline[column] !== Infinity) {
+      logoSkylineLetter[column] = logoSkylineLetter[column - 1] ?? -1
+    }
+  }
 }
 
 const clampSmileyPosition = () => {
@@ -206,97 +231,72 @@ const clampSmileyPosition = () => {
   smileyCenter.y = Math.min(Math.max(smileyCenter.y, r), maxY)
 }
 
-// Cheap broad-phase check: does the circle's own bounding box overlap the letter's bounding box?
-const circleOverlapsRect = (cx: number, cy: number, r: number, rect: Rect) =>
-  cx + r > rect.left && cx - r < rect.right && cy + r > rect.top && cy - r < rect.bottom
+// Circle vs skyline: outward normal, depth and letter, or null
+const findLogoContact = (cx: number, cy: number, r: number) => {
+  const { left, top, scaleX, scaleY, originY } = logoViewBox
+  const toPxY = (viewBoxY: number) => top + (viewBoxY - originY) / scaleY
 
-// Exact hit test against a path's actual fill, not its bounding box. Tests a Path2D copy of the
-// glyph on an offscreen canvas, so it's pure geometry — no layout reads in the per-frame loop.
-const isPointInLetter = (paths: Path2D[], x: number, y: number) => {
-  if (!hitTestContext) return false
+  if (cy + r <= toPxY(logoSkylineTop)) return null
 
-  const viewBoxX = (x - logoViewBox.left) * logoViewBox.scaleX + logoViewBox.originX
-  const viewBoxY = (y - logoViewBox.top) * logoViewBox.scaleY + logoViewBox.originY
+  const columnWidth = LOGO_SKYLINE_UNIT / scaleX
+  const first = Math.max(0, Math.floor((cx - r - left) / columnWidth))
+  const last = Math.min(logoSkyline.length - 1, Math.ceil((cx + r - left) / columnWidth))
 
-  return paths.some((path) => hitTestContext?.isPointInPath(path, viewBoxX, viewBoxY))
-}
+  let nearest = Infinity
+  let nearestX = 0
+  let nearestY = 0
+  let nearestColumn = -1
+  let centreColumn = -1
+  let centreColumnSkylineY = Infinity
 
-// Samples points around the circle's edge against the letter's actual shape (not its bounding
-// box), so the smiley deflects off the visible glyph outline rather than an invisible box around
-// it. Returns the outward-pointing contact normal, or null when the shape isn't actually touched.
-const findLetterContactNormal = (cx: number, cy: number, r: number, paths: Path2D[]) => {
-  let normalX = 0
-  let normalY = 0
-  let insideCount = 0
+  for (let column = first; column <= last; column++) {
+    const skylineViewBoxY = logoSkyline[column]
+    if (skylineViewBoxY === undefined || skylineViewBoxY === Infinity) continue
 
-  for (let i = 0; i < SMILEY_SAMPLE_COUNT; i++) {
-    const angle = (i / SMILEY_SAMPLE_COUNT) * Math.PI * 2
-    const offsetX = Math.cos(angle) * r
-    const offsetY = Math.sin(angle) * r
+    const x = left + (column + 0.5) * columnWidth
+    const skylineY = toPxY(skylineViewBoxY)
+    if (Math.abs(x - cx) <= columnWidth / 2) {
+      centreColumn = column
+      centreColumnSkylineY = skylineY
+    }
 
-    if (!isPointInLetter(paths, cx + offsetX, cy + offsetY)) continue
+    const y = Math.max(skylineY, cy)
+    const distance = Math.hypot(x - cx, y - cy)
+    if (distance >= nearest) continue
 
-    insideCount++
-    normalX += offsetX
-    normalY += offsetY
+    nearest = distance
+    nearestX = x
+    nearestY = y
+    nearestColumn = column
   }
 
-  if (insideCount === 0) return null
+  // Centre inside the logo: lift straight out
+  if (centreColumnSkylineY <= cy) {
+    return {
+      normal: { x: 0, y: -1 },
+      depth: r + cy - centreColumnSkylineY,
+      letter: logoSkylineLetter[centreColumn] ?? -1,
+    }
+  }
 
-  const len = Math.hypot(normalX, normalY)
-  if (len > 0) return { x: -normalX / len, y: -normalY / len }
+  if (nearest >= r + LOGO_TOUCH_MARGIN) return null
 
-  // Sample points inside the shape cancelled out (roughly symmetric overlap) — bounce straight back.
-  const velocity = smileyBody?.velocity ?? { x: 0, y: 0 }
-  const speed = Math.hypot(velocity.x, velocity.y) || 1
-  return { x: -velocity.x / speed, y: -velocity.y / speed }
-}
-
-const buildSmileyWalls = (w: number, h: number) => {
-  const wallOptions = { isStatic: true, collisionFilter: { category: SMILEY_WALL_CATEGORY } }
-  return [
-    Bodies.rectangle(w / 2, h + SMILEY_WALL_PAD / 2, w + SMILEY_WALL_PAD * 2, SMILEY_WALL_PAD, wallOptions),
-    Bodies.rectangle(w / 2, -SMILEY_WALL_PAD / 2, w + SMILEY_WALL_PAD * 2, SMILEY_WALL_PAD, wallOptions),
-    Bodies.rectangle(-SMILEY_WALL_PAD / 2, h / 2, SMILEY_WALL_PAD, h + SMILEY_WALL_PAD * 2, wallOptions),
-    Bodies.rectangle(w + SMILEY_WALL_PAD / 2, h / 2, SMILEY_WALL_PAD, h + SMILEY_WALL_PAD * 2, wallOptions),
-  ]
-}
-
-// Wall bounces are resolved by matter-js itself (elastic walls, restitution 1) — this just flags
-// that one happened this frame so the spin-randomisation below still fires, same as a letter bounce.
-const handleSmileyWallCollision = (event: IEventCollision<Engine>) => {
-  if (!smileyBody) return
-
-  const hitWall = event.pairs.some(
-    (pair) =>
-      (pair.bodyA === smileyBody && smileyWalls.includes(pair.bodyB)) ||
-      (pair.bodyB === smileyBody && smileyWalls.includes(pair.bodyA)),
-  )
-
-  if (hitWall) wallBounceThisFrame = true
+  return {
+    normal: { x: (cx - nearestX) / nearest, y: (cy - nearestY) / nearest },
+    depth: r - nearest,
+    letter: logoSkylineLetter[nearestColumn] ?? -1,
+  }
 }
 
 const handleSmileyDragStart = () => {
   isDraggingSmiley.value = true
   smileyDecayElapsed = null
 
-  // AppTagline and AppDock are siblings of the page in app.vue, not descendants of the hero, and
-  // both overlap it (Tagline absolutely, Dock as a fixed full-viewport layer). Without this, dragging
-  // over them selects their text and starves the mouse constraint of mousemove (since those elements
-  // aren't inside wrapperEl, events never bubble to it), leaving the smiley stuck mid-drag.
+  // Tagline/Dock overlap the hero and would swallow mousemove mid-drag
   appStore.setIsSmileyDragging(true)
-
-  // Unlike letters (blocked but not bounced while dragging — see tickSmiley), the walls are a real
-  // matter-js body with restitution, so without this a fast drag toward the edge has the mouse
-  // constraint pulling one way and the wall's restitution pushing back the other, fighting for a
-  // frame and reading as a wrong-direction bounce. Let a drag go anywhere; walls re-engage on release.
-  if (smileyBody) smileyBody.collisionFilter.mask = ~SMILEY_WALL_CATEGORY
 }
 
-const handleSmileyDragEnd = () => {
-  isDraggingSmiley.value = false
-  appStore.setIsSmileyDragging(false)
-
+const capSmileySpeedAndEaseBack = (duration = SMILEY_DECAY_DURATION) => {
   if (!smileyBody) return
 
   const speed = Math.hypot(smileyBody.velocity.x, smileyBody.velocity.y)
@@ -308,29 +308,27 @@ const handleSmileyDragEnd = () => {
     Body.setVelocity(smileyBody, { x: smileyBody.velocity.x * capScale, y: smileyBody.velocity.y * capScale })
   }
 
-  // Belt-and-braces: the circle's visible spin is driven entirely by smileyRotation, never by
-  // smileyBody.angle, but zeroing this out too means no stray torque can linger into the next drag.
-  Body.setAngularVelocity(smileyBody, 0)
-
-  // Re-engage wall collision now that the drag (which disabled it) is over.
-  smileyBody.collisionFilter.mask = 0xffffffff
-
   smileyDecayElapsed = 0
+  smileyDecayDuration = duration
 }
 
-// matter-js's Mouse only listens for mouseup on the element it was created with — if the button is
-// released after the cursor has left that element (e.g. dragged out past the viewport edge), that
-// mouseup is never seen, so the constraint never releases and the smiley stays glued to the cursor.
-// Feeding the same event into the mouse's own handler from a window-level listener closes that gap.
+const handleSmileyDragEnd = () => {
+  isDraggingSmiley.value = false
+  appStore.setIsSmileyDragging(false)
+
+  if (!smileyBody) return
+
+  capSmileySpeedAndEaseBack()
+}
+
+// matter-js misses mouseup outside its element
 let releaseSmileyMouseUp: ((event: MouseEvent) => void) | null = null
 
-// Only rebuilds the mouse/constraint pair — the underlying Engine/body/walls stay alive for the
-// component's whole lifetime, gated only by canDragSmiley so touch devices attach nothing at all.
 const attachSmileyDrag = () => {
   if (!engine || !wrapperEl.value || mouseConstraint) return
 
   const mouse = Mouse.create(wrapperEl.value)
-  // matter-js registers 'wheel' with passive: false and calls preventDefault — remove it so page scroll works
+  // Let the page scroll
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   mouse.element.removeEventListener('wheel', (mouse as any).mousewheel as EventListener)
 
@@ -368,30 +366,15 @@ const forceEndSmileyDrag = () => {
 const setupSmileyEngine = () => {
   engine = Engine.create({ gravity: { x: 0, y: 0 } })
 
-  smileyWalls = buildSmileyWalls(heroBounds.width, heroBounds.height)
-  Composite.add(engine.world, smileyWalls)
-
-  smileyBody = Bodies.circle(smileyCenter.x, smileyCenter.y, smileyRadius, {
-    restitution: 1,
-    frictionAir: 0,
-  })
+  smileyBody = Bodies.circle(smileyCenter.x, smileyCenter.y, smileyRadius, SMILEY_BODY_OPTIONS)
   Body.setVelocity(smileyBody, { x: SMILEY_SPEED / SMILEY_VELOCITY_UNIT, y: SMILEY_SPEED / SMILEY_VELOCITY_UNIT })
   Composite.add(engine.world, smileyBody)
-
-  Events.on(engine, 'collisionStart', handleSmileyWallCollision)
 
   if (canDragSmiley.value) attachSmileyDrag()
 }
 
-// A resize swaps in a freshly-sized body/walls rather than resizing in place — matter-js circles
-// aren't cheaply resizable, and Services.vue's chip-resize handling already establishes this
-// recreate-preserving-velocity pattern in this codebase.
 const rebuildSmileyPhysicsBounds = () => {
   if (!engine || !smileyBody) return
-
-  Composite.remove(engine.world, smileyWalls)
-  smileyWalls = buildSmileyWalls(heroBounds.width, heroBounds.height)
-  Composite.add(engine.world, smileyWalls)
 
   const r = smileyRadius
   const maxX = Math.max(r, heroBounds.width - r)
@@ -401,13 +384,100 @@ const rebuildSmileyPhysicsBounds = () => {
   const velocity = smileyBody.velocity
 
   Composite.remove(engine.world, smileyBody)
-  smileyBody = Bodies.circle(x, y, r, { restitution: 1, frictionAir: 0 })
+  smileyBody = Bodies.circle(x, y, r, SMILEY_BODY_OPTIONS)
   Body.setVelocity(smileyBody, velocity)
   Composite.add(engine.world, smileyBody)
 
   smileyCenter.x = x
   smileyCenter.y = y
   applySmileyTransform()
+}
+
+// Stop fast drags tunnelling into the logo
+const limitSmileyDragStep = (before: { x: number; y: number }) => {
+  if (!smileyBody) return
+
+  const dx = smileyBody.position.x - before.x
+  const dy = smileyBody.position.y - before.y
+  const distance = Math.hypot(dx, dy)
+  const maxDistance = smileyRadius * SMILEY_DRAG_MAX_STEP_RATIO
+  if (distance <= maxDistance) return
+
+  const scale = maxDistance / distance
+  Body.setPosition(smileyBody, { x: before.x + dx * scale, y: before.y + dy * scale })
+}
+
+// Bounces off the logo, or slides along it while dragging. Returns whether it bounced.
+const collideSmileyWithLogo = () => {
+  if (!smileyBody) return false
+
+  let contact = findLogoContact(smileyBody.position.x, smileyBody.position.y, smileyRadius)
+  if (!contact) {
+    isTouchingLogo = false
+    return false
+  }
+
+  const { normal } = contact
+  const velocity = smileyBody.velocity
+  const dot = velocity.x * normal.x + velocity.y * normal.y
+  let bounced = false
+
+  const isNewContact = !isTouchingLogo
+  isTouchingLogo = true
+
+  const isLetterHit = isNewContact && -dot * SMILEY_VELOCITY_UNIT >= LOGO_HIT_MIN_SPEED
+  if (isLetterHit) hitLogoLetter(contact.letter)
+
+  if (isDraggingSmiley.value) {
+    if (dot < 0) Body.setVelocity(smileyBody, { x: velocity.x - dot * normal.x, y: velocity.y - dot * normal.y })
+  } else if (isNewContact && dot < 0) {
+    // Reflect once per contact; letter hits raise speed to bumper speed
+    const reflected = { x: velocity.x - 2 * dot * normal.x, y: velocity.y - 2 * dot * normal.y }
+    const reflectedSpeed = Math.hypot(reflected.x, reflected.y) * SMILEY_VELOCITY_UNIT
+    const bumperSpeed = SMILEY_SPEED * LOGO_BUMPER_BOOST
+    const boost = isLetterHit && reflectedSpeed > 0 ? Math.max(1, bumperSpeed / reflectedSpeed) : 1
+    Body.setVelocity(smileyBody, { x: reflected.x * boost, y: reflected.y * boost })
+    bounced = true
+
+    if (boost > 1) capSmileySpeedAndEaseBack(LOGO_BUMPER_DECAY_DURATION)
+  }
+
+  for (let i = 0; contact && contact.depth > 0 && i < LOGO_PUSH_MAX_ITERATIONS; i++) {
+    const push = contact.depth + LOGO_PUSH_EPSILON
+    Body.translate(smileyBody, { x: contact.normal.x * push, y: contact.normal.y * push })
+    contact = findLogoContact(smileyBody.position.x, smileyBody.position.y, smileyRadius)
+  }
+
+  return bounced
+}
+
+// Manual walls: matter-js treats slow hits as resting contact
+const collideSmileyWithWalls = () => {
+  if (!smileyBody || isDraggingSmiley.value) return false
+
+  const r = smileyRadius
+  const { x, y } = smileyBody.position
+  const insideX = Math.min(Math.max(x, r), Math.max(r, heroBounds.width - r))
+  const insideY = Math.min(Math.max(y, r), Math.max(r, heroBounds.height - r))
+  if (insideX === x && insideY === y) return false
+
+  let { x: vx, y: vy } = smileyBody.velocity
+  let bounced = false
+
+  if (insideX !== x && Math.sign(x - insideX) === Math.sign(vx)) {
+    vx = -vx
+    bounced = true
+  }
+
+  if (insideY !== y && Math.sign(y - insideY) === Math.sign(vy)) {
+    vy = -vy
+    bounced = true
+  }
+
+  Body.setPosition(smileyBody, { x: insideX, y: insideY })
+  if (bounced) Body.setVelocity(smileyBody, { x: vx, y: vy })
+
+  return bounced
 }
 
 const tickSmiley = (time: number) => {
@@ -425,16 +495,14 @@ const tickSmiley = (time: number) => {
     const speed = Math.hypot(smileyBody.velocity.x, smileyBody.velocity.y)
     const speedPxPerSecond = speed * SMILEY_VELOCITY_UNIT
 
-    if (
-      smileyDecayElapsed >= SMILEY_DECAY_DURATION ||
+    const isDecayDone =
+      smileyDecayElapsed >= smileyDecayDuration ||
       Math.abs(speedPxPerSecond - SMILEY_SPEED) <= SMILEY_DECAY_SNAP_THRESHOLD
-    ) {
-      smileyDecayElapsed = null
-    }
+    if (isDecayDone) smileyDecayElapsed = null
 
     if (speed > 0) {
-      const decayRate = 3 / SMILEY_DECAY_DURATION // ~95% of the gap closes within SMILEY_DECAY_DURATION
-      const lerpFactor = 1 - Math.exp(-decayRate * dt)
+      const decayRate = 3 / smileyDecayDuration // ~95% closed by duration
+      const lerpFactor = isDecayDone ? 1 : 1 - Math.exp(-decayRate * dt)
       const targetSpeed = SMILEY_SPEED / SMILEY_VELOCITY_UNIT
       const newSpeed = speed + (targetSpeed - speed) * lerpFactor
       const decayScale = newSpeed / speed
@@ -445,53 +513,18 @@ const tickSmiley = (time: number) => {
     }
   }
 
-  wallBounceThisFrame = false
-  // Equal sub-steps (not a fixed-step accumulator) keep the delta near-constant frame to frame,
-  // so matter-js's delta-change velocity correction doesn't spike.
+  // Equal sub-steps keep matter-js's delta correction stable
   const frameMs = dt * 1000
   const steps = Math.max(1, Math.ceil(frameMs / SMILEY_PHYSICS_STEP))
   const stepMs = frameMs / steps
-  for (let i = 0; i < steps; i++) Engine.update(engine, stepMs)
+  let bounced = false
 
-  let bounced = wallBounceThisFrame
-
-  // Runs while dragging too — a dragged smiley should be blocked by the letters, not pass through
-  // them. Dragging only skips the velocity-reflect/spin branch below (there's no free velocity to
-  // bounce mid-drag, the mouse constraint owns position); the push-out step still runs every frame
-  // it's overlapping, so the letter acts as a solid stop the mouse constraint can't pull it past —
-  // it settles right at the boundary rather than jittering, same as it already does for a graze.
-  {
-    const r = smileyRadius
-    const { x, y } = smileyBody.position
-
-    let touchingLetterIndex: number | null = null
-
-    for (let i = 0; i < logoLetters.length; i++) {
-      const letter = logoLetters[i]
-      if (!circleOverlapsRect(x, y, r, letter.rect)) continue
-
-      const normal = findLetterContactNormal(x, y, r, letter.paths)
-      if (!normal) continue
-
-      // Only reflect once per contact — while still overlapping on later frames, just keep pushing
-      // out so a shallow graze doesn't get reflected over and over into a jitter.
-      if (!isDraggingSmiley.value && activeLetterIndex !== i) {
-        const velocity = smileyBody.velocity
-        const dot = velocity.x * normal.x + velocity.y * normal.y
-        Body.setVelocity(smileyBody, {
-          x: velocity.x - 2 * dot * normal.x,
-          y: velocity.y - 2 * dot * normal.y,
-        })
-        bounced = true
-      }
-
-      Body.translate(smileyBody, { x: normal.x * SMILEY_PUSH_STEP, y: normal.y * SMILEY_PUSH_STEP })
-      touchingLetterIndex = i
-
-      break
-    }
-
-    activeLetterIndex = touchingLetterIndex
+  for (let i = 0; i < steps; i++) {
+    const before = { x: smileyBody.position.x, y: smileyBody.position.y }
+    Engine.update(engine, stepMs)
+    if (isDraggingSmiley.value) limitSmileyDragStep(before)
+    if (collideSmileyWithLogo()) bounced = true
+    if (collideSmileyWithWalls()) bounced = true
   }
 
   if (bounced) {
@@ -511,7 +544,7 @@ const tickSmiley = (time: number) => {
 const startSmileyLoop = () => {
   if (smileyRafId !== null) return
 
-  smileyLastTime = 0 // reset so dt doesn't spike after being paused
+  smileyLastTime = 0
   smileyRafId = requestAnimationFrame(tickSmiley)
 }
 
@@ -523,7 +556,7 @@ const stopSmileyLoop = () => {
 }
 
 onMounted(() => {
-  hitTestContext = document.createElement('canvas').getContext('2d')
+  buildLogoSkyline()
 
   measureSmileyBounds()
   smileyCenter.x = Math.max(heroBounds.width - smileyRadius - 24, smileyRadius)
@@ -534,21 +567,17 @@ onMounted(() => {
   setupSmileyEngine()
   startSmileyLoop()
 
-  // Wait a frame so the initial position is painted before fading in, avoiding a top-left flash.
+  // Paint position before fading in
   requestAnimationFrame(() => {
     smileyReady.value = true
   })
 
   useResizeObserver(wrapperEl, () => {
-    // A resize swaps in a fresh body/walls sized from stale mid-drag geometry would be wrong — end
-    // any active drag first so there's a single code path for how a drag ends.
     forceEndSmileyDrag()
     measureSmileyBounds()
     rebuildSmileyPhysicsBounds()
   })
 
-  // Pause the rAF loop while the hero is scrolled out of view — the collision/hit-test math and
-  // physics stepping are pure waste when nothing is visible.
   useIntersectionObserver(wrapperEl, ([entry]) => {
     if (entry?.isIntersecting) {
       startSmileyLoop()
@@ -557,8 +586,6 @@ onMounted(() => {
     }
   })
 
-  // Drag capability can change at runtime (e.g. a mouse plugged into a touch device) — keep the
-  // MouseConstraint in sync with it rather than only checking once at mount.
   watch(canDragSmiley, (canDrag) => {
     if (canDrag) attachSmileyDrag()
     else detachSmileyDrag()
@@ -569,14 +596,10 @@ onUnmounted(() => {
   stopSmileyLoop()
   detachSmileyDrag()
 
-  if (engine) {
-    Events.off(engine, 'collisionStart', handleSmileyWallCollision)
-    Engine.clear(engine)
-  }
+  if (engine) Engine.clear(engine)
 
   engine = null
   smileyBody = null
-  smileyWalls = []
 })
 </script>
 

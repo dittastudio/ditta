@@ -2,7 +2,7 @@
 import type { AssetFieldValue } from '@storyblok/schema'
 
 interface Props {
-  image: AssetFieldValue | null
+  image?: AssetFieldValue | null
   name: string
   position?: string | null
 }

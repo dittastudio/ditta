@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import type { BlockPosts, Post } from '#storyblok-components'
+import type { Block } from '#storyblok-schema'
 import { formatTimeAgo, useDateFormat } from '@vueuse/core'
 
 interface Props {
-  block: BlockPosts
+  block: Block<'block_posts'>
 }
 
 const { block } = defineProps<Props>()
 
-const posts = await useStories<Post>('/blog', {
+const posts = await useStories<Block<'post'>>('/blog', {
   content_type: 'post',
   sort_by: 'first_published_at:desc',
   per_page: 100,

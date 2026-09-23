@@ -59,6 +59,8 @@ function clamp(value: number, min: number, max: number) {
 }
 
 function onPointerDown(e: PointerEvent) {
+  if (!pos.value) return
+
   dragging.value = true
   moved.value = false
   startPointer = { x: e.clientX, y: e.clientY }
