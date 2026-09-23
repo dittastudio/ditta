@@ -31,6 +31,8 @@ const aEl = ref<SVGPathElement | null>(null)
 
 const wrapperEl = ref<HTMLElement | null>(null)
 const smileyEl = ref<HTMLElement | null>(null)
+const smileySpinEl = ref<HTMLElement | null>(null)
+const logoEl = ref<SVGSVGElement | null>(null)
 
 const SMILEY_SPEED = 160 // px/second
 const SMILEY_SPIN_SPEED_MIN = 10 // deg/second
@@ -42,12 +44,15 @@ const SMILEY_WALL_PAD = 100 // px, wall body thickness/offset around the hero bo
 const SMILEY_VELOCITY_UNIT = 60 // matter-js normalises body.velocity to px per (1000/60)ms — multiply by this for px/second
 const SMILEY_MAX_DT = 0.1 // seconds; clamp a stale/backgrounded-tab frame gap so matter-js's velocity
 // correction (proportional to how much the new delta differs from the last one) can't spike and tunnel the body through a wall in one step
+const SMILEY_PHYSICS_STEP = 1000 / 60 // ms; matter-js's recommended max delta per Engine.update — longer frames are split into sub-steps
 const SMILEY_WALL_CATEGORY = 0x0002 // collision category so wall collision can be toggled off while dragging
 
-const smileyCenter = reactive({ x: 0, y: 0 }) // px, relative to wrapperEl — mirrors smileyBody.position for the template
-const smileyRadius = ref(0)
-const smileyRotation = ref(0)
-const heroBounds = reactive({ width: 0, height: 0 })
+// Per-frame state is deliberately non-reactive: the transforms are written straight to the DOM in
+// applySmileyTransform, so the rAF loop never re-runs this component's render (and its logo SVG diff).
+const smileyCenter = { x: 0, y: 0 } // px, relative to wrapperEl — mirrors smileyBody.position
+let smileyRadius = 0
+let smileyRotation = 0
+const heroBounds = { width: 0, height: 0 }
 
 interface Rect {
   left: number
@@ -58,8 +63,13 @@ interface Rect {
 
 interface LogoLetter {
   rect: Rect // combined bounding box, used as a cheap broad-phase check before the exact shape test
-  paths: SVGPathElement[]
+  paths: Path2D[] // in the SVG's viewBox coordinates
 }
+
+// Maps wrapper-relative px into the logo SVG's viewBox coordinates. Wrapper-relative (rather than
+// client) coordinates don't shift when the page scrolls, so this only needs refreshing on resize.
+const logoViewBox = { left: 0, top: 0, scaleX: 1, scaleY: 1, originX: 0, originY: 0 }
+let hitTestContext: CanvasRenderingContext2D | null = null // offscreen, only used for isPointInPath
 
 const SMILEY_SAMPLE_COUNT = 20 // points sampled around the circle's edge for shape hit-testing
 const SMILEY_PUSH_STEP = 3 // px/frame nudge to push the circle back out of a letter it's touching
@@ -69,7 +79,6 @@ const isDraggingSmiley = ref(false)
 const canDragSmiley = useAtMedia('(pointer: fine)')
 
 let logoLetters: LogoLetter[] = []
-let wrapperOrigin = { left: 0, top: 0 }
 let activeLetterIndex: number | null = null
 let smileyRafId: number | null = null
 let smileyLastTime = 0
@@ -83,13 +92,13 @@ let smileyBody: Body | null = null
 let smileyWalls: Body[] = []
 let mouseConstraint: MouseConstraint | null = null
 
-const smileyStyle = computed(() => ({
-  transform: `translate3d(${smileyCenter.x - smileyRadius.value}px, ${smileyCenter.y - smileyRadius.value}px, 0)`,
-}))
+const applySmileyTransform = () => {
+  if (smileyEl.value) {
+    smileyEl.value.style.transform = `translate3d(${smileyCenter.x - smileyRadius}px, ${smileyCenter.y - smileyRadius}px, 0)`
+  }
 
-const smileySpinStyle = computed(() => ({
-  transform: `rotate(${smileyRotation.value}deg)`,
-}))
+  if (smileySpinEl.value) smileySpinEl.value.style.transform = `rotate(${smileyRotation}deg)`
+}
 
 const hit = (el: typeof dEl, cls = 'is-hit') => {
   if (!el.value) return
@@ -138,10 +147,20 @@ const measureSmileyBounds = () => {
   const wrapperRect = wrapperEl.value.getBoundingClientRect()
   heroBounds.width = wrapperRect.width
   heroBounds.height = wrapperRect.height
-  wrapperOrigin = { left: wrapperRect.left, top: wrapperRect.top }
 
   const smileyRect = smileyEl.value.getBoundingClientRect()
-  smileyRadius.value = smileyRect.width / 2
+  smileyRadius = smileyRect.width / 2
+
+  if (logoEl.value) {
+    const logoRect = logoEl.value.getBoundingClientRect()
+    const viewBox = logoEl.value.viewBox.baseVal
+    logoViewBox.left = logoRect.left - wrapperRect.left
+    logoViewBox.top = logoRect.top - wrapperRect.top
+    logoViewBox.scaleX = viewBox.width / logoRect.width
+    logoViewBox.scaleY = viewBox.height / logoRect.height
+    logoViewBox.originX = viewBox.x
+    logoViewBox.originY = viewBox.y
+  }
 
   const letterGroups: (SVGPathElement | null)[][] = [
     [dEl.value],
@@ -168,7 +187,7 @@ const measureSmileyBounds = () => {
       }
 
       return {
-        paths,
+        paths: paths.map((path) => new Path2D(path.getAttribute('d') ?? '')),
         rect: {
           left: left - wrapperRect.left,
           top: top - wrapperRect.top,
@@ -180,7 +199,7 @@ const measureSmileyBounds = () => {
 }
 
 const clampSmileyPosition = () => {
-  const r = smileyRadius.value
+  const r = smileyRadius
   const maxX = Math.max(r, heroBounds.width - r)
   const maxY = Math.max(r, heroBounds.height - r)
   smileyCenter.x = Math.min(Math.max(smileyCenter.x, r), maxX)
@@ -191,27 +210,21 @@ const clampSmileyPosition = () => {
 const circleOverlapsRect = (cx: number, cy: number, r: number, rect: Rect) =>
   cx + r > rect.left && cx - r < rect.right && cy + r > rect.top && cy - r < rect.bottom
 
-// Exact hit test against a path's actual fill, not its bounding box — converts a client-space
-// point into the path's local coordinate system via its screen CTM.
-const isPointInLetter = (paths: SVGPathElement[], clientX: number, clientY: number) => {
-  for (const path of paths) {
-    const ctm = path.getScreenCTM()
-    if (!ctm) continue
+// Exact hit test against a path's actual fill, not its bounding box. Tests a Path2D copy of the
+// glyph on an offscreen canvas, so it's pure geometry — no layout reads in the per-frame loop.
+const isPointInLetter = (paths: Path2D[], x: number, y: number) => {
+  if (!hitTestContext) return false
 
-    const localPoint = new DOMPoint(clientX, clientY).matrixTransform(ctm.inverse())
-    if (path.isPointInFill(localPoint)) return true
-  }
+  const viewBoxX = (x - logoViewBox.left) * logoViewBox.scaleX + logoViewBox.originX
+  const viewBoxY = (y - logoViewBox.top) * logoViewBox.scaleY + logoViewBox.originY
 
-  return false
+  return paths.some((path) => hitTestContext?.isPointInPath(path, viewBoxX, viewBoxY))
 }
 
 // Samples points around the circle's edge against the letter's actual shape (not its bounding
 // box), so the smiley deflects off the visible glyph outline rather than an invisible box around
 // it. Returns the outward-pointing contact normal, or null when the shape isn't actually touched.
-const findLetterContactNormal = (cx: number, cy: number, r: number, paths: SVGPathElement[]) => {
-  const clientCx = wrapperOrigin.left + cx
-  const clientCy = wrapperOrigin.top + cy
-
+const findLetterContactNormal = (cx: number, cy: number, r: number, paths: Path2D[]) => {
   let normalX = 0
   let normalY = 0
   let insideCount = 0
@@ -221,7 +234,7 @@ const findLetterContactNormal = (cx: number, cy: number, r: number, paths: SVGPa
     const offsetX = Math.cos(angle) * r
     const offsetY = Math.sin(angle) * r
 
-    if (!isPointInLetter(paths, clientCx + offsetX, clientCy + offsetY)) continue
+    if (!isPointInLetter(paths, cx + offsetX, cy + offsetY)) continue
 
     insideCount++
     normalX += offsetX
@@ -358,7 +371,7 @@ const setupSmileyEngine = () => {
   smileyWalls = buildSmileyWalls(heroBounds.width, heroBounds.height)
   Composite.add(engine.world, smileyWalls)
 
-  smileyBody = Bodies.circle(smileyCenter.x, smileyCenter.y, smileyRadius.value, {
+  smileyBody = Bodies.circle(smileyCenter.x, smileyCenter.y, smileyRadius, {
     restitution: 1,
     frictionAir: 0,
   })
@@ -380,7 +393,7 @@ const rebuildSmileyPhysicsBounds = () => {
   smileyWalls = buildSmileyWalls(heroBounds.width, heroBounds.height)
   Composite.add(engine.world, smileyWalls)
 
-  const r = smileyRadius.value
+  const r = smileyRadius
   const maxX = Math.max(r, heroBounds.width - r)
   const maxY = Math.max(r, heroBounds.height - r)
   const x = Math.min(Math.max(smileyBody.position.x, r), maxX)
@@ -394,6 +407,7 @@ const rebuildSmileyPhysicsBounds = () => {
 
   smileyCenter.x = x
   smileyCenter.y = y
+  applySmileyTransform()
 }
 
 const tickSmiley = (time: number) => {
@@ -432,7 +446,12 @@ const tickSmiley = (time: number) => {
   }
 
   wallBounceThisFrame = false
-  Engine.update(engine, dt * 1000)
+  // Equal sub-steps (not a fixed-step accumulator) keep the delta near-constant frame to frame,
+  // so matter-js's delta-change velocity correction doesn't spike.
+  const frameMs = dt * 1000
+  const steps = Math.max(1, Math.ceil(frameMs / SMILEY_PHYSICS_STEP))
+  const stepMs = frameMs / steps
+  for (let i = 0; i < steps; i++) Engine.update(engine, stepMs)
 
   let bounced = wallBounceThisFrame
 
@@ -442,7 +461,7 @@ const tickSmiley = (time: number) => {
   // it's overlapping, so the letter acts as a solid stop the mouse constraint can't pull it past —
   // it settles right at the boundary rather than jittering, same as it already does for a graze.
   {
-    const r = smileyRadius.value
+    const r = smileyRadius
     const { x, y } = smileyBody.position
 
     let touchingLetterIndex: number | null = null
@@ -480,10 +499,11 @@ const tickSmiley = (time: number) => {
     smileySpinSpeed = SMILEY_SPIN_SPEED_MIN + Math.random() * (SMILEY_SPIN_SPEED_MAX - SMILEY_SPIN_SPEED_MIN)
   }
 
-  smileyRotation.value += smileySpinDirection * smileySpinSpeed * dt
+  smileyRotation += smileySpinDirection * smileySpinSpeed * dt
 
   smileyCenter.x = smileyBody.position.x
   smileyCenter.y = smileyBody.position.y
+  applySmileyTransform()
 
   smileyRafId = requestAnimationFrame(tickSmiley)
 }
@@ -503,10 +523,13 @@ const stopSmileyLoop = () => {
 }
 
 onMounted(() => {
+  hitTestContext = document.createElement('canvas').getContext('2d')
+
   measureSmileyBounds()
-  smileyCenter.x = Math.max(heroBounds.width - smileyRadius.value - 24, smileyRadius.value)
-  smileyCenter.y = smileyRadius.value + 24
+  smileyCenter.x = Math.max(heroBounds.width - smileyRadius - 24, smileyRadius)
+  smileyCenter.y = smileyRadius + 24
   clampSmileyPosition()
+  applySmileyTransform()
 
   setupSmileyEngine()
   startSmileyLoop()
@@ -564,6 +587,7 @@ onUnmounted(() => {
       class="relative wrapper min-h-svh flex flex-col justify-end pt-40"
     >
       <svg
+        ref="logoEl"
         class="w-full h-auto -mb-1.5 overflow-visible *:[pointer-events:bounding-box] select-none"
         viewBox="0 0 1802 622"
         xmlns="http://www.w3.org/2000/svg"
@@ -609,7 +633,6 @@ onUnmounted(() => {
 
       <div
         ref="smileyEl"
-        :style="smileyStyle"
         :class="[
           { 'opacity-0': !smileyReady },
           canDragSmiley ? 'pointer-events-auto cursor-grab active:cursor-grabbing' : 'pointer-events-none',
@@ -617,7 +640,7 @@ onUnmounted(() => {
         class="absolute top-0 left-0 w-20 md:w-40 will-change-transform transition-opacity duration-500 ease-outCubic"
       >
         <div
-          :style="smileySpinStyle"
+          ref="smileySpinEl"
           class="w-full h-auto will-change-transform"
         >
           <IconSmiley class="w-full h-auto" />
