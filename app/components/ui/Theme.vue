@@ -12,28 +12,35 @@ const { tag = 'section', theme, id } = defineProps<Props>()
 const appStore = useAppStore()
 const el = useTemplateRef<HTMLElement>('el')
 
-onMounted(() => {
-  if (!theme || !el.value) return
+let observer: IntersectionObserver | null = null
 
-  const height = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dock-height'))
-  if (!height) return
+// The dock may mount after this section during hydration, so wait for its height rather than reading it once.
+watch(
+  [() => appStore.getDockHeight, el],
+  ([height, target]) => {
+    observer?.disconnect()
+    observer = null
 
-  const halfHeader = Math.round(height / 2)
-  const offset = halfHeader + 30
-  const rootMargin = `-${offset}px 0px -${window.innerHeight - offset - 1}px 0px`
+    if (!theme || !target || !height) return
 
-  const observer = new IntersectionObserver(
-    ([entry]) => {
-      if (entry?.isIntersecting) {
-        appStore.setTheme(theme)
-      }
-    },
-    { rootMargin, threshold: 0 },
-  )
-  observer.observe(el.value)
+    const halfHeader = Math.round(height / 2)
+    const offset = halfHeader + 30
+    const rootMargin = `-${offset}px 0px -${window.innerHeight - offset - 1}px 0px`
 
-  onUnmounted(() => observer.disconnect())
-})
+    observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          appStore.setTheme(theme)
+        }
+      },
+      { rootMargin, threshold: 0 },
+    )
+    observer.observe(target)
+  },
+  { immediate: true },
+)
+
+onUnmounted(() => observer?.disconnect())
 </script>
 
 <template>
