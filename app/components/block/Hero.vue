@@ -559,7 +559,7 @@ onMounted(() => {
   buildLogoSkyline()
 
   measureSmileyBounds()
-  smileyCenter.x = Math.max(heroBounds.width - smileyRadius - 24, smileyRadius)
+  smileyCenter.x = smileyRadius + 24
   smileyCenter.y = smileyRadius + 24
   clampSmileyPosition()
   applySmileyTransform()
