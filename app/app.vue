@@ -16,7 +16,9 @@ const appStore = useAppStore()
 useHead({
   htmlAttrs: {
     class: globalClasses,
-    style: computed(() => `--color-accent: var(--color-${appStore.getAccent})`),
+    style: computed(
+      () => `--color-accent: var(--color-${appStore.getAccent}); --dock-height: ${appStore.getDockHeight}px`,
+    ),
   },
 })
 

@@ -57,6 +57,16 @@ const storyblokRelations = <TName extends Blocks['name']>(
   return entries.filter((entry): entry is ISbStoryData<Block<TName>> => typeof entry !== 'string')
 }
 
+// Singular counterpart to `storyblokRelations`, for `option` (not `options`) relation
+// fields — resolved to a full story when requested via `resolve_relations`, otherwise
+// left as the raw UUID string the schema types it as.
+const storyblokRelation = <TName extends Blocks['name']>(
+  uuid: string | null | undefined,
+): ISbStoryData<Block<TName>> | undefined => {
+  const entry = uuid as unknown as ISbStoryData<Block<TName>> | string | undefined
+  return typeof entry === 'string' || !entry ? undefined : entry
+}
+
 const storyblokSlug = (path: string): string => (['', '/'].includes(path) ? '/home' : path.replace(/\/+$/, ''))
 
 const isMediaImage = (
@@ -66,13 +76,16 @@ const isMediaAutoplay = (
   media: Block<'element_media_image'> | Block<'element_media_autoplay'>,
 ): media is Block<'element_media_autoplay'> => media.component === 'element_media_autoplay'
 
-type ContentTypes = Block<'page'> | Block<'project'>
+type ContentTypes = Block<'page'> | Block<'project'> | Block<'post'>
 
 const isPage = (story: ISbStoryData<ContentTypes> | null | undefined): story is ISbStoryData<Block<'page'>> =>
   Boolean(story?.content?.component === 'page')
 
 const isProject = (story: ISbStoryData<ContentTypes> | null | undefined): story is ISbStoryData<Block<'project'>> =>
   Boolean(story?.content?.component === 'project')
+
+const isPost = (story: ISbStoryData<ContentTypes> | null | undefined): story is ISbStoryData<Block<'post'>> =>
+  Boolean(story?.content?.component === 'post')
 
 const storyblokImage = (filename: string | null | undefined, modifiers?: Partial<ImageModifiers>): string => {
   const image = useImage()
@@ -118,10 +131,12 @@ export {
   isMediaAutoplay,
   isPage,
   isProject,
+  isPost,
   storyblokAssetType,
   storyblokEditor,
   storyblokImage,
   storyblokImageDimensions,
+  storyblokRelation,
   storyblokRelations,
   storyblokRichTextContent,
   storyblokSlug,

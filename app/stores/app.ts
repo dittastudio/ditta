@@ -28,6 +28,20 @@ export const useAppStore = defineStore(
       navigation.value = value
     }
 
+    const dockHeight = ref(0)
+    const getDockHeight = computed(() => dockHeight.value)
+
+    function setDockHeight(value: number) {
+      dockHeight.value = value
+    }
+
+    const isSmileyDragging = ref(false)
+    const getIsSmileyDragging = computed(() => isSmileyDragging.value)
+
+    function setIsSmileyDragging(value: boolean) {
+      isSmileyDragging.value = value
+    }
+
     return {
       accent,
       getAccent,
@@ -38,6 +52,12 @@ export const useAppStore = defineStore(
       navigation,
       getNavigation,
       setNavigation,
+      dockHeight,
+      getDockHeight,
+      setDockHeight,
+      isSmileyDragging,
+      getIsSmileyDragging,
+      setIsSmileyDragging,
     }
   },
   {

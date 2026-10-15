@@ -1,8 +1,12 @@
 <script lang="ts" setup>
 import type { Block } from '#storyblok-schema'
-import { onKeyStroke } from '@vueuse/core'
+import type { Ref } from 'vue'
+import { onKeyStroke, useIntersectionObserver, useResizeObserver } from '@vueuse/core'
+import { Engine, Bodies, Body, Composite, Mouse, MouseConstraint, Events } from 'matter-js'
 import { defineSound } from '@web-kits/audio'
 import { kick, snare, hatClosed, tom } from '@@/.web-kits/drums'
+import { useAppStore } from '@/stores/app'
+import IconSmiley from '@/assets/icons/pixel-smiley.svg'
 
 interface Props {
   block: Block<'block_hero'>
@@ -11,18 +15,89 @@ interface Props {
 defineProps<Props>()
 
 const { play, isAudioOn } = useAudio()
+const appStore = useAppStore()
 
 const kickSound = defineSound(kick)
 const snareSound = defineSound(snare)
 const hatSound = defineSound(hatClosed)
 const tomSound = defineSound(tom)
 
-const dEl = ref<SVGElement | null>(null)
+const dEl = ref<SVGPathElement | null>(null)
 const iEl = ref<SVGElement | null>(null)
-const tEl = ref<SVGElement | null>(null)
-const aEl = ref<SVGElement | null>(null)
+const iDotEl = ref<SVGPathElement | null>(null)
+const iStemEl = ref<SVGPathElement | null>(null)
+const tEl = ref<SVGPathElement | null>(null)
+const aEl = ref<SVGPathElement | null>(null)
 
-const hit = (el: typeof dEl, cls = 'is-hit') => {
+const heroEl = ref<HTMLElement | null>(null)
+const smileyEl = ref<HTMLElement | null>(null)
+const smileySpinEl = ref<HTMLElement | null>(null)
+const logoEl = ref<SVGSVGElement | null>(null)
+
+const SMILEY_SPEED = 160 // px/s
+const SMILEY_SPIN_SPEED_MIN = 10 // deg/s
+const SMILEY_SPIN_SPEED_MAX = 120 // deg/s
+const SMILEY_FLING_SPEED_MULTIPLIER_MAX = 10
+const SMILEY_FLING_GAIN = 1.2 // release speed relative to the cursor's
+const SMILEY_FLING_SAMPLE_WINDOW = 80 // ms of cursor movement used for release velocity
+// Fling decay length scales with the speed gap to SMILEY_SPEED
+const SMILEY_DECAY_DURATION_MIN = 2 // s
+const SMILEY_DECAY_DURATION_MAX = 6 // s
+const SMILEY_VELOCITY_UNIT = 60 // matter-js velocity is px per 1/60s
+const SMILEY_MAX_DT = 0.1 // s; clamp tab-switch gaps
+const SMILEY_PHYSICS_STEP = 1000 / 60 // max ms per Engine.update
+// Walls/logo collisions are handled manually
+const SMILEY_BODY_OPTIONS = { restitution: 1, frictionAir: 0, friction: 0, frictionStatic: 0, inertia: Infinity }
+
+// Non-reactive: transforms are written straight to the DOM
+const smileyCenter = { x: 0, y: 0 }
+let smileyRadius = 0
+let smileyRotation = 0
+const heroBounds = { width: 0, height: 0 }
+
+const logoViewBox = { left: 0, top: 0, scaleX: 1, scaleY: 1, originY: 0 }
+
+// Logo collides as a solid skyline (topmost filled y per column, viewBox units)
+const LOGO_SKYLINE_UNIT = 2
+const LOGO_PUSH_MAX_ITERATIONS = 3
+const LOGO_PUSH_EPSILON = 0.5 // px
+const LOGO_TOUCH_MARGIN = 2 // px
+const LOGO_HIT_MIN_SPEED = 60 // px/s
+const LOGO_BUMPER_BOOST = 3.5
+const LOGO_BUMPER_DECAY_DURATION = 8 // s
+let logoSkyline = new Float32Array(0)
+let logoSkylineLetter = new Int8Array(0)
+let logoSkylineTop = Infinity
+
+const SMILEY_DRAG_MAX_STEP_RATIO = 0.5
+const SMILEY_DRAG_MAX_STEPS = 12 // per frame, so fast drags catch up without tunnelling
+
+const smileyReady = ref(false)
+const isDraggingSmiley = ref(false)
+const canDragSmiley = useAtMedia('(pointer: fine)')
+
+let isTouchingLogo = false
+let smileyRafId: number | null = null
+let smileyLastTime = 0
+let smileySpinDirection = 1
+let smileySpinSpeed = SMILEY_SPIN_SPEED_MIN
+let smileyDecayElapsed: number | null = null
+let smileyDecayDuration = SMILEY_DECAY_DURATION_MAX
+let smileyDecayStartSpeed = SMILEY_SPEED // px/s
+
+let engine: Engine | null = null
+let smileyBody: Body | null = null
+let mouseConstraint: MouseConstraint | null = null
+
+const applySmileyTransform = () => {
+  if (smileyEl.value) {
+    smileyEl.value.style.transform = `translate3d(${smileyCenter.x - smileyRadius}px, ${smileyCenter.y - smileyRadius}px, 0)`
+  }
+
+  if (smileySpinEl.value) smileySpinEl.value.style.transform = `rotate(${smileyRotation}deg)`
+}
+
+const hit = (el: Ref<SVGElement | null>, cls = 'is-hit') => {
   if (!el.value) return
 
   el.value.classList.remove(cls)
@@ -62,12 +137,561 @@ onKeyStroke(['d', 'D'], playD)
 onKeyStroke(['i', 'I'], playI)
 onKeyStroke(['t', 'T'], playT)
 onKeyStroke(['a', 'A'], playA)
+
+// Order matches letterGroups in buildLogoSkyline
+const LOGO_LETTER_HITS = [
+  { el: dEl, cls: 'is-d-hit', sound: kickSound },
+  { el: iEl, cls: 'is-i-hit', sound: snareSound },
+  { el: tEl, cls: 'is-t-hit', sound: hatSound },
+  { el: aEl, cls: 'is-a-hit', sound: tomSound },
+]
+
+const hitLogoLetter = (index: number) => {
+  const letter = LOGO_LETTER_HITS[index]
+  if (!letter) return
+
+  hit(letter.el, letter.cls)
+  if (isAudioOn.value) play(letter.sound)
+}
+
+const measureSmileyBounds = () => {
+  if (!heroEl.value || !smileyEl.value) return
+
+  const heroRect = heroEl.value.getBoundingClientRect()
+  heroBounds.width = heroRect.width
+  heroBounds.height = heroRect.height
+
+  const smileyRect = smileyEl.value.getBoundingClientRect()
+  smileyRadius = smileyRect.width / 2
+
+  if (logoEl.value) {
+    const logoRect = logoEl.value.getBoundingClientRect()
+    const viewBox = logoEl.value.viewBox.baseVal
+    logoViewBox.left = logoRect.left - heroRect.left
+    logoViewBox.top = logoRect.top - heroRect.top
+    logoViewBox.scaleX = viewBox.width / logoRect.width
+    logoViewBox.scaleY = viewBox.height / logoRect.height
+    logoViewBox.originY = viewBox.y
+  }
+}
+
+const buildLogoSkyline = () => {
+  if (!logoEl.value) return
+
+  const viewBox = logoEl.value.viewBox.baseVal
+  const canvas = document.createElement('canvas')
+  canvas.width = Math.ceil(viewBox.width / LOGO_SKYLINE_UNIT)
+  canvas.height = Math.ceil(viewBox.height / LOGO_SKYLINE_UNIT)
+
+  const ctx = canvas.getContext('2d', { willReadFrequently: true })
+  if (!ctx) return
+
+  ctx.scale(1 / LOGO_SKYLINE_UNIT, 1 / LOGO_SKYLINE_UNIT)
+  ctx.translate(-viewBox.x, -viewBox.y)
+  for (const path of logoEl.value.querySelectorAll('path')) ctx.fill(new Path2D(path.getAttribute('d') ?? ''))
+
+  const { data, width, height } = ctx.getImageData(0, 0, canvas.width, canvas.height)
+  logoSkyline = new Float32Array(width).fill(Infinity)
+
+  for (let column = 0; column < width; column++) {
+    for (let row = 0; row < height; row++) {
+      if ((data[(row * width + column) * 4 + 3] ?? 0) <= 127) continue
+
+      logoSkyline[column] = viewBox.y + row * LOGO_SKYLINE_UNIT
+      break
+    }
+  }
+
+  logoSkylineTop = Math.min(...logoSkyline)
+
+  // Tag each column with its letter (reset: isPointInPath applies the current transform)
+  const letterGroups = [[dEl.value], [iDotEl.value, iStemEl.value], [tEl.value], [aEl.value]].map((group) =>
+    group.flatMap((path) => (path ? [new Path2D(path.getAttribute('d') ?? '')] : [])),
+  )
+  ctx.resetTransform()
+  logoSkylineLetter = new Int8Array(width).fill(-1)
+
+  for (let column = 0; column < width; column++) {
+    const skylineY = logoSkyline[column]
+    if (skylineY === undefined || skylineY === Infinity) continue
+
+    const x = viewBox.x + (column + 0.5) * LOGO_SKYLINE_UNIT
+    const y = skylineY + LOGO_SKYLINE_UNIT
+    logoSkylineLetter[column] = letterGroups.findIndex((paths) => paths.some((path) => ctx.isPointInPath(path, x, y)))
+  }
+
+  // Anti-aliased edges miss every path; borrow the neighbour's letter
+  for (let column = 1; column < width; column++) {
+    if (logoSkylineLetter[column] === -1 && logoSkyline[column] !== Infinity) {
+      logoSkylineLetter[column] = logoSkylineLetter[column - 1] ?? -1
+    }
+  }
+
+  // Leading edge columns have no left neighbour; borrow from the right
+  for (let column = width - 2; column >= 0; column--) {
+    if (logoSkylineLetter[column] === -1 && logoSkyline[column] !== Infinity) {
+      logoSkylineLetter[column] = logoSkylineLetter[column + 1] ?? -1
+    }
+  }
+}
+
+const clampSmileyPosition = () => {
+  const r = smileyRadius
+  const maxX = Math.max(r, heroBounds.width - r)
+  const maxY = Math.max(r, heroBounds.height - r)
+  smileyCenter.x = Math.min(Math.max(smileyCenter.x, r), maxX)
+  smileyCenter.y = Math.min(Math.max(smileyCenter.y, r), maxY)
+}
+
+// Circle vs skyline: outward normal, depth and letter, or null
+const findLogoContact = (cx: number, cy: number, r: number) => {
+  const { left, top, scaleX, scaleY, originY } = logoViewBox
+  const toPxY = (viewBoxY: number) => top + (viewBoxY - originY) / scaleY
+
+  if (cy + r <= toPxY(logoSkylineTop)) return null
+
+  const columnWidth = LOGO_SKYLINE_UNIT / scaleX
+  const first = Math.max(0, Math.floor((cx - r - left) / columnWidth))
+  const last = Math.min(logoSkyline.length - 1, Math.ceil((cx + r - left) / columnWidth))
+
+  let nearest = Infinity
+  let nearestX = 0
+  let nearestY = 0
+  let nearestColumn = -1
+  let centreColumn = -1
+  let centreColumnSkylineY = Infinity
+
+  for (let column = first; column <= last; column++) {
+    const skylineViewBoxY = logoSkyline[column]
+    if (skylineViewBoxY === undefined || skylineViewBoxY === Infinity) continue
+
+    const x = left + (column + 0.5) * columnWidth
+    const skylineY = toPxY(skylineViewBoxY)
+    if (Math.abs(x - cx) <= columnWidth / 2) {
+      centreColumn = column
+      centreColumnSkylineY = skylineY
+    }
+
+    const y = Math.max(skylineY, cy)
+    const distance = Math.hypot(x - cx, y - cy)
+    if (distance >= nearest) continue
+
+    nearest = distance
+    nearestX = x
+    nearestY = y
+    nearestColumn = column
+  }
+
+  // Centre inside the logo: lift straight out
+  if (centreColumnSkylineY <= cy) {
+    return {
+      normal: { x: 0, y: -1 },
+      depth: r + cy - centreColumnSkylineY,
+      letter: logoSkylineLetter[centreColumn] ?? -1,
+    }
+  }
+
+  if (nearest >= r + LOGO_TOUCH_MARGIN) return null
+
+  return {
+    normal: { x: (cx - nearestX) / nearest, y: (cy - nearestY) / nearest },
+    depth: r - nearest,
+    letter: logoSkylineLetter[nearestColumn] ?? -1,
+  }
+}
+
+// Raw cursor events since mousedown, timestamped; per-frame sampling misses most of a quick flick
+let smileyDragSamples: { x: number; y: number; time: number }[] = []
+
+const recordSmileyPointerDown = (event: MouseEvent) => {
+  smileyDragSamples = [{ x: event.clientX, y: event.clientY, time: event.timeStamp }]
+}
+
+const recordSmileyPointerMove = (event: MouseEvent) => {
+  if (!(event.buttons & 1)) return
+
+  smileyDragSamples.push({ x: event.clientX, y: event.clientY, time: event.timeStamp })
+  while (smileyDragSamples.length > 2 && event.timeStamp - smileyDragSamples[0]!.time > SMILEY_FLING_SAMPLE_WINDOW) {
+    smileyDragSamples.shift()
+  }
+}
+
+// px/s over the last sample window, or null without enough history
+const getSmileyFlingVelocity = () => {
+  const last = smileyDragSamples.at(-1)
+  if (!last) return null
+
+  // Cursor stopped before release
+  if (performance.now() - last.time > SMILEY_FLING_SAMPLE_WINDOW) return { x: 0, y: 0 }
+
+  // Pruned to the window on each move
+  const first = smileyDragSamples[0]
+  if (!first || last.time - first.time <= 0) return null
+
+  const seconds = (last.time - first.time) / 1000
+  return {
+    x: ((last.x - first.x) / seconds) * SMILEY_FLING_GAIN,
+    y: ((last.y - first.y) / seconds) * SMILEY_FLING_GAIN,
+  }
+}
+
+const handleSmileyDragStart = () => {
+  isDraggingSmiley.value = true
+  smileyDecayElapsed = null
+
+  // Tagline/Dock overlap the hero and would swallow mousemove mid-drag
+  appStore.setIsSmileyDragging(true)
+}
+
+const capSmileySpeedAndEaseBack = (duration?: number) => {
+  if (!smileyBody) return
+
+  // getVelocity is per 1/60s; .velocity is per sub-step
+  const velocity = Body.getVelocity(smileyBody)
+  const speed = Math.hypot(velocity.x, velocity.y)
+  const speedPxPerSecond = speed * SMILEY_VELOCITY_UNIT
+  const maxFlingSpeed = SMILEY_SPEED * SMILEY_FLING_SPEED_MULTIPLIER_MAX
+
+  if (speedPxPerSecond > maxFlingSpeed) {
+    const capScale = maxFlingSpeed / speedPxPerSecond
+    Body.setVelocity(smileyBody, { x: velocity.x * capScale, y: velocity.y * capScale })
+  }
+
+  smileyDecayStartSpeed = Math.min(speedPxPerSecond, maxFlingSpeed)
+
+  const gapRatio = Math.min(Math.abs(smileyDecayStartSpeed - SMILEY_SPEED) / (maxFlingSpeed - SMILEY_SPEED), 1)
+  smileyDecayElapsed = 0
+  smileyDecayDuration =
+    duration ?? SMILEY_DECAY_DURATION_MIN + (SMILEY_DECAY_DURATION_MAX - SMILEY_DECAY_DURATION_MIN) * gapRatio
+}
+
+const handleSmileyDragEnd = () => {
+  isDraggingSmiley.value = false
+  appStore.setIsSmileyDragging(false)
+
+  if (!smileyBody) return
+
+  const fling = getSmileyFlingVelocity()
+  smileyDragSamples = []
+  if (fling) {
+    Body.setVelocity(smileyBody, { x: fling.x / SMILEY_VELOCITY_UNIT, y: fling.y / SMILEY_VELOCITY_UNIT })
+  }
+
+  capSmileySpeedAndEaseBack()
+}
+
+// matter-js misses mouseup outside its element
+let releaseSmileyMouseUp: ((event: MouseEvent) => void) | null = null
+
+const attachSmileyDrag = () => {
+  if (!engine || !heroEl.value || mouseConstraint) return
+
+  const mouse = Mouse.create(heroEl.value)
+  // Let the page scroll
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  mouse.element.removeEventListener('wheel', (mouse as any).mousewheel as EventListener)
+
+  mouseConstraint = MouseConstraint.create(engine, {
+    mouse,
+    constraint: { stiffness: 1, damping: 0 },
+  })
+  Composite.add(engine.world, mouseConstraint)
+
+  Events.on(mouseConstraint, 'startdrag', handleSmileyDragStart)
+  Events.on(mouseConstraint, 'enddrag', handleSmileyDragEnd)
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  releaseSmileyMouseUp = (event) => (mouse as any).mouseup(event)
+  window.addEventListener('mouseup', releaseSmileyMouseUp)
+  window.addEventListener('mousedown', recordSmileyPointerDown, { capture: true, passive: true })
+  window.addEventListener('mousemove', recordSmileyPointerMove, { capture: true, passive: true })
+}
+
+const detachSmileyDrag = () => {
+  if (!engine || !mouseConstraint) return
+
+  Events.off(mouseConstraint, 'startdrag', handleSmileyDragStart)
+  Events.off(mouseConstraint, 'enddrag', handleSmileyDragEnd)
+  Composite.remove(engine.world, mouseConstraint)
+  mouseConstraint = null
+
+  if (releaseSmileyMouseUp) window.removeEventListener('mouseup', releaseSmileyMouseUp)
+  releaseSmileyMouseUp = null
+  window.removeEventListener('mousedown', recordSmileyPointerDown, { capture: true })
+  window.removeEventListener('mousemove', recordSmileyPointerMove, { capture: true })
+}
+
+const forceEndSmileyDrag = () => {
+  if (!isDraggingSmiley.value) return
+  handleSmileyDragEnd()
+}
+
+const setupSmileyEngine = () => {
+  engine = Engine.create({ gravity: { x: 0, y: 0 } })
+
+  smileyBody = Bodies.circle(smileyCenter.x, smileyCenter.y, smileyRadius, SMILEY_BODY_OPTIONS)
+  Body.setVelocity(smileyBody, { x: SMILEY_SPEED / SMILEY_VELOCITY_UNIT, y: SMILEY_SPEED / SMILEY_VELOCITY_UNIT })
+  Composite.add(engine.world, smileyBody)
+
+  if (canDragSmiley.value) attachSmileyDrag()
+}
+
+const rebuildSmileyPhysicsBounds = () => {
+  if (!engine || !smileyBody) return
+
+  const r = smileyRadius
+  const maxX = Math.max(r, heroBounds.width - r)
+  const maxY = Math.max(r, heroBounds.height - r)
+  const x = Math.min(Math.max(smileyBody.position.x, r), maxX)
+  const y = Math.min(Math.max(smileyBody.position.y, r), maxY)
+  const velocity = Body.getVelocity(smileyBody)
+
+  Composite.remove(engine.world, smileyBody)
+  smileyBody = Bodies.circle(x, y, r, SMILEY_BODY_OPTIONS)
+  Body.setVelocity(smileyBody, velocity)
+  Composite.add(engine.world, smileyBody)
+
+  smileyCenter.x = x
+  smileyCenter.y = y
+  applySmileyTransform()
+}
+
+// Enough sub-steps for the step-limited body to reach the cursor this frame
+const getSmileyDragCatchUpSteps = () => {
+  if (!isDraggingSmiley.value || !smileyBody || !mouseConstraint?.constraint.pointB) return 0
+
+  const { position } = mouseConstraint.mouse
+  const { pointB } = mouseConstraint.constraint
+  const distance = Math.hypot(
+    position.x - pointB.x - smileyBody.position.x,
+    position.y - pointB.y - smileyBody.position.y,
+  )
+  const maxStep = smileyRadius * SMILEY_DRAG_MAX_STEP_RATIO
+  return maxStep > 0 ? Math.min(SMILEY_DRAG_MAX_STEPS, Math.ceil(distance / maxStep)) : 0
+}
+
+// Stop fast drags tunnelling into the logo
+const limitSmileyDragStep = (before: { x: number; y: number }) => {
+  if (!smileyBody) return
+
+  const dx = smileyBody.position.x - before.x
+  const dy = smileyBody.position.y - before.y
+  const distance = Math.hypot(dx, dy)
+  const maxDistance = smileyRadius * SMILEY_DRAG_MAX_STEP_RATIO
+  if (distance <= maxDistance) return
+
+  const scale = maxDistance / distance
+  Body.setPosition(smileyBody, { x: before.x + dx * scale, y: before.y + dy * scale })
+}
+
+// Bounces off the logo, or slides along it while dragging. Returns whether it bounced.
+const collideSmileyWithLogo = () => {
+  if (!smileyBody) return false
+
+  let contact = findLogoContact(smileyBody.position.x, smileyBody.position.y, smileyRadius)
+  if (!contact) {
+    isTouchingLogo = false
+    return false
+  }
+
+  const { normal } = contact
+  const velocity = Body.getVelocity(smileyBody)
+  const dot = velocity.x * normal.x + velocity.y * normal.y
+  let bounced = false
+
+  const isNewContact = !isTouchingLogo
+  isTouchingLogo = true
+
+  const isLetterHit = isNewContact && -dot * SMILEY_VELOCITY_UNIT >= LOGO_HIT_MIN_SPEED
+  if (isLetterHit) hitLogoLetter(contact.letter)
+
+  if (isDraggingSmiley.value) {
+    if (dot < 0) Body.setVelocity(smileyBody, { x: velocity.x - dot * normal.x, y: velocity.y - dot * normal.y })
+  } else if (isNewContact && dot < 0) {
+    // Reflect once per contact; letter hits raise speed to bumper speed
+    const reflected = { x: velocity.x - 2 * dot * normal.x, y: velocity.y - 2 * dot * normal.y }
+    const reflectedSpeed = Math.hypot(reflected.x, reflected.y) * SMILEY_VELOCITY_UNIT
+    const bumperSpeed = SMILEY_SPEED * LOGO_BUMPER_BOOST
+    const boost = isLetterHit && reflectedSpeed > 0 ? Math.max(1, bumperSpeed / reflectedSpeed) : 1
+    Body.setVelocity(smileyBody, { x: reflected.x * boost, y: reflected.y * boost })
+    bounced = true
+
+    if (boost > 1) capSmileySpeedAndEaseBack(LOGO_BUMPER_DECAY_DURATION)
+  }
+
+  for (let i = 0; contact && contact.depth > 0 && i < LOGO_PUSH_MAX_ITERATIONS; i++) {
+    const push = contact.depth + LOGO_PUSH_EPSILON
+    Body.translate(smileyBody, { x: contact.normal.x * push, y: contact.normal.y * push })
+    contact = findLogoContact(smileyBody.position.x, smileyBody.position.y, smileyRadius)
+  }
+
+  return bounced
+}
+
+// Manual walls: matter-js treats slow hits as resting contact
+const collideSmileyWithWalls = () => {
+  if (!smileyBody || isDraggingSmiley.value) return false
+
+  const r = smileyRadius
+  const { x, y } = smileyBody.position
+  const insideX = Math.min(Math.max(x, r), Math.max(r, heroBounds.width - r))
+  const insideY = Math.min(Math.max(y, r), Math.max(r, heroBounds.height - r))
+  if (insideX === x && insideY === y) return false
+
+  let { x: vx, y: vy } = Body.getVelocity(smileyBody)
+  let bounced = false
+
+  if (insideX !== x && Math.sign(x - insideX) === Math.sign(vx)) {
+    vx = -vx
+    bounced = true
+  }
+
+  if (insideY !== y && Math.sign(y - insideY) === Math.sign(vy)) {
+    vy = -vy
+    bounced = true
+  }
+
+  Body.setPosition(smileyBody, { x: insideX, y: insideY })
+  if (bounced) Body.setVelocity(smileyBody, { x: vx, y: vy })
+
+  return bounced
+}
+
+const tickSmiley = (time: number) => {
+  if (!engine || !smileyBody) {
+    smileyRafId = requestAnimationFrame(tickSmiley)
+    return
+  }
+
+  if (!smileyLastTime) smileyLastTime = time
+  const dt = Math.min((time - smileyLastTime) / 1000, SMILEY_MAX_DT)
+  smileyLastTime = time
+
+  if (!isDraggingSmiley.value && smileyDecayElapsed !== null) {
+    smileyDecayElapsed += dt
+
+    // Smoothstep lands exactly on SMILEY_SPEED with zero slope, so there's no snap at the end
+    const t = Math.min(smileyDecayElapsed / smileyDecayDuration, 1)
+    const eased = t * t * (3 - 2 * t)
+    const targetSpeed = (smileyDecayStartSpeed + (SMILEY_SPEED - smileyDecayStartSpeed) * eased) / SMILEY_VELOCITY_UNIT
+    if (t >= 1) smileyDecayElapsed = null
+
+    const velocity = Body.getVelocity(smileyBody)
+    const speed = Math.hypot(velocity.x, velocity.y)
+    if (speed > 1e-6) {
+      const decayScale = targetSpeed / speed
+      Body.setVelocity(smileyBody, { x: velocity.x * decayScale, y: velocity.y * decayScale })
+    } else {
+      // Released dead still: drift off on a random diagonal
+      const diagonal = Math.SQRT1_2 * targetSpeed
+      Body.setVelocity(smileyBody, {
+        x: diagonal * (Math.random() < 0.5 ? -1 : 1),
+        y: diagonal * (Math.random() < 0.5 ? -1 : 1),
+      })
+    }
+  }
+
+  // Equal sub-steps keep matter-js's delta correction stable
+  const frameMs = dt * 1000
+  const steps = Math.max(1, Math.ceil(frameMs / SMILEY_PHYSICS_STEP), getSmileyDragCatchUpSteps())
+  const stepMs = frameMs / steps
+  let bounced = false
+
+  // matter-js scales rigid stiffness by step / base delta (1/60s); undo it so drags reach the cursor each step
+  if (mouseConstraint) mouseConstraint.constraint.stiffness = SMILEY_PHYSICS_STEP / stepMs
+
+  for (let i = 0; i < steps; i++) {
+    const before = { x: smileyBody.position.x, y: smileyBody.position.y }
+    Engine.update(engine, stepMs)
+    if (isDraggingSmiley.value) limitSmileyDragStep(before)
+    if (collideSmileyWithLogo()) bounced = true
+    if (collideSmileyWithWalls()) bounced = true
+  }
+
+  if (bounced) {
+    smileySpinDirection *= -1
+    smileySpinSpeed = SMILEY_SPIN_SPEED_MIN + Math.random() * (SMILEY_SPIN_SPEED_MAX - SMILEY_SPIN_SPEED_MIN)
+  }
+
+  smileyRotation += smileySpinDirection * smileySpinSpeed * dt
+
+  smileyCenter.x = smileyBody.position.x
+  smileyCenter.y = smileyBody.position.y
+  applySmileyTransform()
+
+  smileyRafId = requestAnimationFrame(tickSmiley)
+}
+
+const startSmileyLoop = () => {
+  if (smileyRafId !== null) return
+
+  smileyLastTime = 0
+  smileyRafId = requestAnimationFrame(tickSmiley)
+}
+
+const stopSmileyLoop = () => {
+  if (smileyRafId === null) return
+
+  cancelAnimationFrame(smileyRafId)
+  smileyRafId = null
+}
+
+onMounted(() => {
+  buildLogoSkyline()
+
+  measureSmileyBounds()
+  smileyCenter.x = smileyRadius + 24
+  smileyCenter.y = smileyRadius + 24
+  clampSmileyPosition()
+  applySmileyTransform()
+
+  setupSmileyEngine()
+  startSmileyLoop()
+
+  // Paint position before fading in
+  requestAnimationFrame(() => {
+    smileyReady.value = true
+  })
+
+  useResizeObserver(heroEl, () => {
+    forceEndSmileyDrag()
+    measureSmileyBounds()
+    rebuildSmileyPhysicsBounds()
+  })
+
+  useIntersectionObserver(heroEl, ([entry]) => {
+    if (entry?.isIntersecting) {
+      startSmileyLoop()
+    } else {
+      stopSmileyLoop()
+    }
+  })
+
+  watch(canDragSmiley, (canDrag) => {
+    if (canDrag) attachSmileyDrag()
+    else detachSmileyDrag()
+  })
+})
+
+onUnmounted(() => {
+  stopSmileyLoop()
+  detachSmileyDrag()
+
+  if (engine) Engine.clear(engine)
+
+  engine = null
+  smileyBody = null
+})
 </script>
 
 <template>
-  <div class="overflow-hidden">
+  <div
+    ref="heroEl"
+    class="relative overflow-hidden"
+  >
     <div class="wrapper min-h-svh flex flex-col justify-end pt-40">
       <svg
+        ref="logoEl"
         class="w-full h-auto -mb-1.5 overflow-visible *:[pointer-events:bounding-box] select-none"
         viewBox="0 0 1802 622"
         xmlns="http://www.w3.org/2000/svg"
@@ -79,10 +703,12 @@ onKeyStroke(['a', 'A'], playA)
           :class="{ 'cursor-pointer': isAudioOn }"
         >
           <path
+            ref="iDotEl"
             d="M722.218 65.5554C724.115 31.3 697.883 1.99247 663.628 0.0952894C629.372 -1.8019 600.065 24.4296 598.168 58.6851C596.271 92.9405 622.502 122.248 656.758 124.145C691.013 126.042 720.321 99.8108 722.218 65.5554Z"
           />
 
           <path
+            ref="iStemEl"
             d="M722.879 180.781H540.696L521.477 281.895H582.483L540.696 513.378H473.011L454.627 614.501H714.521L732.906 513.378H663.543L722.879 180.781Z"
           />
         </g>
@@ -108,6 +734,22 @@ onKeyStroke(['a', 'A'], playA)
           @click="playA"
         />
       </svg>
+    </div>
+
+    <div
+      ref="smileyEl"
+      :class="[
+        { 'opacity-0': !smileyReady },
+        canDragSmiley ? 'pointer-events-auto cursor-grab active:cursor-grabbing' : 'pointer-events-none',
+      ]"
+      class="absolute top-0 left-0 w-20 md:w-40 will-change-transform transition-opacity duration-500 ease-outCubic"
+    >
+      <div
+        ref="smileySpinEl"
+        class="w-full h-auto will-change-transform"
+      >
+        <IconSmiley class="w-full h-auto" />
+      </div>
     </div>
   </div>
 </template>
