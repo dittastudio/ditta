@@ -20,7 +20,6 @@ const taglineClass = computed(() => ({
   'text-black': appStore.getTheme !== 'dark',
   'opacity-0 scale-95': !taglineReady.value,
   'opacity-100 scale-100': taglineReady.value,
-  'pointer-events-none': appStore.getIsSmileyDragging,
 }))
 </script>
 
@@ -33,7 +32,7 @@ const taglineClass = computed(() => ({
       :is="as"
       class="wrapper text-center text-16 md:text-navigation transition-colors duration-500 ease-outCubic"
     >
-      <span class="pointer-events-auto">
+      <span :class="{ 'pointer-events-auto': !appStore.getIsSmileyDragging }">
         {{ text }}
       </span>
     </component>
