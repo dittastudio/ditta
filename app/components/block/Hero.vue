@@ -63,8 +63,9 @@ const LOGO_PUSH_MAX_ITERATIONS = 3
 const LOGO_PUSH_EPSILON = 0.5 // px
 const LOGO_TOUCH_MARGIN = 2 // px
 const LOGO_HIT_MIN_SPEED = 60 // px/s
-const LOGO_BUMPER_BOOST = 3.5
-const LOGO_BUMPER_DECAY_DURATION = 8 // s
+const LOGO_BUMPER_KICK = 400 // px/s added per letter hit
+const LOGO_BUMPER_SPEED_MAX = SMILEY_SPEED * 5 // px/s; kicks stack up to here
+const LOGO_BUMPER_DECAY_DURATION = 4.5 // s
 let logoSkyline = new Float32Array(0)
 let logoSkylineLetter = new Int8Array(0)
 let logoSkylineTop = Infinity
@@ -84,6 +85,11 @@ let smileySpinSpeed = SMILEY_SPIN_SPEED_MIN
 let smileyDecayElapsed: number | null = null
 let smileyDecayDuration = SMILEY_DECAY_DURATION_MAX
 let smileyDecayStartSpeed = SMILEY_SPEED // px/s
+
+// Both land on SMILEY_SPEED with zero slope, so there's no snap at the end
+const smoothstep = (t: number) => t * t * (3 - 2 * t)
+const easeOutCubic = (t: number) => 1 - (1 - t) ** 3
+let smileyDecayEase = smoothstep
 
 let engine: Engine | null = null
 let smileyBody: Body | null = null
@@ -343,7 +349,7 @@ const handleSmileyDragStart = () => {
   appStore.setIsSmileyDragging(true)
 }
 
-const capSmileySpeedAndEaseBack = (duration?: number) => {
+const capSmileySpeedAndEaseBack = (duration?: number, ease = smoothstep) => {
   if (!smileyBody) return
 
   // getVelocity is per 1/60s; .velocity is per sub-step
@@ -361,6 +367,7 @@ const capSmileySpeedAndEaseBack = (duration?: number) => {
 
   const gapRatio = Math.min(Math.abs(smileyDecayStartSpeed - SMILEY_SPEED) / (maxFlingSpeed - SMILEY_SPEED), 1)
   smileyDecayElapsed = 0
+  smileyDecayEase = ease
   smileyDecayDuration =
     duration ?? SMILEY_DECAY_DURATION_MIN + (SMILEY_DECAY_DURATION_MAX - SMILEY_DECAY_DURATION_MIN) * gapRatio
 }
@@ -508,15 +515,15 @@ const collideSmileyWithLogo = () => {
   if (isDraggingSmiley.value) {
     if (dot < 0) Body.setVelocity(smileyBody, { x: velocity.x - dot * normal.x, y: velocity.y - dot * normal.y })
   } else if (isNewContact && dot < 0) {
-    // Reflect once per contact; letter hits raise speed to bumper speed
+    // Reflect once per contact; letter hits add a stacking kick up to the bumper max, faster flings just reflect
     const reflected = { x: velocity.x - 2 * dot * normal.x, y: velocity.y - 2 * dot * normal.y }
     const reflectedSpeed = Math.hypot(reflected.x, reflected.y) * SMILEY_VELOCITY_UNIT
-    const bumperSpeed = SMILEY_SPEED * LOGO_BUMPER_BOOST
-    const boost = isLetterHit && reflectedSpeed > 0 ? Math.max(1, bumperSpeed / reflectedSpeed) : 1
+    const kickedSpeed = Math.min(reflectedSpeed + LOGO_BUMPER_KICK, LOGO_BUMPER_SPEED_MAX)
+    const boost = isLetterHit && reflectedSpeed > 0 ? Math.max(1, kickedSpeed / reflectedSpeed) : 1
     Body.setVelocity(smileyBody, { x: reflected.x * boost, y: reflected.y * boost })
     bounced = true
 
-    if (boost > 1) capSmileySpeedAndEaseBack(LOGO_BUMPER_DECAY_DURATION)
+    if (boost > 1) capSmileySpeedAndEaseBack(LOGO_BUMPER_DECAY_DURATION, easeOutCubic)
   }
 
   for (let i = 0; contact && contact.depth > 0 && i < LOGO_PUSH_MAX_ITERATIONS; i++) {
@@ -570,9 +577,8 @@ const tickSmiley = (time: number) => {
   if (!isDraggingSmiley.value && smileyDecayElapsed !== null) {
     smileyDecayElapsed += dt
 
-    // Smoothstep lands exactly on SMILEY_SPEED with zero slope, so there's no snap at the end
     const t = Math.min(smileyDecayElapsed / smileyDecayDuration, 1)
-    const eased = t * t * (3 - 2 * t)
+    const eased = smileyDecayEase(t)
     const targetSpeed = (smileyDecayStartSpeed + (SMILEY_SPEED - smileyDecayStartSpeed) * eased) / SMILEY_VELOCITY_UNIT
     if (t >= 1) smileyDecayElapsed = null
 
@@ -740,9 +746,11 @@ onUnmounted(() => {
       ref="smileyEl"
       :class="[
         { 'opacity-0': !smileyReady },
-        canDragSmiley ? 'pointer-events-auto cursor-grab active:cursor-grabbing' : 'pointer-events-none',
+        canDragSmiley ? 'pointer-events-auto' : 'pointer-events-none',
+        canDragSmiley && (isDraggingSmiley ? 'cursor-grabbing' : 'cursor-grab'),
       ]"
       class="absolute top-0 left-0 w-20 md:w-40 will-change-transform transition-opacity duration-500 ease-outCubic"
+      @mousedown.prevent
     >
       <div
         ref="smileySpinEl"
