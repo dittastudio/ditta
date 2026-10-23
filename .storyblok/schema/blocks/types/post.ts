@@ -21,7 +21,8 @@ export const postBlock = defineBlock({
       filter_content_type: [
         'person',
       ],
-      min_options: 1,
+      min_options: '1',
+      required: true,
       source: 'internal_stories',
       type: 'option',
       use_uuid: true,
