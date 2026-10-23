@@ -150,6 +150,7 @@ onUnmounted(() => {
             >
               <CardProject
                 :title="project.content.title"
+                :headline="project.content.headline"
                 class="aspect-3/4 md:aspect-video"
               >
                 <div
