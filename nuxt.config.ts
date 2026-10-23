@@ -82,6 +82,9 @@ export default defineNuxtConfig({
     },
   },
   nitro: {
+    experimental: {
+      wasm: true, // ...for Cloudflare Workers
+    },
     prerender: {
       crawlLinks: !isSpa,
       routes: isSpa ? [] : ['/'],
