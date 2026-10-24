@@ -17,7 +17,7 @@ const { title, headline } = defineProps<Props>()
     >
       <h4
         v-if="headline"
-        class="text-white text-20 text-balance @md:max-w-110"
+        class="text-white text-20 text-balance @md:max-w-110 @3xl:text-24"
       >
         {{ headline }}
       </h4>
