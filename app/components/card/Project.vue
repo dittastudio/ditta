@@ -12,12 +12,17 @@ const { title, headline } = defineProps<Props>()
     <slot />
 
     <div
+      v-if="headline"
+      class="pointer-events-none absolute inset-0 bg-radial-[250%_150%_at_bottom_left] from-black to-transparent to-40% opacity-60"
+    />
+
+    <div
       v-if="title || headline"
       class="absolute inset-0 z-10 p-5 md:p-10 gap-4 flex flex-col @md:flex-row items-start @md:items-end justify-end @md:justify-between"
     >
       <h4
         v-if="headline"
-        class="text-white text-20 text-balance @md:max-w-110 @3xl:text-24"
+        class="text-white text-20 text-balance @md:max-w-[18.5em] @3xl:text-24"
       >
         {{ headline }}
       </h4>

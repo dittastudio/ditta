@@ -5,6 +5,7 @@ import { onKeyStroke, useIntersectionObserver, useResizeObserver } from '@vueuse
 import { Engine, Bodies, Body, Composite } from 'matter-js'
 import { defineSound } from '@web-kits/audio'
 import { kick, snare, hatClosed, tom } from '@@/.web-kits/drums'
+import { swoosh, whoosh, archive } from '@@/.web-kits/core'
 import IconSmiley from '@/assets/icons/pixel-smiley.svg'
 
 interface Props {
@@ -19,6 +20,9 @@ const kickSound = defineSound(kick)
 const snareSound = defineSound(snare)
 const hatSound = defineSound(hatClosed)
 const tomSound = defineSound(tom)
+const swooshSound = defineSound(swoosh)
+const whooshSound = defineSound(whoosh)
+const archiveSound = defineSound(archive)
 
 const dEl = ref<SVGPathElement | null>(null)
 const iEl = ref<SVGElement | null>(null)
@@ -40,6 +44,7 @@ const SMILEY_FLING_SPEED_MULTIPLIER_MAX = 10
 const SMILEY_FLING_SPEED_MAX = SMILEY_SPEED * SMILEY_FLING_SPEED_MULTIPLIER_MAX // px/s
 const SMILEY_FLING_GAIN = 1.2 // release speed relative to the cursor's
 const SMILEY_FLING_SAMPLE_WINDOW = 80 // ms of cursor movement used for release velocity
+const SMILEY_WHOOSH_SPEED_MIN = 300 // px/s; slower releases get the archive sound
 // Fling decay length scales with the speed gap to SMILEY_SPEED
 const SMILEY_DECAY_DURATION_MIN = 2 // s
 const SMILEY_DECAY_DURATION_MAX = 6 // s
@@ -384,6 +389,12 @@ const capSmileySpeedAndEaseBack = (duration?: number, ease = smoothstep) => {
     duration ?? SMILEY_DECAY_DURATION_MIN + (SMILEY_DECAY_DURATION_MAX - SMILEY_DECAY_DURATION_MIN) * gapRatio
 }
 
+// Whoosh for a throw, archive for a drop
+const playSmileyReleaseSound = (fling: { x: number; y: number } | null) => {
+  const speed = fling ? Math.hypot(fling.x, fling.y) : 0
+  play(speed >= SMILEY_WHOOSH_SPEED_MIN ? whooshSound : archiveSound)
+}
+
 const handleSmileyDragEnd = (fling = getSmileyFlingVelocity()) => {
   isDraggingSmiley.value = false
   smileyDragSamples = []
@@ -420,6 +431,7 @@ const onSmileyPointerDown = (event: PointerEvent) => {
 
   isDraggingSmiley.value = true
   smileyDecayElapsed = null
+  play(swooshSound)
 }
 
 const onSmileyPointerMove = (event: PointerEvent) => {
@@ -432,7 +444,9 @@ const onSmileyPointerMove = (event: PointerEvent) => {
   // Leaving the viewport lets go, so a fast drag off-screen throws instead of pinning the smiley to the edge
   const { clientX, clientY } = event
   if (clientX < 0 || clientY < 0 || clientX >= window.innerWidth || clientY >= window.innerHeight) {
-    forceEndSmileyDrag()
+    const fling = getSmileyFlingVelocity()
+    playSmileyReleaseSound(fling)
+    forceEndSmileyDrag(fling)
     return
   }
 
@@ -446,7 +460,9 @@ const onSmileyPointerUp = (event: PointerEvent) => {
   if (event.pointerId !== smileyPointerId) return
 
   smileyPointerId = null
-  handleSmileyDragEnd()
+  const fling = getSmileyFlingVelocity()
+  playSmileyReleaseSound(fling)
+  handleSmileyDragEnd(fling)
 }
 
 // The browser took the gesture over: let go without a throw
@@ -457,13 +473,13 @@ const onSmileyPointerCancel = (event: PointerEvent) => {
   handleSmileyDragEnd({ x: 0, y: 0 })
 }
 
-const forceEndSmileyDrag = () => {
+const forceEndSmileyDrag = (fling = getSmileyFlingVelocity()) => {
   if (smileyPointerId === null) return
 
   const pointerId = smileyPointerId
   smileyPointerId = null
   if (smileyEl.value?.hasPointerCapture(pointerId)) smileyEl.value.releasePointerCapture(pointerId)
-  handleSmileyDragEnd()
+  handleSmileyDragEnd(fling)
 }
 
 const setupSmileyEngine = () => {
