@@ -54,7 +54,7 @@ const soundHover = defineSound(hover)
 const { play } = useAudio()
 
 const appStore = useAppStore()
-const { theme, navigation, isSmileyDragging } = storeToRefs(appStore)
+const { theme, navigation } = storeToRefs(appStore)
 const isDark = computed(() => theme.value === 'dark')
 const isReady = ref(false)
 const isClosing = ref(false)
@@ -63,7 +63,7 @@ let closingTimer: ReturnType<typeof setTimeout> | null = null
 const dockBgStyles = computed(() => dockBgClasses[navigation.value ? 'navigationOpen' : theme.value])
 const dockTextStyles = computed(() => dockTextClasses[navigation.value ? 'navigationOpen' : theme.value])
 
-const isInteractive = computed(() => !isHidden.value && isReady.value && !isSmileyDragging.value)
+const isInteractive = computed(() => !isHidden.value && isReady.value)
 
 const close = () => {
   appStore.setNavigation(false)

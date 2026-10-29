@@ -32,7 +32,7 @@ const taglineClass = computed(() => ({
       :is="as"
       class="wrapper text-center text-16 md:text-navigation transition-colors duration-500 ease-outCubic"
     >
-      <span :class="{ 'pointer-events-auto': !appStore.getIsSmileyDragging }">
+      <span class="pointer-events-auto">
         {{ text }}
       </span>
     </component>
