@@ -15,20 +15,23 @@ export const postBlock = defineBlock({
     defineField('summary', {
       type: 'text',
     }),
+    defineField('author', {
+      allow_advanced_search: false,
+      entry_appearance: 'card',
+      filter_content_type: [
+        'person',
+      ],
+      min_options: '1',
+      required: true,
+      source: 'internal_stories',
+      type: 'option',
+      use_uuid: true,
+    }),
     defineField('tags', {
       datasource: 'tags',
       exclude_empty_option: true,
       source: 'internal',
       type: 'options',
-    }),
-    defineField('author', {
-      filter_content_type: [
-        'person',
-      ],
-      required: true,
-      source: 'internal_stories',
-      type: 'option',
-      use_uuid: true,
     }),
     defineField('blocks', {
       allow: [

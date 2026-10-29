@@ -11,6 +11,9 @@ export const projectBlock = defineBlock({
   is_nestable: false,
   folder: typesFolder,
   fields: [
+    defineField('headline', {
+      type: 'text',
+    }),
     defineField('client', {
       entry_appearance: 'card',
       filter_content_type: [
@@ -49,6 +52,7 @@ export const projectBlock = defineBlock({
     defineField('tab-277cdce5-532c-4f5c-8c6f-d10a5d70ca9f', {
       display_name: 'Project',
       keys: [
+        'headline',
         'client',
         'Credits',
         'services',
