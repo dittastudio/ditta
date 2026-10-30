@@ -11,6 +11,7 @@
   --color-\*: initial;
   --color-white: oklch(100% 0 0);
   --color-black: oklch(0% 0 0);
+  --color-blue: blue;
   --color-beige: oklch(0.8643 0.0104 32.52);
   --color-crema: oklch(0.8102 0.0532 66.96);
   --color-forest: oklch(0.2505 0.0852 142.5);
