@@ -71,20 +71,6 @@ const { pause: pauseMouseTracking, resume: resumeMouseTracking } = useRafFn(
   { immediate: false },
 )
 
-const clickTimes: number[] = []
-const inRage = ref(false)
-const shakeLevel = ref(0)
-
-let rageTimeout: ReturnType<typeof setTimeout> | null = null
-let shakeResetTimeout: ReturnType<typeof setTimeout> | null = null
-
-const shakeClass = computed(() => {
-  if (inRage.value || shakeLevel.value <= 1) return ''
-  if (shakeLevel.value <= 3) return 'robot-shake-1'
-  if (shakeLevel.value <= 5) return 'robot-shake-2'
-  return 'robot-shake-3'
-})
-
 const LEG_FLICKER_DURATION_MS = 300
 const LEG_COLOR_DEFAULT = '#FFA4D2'
 const LEG_COLOR_RED = '#F00'
@@ -125,10 +111,24 @@ const startLegFlicker = () => {
   }, LEG_FLICKER_DURATION_MS)
 }
 
+let rageTimeout: ReturnType<typeof setTimeout> | null = null
 let rageEndedHandler: (() => void) | null = null
 
+const onRage = () => {
+  stopLegFlicker()
+  legColors.value = Array(LEG_COUNT).fill(LEG_COLOR_RED)
+  playRage()
+}
+
+const onClick = () => {
+  startLegFlicker()
+  playRobot()
+}
+
+const { inRage, shakeClass, click: onRobotClick, resetRage: resetRageClicks } = useRageClicks({ onClick, onRage })
+
 const resetRage = () => {
-  inRage.value = false
+  resetRageClicks()
   legColors.value = Array(LEG_COUNT).fill(LEG_COLOR_DEFAULT)
 }
 
@@ -150,38 +150,6 @@ const playRage = () => {
   audioRage.play().catch(() => {})
 }
 
-const onRobotClick = () => {
-  if (inRage.value) return
-
-  const now = Date.now()
-  clickTimes.push(now)
-
-  const cutoff = now - 1500
-  while (clickTimes.length && clickTimes[0]! < cutoff) clickTimes.shift()
-
-  shakeLevel.value = clickTimes.length
-
-  if (shakeResetTimeout) clearTimeout(shakeResetTimeout)
-  shakeResetTimeout = setTimeout(() => {
-    shakeLevel.value = 0
-  }, 500)
-
-  if (clickTimes.length >= 7) {
-    clickTimes.length = 0
-    shakeLevel.value = 0
-    if (shakeResetTimeout) clearTimeout(shakeResetTimeout)
-    stopLegFlicker()
-    legColors.value = Array(LEG_COUNT).fill(LEG_COLOR_RED)
-    inRage.value = true
-    playRage()
-
-    return
-  }
-
-  startLegFlicker()
-  playRobot()
-}
-
 onMounted(() => {
   window.addEventListener('mousemove', onMouseMove, { passive: true })
   resumeMouseTracking()
@@ -191,7 +159,6 @@ onUnmounted(() => {
   window.removeEventListener('mousemove', onMouseMove)
   pauseMouseTracking()
   if (rageTimeout) clearTimeout(rageTimeout)
-  if (shakeResetTimeout) clearTimeout(shakeResetTimeout)
   if (rageEndedHandler) audioRage?.removeEventListener('ended', rageEndedHandler)
   audioRage?.pause()
   stopLegFlicker()
@@ -326,59 +293,5 @@ onUnmounted(() => {
 
 .footer__eye--right {
   left: 62%;
-}
-</style>
-
-<style>
-@keyframes robot-shake {
-  0%,
-  100% {
-    translate: 0 0;
-  }
-  10% {
-    translate: calc(var(--shake-x) * -1) calc(var(--shake-y) * -1);
-  }
-  20% {
-    translate: var(--shake-x) var(--shake-y);
-  }
-  30% {
-    translate: calc(var(--shake-x) * -0.7) calc(var(--shake-y) * 1.3);
-  }
-  40% {
-    translate: calc(var(--shake-x) * 1.2) calc(var(--shake-y) * -0.8);
-  }
-  50% {
-    translate: calc(var(--shake-x) * -1.3) var(--shake-y);
-  }
-  60% {
-    translate: var(--shake-x) calc(var(--shake-y) * -1.5);
-  }
-  70% {
-    translate: calc(var(--shake-x) * -0.5) calc(var(--shake-y) * 0.5);
-  }
-  80% {
-    translate: calc(var(--shake-x) * 1.4) calc(var(--shake-y) * -0.3);
-  }
-  90% {
-    translate: calc(var(--shake-x) * -1) calc(var(--shake-y) * 1.2);
-  }
-}
-
-.robot-shake-1 {
-  --shake-x: 1px;
-  --shake-y: 0.5px;
-  animation: robot-shake 0.5s ease-in-out infinite;
-}
-
-.robot-shake-2 {
-  --shake-x: 2.5px;
-  --shake-y: 1px;
-  animation: robot-shake 0.32s ease-in-out infinite;
-}
-
-.robot-shake-3 {
-  --shake-x: 5px;
-  --shake-y: 2.5px;
-  animation: robot-shake 0.18s ease-in-out infinite;
 }
 </style>

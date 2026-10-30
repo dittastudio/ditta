@@ -2,6 +2,34 @@
 
 @custom-variant only-touch (@media (hover: none));
 
+/* Escalating shake levels, used by useRageClicks */
+@utility shake-1 {
+  --shake-x: 1px;
+  --shake-y: 0.5px;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: shake 0.5s ease-in-out infinite;
+  }
+}
+
+@utility shake-2 {
+  --shake-x: 2.5px;
+  --shake-y: 1px;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: shake 0.32s ease-in-out infinite;
+  }
+}
+
+@utility shake-3 {
+  --shake-x: 5px;
+  --shake-y: 2.5px;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: shake 0.18s ease-in-out infinite;
+  }
+}
+
 @utility wrapper {
   width: 100%;
   max-width: var(--breakpoint-2xl);
