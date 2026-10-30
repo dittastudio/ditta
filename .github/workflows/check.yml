@@ -16,3 +16,4 @@ jobs:
           cache: true
       # vp install runs `nuxt prepare` (postinstall), which generates the .nuxt tsconfigs vp check type-checks against
       - run: vp check
+      - run: npm run typecheck

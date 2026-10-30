@@ -23,7 +23,7 @@
     "build": "nuxt build",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "typecheck": "npx -y -p typescript@5.9 -p vue-tsc@2.2 vue-tsc --noEmit -p .nuxt/tsconfig.app.json",
+    "typecheck": "npx -y -p typescript@5.9 -p vue-tsc@3.3.14 vue-tsc --noEmit -p .nuxt/tsconfig.app.json",
     "postinstall": "nuxt prepare",
     "nuke": "del-cli '.output' 'dist' '.nuxt' 'node_modules' 'package-lock.json'",
     "prepare": "vp config"
