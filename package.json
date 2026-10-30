@@ -25,7 +25,7 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "nuke": "del-cli '.output' 'dist' '.nuxt' 'node_modules' 'package-lock.json'",
-    "prepare": "vp config && husky"
+    "prepare": "vp config"
   },
   "dependencies": {
     "@mux/mux-video": "^0.31.6",
@@ -54,7 +54,6 @@
     "@types/matter-js": "^0.20.2",
     "better-sqlite3": "^13.0.3",
     "del-cli": "^8.0.1",
-    "husky": "^9.1.7",
     "nuxt-ai-ready": "^3.4.0",
     "postcss-nested": "^9.0.1",
     "postcss-utopia": "^1.1.0",

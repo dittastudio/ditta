@@ -146,7 +146,7 @@ Linting and formatting go through **vite-plus** (`vp`) and **oxfmt**:
 - No semicolons, single quotes, 120 char width
 - One attribute per line in templates when there's more than one
 
-Run `vp check` (or `vp check --fix`) before pushing. A staged-files hook is configured in `vite.config.ts`, but note the Husky `pre-commit` hook is currently empty, so **linting does not run automatically on commit** — only commitlint does, via `commit-msg`.
+Run `vp check` (or `vp check --fix`) before pushing. Git hooks are managed by Vite+ (installed by `vp config` on `npm install`) and live in `.vite-hooks/`: `pre-commit` runs `vp staged` (the `staged` block in `vite.config.ts`), and `commit-msg` runs commitlint. Set `VP_GIT_HOOKS=0` to skip them for a single commit.
 
 ### Type checking
 
