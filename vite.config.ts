@@ -13,6 +13,7 @@ export default defineConfig({
     ignorePatterns: ['.storyblok/**/*', '.claude/**/*', '.vscode/**/*', '.agents/**/*', '.wrangler/**/*'],
   },
   lint: {
+    plugins: ['typescript', 'unicorn', 'oxc', 'vue', 'import'],
     options: {
       typeAware: true,
       typeCheck: true,
