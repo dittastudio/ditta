@@ -34,6 +34,7 @@ const aEl = ref<SVGPathElement | null>(null)
 const heroEl = ref<HTMLElement | null>(null)
 const smileyEl = ref<HTMLElement | null>(null)
 const smileySpinEl = ref<HTMLElement | null>(null)
+const smileyFaceEl = ref<HTMLElement | null>(null)
 const logoEl = ref<SVGSVGElement | null>(null)
 
 const SMILEY_SPEED = 160 // px/s
@@ -116,7 +117,7 @@ const applySmileyTransform = () => {
   if (smileySpinEl.value) smileySpinEl.value.style.transform = `rotate(${smileyRotation}deg)`
 }
 
-const hit = (el: Ref<SVGElement | null>, cls = 'is-hit') => {
+const hit = (el: Ref<HTMLElement | SVGElement | null>, cls = 'is-hit') => {
   if (!el.value) return
 
   el.value.classList.remove(cls)
@@ -346,13 +347,14 @@ const recordSmileyDragSample = (event: PointerEvent) => {
   }
 }
 
-// px/s over the last sample window, or null without enough history
-const getSmileyFlingVelocity = () => {
+// px/s over the last sample window, or null without enough history.
+// Pass the release event's timeStamp: a janky frame can run the handler well after the release
+const getSmileyFlingVelocity = (now = performance.now()) => {
   const last = smileyDragSamples.at(-1)
   if (!last) return null
 
   // Pointer stopped before release
-  if (performance.now() - last.time > SMILEY_FLING_SAMPLE_WINDOW) return { x: 0, y: 0 }
+  if (now - last.time > SMILEY_FLING_SAMPLE_WINDOW) return { x: 0, y: 0 }
 
   // Pruned to the window on each move
   const first = smileyDragSamples[0]
@@ -389,10 +391,18 @@ const capSmileySpeedAndEaseBack = (duration?: number, ease = smoothstep) => {
     duration ?? SMILEY_DECAY_DURATION_MIN + (SMILEY_DECAY_DURATION_MAX - SMILEY_DECAY_DURATION_MIN) * gapRatio
 }
 
-// Whoosh for a throw, archive for a drop
-const playSmileyReleaseSound = (fling: { x: number; y: number } | null) => {
-  const speed = fling ? Math.hypot(fling.x, fling.y) : 0
-  play(speed >= SMILEY_WHOOSH_SPEED_MIN ? whooshSound : archiveSound)
+const isSmileyDrop = (fling: { x: number; y: number } | null) =>
+  (fling ? Math.hypot(fling.x, fling.y) : 0) < SMILEY_WHOOSH_SPEED_MIN
+
+// Whoosh for a throw; archive and a blue nose flash for a drop
+const reactToSmileyRelease = (fling: { x: number; y: number } | null) => {
+  if (!isSmileyDrop(fling)) {
+    play(whooshSound)
+    return
+  }
+
+  play(archiveSound)
+  hit(smileyFaceEl, 'is-dropped')
 }
 
 const handleSmileyDragEnd = (fling = getSmileyFlingVelocity()) => {
@@ -444,8 +454,8 @@ const onSmileyPointerMove = (event: PointerEvent) => {
   // Leaving the viewport lets go, so a fast drag off-screen throws instead of pinning the smiley to the edge
   const { clientX, clientY } = event
   if (clientX < 0 || clientY < 0 || clientX >= window.innerWidth || clientY >= window.innerHeight) {
-    const fling = getSmileyFlingVelocity()
-    playSmileyReleaseSound(fling)
+    const fling = getSmileyFlingVelocity(event.timeStamp)
+    reactToSmileyRelease(fling)
     forceEndSmileyDrag(fling)
     return
   }
@@ -460,8 +470,17 @@ const onSmileyPointerUp = (event: PointerEvent) => {
   if (event.pointerId !== smileyPointerId) return
 
   smileyPointerId = null
-  const fling = getSmileyFlingVelocity()
-  playSmileyReleaseSound(fling)
+  const fling = getSmileyFlingVelocity(event.timeStamp)
+  // TEMP: confirm the release was being read as stale
+  const last = smileyDragSamples.at(-1)
+  if (last) {
+    console.log('[smiley release]', {
+      sinceLastByNow: performance.now() - last.time,
+      sinceLastByEvent: event.timeStamp - last.time,
+      fling,
+    })
+  }
+  reactToSmileyRelease(fling)
   handleSmileyDragEnd(fling)
 }
 
@@ -815,13 +834,36 @@ onUnmounted(() => {
         :class="isDraggingSmiley ? 'motion-safe:scale-108 duration-250 ease-outBack' : 'duration-200 ease-outCubic'"
         class="w-full h-auto will-change-transform transition-[scale]"
       >
-        <IconSmiley class="w-full h-auto" />
+        <!-- Static classes only: a reactive :class here would wipe the imperatively added is-dropped -->
+        <div
+          ref="smileyFaceEl"
+          class="text-black"
+        >
+          <IconSmiley class="w-full h-auto" />
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
+@keyframes smiley-drop {
+  0% {
+    color: var(--color-black);
+  }
+  10%,
+  70% {
+    color: var(--color-blue);
+  }
+  100% {
+    color: var(--color-black);
+  }
+}
+
+.is-dropped {
+  animation: smiley-drop 1s var(--ease-outCubic);
+}
+
 @keyframes drum-hit {
   0% {
     transform: scale(1);
