@@ -17,7 +17,7 @@
 <rect x="24" y="24" width="12" height="12" fill="black"/>
 <path d="M108 156H60V144H36V132H24V108H12V60H24V36H36V24H60V12H108V24H132V36H144V60H156V108H144V132H132V144H108V156Z" fill="#FFFF00"/>
 <rect x="36" y="108" width="12" height="12" fill="black"/>
-<rect x="84.3135" y="73" width="16" height="16" transform="rotate(45 84.3135 73)" fill="black"/>
+<rect x="84.3135" y="73" width="16" height="16" transform="rotate(45 84.3135 73)" fill="currentColor"/>
 <rect x="48" y="120" width="72" height="12" fill="black"/>
 <rect x="120" y="108" width="12" height="12" fill="black"/>
 <circle cx="58" cy="48" r="9" fill="white" stroke="black" stroke-width="2"/>
