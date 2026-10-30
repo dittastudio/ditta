@@ -34,7 +34,7 @@ public/
   fonts/                     # Static fonts referenced from CSS
 nuxt.config.ts
 vite.config.ts               # vite-plus config (lint + format + staged hooks)
-.oxfmtrc.json                # oxfmt formatter config
+.vite-hooks/                 # Git hooks run by vite-plus (pre-commit: vp staged, commit-msg: commitlint)
 ```
 
 Path aliases (configured in `nuxt.config.ts`):
@@ -165,7 +165,7 @@ When `sb:schema-push` detects a breaking change it offers to scaffold the matchi
 ## Linting & Formatting
 
 - **Lint:** `vp check` (vite-plus, oxc-based, with type-aware rules). Run via the staged hook on commit.
-- **Format:** oxfmt — config in `.oxfmtrc.json`. Key rules:
+- **Format:** oxfmt — config in the `fmt` block of `vite.config.ts` (no `.oxfmtrc.json`; Vite+ reads only `vite.config.ts`). Key rules:
   - **No semicolons** (`semi: false`)
   - **Single quotes** (`singleQuote: true`)
   - **One attribute per line** in templates (`singleAttributePerLine: true`) when there are multiple attributes

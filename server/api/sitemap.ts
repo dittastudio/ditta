@@ -3,10 +3,18 @@ import type { SitemapUrlInput } from '#sitemap/types'
 import StoryblokClient from 'storyblok-js-client'
 
 export default defineSitemapEventHandler(async () => {
-  const config = useRuntimeConfig().public
+  const accessToken = useRuntimeConfig().public.STORYBLOK_TOKEN
+
+  if (typeof accessToken !== 'string' || !accessToken) {
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'Failed to fetch sitemap data: NUXT_STORYBLOK_TOKEN is not set',
+      fatal: true,
+    })
+  }
 
   const storyblokApi = new StoryblokClient({
-    accessToken: config.STORYBLOK_TOKEN,
+    accessToken,
     region: 'eu',
   })
 
