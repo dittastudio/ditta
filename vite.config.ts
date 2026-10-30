@@ -4,7 +4,6 @@ export default defineConfig({
   staged: {
     '*.{js,ts,vue}': 'vp check --fix',
   },
-  // Using .oxfmtrc for formatting configuration so extension works
   fmt: {
     semi: false,
     singleQuote: true,
