@@ -347,13 +347,14 @@ const recordSmileyDragSample = (event: PointerEvent) => {
   }
 }
 
-// px/s over the last sample window, or null without enough history
-const getSmileyFlingVelocity = () => {
+// px/s over the last sample window, or null without enough history.
+// Pass the release event's timeStamp: a janky frame can run the handler well after the release
+const getSmileyFlingVelocity = (now = performance.now()) => {
   const last = smileyDragSamples.at(-1)
   if (!last) return null
 
   // Pointer stopped before release
-  if (performance.now() - last.time > SMILEY_FLING_SAMPLE_WINDOW) return { x: 0, y: 0 }
+  if (now - last.time > SMILEY_FLING_SAMPLE_WINDOW) return { x: 0, y: 0 }
 
   // Pruned to the window on each move
   const first = smileyDragSamples[0]
@@ -453,7 +454,7 @@ const onSmileyPointerMove = (event: PointerEvent) => {
   // Leaving the viewport lets go, so a fast drag off-screen throws instead of pinning the smiley to the edge
   const { clientX, clientY } = event
   if (clientX < 0 || clientY < 0 || clientX >= window.innerWidth || clientY >= window.innerHeight) {
-    const fling = getSmileyFlingVelocity()
+    const fling = getSmileyFlingVelocity(event.timeStamp)
     reactToSmileyRelease(fling)
     forceEndSmileyDrag(fling)
     return
@@ -469,7 +470,16 @@ const onSmileyPointerUp = (event: PointerEvent) => {
   if (event.pointerId !== smileyPointerId) return
 
   smileyPointerId = null
-  const fling = getSmileyFlingVelocity()
+  const fling = getSmileyFlingVelocity(event.timeStamp)
+  // TEMP: confirm the release was being read as stale
+  const last = smileyDragSamples.at(-1)
+  if (last) {
+    console.log('[smiley release]', {
+      sinceLastByNow: performance.now() - last.time,
+      sinceLastByEvent: event.timeStamp - last.time,
+      fling,
+    })
+  }
   reactToSmileyRelease(fling)
   handleSmileyDragEnd(fling)
 }
