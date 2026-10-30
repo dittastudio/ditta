@@ -26,7 +26,7 @@
     "typecheck": "npx -y -p typescript@5.9 -p vue-tsc@3.3.14 vue-tsc --noEmit -p .nuxt/tsconfig.app.json",
     "postinstall": "nuxt prepare",
     "nuke": "del-cli '.output' 'dist' '.nuxt' 'node_modules' 'package-lock.json'",
-    "prepare": "vp config"
+    "prepare": "node scripts/migrate-husky-hooks.js && vp config"
   },
   "dependencies": {
     "@mux/mux-video": "^0.31.6",
