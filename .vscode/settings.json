@@ -2,8 +2,8 @@
   "workbench.editorAssociations": { "*.svg": "default" },
   "npm.scriptRunner": "vp",
   "editor.defaultFormatter": "oxc.oxc-vscode",
-  "oxc.configPath": "./.oxlintrc.json",
-  "oxc.fmt.configPath": "./.oxfmtrc.json",
+  "oxc.disableNestedConfig": true,
+  "oxc.fmt.disableNestedConfig": true,
   "css.validate": false,
   "css.lint.unknownAtRules": "ignore",
   "files.associations": {

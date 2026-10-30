@@ -150,9 +150,15 @@ Run `vp check` (or `vp check --fix`) before pushing. Git hooks are managed by Vi
 
 ### Type checking
 
-`vp check` type-checks `.ts` files, but **not the `<template>` half of a `.vue` file**. A type error in a template — the wrong prop type passed to a component, a null reaching a prop that doesn't accept one — will pass `vp check` and still break the build's type contract. Your editor's Vue plugin catches these; the terminal does not.
+`vp check` type-checks `.ts` files, but **not `.vue` files at all** — neither the `<script>` nor the `<template>`. A type error in a component — a wrong assignment in `<script setup>`, the wrong prop type passed to a child, a null reaching a prop that doesn't accept one — will pass `vp check` and still break the build's type contract. Your editor's Vue plugin catches these; the terminal does not.
 
-No type checker is installed, so `nuxt typecheck` will not run as-is. To check templates across the whole project, run one through npx:
+No type checker is installed, so `nuxt typecheck` will not run as-is. To check components across the whole project, run:
+
+```bash
+npm run typecheck
+```
+
+which runs `vue-tsc` through npx:
 
 ```bash
 npx -y -p typescript@5.9 -p vue-tsc@2.2 vue-tsc --noEmit -p .nuxt/tsconfig.app.json
@@ -160,7 +166,7 @@ npx -y -p typescript@5.9 -p vue-tsc@2.2 vue-tsc --noEmit -p .nuxt/tsconfig.app.j
 
 The pinned versions matter: `vue-tsc` cannot load the TypeScript 7 that this repo installs, so it needs its own TypeScript 5 alongside it.
 
-There are currently **10 known errors** from this command, all pre-existing and unrelated to Storyblok — `useTemplateRef` inferring a single element instead of an array (`Projects.vue`, `Steps.vue`, `Ticker.vue`), a `DevGuide` prop, and a missing `defineSitemapEventHandler` export in `server/api/sitemap.ts`. Treat that as the baseline: new work shouldn't add to it.
+There are currently **9 known errors** from this command, all pre-existing and unrelated to Storyblok — `useTemplateRef` inferring a single element instead of an array (`Projects.vue`, `Steps.vue`, `Ticker.vue`), and an `unknown` value assigned to a `string | undefined` in `server/api/sitemap.ts`. Treat that as the baseline: new work shouldn't add to it.
 
 Commits follow [Conventional Commits](https://www.conventionalcommits.org). If the commit hook complains, fix the underlying issue rather than passing `--no-verify`.
 
