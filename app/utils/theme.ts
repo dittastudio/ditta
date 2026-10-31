@@ -11,7 +11,7 @@ const themeClasses: Record<Themes, string> = {
   mood: 'bg-mood text-black',
   olive: 'bg-olive text-black',
   pink: 'bg-pink text-black',
-  accent: 'bg-accent text-black transition-colors duration-300 ease-out',
+  accent: 'bg-accent text-black',
 }
 
 const themeTextClasses: Record<Themes, string> = {

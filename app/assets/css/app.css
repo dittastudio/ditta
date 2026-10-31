@@ -223,6 +223,13 @@
   --animate-brick-in: brick-in 0.5s var(--ease-outCubic) both;
 }
 
+/* Typed so it can be transitioned: everything using the accent fades together when the Dock changes it */
+@property --color-accent {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: oklch(0.8221 0.1207 348.4); /* --color-pink; has to be a literal */
+}
+
 /* Rises into place; --brick-rise is zeroed for reduced motion */
 @keyframes brick-in {
   from {

@@ -67,7 +67,7 @@ onUnmounted(() => {
     </span>
 
     <span
-      class="ui-button__icon size-[1em] rounded-full aspect-square bg-accent transition-colors duration-300 ease-out flex items-center justify-center overflow-hidden"
+      class="ui-button__icon size-[1em] rounded-full aspect-square bg-accent flex items-center justify-center overflow-hidden"
     >
       <IconPixelArrow class="ui-button__arrow w-[55%] rotate-45" />
     </span>
@@ -96,14 +96,10 @@ onUnmounted(() => {
 .ui-button__bg {
   scale: 1 1;
   transform: translateZ(0);
-  transition:
-    scale 0.8s var(--ease-spring-3),
-    background-color 0.3s var(--ease-out);
+  transition: scale 0.8s var(--ease-spring-3);
 
   .ui-button:hover & {
-    transition:
-      scale 0.4s var(--ease-out),
-      background-color 0.3s var(--ease-out);
+    transition: scale 0.4s var(--ease-out);
     scale: var(--scale-x) var(--scale-y);
   }
 }

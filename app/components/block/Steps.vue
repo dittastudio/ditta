@@ -175,7 +175,7 @@ const onArrowMouseDown = (event: MouseEvent) => {
             class="h-full w-max"
           >
             <IconMarioSequence
-              class="h-full w-auto text-accent transition-colors duration-300 ease-out"
+              class="h-full w-auto text-accent"
               shape-rendering="crispEdges"
             />
           </div>

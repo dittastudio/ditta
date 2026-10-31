@@ -162,8 +162,8 @@ defineExpose({
                 dockBgStyles,
                 navigation ? 'inset-[-10px_-10px_0px_-10px]' : 'inset-0',
                 {
-                  'duration-300 ease-out': !isClosing,
-                  'duration-300 delay-[0ms,100ms,100ms] ease-out': isClosing,
+                  'duration-[300ms,150ms,150ms] ease-out': !isClosing,
+                  'duration-[300ms,150ms,150ms] delay-[0ms,100ms,100ms] ease-out': isClosing,
                 },
               ]"
             />
