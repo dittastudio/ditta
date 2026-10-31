@@ -33,17 +33,6 @@ const BUMP_HEIGHT = 0.15 // em
 const COINS = 10 // like a multi-coin block, the copy's last word pays out this many before it's spent
 const BRICK_RIPPLE_DELAY = 25 // ms per brick away from where Mario lands
 
-const SOUNDS = {
-  breakBlock: '/sounds/smb_breakblock.opus',
-  bump: '/sounds/smb_bump.opus',
-  coin: '/sounds/smb_coin.opus',
-  jumpSmall: '/sounds/smb_jump-small.opus',
-  pipe: '/sounds/smb_pipe.opus',
-  powerup: '/sounds/smb_powerup.opus',
-} as const
-
-type Sound = keyof typeof SOUNDS
-
 // A and B, with Z / X as the usual emulator layout
 const JUMP_KEYS = new Set(['ArrowUp', ' ', 'x', 'X'])
 const RUN_KEYS = new Set(['Shift', 'z', 'Z'])
@@ -128,28 +117,22 @@ export default function useMario(el: Elements) {
   let spentWord: HTMLSpanElement | null = null // left wrapped and faded once the coins run out
 
   const { isAudioOn } = useAudio()
-  const audio: Partial<Record<Sound, HTMLAudioElement>> = {}
-
-  watch(
-    isAudioOn,
-    (on) => {
-      if (!on || Object.keys(audio).length) return
-
-      for (const [name, src] of Object.entries(SOUNDS) as [Sound, string][]) {
-        audio[name] = new Audio(src)
-        audio[name].preload = 'auto'
-      }
-    },
-    { immediate: true },
-  )
-
-  const playSound = (name: Sound) => {
-    const sound = audio[name]
-    if (!sound || !isAudioOn.value) return
-
-    sound.currentTime = 0
-    sound.play().catch(() => {})
+  const sounds = {
+    breakBlock: defineSample('/sounds/smb_breakblock.opus'),
+    bump: defineSample('/sounds/smb_bump.opus'),
+    coin: defineSample('/sounds/smb_coin.opus'),
+    jumpSmall: defineSample('/sounds/smb_jump-small.opus'),
+    pipe: defineSample('/sounds/smb_pipe.opus'),
   }
+
+  const playSound = (name: keyof typeof sounds) => void sounds[name].play()
+
+  // Fetched once the pipe rages, and only with audio on
+  const loadSounds = () => {
+    if (phase.value !== 'hidden' && isAudioOn.value) Object.values(sounds).forEach((sound) => sound.load())
+  }
+
+  watch(isAudioOn, loadSounds)
 
   const measureLines = (stageRect: DOMRect) => {
     const lockup = toValue(el.lockup)
@@ -481,6 +464,7 @@ export default function useMario(el: Elements) {
     if (phase.value !== 'hidden') return
 
     phase.value = 'raging'
+    loadSounds()
     rageTimeout = setTimeout(enter, RAGE_HOLD)
   }
 
@@ -489,7 +473,6 @@ export default function useMario(el: Elements) {
     stopLoop()
     unbumpWord()
     clearTimeout(rageTimeout)
-    Object.values(audio).forEach((sound) => sound.pause())
   })
 
   return { phase, isPlayable, bricks, start, press, release }

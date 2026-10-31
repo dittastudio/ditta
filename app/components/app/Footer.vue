@@ -36,19 +36,9 @@ const { play, isAudioOn } = useAudio()
 
 const playRobot = () => play(() => defineSound(createRobotBeep())())
 
-let audioRage: HTMLAudioElement | null = null
+const soundRage = defineSample('/sounds/beepboop.opus')
 
-watch(
-  isAudioOn,
-  (on) => {
-    if (!on || audioRage) return
-
-    audioRage = new Audio('/sounds/beepboop.opus')
-    audioRage.preload = 'auto'
-    audioRage.volume = 1
-  },
-  { immediate: true },
-)
+watch(isAudioOn, (on) => on && soundRage.load())
 
 const rotation = ref(0)
 const mouseXPercent = ref(50)
@@ -112,7 +102,6 @@ const startLegFlicker = () => {
 }
 
 let rageTimeout: ReturnType<typeof setTimeout> | null = null
-let rageEndedHandler: (() => void) | null = null
 
 const onRage = () => {
   stopLegFlicker()
@@ -132,22 +121,14 @@ const resetRage = () => {
   legColors.value = Array(LEG_COUNT).fill(LEG_COLOR_DEFAULT)
 }
 
-const playRage = () => {
-  if (!audioRage || !isAudioOn.value) {
+const playRage = async () => {
+  if (!isAudioOn.value) {
     rageTimeout = setTimeout(resetRage, 2000)
     return
   }
 
-  audioRage.currentTime = 0
-
-  rageEndedHandler = () => {
-    resetRage()
-    audioRage?.removeEventListener('ended', rageEndedHandler!)
-    rageEndedHandler = null
-  }
-
-  audioRage.addEventListener('ended', rageEndedHandler)
-  audioRage.play().catch(() => {})
+  await soundRage.play()
+  resetRage()
 }
 
 onMounted(() => {
@@ -159,8 +140,6 @@ onUnmounted(() => {
   window.removeEventListener('mousemove', onMouseMove)
   pauseMouseTracking()
   if (rageTimeout) clearTimeout(rageTimeout)
-  if (rageEndedHandler) audioRage?.removeEventListener('ended', rageEndedHandler)
-  audioRage?.pause()
   stopLegFlicker()
 })
 </script>
