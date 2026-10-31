@@ -69,20 +69,23 @@ const {
   pipe: arrowLiftEl,
 })
 
-const appStore = useAppStore()
-const soundCoin = defineSample('/sounds/smb_coin.opus') // shares useMario's decoded copy
-
-const onMarioClick = () => {
-  appStore.cycleAccent()
-  void soundCoin.play()
-}
-
 const isArrowLocked = computed(() => marioPhase.value !== 'hidden') // upright and red from rage on, through its fade
 const isArrowGone = computed(() => marioPhase.value === 'falling' || marioPhase.value === 'playing') // Mario's out of the tail
 
-const { play } = useAudio()
+const { play, isAudioOn } = useAudio()
 const soundBoop = defineSound(boop)
 const soundLevelUp = defineSound(levelUp)
+
+const appStore = useAppStore()
+const soundPowerUp = defineSample('/sounds/smb_powerup.opus')
+
+// Ready by the time he's clickable: loads alongside his other sounds, once the arrow rages
+watch([isAudioOn, marioPhase], ([on, phase]) => on && phase !== 'hidden' && soundPowerUp.load())
+
+const onMarioClick = () => {
+  appStore.cycleAccent()
+  void soundPowerUp.play()
+}
 
 // Written straight to a CSS variable, so following the mouse never re-renders the block
 const stopTilt = useEventListener(
