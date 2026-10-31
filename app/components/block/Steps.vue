@@ -77,28 +77,34 @@ const MARIO_RENDER_EVERY = 2 // physics frames per redraw, for ~30fps choppiness
 
 // SMB's fixed-point values, kept in its hex so they can be checked against the original: 0x01000 = 1 px/frame
 const nes = (value: number) => value / 0x1000
+// Horizontal values only, so running faster than the NES leaves jump height alone
+const MARIO_SPEED_BOOST = 1.5
+const nesX = (value: number) => nes(value) * MARIO_SPEED_BOOST
+// Takeoff velocity only; height grows with its square, so 1.1 is about 20% higher
+const MARIO_JUMP_BOOST = 1.1
+const nesY = (value: number) => nes(value) * MARIO_JUMP_BOOST
 
-const MARIO_MIN_WALK = nes(0x00130) // starting from a standstill snaps straight to this
-const MARIO_WALK_ACCEL = nes(0x00098)
-const MARIO_RUN_ACCEL = nes(0x000e4) // B held
-const MARIO_RELEASE_DECEL = nes(0x000d0) // no input, or over the speed cap
-const MARIO_SKID_DECEL = nes(0x001a0) // input against current direction
-const MARIO_SKID_TURN = nes(0x00900) // a skid below this stops dead and turns round
-const MARIO_WALK_SPEED = nes(0x01900)
-const MARIO_RUN_SPEED = nes(0x02900)
+const MARIO_MIN_WALK = nesX(0x00130) // starting from a standstill snaps straight to this
+const MARIO_WALK_ACCEL = nesX(0x00098)
+const MARIO_RUN_ACCEL = nesX(0x000e4) // B held
+const MARIO_RELEASE_DECEL = nesX(0x000d0) // no input, or over the speed cap
+const MARIO_SKID_DECEL = nesX(0x001a0) // input against current direction
+const MARIO_SKID_TURN = nesX(0x00900) // a skid below this stops dead and turns round
+const MARIO_WALK_SPEED = nesX(0x01900)
+const MARIO_RUN_SPEED = nesX(0x02900)
 const MARIO_RUN_HOLD = 10 // frames run speed lingers after B is released
-const MARIO_AIR_FAST = nes(0x01d00) // takeoff speed that keeps run speed in the air and softens backward braking
+const MARIO_AIR_FAST = nesX(0x01d00) // takeoff speed that keeps run speed in the air and softens backward braking
 const MARIO_FALL_SPEED = nes(0x04800) // reaching this knocks him back to MARIO_FALL_RESET
 const MARIO_FALL_RESET = nes(0x04000)
-const MARIO_ANIM_RUN = nes(0x01c00) // walk cycle: 2 frames per step above this
-const MARIO_ANIM_WALK = nes(0x00e00) // 4 above this, 7 below
+const MARIO_ANIM_RUN = nesX(0x01c00) // walk cycle: 2 frames per step above this
+const MARIO_ANIM_WALK = nesX(0x00e00) // 4 above this, 7 below
 
 // Picked by horizontal speed at takeoff and kept for the whole jump.
 // Holding A while rising uses the light gravity: tap for a hop, hold for full height.
 const MARIO_JUMPS = [
-  { from: nes(0x02500), velocity: nes(0x05000), gravityHeld: nes(0x00280), gravity: nes(0x00900) },
-  { from: nes(0x01000), velocity: nes(0x04000), gravityHeld: nes(0x001e0), gravity: nes(0x00600) },
-  { from: 0, velocity: nes(0x04000), gravityHeld: nes(0x00200), gravity: nes(0x00700) },
+  { from: nesX(0x02500), velocity: nesY(0x05000), gravityHeld: nes(0x00280), gravity: nes(0x00900) },
+  { from: nesX(0x01000), velocity: nesY(0x04000), gravityHeld: nes(0x001e0), gravity: nes(0x00600) },
+  { from: 0, velocity: nesY(0x04000), gravityHeld: nes(0x00200), gravity: nes(0x00700) },
 ] as const
 const MARIO_JUMP_STILL = MARIO_JUMPS[2]
 
@@ -111,8 +117,8 @@ const ARROW_TAIL_BOTTOM = 130 / 134
 
 const MARIO_BUMP_DURATION = 150 // ms for a bonked word to pop up and back
 const MARIO_BUMP_HEIGHT = 0.15 // em
+const MARIO_COINS = 10 // like a multi-coin block, the copy's last word pays out this many before it's spent
 
-const BRICK_COUNT = 60
 const BRICK_RIPPLE_DELAY = 25 // ms per brick away from where Mario lands
 
 const MarioFrame = { Idle: 0, Walk: 1, Jump: 4 } as const
@@ -122,11 +128,15 @@ const MARIO_WALK_FRAMES = 3
 type MarioPhase = 'hidden' | 'raging' | 'piping' | 'falling' | 'playing'
 
 const marioPhase = ref<MarioPhase>('hidden')
+const brickCount = ref(0) // enough to span the stage, set when it's measured
 const brickLanding = ref<{ start: number; end: number } | null>(null) // bricks under Mario's feet; the row ripples out from here
-const isArrowLocked = computed(() => marioPhase.value === 'raging' || marioPhase.value === 'piping')
+const isArrowLocked = computed(() => marioPhase.value !== 'hidden') // upright and red from rage on, through its fade
+const isArrowGone = computed(() => marioPhase.value === 'falling' || marioPhase.value === 'playing') // Mario's out of the tail
 const prefersReducedMotion = useAtMedia('(prefers-reduced-motion: reduce)')
 
+const marioSectionEl = ref<HTMLElement | null>(null) // lockup, arrow and bricks: Mario's keys work while any of it shows
 const arrowEl = ref<HTMLElement | null>(null)
+const arrowLiftEl = ref<HTMLElement | null>(null) // inside the button, so the lift doesn't fight the shake's translate
 const lockup = ref<ComponentPublicInstance | null>(null)
 const lockupEl = computed(() => lockup.value?.$el as HTMLElement | undefined)
 const marioStageEl = ref<HTMLElement | null>(null)
@@ -173,6 +183,8 @@ interface MarioLine {
 
 let marioBlocks: MarioLine[][] = [] // lines per heading or paragraph, top to bottom
 let marioBump: { node: Text; text: string; span: HTMLSpanElement; tail: Text; animation: Animation } | null = null
+let marioCoins = 0
+let marioSpentWord: HTMLSpanElement | null = null // left wrapped and faded once the coins run out
 
 // Bricks away from the landing span; 0 for the ones he's standing on
 const brickDistance = (index: number, { start, end }: { start: number; end: number }) =>
@@ -181,6 +193,7 @@ const brickDistance = (index: number, { start, end }: { start: number; end: numb
 const MARIO_SOUNDS = {
   breakBlock: '/sounds/smb_breakblock.opus',
   bump: '/sounds/smb_bump.opus',
+  coin: '/sounds/smb_coin.opus',
   jumpSmall: '/sounds/smb_jump-small.opus',
   pipe: '/sounds/smb_pipe.opus',
   powerup: '/sounds/smb_powerup.opus',
@@ -288,6 +301,7 @@ const measureMario = () => {
 
   marioStage.scale = marioEl.value.offsetWidth / MARIO_SIZE
   marioStage.width = marioStageEl.value.clientWidth / marioStage.scale
+  brickCount.value = Math.ceil(marioStage.width / MARIO_SIZE)
 
   measureLines(marioStageEl.value.getBoundingClientRect())
 
@@ -330,17 +344,34 @@ const unbumpWord = () => {
   marioBump = null
 }
 
-// Pops the word at a stage point up and back, like a bonked block
+// Last text node of the copy's last paragraph, and where its last word ends
+const coinWord = () => {
+  const copy = lockupEl.value ? [...lockupEl.value.querySelectorAll('p')].at(-1) : undefined
+  if (!copy) return null
+
+  const walker = document.createTreeWalker(copy, NodeFilter.SHOW_TEXT)
+  let last: Text | null = null
+
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    if (node instanceof Text && /\S/.test(node.data)) last = node
+  }
+
+  return last && { node: last, end: last.data.trimEnd().length }
+}
+
+// Pops the word at a stage point up and back, like a bonked block. The copy's last word is a coin block.
 const bumpWord = (x: number, y: number) => {
   unbumpWord()
 
-  if (prefersReducedMotion.value || !marioStageEl.value) return
+  if (!marioStageEl.value) return playMarioSound('bump')
 
   const stage = marioStageEl.value.getBoundingClientRect()
   const caret = caretAt(stage.left + x * marioStage.scale, stage.top + y * marioStage.scale)
   const node = caret?.node
 
-  if (!(node instanceof Text) || !lockupEl.value?.contains(node)) return
+  // A spent coin block just thuds
+  if (!(node instanceof Text) || !lockupEl.value?.contains(node) || marioSpentWord?.contains(node))
+    return playMarioSound('bump')
 
   const text = node.data
   let start = caret.offset
@@ -349,20 +380,37 @@ const bumpWord = (x: number, y: number) => {
   while (start > 0 && /\S/.test(text[start - 1] ?? '')) start--
   while (end < text.length && /\S/.test(text[end] ?? '')) end++
 
-  if (start === end) return
+  if (start === end) return playMarioSound('bump')
+
+  const coin = coinWord()
+  const isCoin = marioCoins < MARIO_COINS && coin?.node === node && coin.end === end
+  const isSpent = isCoin && ++marioCoins === MARIO_COINS
+
+  playMarioSound(isCoin ? 'coin' : 'bump')
+
+  if (prefersReducedMotion.value && !isSpent) return
 
   const word = node.splitText(start)
   const tail = word.splitText(end - start)
   const span = document.createElement('span')
 
-  span.className = 'inline-block' // transforms don't apply to plain inline boxes
+  span.className = isSpent ? 'inline-block opacity-60' : 'inline-block' // transforms don't apply to plain inline boxes
   word.replaceWith(span)
   span.append(word)
 
-  const animation = span.animate(
-    [{ translate: '0 0' }, { translate: `0 ${-MARIO_BUMP_HEIGHT}em` }, { translate: '0 0' }],
-    { duration: MARIO_BUMP_DURATION },
-  )
+  const animation = prefersReducedMotion.value
+    ? null
+    : span.animate([{ translate: '0 0' }, { translate: `0 ${-MARIO_BUMP_HEIGHT}em` }, { translate: '0 0' }], {
+        duration: MARIO_BUMP_DURATION,
+      })
+
+  // Spent: stays wrapped, so it keeps its fade
+  if (isSpent) {
+    marioSpentWord = span
+    return
+  }
+
+  if (!animation) return
 
   animation.onfinish = unbumpWord
   marioBump = { node, text, span, tail, animation }
@@ -395,7 +443,6 @@ const collideLines = (prevFeet: number) => {
     if (ceiling) {
       mario.y = ceiling.bottom + MARIO_SIZE
       mario.vy = 0
-      playMarioSound('bump')
       bumpWord(
         Math.min(Math.max(mario.x + MARIO_SIZE / 2, ceiling.left), ceiling.right),
         (ceiling.top + ceiling.bottom) / 2,
@@ -434,7 +481,7 @@ const startJump = (speed: number) => {
 
 const landMario = () => {
   const brickSize = MARIO_SIZE * marioStage.scale
-  const rowOffset = (marioStage.width * marioStage.scale - BRICK_COUNT * brickSize) / 2 // row is centred and clipped
+  const rowOffset = (marioStage.width * marioStage.scale - brickCount.value * brickSize) / 2 // row is centred and clipped
   const left = Math.round(mario.x) * marioStage.scale - rowOffset // as rendered, snapped to sprite pixels
   const tolerance = marioStage.scale / 2 // half a sprite pixel, so rounding never claims a sliver of the next brick
 
@@ -683,9 +730,9 @@ const startPipe = async () => {
   await nextTick()
   measureMario()
 
-  if (!arrowEl.value || !marioStageEl.value) return
+  if (!arrowLiftEl.value || !marioStageEl.value) return
 
-  const arrow = arrowEl.value.getBoundingClientRect()
+  const arrow = arrowLiftEl.value.getBoundingClientRect()
   const stage = marioStageEl.value.getBoundingClientRect()
 
   // Feet start at the tail mouth, so he begins hidden behind the arrow
@@ -733,13 +780,13 @@ onMounted(() => {
   document.fonts.ready.then(measureMario)
 })
 
-useIntersectionObserver(marioStageEl, ([entry]) => {
+useIntersectionObserver(marioSectionEl, ([entry]) => {
   isMarioVisible = entry?.isIntersecting ?? false
 
   if (isMarioVisible) {
     startMario()
   } else {
-    // Hand the arrows back to the page once the bricks scroll away
+    // Hand the arrows back to the page once the section scrolls away
     isMarioActive = false
     releaseMarioInput()
     stopMario()
@@ -757,121 +804,132 @@ onUnmounted(() => {
 <template>
   <div
     v-editable="block"
-    class="wrapper flex flex-col gap-(--app-gutter-outer) overflow-clip"
+    class="flex flex-col gap-(--app-gutter-outer) overflow-clip"
     :class="{
       'pt-(--app-vertical-rhythm)': block.spacing_top,
       'pb-(--app-vertical-rhythm)': block.spacing_bottom,
     }"
   >
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-5">
-      <UiLockup
-        ref="lockup"
-        class="col-span-full md:col-span-8"
-        :heading="block.heading"
-        :copy="block.copy"
-      />
-
-      <div class="col-span-full md:col-span-4">
-        <button
-          ref="arrowEl"
-          type="button"
-          class="relative z-1 block w-30 md:w-40 mx-auto"
-          :class="[
-            marioPhase === 'raging' ? 'shake-3' : arrowShakeClass,
-            { 'cursor-default': marioPhase !== 'hidden' },
-          ]"
-          aria-label="Poke the arrow"
-          :tabindex="marioPhase === 'hidden' ? undefined : -1"
-          :aria-disabled="marioPhase !== 'hidden' || undefined"
-          @mousedown="onArrowMouseDown"
-          @click="onArrowClick"
-        >
-          <div
-            :class="{
-              'transition-scale duration-150 ease-out hover:scale-102 active:scale-98': marioPhase === 'hidden',
-            }"
-          >
-            <!-- Tail doubles as a pipe: upright and red while raging, until Mario is out -->
-            <IconPixelArrow
-              class="w-full data-rage:[&_[fill='#24F456']]:fill-rage-light data-rage:[&_[fill='#00E640']]:fill-rage data-rage:[&_[fill='#00C340']]:fill-rage-dark"
-              :class="{ 'animate-bob': !isArrowLocked }"
-              :data-rage="isArrowLocked || undefined"
-              :style="{ transform: `rotate(${isArrowLocked ? 0 : rotation}deg)` }"
-            />
-          </div>
-        </button>
-      </div>
-    </div>
-
     <div
-      ref="marioStageEl"
-      class="relative -mx-(--app-gutter-outer)"
-      aria-hidden="true"
+      ref="marioSectionEl"
+      class="flex flex-col gap-(--app-gutter-outer)"
     >
-      <div
-        ref="marioEl"
-        class="absolute bottom-full left-0 size-10 md:size-12 overflow-hidden touch-manipulation select-none"
-        :class="{ invisible: marioPhase === 'hidden' || marioPhase === 'raging' }"
-        @pointerdown="onMarioTap"
-      >
-        <div
-          ref="marioSheetEl"
-          class="h-full w-max"
-        >
-          <IconMarioSequence
-            class="h-full w-auto"
-            shape-rendering="crispEdges"
-          />
+      <div class="wrapper grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-5">
+        <UiLockup
+          ref="lockup"
+          class="col-span-full md:col-span-8"
+          :heading="block.heading"
+          :copy="block.copy"
+        />
+
+        <div class="col-span-full md:col-span-4">
+          <button
+            ref="arrowEl"
+            type="button"
+            class="relative z-1 block w-30 md:w-40 mx-auto transition-opacity duration-300 ease-outCubic"
+            :class="[
+              marioPhase === 'raging' ? 'shake-3' : arrowShakeClass,
+              { 'cursor-default': marioPhase !== 'hidden', 'opacity-0 pointer-events-none': isArrowGone },
+            ]"
+            aria-label="Poke the arrow"
+            :tabindex="marioPhase === 'hidden' ? undefined : -1"
+            :aria-disabled="marioPhase !== 'hidden' || undefined"
+            @mousedown="onArrowMouseDown"
+            @click="onArrowClick"
+          >
+            <!-- On mobile it lifts clear on rage, so Mario has room to come out of the tail -->
+            <div
+              ref="arrowLiftEl"
+              :class="{
+                'transition-scale duration-150 ease-out hover:scale-102 active:scale-98': marioPhase === 'hidden',
+                'max-md:-translate-y-20 transition-transform duration-300 ease-outCubic': isArrowLocked,
+              }"
+            >
+              <!-- Tail doubles as a pipe: upright and red while raging, until Mario is out -->
+              <IconPixelArrow
+                class="w-full data-rage:[&_[fill='#24F456']]:fill-rage-light data-rage:[&_[fill='#00E640']]:fill-rage data-rage:[&_[fill='#00C340']]:fill-rage-dark"
+                :class="{ 'animate-bob': !isArrowLocked }"
+                :data-rage="isArrowLocked || undefined"
+                :style="{ transform: `rotate(${isArrowLocked ? 0 : rotation}deg)` }"
+              />
+            </div>
+          </button>
         </div>
       </div>
 
-      <div class="flex justify-center overflow-clip">
-        <IconMarioBrick
-          v-for="(_, index) in BRICK_COUNT"
-          :key="index"
-          class="size-10 md:size-12 shrink-0 motion-reduce:[--brick-rise:0]"
-          :class="[
-            brickLanding === null ? 'opacity-0' : 'animate-brick-in',
-            { '[--brick-rise:0]': brickLanding !== null && brickDistance(index, brickLanding) === 0 },
-          ]"
-          :style="
-            brickLanding === null || prefersReducedMotion
-              ? undefined
-              : { animationDelay: `${brickDistance(index, brickLanding) * BRICK_RIPPLE_DELAY}ms` }
-          "
-        />
+      <div
+        ref="marioStageEl"
+        class="relative -mt-[calc(var(--app-gutter-outer)*1.5)] md:mt-[calc(var(--app-gutter-outer)*0.5)] lg:mt-0"
+        aria-hidden="true"
+      >
+        <div
+          ref="marioEl"
+          class="absolute bottom-full left-0 size-10 md:size-12 overflow-hidden touch-manipulation select-none"
+          :class="{ invisible: marioPhase === 'hidden' || marioPhase === 'raging' }"
+          @pointerdown="onMarioTap"
+        >
+          <div
+            ref="marioSheetEl"
+            class="h-full w-max"
+          >
+            <IconMarioSequence
+              class="h-full w-auto"
+              shape-rendering="crispEdges"
+            />
+          </div>
+        </div>
+
+        <!-- Sized up front: bricks only render once the stage is measured -->
+        <div class="flex justify-center h-10 md:h-12 overflow-x-clip">
+          <IconMarioBrick
+            v-for="(_, index) in brickCount"
+            :key="index"
+            class="size-10 md:size-12 shrink-0 motion-reduce:[--brick-rise:0]"
+            :class="[
+              brickLanding === null ? 'opacity-0' : 'animate-brick-in',
+              { '[--brick-rise:0]': brickLanding !== null && brickDistance(index, brickLanding) === 0 },
+            ]"
+            :style="
+              brickLanding === null || prefersReducedMotion
+                ? undefined
+                : { animationDelay: `${brickDistance(index, brickLanding) * BRICK_RIPPLE_DELAY}ms` }
+            "
+          />
+        </div>
       </div>
     </div>
 
-    <div
-      v-for="(step, index) in block.steps"
-      v-editable="step"
-      :key="step._uid"
-      class="sticky top-0 h-svh flex flex-col items-center justify-center max-md:px-(--app-gutter-outer)"
-    >
+    <div class="wrapper flex flex-col gap-(--app-gutter-outer)">
       <div
-        class="w-full flex flex-col gap-[calc(var(--app-gutter-outer)*2)] md:gap-(--app-gutter-outer)"
-        :class="{
-          'items-center': true,
-          'md:items-start': index === 0,
-          'md:items-center': index === 1 || index > 2,
-          'md:items-end': index === 2,
-        }"
+        v-for="(step, index) in block.steps"
+        v-editable="step"
+        :key="step._uid"
+        class="sticky top-0 h-svh flex flex-col items-center justify-center max-md:px-(--app-gutter-outer)"
       >
         <div
-          ref="card"
-          class="max-w-120"
-          :style="{
-            paddingTop: `calc(var(--app-gutter-outer) * ${index})`,
+          class="w-full flex flex-col gap-[calc(var(--app-gutter-outer)*2)] md:gap-(--app-gutter-outer)"
+          :class="{
+            'items-center': true,
+            'md:items-start': index === 0,
+            'md:items-center': index === 1 || index > 2,
+            'md:items-end': index === 2,
           }"
         >
-          <CardStep
-            :number="`0${index + 1}`.slice(-2)"
-            :title="step.title"
-            :heading="step.heading"
-            :copy="step.copy"
-            :theme="'theme' in step ? (step.theme as Themes) : undefined"
-          />
+          <div
+            ref="card"
+            class="max-w-120"
+            :style="{
+              paddingTop: `calc(var(--app-gutter-outer) * ${index})`,
+            }"
+          >
+            <CardStep
+              :number="`0${index + 1}`.slice(-2)"
+              :title="step.title"
+              :heading="step.heading"
+              :copy="step.copy"
+              :theme="'theme' in step ? (step.theme as Themes) : undefined"
+            />
+          </div>
         </div>
       </div>
     </div>
