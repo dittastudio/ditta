@@ -3,7 +3,6 @@ import { Engine, Runner, Bodies, Body, Composite, Mouse, MouseConstraint, Events
 import { defineSound } from '@web-kits/audio'
 import { sync } from '@@/.web-kits/core'
 import { useAppStore } from '@/stores/app'
-import type { Accent } from '@/stores/app'
 import type { Block } from '#storyblok-schema'
 
 interface Props {
@@ -48,7 +47,6 @@ let jazzInterval: ReturnType<typeof setInterval> | null = null
 
 watch(isAudioOn, (on) => on && sounds.error.load())
 
-const accents: Accent[] = ['pink', 'mood', 'olive']
 const appStore = useAppStore()
 
 const clickTimes: number[] = []
@@ -155,12 +153,8 @@ const onComputerClick = () => {
     return
   }
 
-  const next = (accents.indexOf(appStore.accent) + 1) % accents.length
-
-  if (accents[next]) {
-    appStore.setAccent(accents[next])
-    play(soundClick)
-  }
+  appStore.cycleAccent()
+  play(soundClick)
 }
 
 let stopPhysics: (() => void) | null = null

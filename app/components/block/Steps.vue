@@ -69,6 +69,14 @@ const {
   pipe: arrowLiftEl,
 })
 
+const appStore = useAppStore()
+const soundCoin = defineSample('/sounds/smb_coin.opus') // shares useMario's decoded copy
+
+const onMarioClick = () => {
+  appStore.cycleAccent()
+  void soundCoin.play()
+}
+
 const isArrowLocked = computed(() => marioPhase.value !== 'hidden') // upright and red from rage on, through its fade
 const isArrowGone = computed(() => marioPhase.value === 'falling' || marioPhase.value === 'playing') // Mario's out of the tail
 
@@ -167,8 +175,9 @@ const onArrowMouseDown = (event: MouseEvent) => {
       >
         <div
           ref="mario"
-          class="absolute bottom-full left-0 size-10 md:size-12 overflow-hidden select-none"
+          class="absolute bottom-full left-0 size-10 md:size-12 overflow-hidden select-none cursor-pointer"
           :class="{ invisible: marioPhase === 'hidden' || marioPhase === 'raging' }"
+          @click="onMarioClick"
         >
           <div
             ref="marioSheet"
