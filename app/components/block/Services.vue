@@ -362,7 +362,7 @@ onUnmounted(() => {
             :class="shakeClass"
           >
             <IconComputer
-              class="animate-bob w-full text-accent cursor-pointer"
+              class="animate-bob w-full text-accent transition-colors duration-300 ease-out cursor-pointer"
               :class="{ 'transition-scale duration-150 ease-out hover:scale-102 active:scale-98': !inRage }"
               :style="{ transform: `rotate(${rotation}deg)` }"
               :in-rage="inRage"
