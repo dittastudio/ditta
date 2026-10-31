@@ -21,51 +21,34 @@ interface Props {
 const { block } = defineProps<Props>()
 const cardsRefs = useTemplateRef('card')
 
-const rotation = ref(0)
+let cardsAnimation: gsap.Context | undefined
 
-const onMouseMove = (event: MouseEvent) => {
-  rotation.value = (event.clientX / window.innerWidth) * 80 - 40
-}
+onMounted(() => {
+  cardsAnimation = gsap.context(() => {
+    cardsRefs.value?.forEach((el, index) => {
+      const sign = index % 2 === 0 ? 1 : -1
+      const rotateFrom = sign * gsap.utils.random(3, 9)
 
-onMounted(async () => {
-  await nextTick()
-
-  window.addEventListener('mousemove', onMouseMove, { passive: true })
-
-  cardsRefs.value?.forEach((el, index) => {
-    const sign = index % 2 === 0 ? 1 : -1
-    const rotateFrom = sign * gsap.utils.random(3, 9)
-    const rotateTo = -rotateFrom
-
-    gsap.fromTo(
-      el,
-      {
-        scale: 1.2,
-        rotate: rotateFrom,
-      },
-      {
-        scrollTrigger: {
-          trigger: el.parentElement?.parentElement,
-          start: 'top bottom',
-          end: 'bottom bottom',
-          scrub: true,
-          markers: false,
+      gsap.fromTo(
+        el,
+        { scale: 1.2, rotate: rotateFrom },
+        {
+          scrollTrigger: {
+            trigger: el.parentElement?.parentElement,
+            start: 'top bottom',
+            end: 'bottom bottom',
+            scrub: true,
+          },
+          ease: 'power1.in',
+          scale: 1,
+          rotate: -rotateFrom,
         },
-        ease: 'power1.in',
-        scale: 1,
-        rotate: rotateTo,
-      },
-    )
+      )
+    })
   })
 })
 
-onMounted(() => {
-  window.addEventListener('mousemove', onMouseMove, { passive: true })
-})
-
-onUnmounted(() => {
-  window.removeEventListener('mousemove', onMouseMove)
-})
+onUnmounted(() => cardsAnimation?.revert())
 
 // Mario: platformer on the brick row, with Super Mario Bros. (NES) physics.
 // Physics runs in sprite pixels per 1/60s frame; one sprite pixel = brick size / 16.
@@ -751,9 +734,19 @@ const startPipe = async () => {
   playMarioSound('pipe')
 }
 
+// Written straight to a CSS variable, so following the mouse never re-renders the block
+const stopTilt = useEventListener(
+  window,
+  'mousemove',
+  (event: MouseEvent) =>
+    arrowEl.value?.style.setProperty('--tilt', `${(event.clientX / window.innerWidth) * 80 - 40}deg`),
+  { passive: true },
+)
+
 const { shakeClass: arrowShakeClass, click: rageArrow } = useRageClicks({
   onClick: () => play(soundBoop),
   onRage: () => {
+    stopTilt() // upright from here on
     marioPhase.value = 'raging'
     arrowEl.value?.blur() // it's done; otherwise Mario's arrow keys light up its focus ring
     play(soundLevelUp)
@@ -848,9 +841,8 @@ onUnmounted(() => {
               <!-- Tail doubles as a pipe: upright and red while raging, until Mario is out -->
               <IconPixelArrow
                 class="w-full data-rage:[&_[fill='#24F456']]:fill-rage-light data-rage:[&_[fill='#00E640']]:fill-rage data-rage:[&_[fill='#00C340']]:fill-rage-dark"
-                :class="{ 'animate-bob': !isArrowLocked }"
+                :class="{ 'animate-bob rotate-(--tilt)': !isArrowLocked }"
                 :data-rage="isArrowLocked || undefined"
-                :style="{ transform: `rotate(${isArrowLocked ? 0 : rotation}deg)` }"
               />
             </div>
           </button>
