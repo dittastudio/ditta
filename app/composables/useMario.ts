@@ -9,6 +9,8 @@ export type MarioPhase = 'hidden' | 'raging' | 'piping' | 'falling' | 'playing'
 
 type Target = MaybeRefOrGetter<HTMLElement | null | undefined>
 
+export type MarioButton = 'left' | 'right' | 'jump'
+
 interface Elements {
   section: Target // Mario's keys work while any of it shows
   stage: Target // bricks run along its top edge
@@ -85,6 +87,8 @@ export default function useMario(el: Elements) {
   const phase = ref<MarioPhase>('hidden')
   const brickCount = ref(0) // enough to span the stage, set when it's measured
   const landing = ref<{ start: number; end: number } | null>(null) // bricks under his feet; the row ripples out from here
+  const isVisible = ref(false)
+  const isPlayable = computed(() => phase.value === 'playing' && isVisible.value)
   const prefersReducedMotion = useAtMedia('(prefers-reduced-motion: reduce)')
   const isEditor = storyblokEditor(useRoute().query) // Vue re-renders the copy there, so leave its DOM alone
 
@@ -112,9 +116,7 @@ export default function useMario(el: Elements) {
 
   let blocks: Blocks = []
   let scope: EffectScope | undefined
-  let isVisible = false
   let hasKeys = false // arrows belong to Mario after the first ← / → while visible
-  let isTapJump = false // a tap holds A until he lands
   let pipeMouth = 0
   let rageTimeout: ReturnType<typeof setTimeout> | undefined
   let rafId: number | null = null
@@ -337,14 +339,8 @@ export default function useMario(el: Elements) {
     }
 
     // No control, and nothing to land on but the bricks, until he's out of the pipe
-    if (phase.value !== 'playing') return step(mario, noInput, [], stage.width, hooks)
-
-    step(mario, input, blocks, stage.width, hooks)
-
-    if (isTapJump && mario.grounded) {
-      isTapJump = false
-      input.jump = false
-    }
+    if (phase.value === 'playing') step(mario, input, blocks, stage.width, hooks)
+    else step(mario, noInput, [], stage.width, hooks)
   }
 
   const tick = (time: number) => {
@@ -374,21 +370,10 @@ export default function useMario(el: Elements) {
     rafId = null
   }
 
-  const releaseInput = () => {
-    Object.assign(input, createInput())
-    isTapJump = false
-  }
+  const releaseInput = () => Object.assign(input, createInput())
 
   const onKeyDown = (event: KeyboardEvent) => {
-    if (
-      phase.value !== 'playing' ||
-      !isVisible ||
-      event.metaKey ||
-      event.ctrlKey ||
-      event.altKey ||
-      isTypingTarget(event.target)
-    )
-      return
+    if (!isPlayable.value || event.metaKey || event.ctrlKey || event.altKey || isTypingTarget(event.target)) return
 
     if (event.key === 'Escape') {
       hasKeys = false
@@ -422,12 +407,20 @@ export default function useMario(el: Elements) {
     if (JUMP_KEYS.has(event.key)) input.jump = false
   }
 
-  const tap = () => {
-    if (phase.value !== 'playing' || !mario.grounded) return
+  // On-screen gamepad
+  const press = (button: MarioButton) => {
+    if (!isPlayable.value) return
 
-    isTapJump = true
-    input.jump = true
-    input.jumpPressed = true
+    if (button === 'jump') {
+      input.jumpPressed = true
+      input.jump = true
+    } else {
+      input[button] = true
+    }
+  }
+
+  const release = (button: MarioButton) => {
+    input[button] = false
   }
 
   // Everything that only matters once Mario is out, in a scope of its own so it can all stop together
@@ -442,9 +435,9 @@ export default function useMario(el: Elements) {
       useIntersectionObserver(
         () => toValue(el.section),
         ([entry]) => {
-          isVisible = entry?.isIntersecting ?? false
+          isVisible.value = entry?.isIntersecting ?? false
 
-          if (isVisible) {
+          if (isVisible.value) {
             startLoop()
           } else {
             // Hand the arrows back to the page once the section scrolls away
@@ -499,5 +492,5 @@ export default function useMario(el: Elements) {
     Object.values(audio).forEach((sound) => sound.pause())
   })
 
-  return { phase, bricks, start, tap }
+  return { phase, isPlayable, bricks, start, press, release }
 }

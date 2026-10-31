@@ -55,9 +55,11 @@ const lockup = useTemplateRef('lockup')
 
 const {
   phase: marioPhase,
+  isPlayable: isMarioPlayable,
   bricks,
   start: startMario,
-  tap: onMarioTap,
+  press: pressMario,
+  release: releaseMario,
 } = useMario({
   section: useTemplateRef('marioSection'),
   stage: useTemplateRef('marioStage'),
@@ -165,9 +167,8 @@ const onArrowMouseDown = (event: MouseEvent) => {
       >
         <div
           ref="mario"
-          class="absolute bottom-full left-0 size-10 md:size-12 overflow-hidden touch-manipulation select-none"
+          class="absolute bottom-full left-0 size-10 md:size-12 overflow-hidden select-none"
           :class="{ invisible: marioPhase === 'hidden' || marioPhase === 'raging' }"
-          @pointerdown="onMarioTap"
         >
           <div
             ref="marioSheet"
@@ -192,6 +193,18 @@ const onArrowMouseDown = (event: MouseEvent) => {
         </div>
       </div>
     </div>
+
+    <!-- Only mounted once the pipe rages, so it can slide in when Mario lands -->
+    <Teleport
+      v-if="marioPhase !== 'hidden'"
+      to="#teleports"
+    >
+      <UiGamepad
+        :visible="isMarioPlayable"
+        @press="pressMario"
+        @release="releaseMario"
+      />
+    </Teleport>
 
     <div class="wrapper flex flex-col gap-(--app-gutter-outer)">
       <div
