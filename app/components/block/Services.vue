@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { Engine, Runner, Bodies, Body, Composite, Mouse, MouseConstraint, Events } from 'matter-js'
+import { useEventListener } from '@vueuse/core'
 import { defineSound } from '@web-kits/audio'
 import { sync } from '@@/.web-kits/core'
 import { useAppStore } from '@/stores/app'
@@ -132,8 +133,10 @@ const {
   onRage,
 })
 
-let stopPhysics: (() => void) | null = null
+let stopObserving: (() => void) | null = null
+let stopSimulation: (() => void) | null = null
 
+const PHYSICS_START_RATIO = 0.1
 const pad = 100
 
 function buildWalls(w: number, h: number) {
@@ -179,21 +182,27 @@ const onPageScroll = () => {
   }, PAGE_SCROLL_SETTLE)
 }
 
+// Everything per-frame or per-input stops while the section is off screen
+const sectionVisible = ref(false)
+
+useEventListener(() => (sectionVisible.value ? window : null), 'mousemove', onMouseMove, { passive: true })
+useEventListener(() => (sectionVisible.value ? window : null), 'scroll', onPageScroll, { passive: true })
+
 onMounted(() => {
-  window.addEventListener('mousemove', onMouseMove, { passive: true })
   window.addEventListener('pointerup', resetDrag, { passive: true })
-  window.addEventListener('scroll', onPageScroll, { passive: true })
 
   const el = containerRef.value
   const chips = chipRefs.value
 
-  if (!el || !chips?.length) return
+  if (!el) return
 
-  const sizes = chips.map(chipSize)
+  const sizes = chips?.map(chipSize) ?? []
+  const canSimulate = !!chips?.length && sizes.every(({ w, h }) => w > 0 && h > 0)
 
-  if (sizes.some(({ w, h }) => w === 0 || h === 0)) return
+  let pausePhysics: (() => void) | null = null
+  let resumePhysics: (() => void) | null = null
 
-  const startPhysics = () => {
+  const startPhysics = (chips: Element[]) => {
     const { width, height } = el.getBoundingClientRect()
     const engine = Engine.create({ gravity: { x: 0, y: 0.5 } })
     let walls = buildWalls(width, height)
@@ -318,51 +327,72 @@ onMounted(() => {
     resizeObserver.observe(el)
 
     const runner = Runner.create()
-    Runner.run(runner, engine)
 
-    let raf: number
+    let raf = 0
 
-    const tick = () => {
+    const render = () => {
       transforms.value = bodies.map(({ position: { x, y }, angle }, i) => {
         const size = sizes[i]
         if (!size) return ''
         return `translate(${x - size.w / 2}px, ${y - size.h / 2}px) rotate(${angle}rad)`
       })
+    }
+
+    // Runner.tick copes with the gap after a pause, so the world carries on from where it stopped
+    const tick = (time: number) => {
+      Runner.tick(runner, engine, time)
+      render()
       raf = requestAnimationFrame(tick)
     }
 
-    tick()
+    pausePhysics = () => {
+      cancelAnimationFrame(raf)
+      raf = 0
+    }
+
+    resumePhysics = () => {
+      if (!raf) raf = requestAnimationFrame(tick)
+    }
+
+    render()
+    resumePhysics()
     ready.value = true
 
-    stopPhysics = () => {
-      cancelAnimationFrame(raf)
-      Runner.stop(runner)
+    stopSimulation = () => {
+      pausePhysics?.()
       Engine.clear(engine)
       resizeObserver.disconnect()
       touchListeners.abort()
     }
   }
 
+  // Start once a little of the section shows, so the chips are seen falling. Pause only when it's fully gone.
   const intersectionObserver = new IntersectionObserver(
-    (entries) => {
-      if (entries[0]?.isIntersecting) {
-        intersectionObserver.disconnect()
-        startPhysics()
+    ([entry]) => {
+      if (!entry) return
+
+      sectionVisible.value = entry.isIntersecting
+
+      if (!entry.isIntersecting) {
+        pausePhysics?.()
+      } else if (resumePhysics) {
+        resumePhysics()
+      } else if (canSimulate && chips && entry.intersectionRatio >= PHYSICS_START_RATIO) {
+        startPhysics(chips)
       }
     },
-    { threshold: 0.1 },
+    { threshold: [0, PHYSICS_START_RATIO] },
   )
 
   intersectionObserver.observe(el)
 
-  stopPhysics = () => intersectionObserver.disconnect()
+  stopObserving = () => intersectionObserver.disconnect()
 })
 
 onUnmounted(() => {
-  window.removeEventListener('mousemove', onMouseMove)
   window.removeEventListener('pointerup', resetDrag)
-  window.removeEventListener('scroll', onPageScroll)
-  stopPhysics?.()
+  stopObserving?.()
+  stopSimulation?.()
   if (pageScrollTimeout) clearTimeout(pageScrollTimeout)
   if (rageTimeout) clearTimeout(rageTimeout)
   if (psScreenTimeout) clearTimeout(psScreenTimeout)
