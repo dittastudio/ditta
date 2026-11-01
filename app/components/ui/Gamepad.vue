@@ -39,36 +39,54 @@ const buttonEvents = (button: GamepadButton) => ({
 </script>
 
 <template>
+  <!-- Touch screens only. The gap below the panel is padding, not an offset, so translate-y-full hides it all. -->
   <div
-    class="fixed inset-x-0 bottom-0 z-40 hidden only-touch:flex items-end justify-between px-(--app-gutter-outer) pb-[max(var(--app-gutter-outer),env(safe-area-inset-bottom))] pointer-events-none transition-translate duration-300 ease-outCubic"
+    class="fixed inset-x-0 bottom-0 z-40 hidden only-touch:block px-(--app-gutter-outer) [-webkit-tap-highlight-color:transparent] pb-[max(--spacing(5),env(safe-area-inset-bottom))] pointer-events-none transition-translate duration-300 ease-outCubic"
     :class="{ 'translate-y-full': !visible }"
     aria-hidden="true"
   >
-    <div class="flex gap-3">
-      <button
-        v-for="button in ['left', 'right'] as const"
-        :key="button"
-        type="button"
-        tabindex="-1"
-        class="flex items-center justify-center size-16 bg-black text-white touch-none select-none [-webkit-touch-callout:none] transition-scale duration-75 ease-out data-pressed:scale-90"
-        :class="{ 'pointer-events-auto': visible }"
-        :data-pressed="pressed.has(button) || undefined"
-        v-on="buttonEvents(button)"
-      >
-        <IconPixelTriangle
-          class="h-6 w-auto"
-          :class="{ '-scale-x-100': button === 'left' }"
-        />
-      </button>
-    </div>
-
-    <button
-      type="button"
-      tabindex="-1"
-      class="size-20 rounded-full bg-rage border-4 border-rage-dark touch-none select-none [-webkit-touch-callout:none] transition-scale duration-75 ease-out data-pressed:scale-90"
+    <!-- Solid while it's up, so a press that misses a button doesn't scroll the page or reach the text under it.
+         Cancelling the touches themselves is what stops iOS zooming on a double tap or raising its magnifier on a
+         hold, which it does despite touch-none; the buttons run on pointer events, which still arrive. -->
+    <div
+      class="bg-putty p-4 rounded-10 touch-none"
       :class="{ 'pointer-events-auto': visible }"
-      :data-pressed="pressed.has('jump') || undefined"
-      v-on="buttonEvents('jump')"
-    />
+      @touchstart.prevent
+      @touchend.prevent
+    >
+      <div class="flex items-end justify-between bg-charcoal p-4 rounded-5">
+        <div class="flex gap-1 bg-putty p-1 rounded-5">
+          <button
+            v-for="button in ['left', 'right'] as const"
+            :key="button"
+            type="button"
+            tabindex="-1"
+            class="flex items-center justify-center size-18 bg-black text-white touch-none select-none [-webkit-touch-callout:none] transition-scale duration-75 ease-out data-pressed:scale-90"
+            :class="{ 'pointer-events-auto': visible }"
+            :data-pressed="pressed.has(button) || undefined"
+            v-on="buttonEvents(button)"
+          >
+            <IconPixelTriangle
+              class="h-6 w-auto"
+              :class="{
+                '-scale-x-100 -translate-x-1': button === 'left',
+                'translate-x-1': button === 'right',
+              }"
+            />
+          </button>
+        </div>
+
+        <div class="bg-putty p-1 rounded-5">
+          <button
+            type="button"
+            tabindex="-1"
+            class="relative block size-18 before:absolute before:inset-0 before:border-t-3 before:border-r-3 before:border-t-black/30 before:border-r-black/30 before:rounded-[inherit] after:absolute after:inset-0 after:border-b-3 after:border-l-3 after:border-b-white/40 after:border-l-white/40 after:rounded-[inherit] rounded-full bg-rage touch-none select-none [-webkit-touch-callout:none] transition-scale duration-75 ease-out data-pressed:scale-90 shadow-lg"
+            :class="{ 'pointer-events-auto': visible }"
+            :data-pressed="pressed.has('jump') || undefined"
+            v-on="buttonEvents('jump')"
+          />
+        </div>
+      </div>
+    </div>
   </div>
 </template>

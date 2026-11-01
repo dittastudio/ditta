@@ -3,7 +3,7 @@
 
 export const SIZE = 16 // sprite px, and a brick is the same
 export const STEP = 1000 / 60 // ms per physics frame
-const HITBOX_INSET = 2 // sprite px off each side: a 12px-wide body, like SMB's small Mario
+export const HITBOX_INSET = 2 // sprite px off each side: a 12px-wide body, like SMB's small Mario
 
 // SMB's fixed-point values, kept in its hex so they can be checked against the original: 0x01000 = 1 px/frame
 const nes = (value: number) => value / 0x1000
@@ -40,8 +40,12 @@ const JUMP_STILL = JUMPS[2]
 
 const PIPE_SPEED = 0.25 // sprite px per frame sliding out of the pipe
 
+// Dying: a hop up, then a drop through everything, slower than a jump so it reads
+const DEATH_JUMP = 3 // sprite px per frame
+const DEATH_GRAVITY = 0.12
+
 // Sprite sheet columns
-const Frame = { Idle: 0, Walk: 1, Jump: 4 } as const
+const Frame = { Idle: 0, Walk: 1, Jump: 4, Die: 5 } as const
 const WALK_FRAMES = 3
 
 // A line of text, from cap height down to the baseline. One-way platform: he passes up through it and
@@ -57,7 +61,14 @@ export interface Line {
 // Lines per heading or paragraph, top to bottom. The bricks are the floor at y = 0.
 export type Blocks = Line[][]
 
-type Ledge = [block: number, line: number]
+// A brick-sized block, solid from every side, even before it's seen. Top left, in sprite px.
+export interface Box {
+  left: number
+  top: number
+}
+
+// The box, or a text line by its place in the blocks
+export type Ledge = [block: number, line: number] | 'box'
 
 export interface Input {
   left: boolean
@@ -70,6 +81,7 @@ export interface Input {
 export interface Hooks {
   onJump: () => void
   onBump: (x: number, y: number) => void // ceiling hit, at a point on the line he hit
+  onBumpBox: () => void
   onFloor: () => void // landed on the bricks
 }
 
@@ -88,7 +100,7 @@ export const createMario = () => ({
   runTimer: 0,
   jump: JUMP_STILL as (typeof JUMPS)[number],
   isAirFast: false,
-  ledge: null as Ledge | null, // text line he's standing on; null for the bricks
+  ledge: null as Ledge | null, // text line or box he's standing on; null for the bricks
 })
 
 export type Mario = ReturnType<typeof createMario>
@@ -96,7 +108,55 @@ export type Mario = ReturnType<typeof createMario>
 const approach = (value: number, target: number, delta: number) =>
   value < target ? Math.min(value + delta, target) : Math.max(value - delta, target)
 
-const ledgeLine = (mario: Mario, blocks: Blocks) => (mario.ledge ? blocks[mario.ledge[0]]?.[mario.ledge[1]] : undefined)
+// Built once per box, not on every collision check of every frame. A new box comes with each measure.
+const boxLines = new WeakMap<Box, Line>()
+
+const boxLine = (box: Box): Line => {
+  let line = boxLines.get(box)
+  if (!line)
+    boxLines.set(box, (line = { left: box.left, right: box.left + SIZE, top: box.top, bottom: box.top + SIZE }))
+  return line
+}
+
+export const isSameLedge = (a: Ledge | null, b: Ledge | null) =>
+  Array.isArray(a) && Array.isArray(b) ? a[0] === b[0] && a[1] === b[1] : a === b
+
+export const ledgeLine = (ledge: Ledge | null, blocks: Blocks, box: Box | null) => {
+  if (ledge === 'box') return box ? boxLine(box) : undefined
+  return ledge ? blocks[ledge[0]]?.[ledge[1]] : undefined
+}
+
+// Falling from prevFeet to feet with a body spanning left to right: the first top crossed, the box before any text
+export const findLanding = (
+  left: number,
+  right: number,
+  prevFeet: number,
+  feet: number,
+  blocks: Blocks,
+  box: Box | null,
+) => {
+  const isCrossed = (line: Line) => prevFeet <= line.top && feet >= line.top && right > line.left && left < line.right
+  const solid = box && boxLine(box)
+  if (solid && isCrossed(solid)) return { top: solid.top, ledge: 'box' as Ledge }
+
+  let landing: { top: number; ledge: Ledge } | null = null
+
+  for (const [blockIndex, lines] of blocks.entries()) {
+    for (const [lineIndex, line] of lines.entries()) {
+      if (isCrossed(line) && line.top < (landing?.top ?? Infinity))
+        landing = { top: line.top, ledge: [blockIndex, lineIndex] }
+    }
+  }
+
+  return landing
+}
+
+const land = (mario: Mario, top: number, ledge: Ledge) => {
+  mario.y = top
+  mario.vy = 0
+  mario.grounded = true
+  mario.ledge = ledge
+}
 
 const startJump = (mario: Mario, speed: number) => {
   mario.jump = JUMPS.find((jump) => speed >= jump.from) ?? JUMP_STILL
@@ -108,6 +168,22 @@ export const enterPipe = (mario: Mario, x: number, y: number) => {
   Object.assign(mario, createMario(), { x, y, grounded: false })
 }
 
+// Caught: frozen on his death frame, facing out as drawn
+export const catchMario = (mario: Mario) => {
+  Object.assign(mario, { vx: 0, vy: 0, facing: 1, frame: Frame.Die })
+}
+
+// Then the hop up, before the drop
+export const startDeath = (mario: Mario) => {
+  Object.assign(mario, { vy: -DEATH_JUMP, grounded: false, ledge: null })
+}
+
+// No collisions: he falls straight through the text and the bricks
+export const stepDeath = (mario: Mario) => {
+  mario.vy += DEATH_GRAVITY
+  mario.y += mario.vy
+}
+
 // True once he's fully out of a pipe whose mouth his feet started at
 export const stepPipe = (mario: Mario, mouth: number) => {
   mario.y = Math.min(mario.y + PIPE_SPEED, mouth + SIZE)
@@ -115,29 +191,39 @@ export const stepPipe = (mario: Mario, mouth: number) => {
 }
 
 // Text reflowed under his feet: stay on the same line, or fall if it's gone
-export const settleOnLedge = (mario: Mario, blocks: Blocks) => {
-  if (!mario.ledge) return
+export const settleOnLedge = (body: Pick<Mario, 'ledge' | 'y' | 'grounded'>, blocks: Blocks, box: Box | null) => {
+  if (!body.ledge) return
 
-  const line = ledgeLine(mario, blocks)
+  const line = ledgeLine(body.ledge, blocks, box)
 
   if (line) {
-    mario.y = line.top
+    body.y = line.top
   } else {
-    mario.ledge = null
-    mario.grounded = false
+    body.ledge = null
+    body.grounded = false
   }
 }
 
-const collide = (mario: Mario, blocks: Blocks, hooks: Hooks, prevFeet: number) => {
+const collide = (mario: Mario, blocks: Blocks, box: Box | null, hooks: Hooks, prevFeet: number) => {
   const left = mario.x + HITBOX_INSET
   const right = mario.x + SIZE - HITBOX_INSET
   const overlaps = (line: Line) => right > line.left && left < line.right
+  const solid = box && boxLine(box)
+  const isOverSolid = solid && overlaps(solid)
 
   if (mario.y < prevFeet) {
     // Rising: the first ceiling crossed is the lowest
     const prevHead = prevFeet - SIZE
     const head = mario.y - SIZE
     let ceiling: Line | undefined
+
+    // The box before any text, as it's solid and text is one-way
+    if (isOverSolid && prevHead >= solid.bottom && head < solid.bottom) {
+      mario.y = solid.bottom + SIZE
+      mario.vy = 0
+      hooks.onBumpBox()
+      return
+    }
 
     for (const lines of blocks) {
       const line = lines.at(-1)
@@ -164,29 +250,27 @@ const collide = (mario: Mario, blocks: Blocks, hooks: Hooks, prevFeet: number) =
     return
   }
 
-  // Falling: land on the first top crossed
-  let landing: Ledge | null = null
-  let landingTop = Infinity
+  const landing = findLanding(left, right, prevFeet, mario.y, blocks, box)
+  if (landing) land(mario, landing.top, landing.ledge)
+}
 
-  blocks.forEach((lines, blockIndex) => {
-    lines.forEach((line, lineIndex) => {
-      if (prevFeet <= line.top && mario.y >= line.top && overlaps(line) && line.top < landingTop) {
-        landing = [blockIndex, lineIndex]
-        landingTop = line.top
-      }
-    })
-  })
+// Walked or jumped into the box's side: back out to it, and stop
+const collideSides = (mario: Mario, box: Box | null) => {
+  if (!box) return
 
-  if (landing) {
-    mario.y = landingTop
-    mario.vy = 0
-    mario.grounded = true
-    mario.ledge = landing
-  }
+  const { left, right, top, bottom } = boxLine(box)
+  const isLevel = mario.y > top && mario.y - SIZE < bottom
+  const isInside = mario.x + SIZE - HITBOX_INSET > left && mario.x + HITBOX_INSET < right
+
+  if (!isLevel || !isInside) return
+
+  // By which half he's in, so it also holds if the box reflows onto him
+  mario.x = mario.x + SIZE / 2 < left + SIZE / 2 ? left - SIZE + HITBOX_INSET : right - HITBOX_INSET
+  mario.vx = 0
 }
 
 // One frame on a stage `width` sprite px wide, wrapping at the edges
-export const step = (mario: Mario, input: Input, blocks: Blocks, width: number, hooks: Hooks) => {
+export const step = (mario: Mario, input: Input, blocks: Blocks, box: Box | null, width: number, hooks: Hooks) => {
   const direction = Number(input.right) - Number(input.left)
   const speed = Math.abs(mario.vx)
   const isForward = mario.vx === 0 || Math.sign(mario.vx) === direction
@@ -244,7 +328,7 @@ export const step = (mario: Mario, input: Input, blocks: Blocks, width: number, 
     const prevFeet = mario.y
     mario.y += mario.vy
 
-    collide(mario, blocks, hooks, prevFeet)
+    collide(mario, blocks, box, hooks, prevFeet)
 
     if (!mario.grounded && mario.y >= 0) {
       mario.y = 0
@@ -255,9 +339,10 @@ export const step = (mario: Mario, input: Input, blocks: Blocks, width: number, 
   }
 
   mario.x += mario.vx
+  collideSides(mario, box)
 
   // Ran off the end of a line
-  const ledge = ledgeLine(mario, blocks)
+  const ledge = ledgeLine(mario.ledge, blocks, box)
   if (ledge && (mario.x + SIZE - HITBOX_INSET <= ledge.left || mario.x + HITBOX_INSET >= ledge.right)) {
     startJump(mario, Math.abs(mario.vx))
     mario.ledge = null

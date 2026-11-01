@@ -7,6 +7,11 @@ import { boop, levelUp } from '@@/.web-kits/core'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
+import { SIZE } from '@/utils/mario/physics'
+
+import IconMarioAlien from '@/assets/icons/mario-alien.svg'
+import IconMarioBoxEmpty from '@/assets/icons/mario-box-empty.svg'
+import IconMarioBox from '@/assets/icons/mario-box.svg'
 import IconMarioBrick from '@/assets/icons/mario-brick.svg'
 import IconMarioSequence from '@/assets/icons/mario-sequence.svg'
 import IconPixelArrow from '@/assets/icons/pixel-arrow.svg'
@@ -50,27 +55,44 @@ onMounted(() => {
 onUnmounted(() => cardsAnimation?.revert())
 
 const arrowEl = useTemplateRef('arrow')
-const arrowLiftEl = useTemplateRef('arrowLift') // inside the button, so the lift doesn't fight the shake's translate
+const arrowLiftEl = useTemplateRef('arrowLift')
 const lockup = useTemplateRef('lockup')
+const gamepad = useTemplateRef('gamepad')
+const marioSectionEl = useTemplateRef('marioSection')
 
 const {
   phase: marioPhase,
   isPlayable: isMarioPlayable,
   bricks,
+  box: marioBox,
+  boxState: marioBoxState,
+  flyingCoins,
+  removeCoin,
+  hasAlien,
   start: startMario,
   press: pressMario,
   release: releaseMario,
 } = useMario({
-  section: useTemplateRef('marioSection'),
+  section: marioSectionEl,
   stage: useTemplateRef('marioStage'),
   sprite: useTemplateRef('mario'),
   sheet: useTemplateRef('marioSheet'),
   lockup: () => lockup.value?.$el as HTMLElement | undefined,
+  box: useTemplateRef('marioBoxEl'),
   pipe: arrowLiftEl,
+  alien: useTemplateRef('alien'),
+  alienSheet: useTemplateRef('alienSheet'),
+  gamepad: () => gamepad.value?.$el as HTMLElement | undefined,
 })
 
+// In its own size, a brick, so it holds at every breakpoint
+const marioBoxTransform = computed(
+  () => marioBox.value && `translate(${(marioBox.value.left / SIZE) * 100}%, ${(marioBox.value.top / SIZE) * 100}%)`,
+)
+
 const isArrowLocked = computed(() => marioPhase.value !== 'hidden') // upright and red from rage on, through its fade
-const isArrowGone = computed(() => marioPhase.value === 'falling' || marioPhase.value === 'playing') // Mario's out of the tail
+// Mario's out of the tail, until the scene has cleared away after the alien gets him
+const isArrowGone = computed(() => !['hidden', 'raging', 'piping'].includes(marioPhase.value))
 
 const { play, isAudioOn } = useAudio()
 const soundBoop = defineSound(boop)
@@ -87,32 +109,102 @@ const onMarioClick = () => {
   void soundPowerUp.play()
 }
 
-// Written straight to a CSS variable, so following the mouse never re-renders the block
-const stopTilt = useEventListener(
+// Written straight to a CSS variable, so following the mouse never re-renders the block. Held still from rage on.
+useEventListener(
   window,
   'mousemove',
-  (event: MouseEvent) =>
-    arrowEl.value?.style.setProperty('--tilt', `${(event.clientX / window.innerWidth) * 80 - 40}deg`),
+  (event: MouseEvent) => {
+    if (marioPhase.value !== 'hidden') return
+    arrowEl.value?.style.setProperty('--tilt', `${(event.clientX / window.innerWidth) * 80 - 40}deg`)
+  },
   { passive: true },
 )
 
-const { shakeClass: arrowShakeClass, click: rageArrow } = useRageClicks({
+const {
+  shakeClass: arrowShakeClass,
+  click: rageArrow,
+  resetRage,
+} = useRageClicks({
   onClick: () => play(soundBoop),
   onRage: () => {
-    stopTilt() // upright from here on
     arrowEl.value?.blur() // it's done; otherwise Mario's arrow keys light up its focus ring
+    window.getSelection()?.removeAllRanges() // anything picked up on the way, now that the page can't be selected
     play(soundLevelUp)
     startMario()
   },
 })
 
+// Up into its lifted class from where it sat. A one-shot animation, not a transition: mobile WebKit re-ran a transition
+// from the bottom when the rage shake stopped and the pipe changed layers, so the arrow dropped and rose again.
+// No-op on desktop, where the class doesn't lift it.
+const liftArrow = () => {
+  const el = arrowLiftEl.value
+  if (!el || getComputedStyle(el).translate === 'none') return
+
+  const easing = getComputedStyle(document.documentElement).getPropertyValue('--ease-outCubic').trim() || 'ease-out'
+  el.animate([{ translate: '0 0' }, {}], { duration: 300, easing })
+}
+
+watch(isArrowLocked, (locked) => locked && liftArrow(), { flush: 'post' })
+
+// The padding grows above the section when Mario comes out and shrinks when he's gone: scroll by the same amount, so
+// the arrow stays under the finger that raged it and nothing on screen jumps
+watch(
+  () => marioPhase.value === 'hidden',
+  async () => {
+    const before = marioSectionEl.value?.getBoundingClientRect().top
+    await nextTick()
+    const after = marioSectionEl.value?.getBoundingClientRect().top
+    if (before !== undefined && after !== undefined && after !== before) {
+      window.scrollBy({ top: after - before, behavior: 'instant' })
+    }
+  },
+)
+
+// From rage until the scene has cleared: the whole page goes unselectable, and its touch gestures quiet down
+const isMarioOut = computed(() => marioPhase.value !== 'hidden')
+const isTouch = useAtMedia('(hover: none)')
+
+useHead({ htmlAttrs: { 'data-mario': computed(() => (isMarioOut.value ? '' : undefined)) } })
+
+// Anything that still gets selected, by a long press iOS reads as text selection, say, is cleared straight away
+useEventListener(document, 'selectionchange', () => {
+  const selection = window.getSelection()
+  if (isMarioOut.value && selection && !selection.isCollapsed) selection.removeAllRanges()
+})
+
+// Double-tap zoom anywhere else on the page: iOS ignores touch-action: manipulation unless it's on the very element
+// tapped, so a second tap hard on the heels of the first is cancelled. A single tap still clicks.
+const DOUBLE_TAP = 350 // ms
+let lastTouchEnd = 0
+
+useEventListener(
+  document,
+  'touchend',
+  (event: TouchEvent) => {
+    if (!isMarioOut.value) return
+    if (event.timeStamp - lastTouchEnd < DOUBLE_TAP) event.preventDefault()
+    lastTouchEnd = event.timeStamp
+  },
+  { passive: false },
+)
+
+// Long-press menus on links and images, on touch screens; a mouse's right-click menu is left alone
+useEventListener(document, 'contextmenu', (event: Event) => {
+  if (isMarioOut.value && isTouch.value) event.preventDefault()
+})
+
+// Back from the alien: the arrow can be raged at all over again
+watch(marioPhase, (phase) => phase === 'hidden' && resetRage())
+
 const onArrowClick = () => {
   if (marioPhase.value === 'hidden') rageArrow()
 }
 
-// tabindex="-1" still lets a click focus it, so stray clicks after rage would bring the ring back
+// tabindex="-1" still lets a click focus it, so stray clicks after rage would bring the ring back. Rapid clicks
+// (detail > 1) would otherwise select the text around it on the way to rage.
 const onArrowMouseDown = (event: MouseEvent) => {
-  if (marioPhase.value !== 'hidden') event.preventDefault()
+  if (marioPhase.value !== 'hidden' || event.detail > 1) event.preventDefault()
 }
 </script>
 
@@ -121,7 +213,10 @@ const onArrowMouseDown = (event: MouseEvent) => {
     v-editable="block"
     class="flex flex-col gap-(--app-gutter-outer) overflow-clip"
     :class="{
-      'pt-(--app-vertical-rhythm)': block.spacing_top,
+      'pt-(--app-vertical-rhythm)': block.spacing_top && marioPhase === 'hidden',
+      // Doubled on mobile while Mario's out, for headroom over the box and his jumps
+      'pt-[calc(var(--app-vertical-rhythm)*2)] md:pt-(--app-vertical-rhythm)':
+        block.spacing_top && marioPhase !== 'hidden',
       'pb-(--app-vertical-rhythm)': block.spacing_bottom,
     }"
   >
@@ -141,31 +236,31 @@ const onArrowMouseDown = (event: MouseEvent) => {
           <button
             ref="arrow"
             type="button"
-            class="relative z-1 block w-30 md:w-40 mx-auto transition-opacity duration-300 ease-outCubic"
-            :class="[
-              marioPhase === 'raging' ? 'shake-3' : arrowShakeClass,
-              { 'cursor-default': marioPhase !== 'hidden', 'opacity-0 pointer-events-none': isArrowGone },
-            ]"
+            class="relative z-2 block w-30 md:w-40 mx-auto select-none touch-manipulation transition-opacity duration-300 ease-outCubic"
+            :class="{ 'cursor-default': marioPhase !== 'hidden', 'opacity-0 pointer-events-none': isArrowGone }"
             aria-label="Poke the arrow"
             :tabindex="marioPhase === 'hidden' ? undefined : -1"
             :aria-disabled="marioPhase !== 'hidden' || undefined"
             @mousedown="onArrowMouseDown"
             @click="onArrowClick"
           >
-            <!-- On mobile it lifts clear on rage, so Mario has room to come out of the tail -->
+            <!-- On mobile it lifts clear on rage, so Mario has room to come out of the tail. Animated by liftArrow. -->
             <div
               ref="arrowLift"
               :class="{
                 'transition-scale duration-150 ease-out hover:scale-102 active:scale-98': marioPhase === 'hidden',
-                'max-md:-translate-y-20 transition-transform duration-300 ease-outCubic': isArrowLocked,
+                'max-md:-translate-y-32': isArrowLocked,
               }"
             >
-              <!-- Tail doubles as a pipe: upright and red while raging, until Mario is out -->
-              <IconPixelArrow
-                class="w-full data-rage:[&_[fill='#24F456']]:fill-rage-light data-rage:[&_[fill='#00E640']]:fill-rage data-rage:[&_[fill='#00C340']]:fill-rage-dark"
-                :class="{ 'animate-bob rotate-(--tilt)': !isArrowLocked }"
-                :data-rage="isArrowLocked || undefined"
-              />
+              <!-- The shake sits inside the lift, so stopping it never touches the lift -->
+              <div :class="marioPhase === 'raging' ? 'shake-3' : arrowShakeClass">
+                <!-- Tail doubles as a pipe: upright and red while raging, until Mario is out -->
+                <IconPixelArrow
+                  class="w-full data-rage:[&_[fill='#24F456']]:fill-rage-light data-rage:[&_[fill='#00E640']]:fill-rage data-rage:[&_[fill='#00C340']]:fill-rage-dark"
+                  :class="{ 'animate-bob rotate-(--tilt)': !isArrowLocked }"
+                  :data-rage="isArrowLocked || undefined"
+                />
+              </div>
             </div>
           </button>
         </div>
@@ -173,13 +268,67 @@ const onArrowMouseDown = (event: MouseEvent) => {
 
       <div
         ref="marioStage"
-        class="relative -mt-[calc(var(--app-gutter-outer)*1.5)] md:mt-[calc(var(--app-gutter-outer)*0.5)] lg:mt-0"
+        class="relative -mt-[calc(var(--app-gutter-outer)*2.5)] md:mt-[calc(var(--app-gutter-outer)*0.5)] lg:mt-0"
         aria-hidden="true"
       >
+        <!-- Solid from the start, but unseen until he hits it -->
         <div
+          v-if="marioBox && marioPhase !== 'hidden'"
+          ref="marioBoxEl"
+          class="absolute top-0 left-0 size-10 md:size-12 select-none transition-opacity duration-150 ease-outCubic motion-reduce:transition-none"
+          :class="{ 'opacity-0': marioBoxState === 'hidden' || marioPhase === 'resetting' }"
+          :style="{ transform: marioBoxTransform }"
+        >
+          <IconMarioBoxEmpty
+            v-if="marioBoxState === 'empty'"
+            class="size-full"
+            shape-rendering="crispEdges"
+          />
+          <IconMarioBox
+            v-else
+            class="size-full"
+            shape-rendering="crispEdges"
+          />
+        </div>
+
+        <UiMarioCoin
+          v-for="coin in flyingCoins"
+          :key="coin.id"
+          :x="coin.x"
+          :y="coin.y"
+          @done="removeCoin(coin.id)"
+        />
+
+        <!-- Rises out of the box, then shares Mario's world; under him. He and it only mount on rage, so the page loads
+             without them. -->
+        <div
+          v-if="marioPhase !== 'hidden'"
+          ref="alien"
+          class="absolute z-1 bottom-full left-0 w-20 md:w-24 aspect-[32/21] overflow-hidden select-none pointer-events-none transition-opacity duration-300 ease-outCubic"
+          :class="{ invisible: !hasAlien, 'opacity-0': marioPhase === 'resetting' }"
+        >
+          <div
+            ref="alienSheet"
+            class="h-full w-max"
+          >
+            <IconMarioAlien
+              class="h-full w-auto"
+              shape-rendering="crispEdges"
+            />
+          </div>
+        </div>
+
+        <!-- Over a bumped word and its coins, under the pipe he comes out of -->
+        <div
+          v-if="marioPhase !== 'hidden'"
           ref="mario"
           class="absolute bottom-full left-0 size-10 md:size-12 overflow-hidden select-none cursor-pointer"
-          :class="{ invisible: marioPhase === 'hidden' || marioPhase === 'raging' }"
+          :class="{
+            invisible: marioPhase === 'raging',
+            // In front of the steps below as he falls out of the viewport
+            'z-10': marioPhase === 'dying',
+            'z-1': marioPhase !== 'dying',
+          }"
           @click="onMarioClick"
         >
           <div
@@ -199,7 +348,13 @@ const onArrowMouseDown = (event: MouseEvent) => {
             v-for="(brick, index) in bricks"
             :key="index"
             class="size-10 md:size-12 shrink-0 motion-reduce:[--brick-rise:0]"
-            :class="brick ? ['animate-brick-in', { '[--brick-rise:0]': brick.isUnder }] : 'opacity-0'"
+            :class="
+              !brick
+                ? 'opacity-0'
+                : marioPhase === 'resetting'
+                  ? 'animate-brick-out'
+                  : ['animate-brick-in', { '[--brick-rise:0]': brick.isUnder }]
+            "
             :style="{ animationDelay: brick?.delay }"
           />
         </div>
@@ -212,6 +367,7 @@ const onArrowMouseDown = (event: MouseEvent) => {
       to="#teleports"
     >
       <UiGamepad
+        ref="gamepad"
         :visible="isMarioPlayable"
         @press="pressMario"
         @release="releaseMario"
