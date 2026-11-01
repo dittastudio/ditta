@@ -62,6 +62,8 @@ const MAX_FLYING_COINS = 3 // SMB's jumping coin slots; past that the oldest goe
 const BRICK_RIPPLE_DELAY = 25 // ms per brick away from where Mario lands
 const BRICK_OUT_DURATION = 300 // ms, --animate-brick-out
 const DEATH_FREEZE = 30 // frames everything holds still once the alien touches him
+const SCREECH_INTERVAL_MIN = 240 // frames, 4s: long enough to clear its 3.7s screech and the sounds it comes out to
+const SCREECH_INTERVAL_MAX = 480 // 8s
 
 // A and B, with Z / X as the usual emulator layout
 const JUMP_KEYS = new Set(['ArrowUp', ' ', 'x', 'X'])
@@ -175,6 +177,7 @@ export default function useMario(el: Elements) {
   let alien: Alien | null = null
   let marioLedge: Ledge | null = null // his last surface, null for the bricks; a jump from it still counts
   let deathFrames = 0
+  let screechFrames = 0 // until the alien next screeches
   let deathX = 0 // where he was caught, for the bricks to clear away from
   let resetTimeout: ReturnType<typeof setTimeout> | undefined
   let camera: Camera | null = null // from when he lands
@@ -198,6 +201,24 @@ export default function useMario(el: Elements) {
   }
 
   watch(isAudioOn, loadSounds)
+
+  // Kept out of the rest: most never get as far as the alien, so they're fetched only once the ? box is one hit from it
+  const alienSounds = {
+    entrance: defineSample('/sounds/cotgdw.opus'),
+    screech: defineSample('/sounds/xenomorph-screech.opus'),
+  }
+
+  watch([isAudioOn, boxState], ([on, state]) => {
+    if (on && state !== 'hidden') Object.values(alienSounds).forEach((sound) => sound.load())
+  })
+
+  const nextScreech = () => SCREECH_INTERVAL_MIN + Math.random() * (SCREECH_INTERVAL_MAX - SCREECH_INTERVAL_MIN)
+
+  const playAlienEntrance = async () => {
+    await sounds.powerupAppears.play()
+    // Not if the scene's gone in the meantime, or it's already got him
+    if (hasAlien.value && phase.value === 'playing') await alienSounds.entrance.play()
+  }
 
   const measureLines = (stageRect: DOMRect) => {
     const lockup = toValue(el.lockup)
@@ -444,11 +465,14 @@ export default function useMario(el: Elements) {
 
     const isRevealing = boxState.value === 'hidden'
 
-    playSound(isRevealing ? 'bump' : 'powerupAppears')
+    if (isRevealing) playSound('bump')
+    else void playAlienEntrance()
+
     boxState.value = isRevealing ? 'question' : 'empty'
 
     if (!isRevealing && box.value) {
       alien = createAlien(box.value, !prefersReducedMotion.value)
+      screechFrames = nextScreech()
       hasAlien.value = true
     }
 
@@ -521,6 +545,7 @@ export default function useMario(el: Elements) {
   const die = () => {
     phase.value = 'dying'
     deathFrames = 0
+    Object.values(alienSounds).forEach((sound) => sound.stop())
     deathX = mario.x
     catchMario(mario)
     render()
@@ -560,7 +585,13 @@ export default function useMario(el: Elements) {
 
     if (!alien) return
     stepAlien(alien, blocks, box.value, stage.width, { x: mario.x + SIZE / 2, ledge: marioLedge })
-    if (isTouching(alien, mario)) die()
+    if (isTouching(alien, mario)) return die()
+
+    // Counted in game frames, so it pauses with the loop when the stage is scrolled away
+    if (--screechFrames <= 0) {
+      screechFrames = nextScreech()
+      void alienSounds.screech.play()
+    }
   }
 
   const tick = (time: number) => {
@@ -748,6 +779,7 @@ export default function useMario(el: Elements) {
     scope?.stop()
     stopLoop()
     unbumpWord()
+    hasAlien.value = false
     clearTimeout(rageTimeout)
     clearTimeout(resetTimeout)
   })

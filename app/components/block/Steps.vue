@@ -224,7 +224,7 @@ const onArrowMouseDown = (event: MouseEvent) => {
   >
     <div
       ref="marioSection"
-      class="flex flex-col gap-(--app-gutter-outer)"
+      class="flex flex-col gap-(--app-gutter-outer) [--mario-shift:--spacing(32)]"
     >
       <div class="wrapper grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-5">
         <UiLockup
@@ -251,7 +251,7 @@ const onArrowMouseDown = (event: MouseEvent) => {
               ref="arrowLift"
               :class="{
                 'transition-scale duration-150 ease-out hover:scale-102 active:scale-98': marioPhase === 'hidden',
-                'max-md:-translate-y-32': isArrowLocked,
+                'max-md:-translate-y-(--mario-shift)': isArrowLocked,
               }"
             >
               <!-- The shake sits inside the lift, so stopping it never touches the lift -->
@@ -270,7 +270,7 @@ const onArrowMouseDown = (event: MouseEvent) => {
 
       <div
         ref="marioStage"
-        class="relative -mt-[calc(var(--app-gutter-outer)*2.5)] md:mt-[calc(var(--app-gutter-outer)*0.5)] lg:mt-0"
+        class="relative max-md:-mt-(--mario-shift) md:mt-[calc(var(--app-gutter-outer)*0.5)] lg:mt-0"
         aria-hidden="true"
       >
         <!-- Solid from the start, but unseen until he hits it -->
