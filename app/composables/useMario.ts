@@ -92,6 +92,8 @@ export default function useMario(el: Elements) {
   const boxState = ref<MarioBoxState>('hidden')
   const hasAlien = ref(false)
   const isPlayable = computed(() => phase.value === 'playing' && isVisible.value)
+  // The section only gets watched once he's on his way out, and a rage only happens with the arrow in view
+  const isOnScreen = computed(() => phase.value === 'raging' || (phase.value !== 'hidden' && isVisible.value))
   const prefersReducedMotion = useAtMedia('(prefers-reduced-motion: reduce)')
   const lenis = useLenis() // the page's smooth scrolling: the camera scrolls through it, so the two never fight
 
@@ -585,5 +587,18 @@ export default function useMario(el: Elements) {
     clearTimeout(resetTimeout)
   })
 
-  return { phase, isPlayable, bricks, box, boxState, flyingCoins, removeCoin, hasAlien, start, press, release }
+  return {
+    phase,
+    isPlayable,
+    isOnScreen,
+    bricks,
+    box,
+    boxState,
+    flyingCoins,
+    removeCoin,
+    hasAlien,
+    start,
+    press,
+    release,
+  }
 }

@@ -77,7 +77,7 @@
     }
   }
 
-  /* While Mario's out (set by block/Steps.vue): nothing to highlight, no double-tap zoom, no long-press callouts.
+  /* While Mario's on screen (see useMarioPageGuards): nothing to highlight, no double-tap zoom, no long-press callouts.
      Pinch zoom stays. */
   html[data-mario] {
     user-select: none;

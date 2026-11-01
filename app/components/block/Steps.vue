@@ -63,6 +63,7 @@ const marioSectionEl = useTemplateRef('marioSection')
 const {
   phase: marioPhase,
   isPlayable: isMarioPlayable,
+  isOnScreen: isMarioOnScreen,
   bricks,
   box: marioBox,
   boxState: marioBoxState,
@@ -174,38 +175,7 @@ watch(
   },
 )
 
-// From rage until the scene has cleared: the whole page goes unselectable, and its touch gestures quiet down
-const isMarioOut = computed(() => marioPhase.value !== 'hidden')
-const isTouch = useAtMedia('(hover: none)')
-
-useHead({ htmlAttrs: { 'data-mario': computed(() => (isMarioOut.value ? '' : undefined)) } })
-
-// Anything that still gets selected, by a long press iOS reads as text selection, say, is cleared straight away
-useEventListener(document, 'selectionchange', () => {
-  const selection = window.getSelection()
-  if (isMarioOut.value && selection && !selection.isCollapsed) selection.removeAllRanges()
-})
-
-// Double-tap zoom anywhere else on the page: iOS ignores touch-action: manipulation unless it's on the very element
-// tapped, so a second tap hard on the heels of the first is cancelled. A single tap still clicks.
-const DOUBLE_TAP = 350 // ms
-let lastTouchEnd = 0
-
-useEventListener(
-  document,
-  'touchend',
-  (event: TouchEvent) => {
-    if (!isMarioOut.value) return
-    if (event.timeStamp - lastTouchEnd < DOUBLE_TAP) event.preventDefault()
-    lastTouchEnd = event.timeStamp
-  },
-  { passive: false },
-)
-
-// Long-press menus on links and images, on touch screens; a mouse's right-click menu is left alone
-useEventListener(document, 'contextmenu', (event: Event) => {
-  if (isMarioOut.value && isTouch.value) event.preventDefault()
-})
+useMarioPageGuards(isMarioOnScreen)
 
 // Back from the alien: the arrow can be raged at all over again
 watch(marioPhase, (phase) => phase === 'hidden' && resetRage())
