@@ -3,7 +3,6 @@ import { Engine, Runner, Bodies, Body, Composite, Mouse, MouseConstraint, Events
 import { defineSound } from '@web-kits/audio'
 import { sync } from '@@/.web-kits/core'
 import { useAppStore } from '@/stores/app'
-import type { Accent } from '@/stores/app'
 import type { Block } from '#storyblok-schema'
 
 interface Props {
@@ -36,212 +35,102 @@ const preloadImg = (src: string) => {
   img.src = src
 }
 
-let audioError: HTMLAudioElement | null = null
-let audioRestart: HTMLAudioElement | null = null
-let audioPs: HTMLAudioElement | null = null
-let audioNintendo: HTMLAudioElement | null = null
-let audioEpicSax: HTMLAudioElement | null = null
+const sounds = {
+  error: defineSample('/sounds/winxperror.opus'),
+  restart: defineSample('/sounds/winxpstartup.opus'),
+  ps: defineSample('/sounds/ps-startup.opus'),
+  nintendo: defineSample('/sounds/nintendo-startup.opus'),
+  epicSax: defineSample('/sounds/epicsaxguy.opus'),
+}
+
 let jazzInterval: ReturnType<typeof setInterval> | null = null
 
-watch(
-  isAudioOn,
-  (on) => {
-    if (!on || audioError) return
+watch(isAudioOn, (on) => on && sounds.error.load(), { immediate: true })
 
-    audioError = new Audio('/sounds/winxperror.opus')
-    audioError.preload = 'auto'
-  },
-  { immediate: true },
-)
-
-const soundError = () => {
-  if (audioError) {
-    audioError.currentTime = 0
-    audioError.play().catch(() => {})
-  }
-}
-const accents: Accent[] = ['pink', 'mood', 'olive']
 const appStore = useAppStore()
 
-const clickTimes: number[] = []
-const inRage = ref(false)
 const rageCount = ref(0)
 const rageScreen = ref('/imgs/blue-screen.svg')
-const shakeLevel = ref(0)
 
 let rageTimeout: ReturnType<typeof setTimeout> | null = null
 let psScreenTimeout: ReturnType<typeof setTimeout> | null = null
-let shakeResetTimeout: ReturnType<typeof setTimeout> | null = null
-let currentEndedHandler: (() => void) | null = null
 
-const shakeClass = computed(() => {
-  if (inRage.value || shakeLevel.value <= 1) return ''
-  if (shakeLevel.value <= 3) return 'computer-shake-1'
-  if (shakeLevel.value <= 5) return 'computer-shake-2'
-  return 'computer-shake-3'
-})
-
-const onComputerClick = () => {
-  if (inRage.value) return
-
-  const now = Date.now()
-  clickTimes.push(now)
-
-  const cutoff = now - 1500
-  while (clickTimes.length && clickTimes[0]! < cutoff) clickTimes.shift()
-
-  shakeLevel.value = clickTimes.length
-
-  if (clickTimes.length === 1) {
-    preloadImg('/imgs/blue-screen.svg')
-    const upcoming = (rageCount.value + 1) % 4
-    if (upcoming === 1) {
-      preloadImg('/imgs/windowsxp-screen.svg')
-      if (!audioRestart) {
-        audioRestart = new Audio('/sounds/winxpstartup.opus')
-        audioRestart.preload = 'auto'
-      }
-    } else if (upcoming === 2) {
-      preloadImg('/imgs/ps-screen-1.svg')
-      preloadImg('/imgs/ps-screen-2.svg')
-      if (!audioPs) {
-        audioPs = new Audio('/sounds/ps-startup.opus')
-        audioPs.preload = 'auto'
-      }
-    } else if (upcoming === 3) {
-      preloadImg('/imgs/nintendo-screen.svg')
-      if (!audioNintendo) {
-        audioNintendo = new Audio('/sounds/nintendo-startup.opus')
-        audioNintendo.preload = 'auto'
-      }
-    } else {
-      preloadImg('/imgs/jazz-1.svg')
-      preloadImg('/imgs/jazz-2.svg')
-      if (!audioEpicSax) {
-        audioEpicSax = new Audio('/sounds/epicsaxguy.opus')
-        audioEpicSax.preload = 'auto'
-      }
-    }
+const preloadNextRage = () => {
+  preloadImg('/imgs/blue-screen.svg')
+  const upcoming = (rageCount.value + 1) % 4
+  if (upcoming === 1) {
+    preloadImg('/imgs/windowsxp-screen.svg')
+    if (isAudioOn.value) sounds.restart.load()
+  } else if (upcoming === 2) {
+    preloadImg('/imgs/ps-screen-1.svg')
+    preloadImg('/imgs/ps-screen-2.svg')
+    if (isAudioOn.value) sounds.ps.load()
+  } else if (upcoming === 3) {
+    preloadImg('/imgs/nintendo-screen.svg')
+    if (isAudioOn.value) sounds.nintendo.load()
+  } else {
+    preloadImg('/imgs/jazz-1.svg')
+    preloadImg('/imgs/jazz-2.svg')
+    if (isAudioOn.value) sounds.epicSax.load()
   }
+}
 
-  if (shakeResetTimeout) clearTimeout(shakeResetTimeout)
-  shakeResetTimeout = setTimeout(() => {
-    shakeLevel.value = 0
-  }, 500)
+const onRage = () => {
+  rageScreen.value = '/imgs/blue-screen.svg'
+  void sounds.error.play()
 
-  if (clickTimes.length >= 7) {
-    clickTimes.length = 0
-    shakeLevel.value = 0
-    if (shakeResetTimeout) clearTimeout(shakeResetTimeout)
-    inRage.value = true
-    rageScreen.value = '/imgs/blue-screen.svg'
-    play(soundError)
-
-    if (!isAudioOn.value) {
-      rageTimeout = setTimeout(() => {
-        inRage.value = false
-      }, 2000)
-      return
-    }
-
-    rageCount.value++
-    const sequence = rageCount.value % 4
-
-    if (sequence === 1) {
-      rageTimeout = setTimeout(() => {
-        if (!audioRestart) return
-
-        rageScreen.value = '/imgs/windowsxp-screen.svg'
-        audioRestart.currentTime = 0
-
-        currentEndedHandler = () => {
-          inRage.value = false
-          audioRestart!.removeEventListener('ended', currentEndedHandler!)
-          currentEndedHandler = null
-        }
-
-        audioRestart.addEventListener('ended', currentEndedHandler)
-        audioRestart.play().catch(() => {})
-      }, 2000)
-    } else if (sequence === 2) {
-      rageTimeout = setTimeout(() => {
-        if (!audioPs) return
-
-        rageScreen.value = '/imgs/ps-screen-1.svg'
-        audioPs.currentTime = 0
-
-        psScreenTimeout = setTimeout(() => {
-          rageScreen.value = '/imgs/ps-screen-2.svg'
-        }, 7200)
-
-        currentEndedHandler = () => {
-          if (psScreenTimeout) {
-            clearTimeout(psScreenTimeout)
-            psScreenTimeout = null
-          }
-          inRage.value = false
-          audioPs!.removeEventListener('ended', currentEndedHandler!)
-          currentEndedHandler = null
-        }
-
-        audioPs.addEventListener('ended', currentEndedHandler)
-        audioPs.play().catch(() => {})
-      }, 2000)
-    } else if (sequence === 3) {
-      rageTimeout = setTimeout(() => {
-        if (!audioNintendo) return
-
-        rageScreen.value = '/imgs/nintendo-screen.svg'
-        audioNintendo.currentTime = 0
-
-        currentEndedHandler = () => {
-          inRage.value = false
-          audioNintendo!.removeEventListener('ended', currentEndedHandler!)
-          currentEndedHandler = null
-        }
-
-        audioNintendo.addEventListener('ended', currentEndedHandler)
-        audioNintendo.play().catch(() => {})
-      }, 2000)
-    } else {
-      rageTimeout = setTimeout(() => {
-        if (!audioEpicSax) return
-
-        rageScreen.value = '/imgs/jazz-1.svg'
-        audioEpicSax.currentTime = 0
-
-        let jazzToggle = false
-
-        jazzInterval = setInterval(() => {
-          jazzToggle = !jazzToggle
-          rageScreen.value = jazzToggle ? '/imgs/jazz-2.svg' : '/imgs/jazz-1.svg'
-        }, 465)
-
-        currentEndedHandler = () => {
-          if (jazzInterval) {
-            clearInterval(jazzInterval)
-            jazzInterval = null
-          }
-          inRage.value = false
-          audioEpicSax!.removeEventListener('ended', currentEndedHandler!)
-          currentEndedHandler = null
-        }
-
-        audioEpicSax.addEventListener('ended', currentEndedHandler)
-        audioEpicSax.play().catch(() => {})
-      }, 2000)
-    }
-
+  if (!isAudioOn.value) {
+    rageTimeout = setTimeout(resetRage, RAGE_SILENT_HOLD)
     return
   }
 
-  const next = (accents.indexOf(appStore.accent) + 1) % accents.length
+  rageCount.value++
+  const sequence = rageCount.value % 4
 
-  if (accents[next]) {
-    appStore.setAccent(accents[next])
-    play(soundClick)
-  }
+  // Each boot screen stays up for as long as its sound plays
+  rageTimeout = setTimeout(async () => {
+    if (sequence === 1) {
+      rageScreen.value = '/imgs/windowsxp-screen.svg'
+      await sounds.restart.play()
+    } else if (sequence === 2) {
+      rageScreen.value = '/imgs/ps-screen-1.svg'
+      psScreenTimeout = setTimeout(() => {
+        rageScreen.value = '/imgs/ps-screen-2.svg'
+      }, 7200)
+      await sounds.ps.play()
+      clearTimeout(psScreenTimeout)
+    } else if (sequence === 3) {
+      rageScreen.value = '/imgs/nintendo-screen.svg'
+      await sounds.nintendo.play()
+    } else {
+      let jazzToggle = false
+
+      rageScreen.value = '/imgs/jazz-1.svg'
+      jazzInterval = setInterval(() => {
+        jazzToggle = !jazzToggle
+        rageScreen.value = jazzToggle ? '/imgs/jazz-2.svg' : '/imgs/jazz-1.svg'
+      }, 465)
+      await sounds.epicSax.play()
+      clearInterval(jazzInterval)
+    }
+
+    resetRage()
+  }, 2000)
 }
+
+const {
+  inRage,
+  shakeClass,
+  click: onComputerClick,
+  resetRage,
+} = useRageClicks({
+  onFirstClick: preloadNextRage,
+  onClick: () => {
+    appStore.cycleAccent()
+    play(soundClick)
+  },
+  onRage,
+})
 
 let stopPhysics: (() => void) | null = null
 
@@ -409,19 +298,7 @@ onUnmounted(() => {
   stopPhysics?.()
   if (rageTimeout) clearTimeout(rageTimeout)
   if (psScreenTimeout) clearTimeout(psScreenTimeout)
-  if (shakeResetTimeout) clearTimeout(shakeResetTimeout)
   if (jazzInterval) clearInterval(jazzInterval)
-  if (currentEndedHandler) {
-    audioRestart?.removeEventListener('ended', currentEndedHandler)
-    audioPs?.removeEventListener('ended', currentEndedHandler)
-    audioNintendo?.removeEventListener('ended', currentEndedHandler)
-    audioEpicSax?.removeEventListener('ended', currentEndedHandler)
-  }
-  audioError?.pause()
-  audioRestart?.pause()
-  audioPs?.pause()
-  audioNintendo?.pause()
-  audioEpicSax?.pause()
 })
 </script>
 
@@ -454,7 +331,7 @@ onUnmounted(() => {
           >
             <IconComputer
               class="animate-bob w-full text-accent cursor-pointer"
-              :class="{ 'transition-scale duration-150 ease-out hover:scale-102 active:scale-98': !inRage }"
+              :class="{ 'transition-[scale,transform] duration-150 ease-out hover:scale-102 active:scale-98': !inRage }"
               :style="{ transform: `rotate(${rotation}deg)` }"
               :in-rage="inRage"
               :screen-src="rageScreen"
@@ -487,57 +364,3 @@ onUnmounted(() => {
     </ul>
   </div>
 </template>
-
-<style>
-@keyframes computer-shake {
-  0%,
-  100% {
-    translate: 0 0;
-  }
-  10% {
-    translate: calc(var(--shake-x) * -1) calc(var(--shake-y) * -1);
-  }
-  20% {
-    translate: var(--shake-x) var(--shake-y);
-  }
-  30% {
-    translate: calc(var(--shake-x) * -0.7) calc(var(--shake-y) * 1.3);
-  }
-  40% {
-    translate: calc(var(--shake-x) * 1.2) calc(var(--shake-y) * -0.8);
-  }
-  50% {
-    translate: calc(var(--shake-x) * -1.3) var(--shake-y);
-  }
-  60% {
-    translate: var(--shake-x) calc(var(--shake-y) * -1.5);
-  }
-  70% {
-    translate: calc(var(--shake-x) * -0.5) calc(var(--shake-y) * 0.5);
-  }
-  80% {
-    translate: calc(var(--shake-x) * 1.4) calc(var(--shake-y) * -0.3);
-  }
-  90% {
-    translate: calc(var(--shake-x) * -1) calc(var(--shake-y) * 1.2);
-  }
-}
-
-.computer-shake-1 {
-  --shake-x: 1px;
-  --shake-y: 0.5px;
-  animation: computer-shake 0.5s ease-in-out infinite;
-}
-
-.computer-shake-2 {
-  --shake-x: 2.5px;
-  --shake-y: 1px;
-  animation: computer-shake 0.32s ease-in-out infinite;
-}
-
-.computer-shake-3 {
-  --shake-x: 5px;
-  --shake-y: 2.5px;
-  animation: computer-shake 0.18s ease-in-out infinite;
-}
-</style>
