@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Engine, Runner, Bodies, Body, Composite, Mouse, MouseConstraint, Events } from 'matter-js'
+import { Engine, Runner, Bodies, Body, Composite, Mouse, MouseConstraint, Events, Sleeping } from 'matter-js'
 import { useEventListener } from '@vueuse/core'
 import { defineSound } from '@web-kits/audio'
 import { sync } from '@@/.web-kits/core'
@@ -204,7 +204,7 @@ onMounted(() => {
 
   const startPhysics = (chips: Element[]) => {
     const { width, height } = el.getBoundingClientRect()
-    const engine = Engine.create({ gravity: { x: 0, y: 0.5 } })
+    const engine = Engine.create({ gravity: { x: 0, y: 0.5 }, enableSleeping: true })
     let walls = buildWalls(width, height)
 
     Composite.add(engine.world, walls)
@@ -340,6 +340,9 @@ onMounted(() => {
 
     // Runner.tick copes with the gap after a pause, so the world carries on from where it stopped
     const tick = (time: number) => {
+      // A sleeping chip wouldn't notice its support being pulled away slowly, and would be left hanging in mid-air
+      if (mouseConstraint.body) bodies.forEach((body) => Sleeping.set(body, false))
+
       Runner.tick(runner, engine, time)
       render()
       raf = requestAnimationFrame(tick)
