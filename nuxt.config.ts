@@ -98,6 +98,14 @@ export default defineNuxtConfig({
     },
   },
   compatibilityDate: '2025-07-15',
+  hooks: {
+    // Mario's chunk is fetched by code on the arrow's first poke, not prefetched on every page
+    'build:manifest': (manifest) => {
+      for (const chunk of Object.values(manifest)) {
+        chunk.dynamicImports = chunk.dynamicImports?.filter((path) => !path.endsWith('block/StepsMario.vue'))
+      }
+    },
+  },
   ssr: !isSpa,
   css: ['~/assets/css/app.css'],
   devtools: { enabled: false },

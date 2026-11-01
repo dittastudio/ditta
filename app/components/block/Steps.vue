@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { MarioPhase } from '@/composables/useMario'
 import type { Themes } from '@/types/app'
 import type { Block } from '#storyblok-schema'
 import { useElementVisibility, useEventListener } from '@vueuse/core'
@@ -7,13 +8,6 @@ import { boop, levelUp } from '@@/.web-kits/core'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-import { SIZE } from '@/utils/mario/physics'
-
-import IconMarioAlien from '@/assets/icons/mario-alien.svg'
-import IconMarioBoxEmpty from '@/assets/icons/mario-box-empty.svg'
-import IconMarioBox from '@/assets/icons/mario-box.svg'
-import IconMarioBrick from '@/assets/icons/mario-brick.svg'
-import IconMarioSequence from '@/assets/icons/mario-sequence.svg'
 import IconPixelArrow from '@/assets/icons/pixel-arrow.svg'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -57,60 +51,35 @@ onUnmounted(() => cardsAnimation?.revert())
 const arrowEl = useTemplateRef('arrow')
 const arrowLiftEl = useTemplateRef('arrowLift')
 const lockup = useTemplateRef('lockup')
-const gamepad = useTemplateRef('gamepad')
+const lockupEl = computed(() => lockup.value?.$el as HTMLElement | undefined)
 const marioSectionEl = useTemplateRef('marioSection')
+const marioStageEl = useTemplateRef('marioStage')
 
-const {
-  phase: marioPhase,
-  isPlayable: isMarioPlayable,
-  isOnScreen: isMarioOnScreen,
-  bricks,
-  box: marioBox,
-  boxState: marioBoxState,
-  flyingCoins,
-  removeCoin,
-  hasAlien,
-  start: startMario,
-  press: pressMario,
-  release: releaseMario,
-} = useMario({
-  section: marioSectionEl,
-  stage: useTemplateRef('marioStage'),
-  sprite: useTemplateRef('mario'),
-  sheet: useTemplateRef('marioSheet'),
-  lockup: () => lockup.value?.$el as HTMLElement | undefined,
-  box: useTemplateRef('marioBoxEl'),
-  pipe: arrowLiftEl,
-  alien: useTemplateRef('alien'),
-  alienSheet: useTemplateRef('alienSheet'),
-  gamepad: () => gamepad.value?.$el as HTMLElement | undefined,
-})
+// Everything of Mario's beyond this phase is fetched on the arrow's first poke, as few visitors ever get further. The
+// phase lives here so the arrow can rage straight away, and StepsMario takes over reporting it once it's arrived.
+const marioPhase = ref<MarioPhase>('hidden')
+const marioScene = shallowRef<typeof import('@/components/block/StepsMario.vue').default | null>(null)
+let marioLoad: Promise<void> | undefined
 
-// In its own size, a brick, so it holds at every breakpoint
-const marioBoxTransform = computed(() =>
-  marioBox.value
-    ? `translate(${(marioBox.value.left / SIZE) * 100}%, ${(marioBox.value.top / SIZE) * 100}%)`
-    : undefined,
-)
+const loadMario = () => {
+  marioLoad ??= import('@/components/block/StepsMario.vue')
+    .then((module) => {
+      marioScene.value = module.default
+    })
+    .catch(() => {
+      // Back to a plain arrow. The next poke tries again, though Chrome remembers a failed import until a reload.
+      marioLoad = undefined
+      if (marioPhase.value === 'raging') marioPhase.value = 'hidden'
+    })
+}
 
 const isArrowLocked = computed(() => marioPhase.value !== 'hidden') // upright and red from rage on, through its fade
 // Mario's out of the tail, until the scene has cleared away after the alien gets him
 const isArrowGone = computed(() => !['hidden', 'raging', 'piping'].includes(marioPhase.value))
 
-const { play, isAudioOn } = useAudio()
+const { play } = useAudio()
 const soundBoop = defineSound(boop)
 const soundLevelUp = defineSound(levelUp)
-
-const appStore = useAppStore()
-const soundPowerUp = defineSample('/sounds/smb_powerup.opus')
-
-// Ready by the time he's clickable: loads alongside his other sounds, once the arrow rages
-watch([isAudioOn, marioPhase], ([on, phase]) => on && phase !== 'hidden' && soundPowerUp.load())
-
-const onMarioClick = () => {
-  appStore.cycleAccent()
-  void soundPowerUp.play()
-}
 
 // Written straight to a CSS variable, so following the mouse never re-renders the block. Held still from rage on, and
 // left alone off screen, catching up with the mouse on the way back so it doesn't jump at the next move.
@@ -139,12 +108,14 @@ const {
   click: rageArrow,
   resetRage,
 } = useRageClicks({
+  onFirstClick: loadMario,
   onClick: () => play(soundBoop),
   onRage: () => {
     arrowEl.value?.blur() // it's done; otherwise Mario's arrow keys light up its focus ring
     window.getSelection()?.removeAllRanges() // anything picked up on the way, now that the page can't be selected
     play(soundLevelUp)
-    startMario()
+    marioPhase.value = 'raging'
+    loadMario()
   },
 })
 
@@ -174,8 +145,6 @@ watch(
     }
   },
 )
-
-useMarioPageGuards(isMarioOnScreen)
 
 // Back from the alien: the arrow can be raged at all over again
 watch(marioPhase, (phase) => phase === 'hidden' && resetRage())
@@ -250,113 +219,24 @@ const onArrowMouseDown = (event: MouseEvent) => {
         </div>
       </div>
 
+      <!-- Holds the bricks' height up front, so the page doesn't move when they arrive -->
       <div
         ref="marioStage"
-        class="relative max-md:-mt-(--mario-shift) md:mt-[calc(var(--app-gutter-outer)*0.5)] lg:mt-0"
+        class="relative h-10 md:h-12 max-md:-mt-(--mario-shift) md:mt-[calc(var(--app-gutter-outer)*0.5)] lg:mt-0"
         aria-hidden="true"
       >
-        <!-- Solid from the start, but unseen until he hits it -->
-        <div
-          v-if="marioBox && marioPhase !== 'hidden'"
-          ref="marioBoxEl"
-          class="absolute top-0 left-0 size-10 md:size-12 select-none transition-opacity duration-150 ease-outCubic motion-reduce:transition-none"
-          :class="{ 'opacity-0': marioBoxState === 'hidden' || marioPhase === 'resetting' }"
-          :style="{ transform: marioBoxTransform }"
-        >
-          <IconMarioBoxEmpty
-            v-if="marioBoxState === 'empty'"
-            class="size-full"
-            shape-rendering="crispEdges"
-          />
-          <IconMarioBox
-            v-else
-            class="size-full"
-            shape-rendering="crispEdges"
-          />
-        </div>
-
-        <UiMarioCoin
-          v-for="coin in flyingCoins"
-          :key="coin.id"
-          :x="coin.x"
-          :y="coin.y"
-          @done="removeCoin(coin.id)"
+        <component
+          :is="marioScene"
+          v-if="marioScene"
+          :section="marioSectionEl"
+          :stage="marioStageEl"
+          :lockup="lockupEl"
+          :pipe="arrowLiftEl"
+          :is-raged="marioPhase !== 'hidden'"
+          @phase="marioPhase = $event"
         />
-
-        <!-- Rises out of the box, then shares Mario's world; under him. He and it only mount on rage, so the page loads
-             without them. -->
-        <div
-          v-if="marioPhase !== 'hidden'"
-          ref="alien"
-          class="absolute z-1 bottom-full left-0 w-20 md:w-24 aspect-[32/21] overflow-hidden select-none pointer-events-none transition-opacity duration-300 ease-outCubic"
-          :class="{ invisible: !hasAlien, 'opacity-0': marioPhase === 'resetting' }"
-        >
-          <div
-            ref="alienSheet"
-            class="h-full w-max"
-          >
-            <IconMarioAlien
-              class="h-full w-auto"
-              shape-rendering="crispEdges"
-            />
-          </div>
-        </div>
-
-        <!-- Over a bumped word and its coins, under the pipe he comes out of -->
-        <div
-          v-if="marioPhase !== 'hidden'"
-          ref="mario"
-          class="absolute bottom-full left-0 size-10 md:size-12 overflow-hidden select-none cursor-pointer"
-          :class="{
-            invisible: marioPhase === 'raging',
-            // In front of the steps below as he falls out of the viewport
-            'z-10': marioPhase === 'dying',
-            'z-1': marioPhase !== 'dying',
-          }"
-          @click="onMarioClick"
-        >
-          <div
-            ref="marioSheet"
-            class="h-full w-max"
-          >
-            <IconMarioSequence
-              class="h-full w-auto text-accent"
-              shape-rendering="crispEdges"
-            />
-          </div>
-        </div>
-
-        <!-- Sized up front: bricks only render once the stage is measured -->
-        <div class="flex justify-center h-10 md:h-12 overflow-x-clip">
-          <IconMarioBrick
-            v-for="(brick, index) in bricks"
-            :key="index"
-            class="size-10 md:size-12 shrink-0 motion-reduce:[--brick-rise:0]"
-            :class="
-              !brick
-                ? 'opacity-0'
-                : marioPhase === 'resetting'
-                  ? 'animate-brick-out'
-                  : ['animate-brick-in', { '[--brick-rise:0]': brick.isUnder }]
-            "
-            :style="{ animationDelay: brick?.delay }"
-          />
-        </div>
       </div>
     </div>
-
-    <!-- Only mounted once the pipe rages, so it can slide in when Mario lands -->
-    <Teleport
-      v-if="marioPhase !== 'hidden'"
-      to="#teleports"
-    >
-      <UiGamepad
-        ref="gamepad"
-        :visible="isMarioPlayable"
-        @press="pressMario"
-        @release="releaseMario"
-      />
-    </Teleport>
 
     <div class="wrapper flex flex-col gap-(--app-gutter-outer)">
       <div
