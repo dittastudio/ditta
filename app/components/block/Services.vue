@@ -14,7 +14,7 @@ const { block } = defineProps<Props>()
 
 const containerRef = useTemplateRef('container')
 const chipRefs = useTemplateRef('chipRef')
-const transforms = shallowRef<string[]>([])
+const computerRef = useTemplateRef('computer')
 const ready = ref(false)
 const isDragging = ref(false)
 
@@ -148,9 +148,8 @@ function buildWalls(w: number, h: number) {
   ]
 }
 
-function chipSize(chip: Element) {
-  const el = chip as HTMLElement
-  return { w: el.offsetWidth, h: el.offsetHeight }
+function chipSize(chip: HTMLElement) {
+  return { w: chip.offsetWidth, h: chip.offsetHeight }
 }
 
 function makeChipBody(x: number, y: number, w: number, h: number) {
@@ -162,10 +161,11 @@ function makeChipBody(x: number, y: number, w: number, h: number) {
   })
 }
 
-const rotation = ref(0)
-
+// Written straight to the element, so moving the mouse doesn't re-render the block
 const onMouseMove = (event: MouseEvent) => {
-  rotation.value = (event.clientX / window.innerWidth) * 80 - 40
+  const rotation = (event.clientX / window.innerWidth) * 80 - 40
+
+  computerRef.value?.$el.style.setProperty('transform', `rotate(${rotation}deg)`)
 }
 
 // While the page is moving, a swipe that lands on a chip carries on scrolling rather than stopping dead on it
@@ -202,7 +202,7 @@ onMounted(() => {
   let pausePhysics: (() => void) | null = null
   let resumePhysics: (() => void) | null = null
 
-  const startPhysics = (chips: Element[]) => {
+  const startPhysics = (chips: HTMLElement[]) => {
     const { width, height } = el.getBoundingClientRect()
     const engine = Engine.create({ gravity: { x: 0, y: 0.5 }, enableSleeping: true })
     let walls = buildWalls(width, height)
@@ -322,6 +322,9 @@ onMounted(() => {
         bodies[i] = newBody
         sizes[i] = { w, h }
       })
+
+      // A chip's transform depends on its size, which may have changed without it moving
+      poses.fill(NaN)
     })
 
     resizeObserver.observe(el)
@@ -330,11 +333,23 @@ onMounted(() => {
 
     let raf = 0
 
+    // Written straight to the elements, so a frame doesn't re-render the block. x, y, angle per chip, to skip any that
+    // haven't moved.
+    const poses = new Float64Array(bodies.length * 3).fill(NaN)
+
     const render = () => {
-      transforms.value = bodies.map(({ position: { x, y }, angle }, i) => {
+      bodies.forEach(({ position: { x, y }, angle }, i) => {
+        const chip = chips[i]
         const size = sizes[i]
-        if (!size) return ''
-        return `translate(${x - size.w / 2}px, ${y - size.h / 2}px) rotate(${angle}rad)`
+        const offset = i * 3
+
+        if (!chip || !size) return
+        if (poses[offset] === x && poses[offset + 1] === y && poses[offset + 2] === angle) return
+
+        poses[offset] = x
+        poses[offset + 1] = y
+        poses[offset + 2] = angle
+        chip.style.transform = `translate(${x - size.w / 2}px, ${y - size.h / 2}px) rotate(${angle}rad)`
       })
     }
 
@@ -431,9 +446,9 @@ onUnmounted(() => {
             :class="shakeClass"
           >
             <IconComputer
+              ref="computer"
               class="tappable animate-bob w-full text-accent cursor-pointer"
               :class="{ 'transition-[scale,transform] duration-150 ease-out hover:scale-102 active:scale-98': !inRage }"
-              :style="{ transform: `rotate(${rotation}deg)` }"
               :in-rage="inRage"
               :screen-src="rageScreen"
               @mousedown.prevent
@@ -450,12 +465,11 @@ onUnmounted(() => {
     >
       <!-- iOS ignores touch-action unless it's on the very element touched, hence **: -->
       <li
-        v-for="(service, i) in services"
+        v-for="service in services"
         :key="service.id"
         ref="chipRef"
         class="absolute top-0 left-0 rounded-full touch-pinch-zoom **:touch-pinch-zoom will-change-transform transition-opacity duration-500"
         :class="[ready ? 'opacity-100' : 'opacity-0', { 'touch-pan-y **:touch-pan-y': pageScrolling }]"
-        :style="transforms[i] ? { transform: transforms[i] } : {}"
       >
         <UiChip
           v-memo="[service.name]"
