@@ -45,117 +45,92 @@ const sounds = {
 
 let jazzInterval: ReturnType<typeof setInterval> | null = null
 
-watch(isAudioOn, (on) => on && sounds.error.load())
+watch(isAudioOn, (on) => on && sounds.error.load(), { immediate: true })
 
 const appStore = useAppStore()
 
-const clickTimes: number[] = []
-const inRage = ref(false)
 const rageCount = ref(0)
 const rageScreen = ref('/imgs/blue-screen.svg')
-const shakeLevel = ref(0)
 
 let rageTimeout: ReturnType<typeof setTimeout> | null = null
 let psScreenTimeout: ReturnType<typeof setTimeout> | null = null
-let shakeResetTimeout: ReturnType<typeof setTimeout> | null = null
 
-const shakeClass = computed(() => {
-  if (inRage.value || shakeLevel.value <= 1) return ''
-  if (shakeLevel.value <= 3) return 'computer-shake-1'
-  if (shakeLevel.value <= 5) return 'computer-shake-2'
-  return 'computer-shake-3'
-})
-
-const onComputerClick = () => {
-  if (inRage.value) return
-
-  const now = Date.now()
-  clickTimes.push(now)
-
-  const cutoff = now - 1500
-  while (clickTimes.length && clickTimes[0]! < cutoff) clickTimes.shift()
-
-  shakeLevel.value = clickTimes.length
-
-  if (clickTimes.length === 1) {
-    preloadImg('/imgs/blue-screen.svg')
-    const upcoming = (rageCount.value + 1) % 4
-    if (upcoming === 1) {
-      preloadImg('/imgs/windowsxp-screen.svg')
-      if (isAudioOn.value) sounds.restart.load()
-    } else if (upcoming === 2) {
-      preloadImg('/imgs/ps-screen-1.svg')
-      preloadImg('/imgs/ps-screen-2.svg')
-      if (isAudioOn.value) sounds.ps.load()
-    } else if (upcoming === 3) {
-      preloadImg('/imgs/nintendo-screen.svg')
-      if (isAudioOn.value) sounds.nintendo.load()
-    } else {
-      preloadImg('/imgs/jazz-1.svg')
-      preloadImg('/imgs/jazz-2.svg')
-      if (isAudioOn.value) sounds.epicSax.load()
-    }
+const preloadNextRage = () => {
+  preloadImg('/imgs/blue-screen.svg')
+  const upcoming = (rageCount.value + 1) % 4
+  if (upcoming === 1) {
+    preloadImg('/imgs/windowsxp-screen.svg')
+    if (isAudioOn.value) sounds.restart.load()
+  } else if (upcoming === 2) {
+    preloadImg('/imgs/ps-screen-1.svg')
+    preloadImg('/imgs/ps-screen-2.svg')
+    if (isAudioOn.value) sounds.ps.load()
+  } else if (upcoming === 3) {
+    preloadImg('/imgs/nintendo-screen.svg')
+    if (isAudioOn.value) sounds.nintendo.load()
+  } else {
+    preloadImg('/imgs/jazz-1.svg')
+    preloadImg('/imgs/jazz-2.svg')
+    if (isAudioOn.value) sounds.epicSax.load()
   }
+}
 
-  if (shakeResetTimeout) clearTimeout(shakeResetTimeout)
-  shakeResetTimeout = setTimeout(() => {
-    shakeLevel.value = 0
-  }, 500)
+const onRage = () => {
+  rageScreen.value = '/imgs/blue-screen.svg'
+  void sounds.error.play()
 
-  if (clickTimes.length >= 7) {
-    clickTimes.length = 0
-    shakeLevel.value = 0
-    if (shakeResetTimeout) clearTimeout(shakeResetTimeout)
-    inRage.value = true
-    rageScreen.value = '/imgs/blue-screen.svg'
-    void sounds.error.play()
-
-    if (!isAudioOn.value) {
-      rageTimeout = setTimeout(() => {
-        inRage.value = false
-      }, 2000)
-      return
-    }
-
-    rageCount.value++
-    const sequence = rageCount.value % 4
-
-    // Each boot screen stays up for as long as its sound plays
-    rageTimeout = setTimeout(async () => {
-      if (sequence === 1) {
-        rageScreen.value = '/imgs/windowsxp-screen.svg'
-        await sounds.restart.play()
-      } else if (sequence === 2) {
-        rageScreen.value = '/imgs/ps-screen-1.svg'
-        psScreenTimeout = setTimeout(() => {
-          rageScreen.value = '/imgs/ps-screen-2.svg'
-        }, 7200)
-        await sounds.ps.play()
-        clearTimeout(psScreenTimeout)
-      } else if (sequence === 3) {
-        rageScreen.value = '/imgs/nintendo-screen.svg'
-        await sounds.nintendo.play()
-      } else {
-        let jazzToggle = false
-
-        rageScreen.value = '/imgs/jazz-1.svg'
-        jazzInterval = setInterval(() => {
-          jazzToggle = !jazzToggle
-          rageScreen.value = jazzToggle ? '/imgs/jazz-2.svg' : '/imgs/jazz-1.svg'
-        }, 465)
-        await sounds.epicSax.play()
-        clearInterval(jazzInterval)
-      }
-
-      inRage.value = false
-    }, 2000)
-
+  if (!isAudioOn.value) {
+    rageTimeout = setTimeout(resetRage, RAGE_SILENT_HOLD)
     return
   }
 
-  appStore.cycleAccent()
-  play(soundClick)
+  rageCount.value++
+  const sequence = rageCount.value % 4
+
+  // Each boot screen stays up for as long as its sound plays
+  rageTimeout = setTimeout(async () => {
+    if (sequence === 1) {
+      rageScreen.value = '/imgs/windowsxp-screen.svg'
+      await sounds.restart.play()
+    } else if (sequence === 2) {
+      rageScreen.value = '/imgs/ps-screen-1.svg'
+      psScreenTimeout = setTimeout(() => {
+        rageScreen.value = '/imgs/ps-screen-2.svg'
+      }, 7200)
+      await sounds.ps.play()
+      clearTimeout(psScreenTimeout)
+    } else if (sequence === 3) {
+      rageScreen.value = '/imgs/nintendo-screen.svg'
+      await sounds.nintendo.play()
+    } else {
+      let jazzToggle = false
+
+      rageScreen.value = '/imgs/jazz-1.svg'
+      jazzInterval = setInterval(() => {
+        jazzToggle = !jazzToggle
+        rageScreen.value = jazzToggle ? '/imgs/jazz-2.svg' : '/imgs/jazz-1.svg'
+      }, 465)
+      await sounds.epicSax.play()
+      clearInterval(jazzInterval)
+    }
+
+    resetRage()
+  }, 2000)
 }
+
+const {
+  inRage,
+  shakeClass,
+  click: onComputerClick,
+  resetRage,
+} = useRageClicks({
+  onFirstClick: preloadNextRage,
+  onClick: () => {
+    appStore.cycleAccent()
+    play(soundClick)
+  },
+  onRage,
+})
 
 let stopPhysics: (() => void) | null = null
 
@@ -323,7 +298,6 @@ onUnmounted(() => {
   stopPhysics?.()
   if (rageTimeout) clearTimeout(rageTimeout)
   if (psScreenTimeout) clearTimeout(psScreenTimeout)
-  if (shakeResetTimeout) clearTimeout(shakeResetTimeout)
   if (jazzInterval) clearInterval(jazzInterval)
 })
 </script>
@@ -357,7 +331,7 @@ onUnmounted(() => {
           >
             <IconComputer
               class="animate-bob w-full text-accent cursor-pointer"
-              :class="{ 'transition-scale duration-150 ease-out hover:scale-102 active:scale-98': !inRage }"
+              :class="{ 'transition-[scale,transform] duration-150 ease-out hover:scale-102 active:scale-98': !inRage }"
               :style="{ transform: `rotate(${rotation}deg)` }"
               :in-rage="inRage"
               :screen-src="rageScreen"
@@ -390,57 +364,3 @@ onUnmounted(() => {
     </ul>
   </div>
 </template>
-
-<style>
-@keyframes computer-shake {
-  0%,
-  100% {
-    translate: 0 0;
-  }
-  10% {
-    translate: calc(var(--shake-x) * -1) calc(var(--shake-y) * -1);
-  }
-  20% {
-    translate: var(--shake-x) var(--shake-y);
-  }
-  30% {
-    translate: calc(var(--shake-x) * -0.7) calc(var(--shake-y) * 1.3);
-  }
-  40% {
-    translate: calc(var(--shake-x) * 1.2) calc(var(--shake-y) * -0.8);
-  }
-  50% {
-    translate: calc(var(--shake-x) * -1.3) var(--shake-y);
-  }
-  60% {
-    translate: var(--shake-x) calc(var(--shake-y) * -1.5);
-  }
-  70% {
-    translate: calc(var(--shake-x) * -0.5) calc(var(--shake-y) * 0.5);
-  }
-  80% {
-    translate: calc(var(--shake-x) * 1.4) calc(var(--shake-y) * -0.3);
-  }
-  90% {
-    translate: calc(var(--shake-x) * -1) calc(var(--shake-y) * 1.2);
-  }
-}
-
-.computer-shake-1 {
-  --shake-x: 1px;
-  --shake-y: 0.5px;
-  animation: computer-shake 0.5s ease-in-out infinite;
-}
-
-.computer-shake-2 {
-  --shake-x: 2.5px;
-  --shake-y: 1px;
-  animation: computer-shake 0.32s ease-in-out infinite;
-}
-
-.computer-shake-3 {
-  --shake-x: 5px;
-  --shake-y: 2.5px;
-  animation: computer-shake 0.18s ease-in-out infinite;
-}
-</style>

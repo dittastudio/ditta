@@ -1,4 +1,5 @@
 interface Options {
+  onFirstClick?: () => void // the first of a burst, to get ready for a rage that may follow
   onClick?: () => void
   onRage?: () => void
 }
@@ -7,8 +8,10 @@ const RAGE_CLICKS = 7
 const RAGE_WINDOW = 1500 // ms the clicks must land within
 const SHAKE_RESET_DELAY = 500 // ms without a click before the shake settles
 
+export const RAGE_SILENT_HOLD = 2000 // ms a rage lasts with no sound to time it by
+
 // Rapid clicks build a shake; enough of them in a row tips into rage
-export default function useRageClicks({ onClick, onRage }: Options = {}) {
+export default function useRageClicks({ onFirstClick, onClick, onRage }: Options = {}) {
   const clickTimes: number[] = []
   const inRage = ref(false)
   const shakeLevel = ref(0)
@@ -37,6 +40,8 @@ export default function useRageClicks({ onClick, onRage }: Options = {}) {
     while (clickTimes.length && clickTimes[0]! < cutoff) clickTimes.shift()
 
     shakeLevel.value = clickTimes.length
+
+    if (clickTimes.length === 1) onFirstClick?.()
 
     clearShakeReset()
     shakeResetTimeout = setTimeout(() => {

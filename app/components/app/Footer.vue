@@ -38,7 +38,7 @@ const playRobot = () => play(() => defineSound(createRobotBeep())())
 
 const soundRage = defineSample('/sounds/beepboop.opus')
 
-watch(isAudioOn, (on) => on && soundRage.load())
+watch(isAudioOn, (on) => on && soundRage.load(), { immediate: true })
 
 const rotation = ref(0)
 const mouseXPercent = ref(50)
@@ -123,7 +123,7 @@ const resetRage = () => {
 
 const playRage = async () => {
   if (!isAudioOn.value) {
-    rageTimeout = setTimeout(resetRage, 2000)
+    rageTimeout = setTimeout(resetRage, RAGE_SILENT_HOLD)
     return
   }
 
@@ -175,7 +175,7 @@ onUnmounted(() => {
             class="cursor-pointer"
             @click="onRobotClick"
           >
-            <div :class="{ 'transition-scale duration-150 ease-out hover:scale-102 active:scale-98': !inRage }">
+            <div :class="{ 'transition-[scale] duration-150 ease-out hover:scale-102 active:scale-98': !inRage }">
               <div
                 class="footer__robot relative lg:left-[-2.5%] h-36 md:h-50 aspect-336/278"
                 :class="shakeClass"
