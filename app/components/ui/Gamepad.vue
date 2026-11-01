@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import IconPixelTriangle from '@/assets/icons/pixel-triangle.svg'
+import type { MarioButton } from '@/composables/useMario'
 
-type GamepadButton = 'left' | 'right' | 'jump'
+import IconPixelTriangle from '@/assets/icons/pixel-triangle.svg'
 
 interface Props {
   visible: boolean
@@ -10,26 +10,26 @@ interface Props {
 const { visible } = defineProps<Props>()
 
 const emit = defineEmits<{
-  press: [button: GamepadButton]
-  release: [button: GamepadButton]
+  press: [button: MarioButton]
+  release: [button: MarioButton]
 }>()
 
-const pressed = ref(new Set<GamepadButton>())
+const pressed = ref(new Set<MarioButton>())
 
 // Capturing keeps the finger on its button even if it slides off, so release always arrives
-const onDown = (button: GamepadButton, event: PointerEvent) => {
+const onDown = (button: MarioButton, event: PointerEvent) => {
   ;(event.currentTarget as HTMLElement).setPointerCapture(event.pointerId)
   if (pressed.value.has(button)) return
   pressed.value.add(button)
   emit('press', button)
 }
 
-const onUp = (button: GamepadButton) => {
+const onUp = (button: MarioButton) => {
   if (!pressed.value.delete(button)) return
   emit('release', button)
 }
 
-const buttonEvents = (button: GamepadButton) => ({
+const buttonEvents = (button: MarioButton) => ({
   pointerdown: (event: PointerEvent) => onDown(button, event),
   pointerup: () => onUp(button),
   pointercancel: () => onUp(button),
@@ -41,7 +41,7 @@ const buttonEvents = (button: GamepadButton) => ({
 <template>
   <!-- Touch screens only. The gap below the panel is padding, not an offset, so translate-y-full hides it all. -->
   <div
-    class="fixed inset-x-0 bottom-0 z-40 hidden only-touch:block px-(--app-gutter-outer) [-webkit-tap-highlight-color:transparent] pb-[max(--spacing(5),env(safe-area-inset-bottom))] pointer-events-none transition-translate duration-300 ease-outCubic"
+    class="fixed inset-x-0 bottom-0 z-40 hidden only-touch:block px-(--app-gutter-outer) [-webkit-tap-highlight-color:transparent] pb-[max(--spacing(5),env(safe-area-inset-bottom))] pointer-events-none transition-[translate] duration-300 ease-outCubic"
     :class="{ 'translate-y-full': !visible }"
     aria-hidden="true"
   >
@@ -61,7 +61,7 @@ const buttonEvents = (button: GamepadButton) => ({
             :key="button"
             type="button"
             tabindex="-1"
-            class="flex items-center justify-center size-18 bg-black text-white touch-none select-none [-webkit-touch-callout:none] transition-scale duration-75 ease-out data-pressed:scale-90"
+            class="flex items-center justify-center size-18 bg-black text-white touch-none select-none [-webkit-touch-callout:none] transition-[scale] duration-75 ease-out data-pressed:scale-90"
             :class="{ 'pointer-events-auto': visible }"
             :data-pressed="pressed.has(button) || undefined"
             v-on="buttonEvents(button)"
@@ -80,7 +80,7 @@ const buttonEvents = (button: GamepadButton) => ({
           <button
             type="button"
             tabindex="-1"
-            class="relative block size-18 before:absolute before:inset-0 before:border-t-3 before:border-r-3 before:border-t-black/30 before:border-r-black/30 before:rounded-[inherit] after:absolute after:inset-0 after:border-b-3 after:border-l-3 after:border-b-white/40 after:border-l-white/40 after:rounded-[inherit] rounded-full bg-rage touch-none select-none [-webkit-touch-callout:none] transition-scale duration-75 ease-out data-pressed:scale-90 shadow-lg"
+            class="relative block size-18 before:absolute before:inset-0 before:border-t-3 before:border-r-3 before:border-t-black/30 before:border-r-black/30 before:rounded-[inherit] after:absolute after:inset-0 after:border-b-3 after:border-l-3 after:border-b-white/40 after:border-l-white/40 after:rounded-[inherit] rounded-full bg-rage touch-none select-none [-webkit-touch-callout:none] transition-[scale] duration-75 ease-out data-pressed:scale-90 shadow-lg"
             :class="{ 'pointer-events-auto': visible }"
             :data-pressed="pressed.has('jump') || undefined"
             v-on="buttonEvents('jump')"
