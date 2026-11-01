@@ -1,12 +1,11 @@
 import type { Alien } from '@/utils/mario/alien'
 import type { Camera } from '@/utils/mario/camera'
-import type { Blocks, Box, Hooks, Ledge, Line } from '@/utils/mario/physics'
+import type { Blocks, Box, Hooks, Ledge } from '@/utils/mario/physics'
 import type { EffectScope, MaybeRefOrGetter } from 'vue'
 import { useEventListener, useIntersectionObserver, useResizeObserver } from '@vueuse/core'
 
 import { ALIEN_HEIGHT, ALIEN_WIDTH, createAlien, isTouching, settleAlien, stepAlien } from '@/utils/mario/alien'
 import { createCamera, stepCamera } from '@/utils/mario/camera'
-import { COIN_WIDTH } from '@/utils/mario/coin'
 import {
   SIZE,
   STEP,
@@ -20,12 +19,13 @@ import {
   stepDeath,
   stepPipe,
 } from '@/utils/mario/physics'
+import { measureTextPlatforms } from '@/utils/mario/textPlatforms'
 
 // hidden → raging (pipe clicked into rage) → piping (sliding out of it) → falling → playing → dying (the alien got
 // him) → resetting (the scene clears away) → hidden again
 export type MarioPhase = 'hidden' | 'raging' | 'piping' | 'falling' | 'playing' | 'dying' | 'resetting'
 
-type Target = MaybeRefOrGetter<HTMLElement | null | undefined>
+export type Target = MaybeRefOrGetter<HTMLElement | null | undefined>
 
 export type MarioButton = 'left' | 'right' | 'jump'
 
@@ -54,11 +54,8 @@ const PIPE_MOUTH_X = 55 / 110
 const PIPE_MOUTH_Y = 130 / 134
 
 const BUMP_DURATION = 150 // ms for a bonked word to pop up and back
-const BUMP_HEIGHT = 0.15 // em
 const BOX_GAP = SIZE * 2 // sprite px from the heading's cap height up to the box, room for a hop from its first line
 const BOX_BUMP_HEIGHT = 4 // sprite px
-const COINS = 10 // like a multi-coin block, the copy's last word pays out this many before it's spent
-const MAX_FLYING_COINS = 3 // SMB's jumping coin slots; past that the oldest goes
 const BRICK_RIPPLE_DELAY = 25 // ms per brick away from where Mario lands
 const BRICK_OUT_DURATION = 300 // ms, --animate-brick-out
 const DEATH_FREEZE = 30 // frames everything holds still once the alien touches him
@@ -73,31 +70,6 @@ const KEYS = new Set(['ArrowLeft', 'ArrowRight', 'ArrowDown', ...JUMP_KEYS, ...R
 const isTypingTarget = (target: EventTarget | null) =>
   target instanceof HTMLElement && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName))
 
-let metricsContext: CanvasRenderingContext2D | null = null
-const metricsCache = new Map<string, { ascent: number; descent: number; cap: number }>() // by font
-
-// Ascent and descent locate the baseline within a line rect; H's ink gives the cap height
-const fontMetrics = (el: Element) => {
-  const style = getComputedStyle(el)
-  const font = `${style.fontStyle} ${style.fontWeight} ${style.fontSize} ${style.fontFamily}`
-  const cached = metricsCache.get(font)
-  if (cached) return cached
-
-  metricsContext ??= document.createElement('canvas').getContext('2d')
-  if (!metricsContext) return { ascent: 0, descent: 0, cap: 0 }
-
-  metricsContext.font = font
-  const metrics = metricsContext.measureText('H')
-  const result = {
-    ascent: metrics.fontBoundingBoxAscent,
-    descent: metrics.fontBoundingBoxDescent,
-    cap: metrics.actualBoundingBoxAscent,
-  }
-
-  metricsCache.set(font, result)
-  return result
-}
-
 // Writes only what changed, so a frame where nothing moved costs no style work
 const styleCache = new WeakMap<HTMLElement, Record<string, string>>()
 
@@ -110,17 +82,6 @@ const setStyle = (el: HTMLElement | null | undefined, property: 'transform' | 'c
   el.style[property] = value
 }
 
-const caretAt = (x: number, y: number) => {
-  if ('caretPositionFromPoint' in document) {
-    const position = document.caretPositionFromPoint(x, y)
-    return position && { node: position.offsetNode, offset: position.offset }
-  }
-
-  // Safari before 26.2
-  const range = (document as Document).caretRangeFromPoint(x, y)
-  return range && { node: range.startContainer, offset: range.startOffset }
-}
-
 // Mario platforming across a block's text and a row of bricks, out of a pipe that rages first
 export default function useMario(el: Elements) {
   const phase = ref<MarioPhase>('hidden')
@@ -129,12 +90,10 @@ export default function useMario(el: Elements) {
   const isVisible = ref(false)
   const box = ref<Box | null>(null) // over the heading, so none without one
   const boxState = ref<MarioBoxState>('hidden')
-  const flyingCoins = ref<{ id: number; x: number; y: number }[]>([]) // screen px from the stage's top left
   const hasAlien = ref(false)
   const isPlayable = computed(() => phase.value === 'playing' && isVisible.value)
   const prefersReducedMotion = useAtMedia('(prefers-reduced-motion: reduce)')
   const lenis = useLenis() // the page's smooth scrolling: the camera scrolls through it, so the two never fight
-  const isEditor = storyblokEditor(useRoute().query) // Vue re-renders the copy there, so leave its DOM alone
 
   // null until he lands, then each brick's place in the ripple
   const bricks = computed(() => {
@@ -170,10 +129,6 @@ export default function useMario(el: Elements) {
   let lastTime = 0
   let accumulator = 0
   let stepCount = 0
-  let bump: { node: Text; text: string; span: HTMLSpanElement; tail: Text; animation: Animation } | null = null
-  let coins = 0
-  let spent: { node: Text; text: string; span: HTMLSpanElement; tail: Text } | null = null // wrapped and faded once the coins run out
-  let coinId = 0
   let alien: Alien | null = null
   let marioLedge: Ledge | null = null // his last surface, null for the bricks; a jump from it still counts
   let deathFrames = 0
@@ -194,6 +149,13 @@ export default function useMario(el: Elements) {
   }
 
   const playSound = (name: keyof typeof sounds) => void sounds[name].play()
+
+  const { flyingCoins, removeCoin, bumpWord, resetWords } = useMarioWords({
+    stage: el.stage,
+    lockup: el.lockup,
+    scale: () => stage.scale,
+    playSound,
+  })
 
   // Fetched once the pipe rages, and only with audio on
   const loadSounds = () => {
@@ -224,46 +186,8 @@ export default function useMario(el: Elements) {
     const lockup = toValue(el.lockup)
     if (!lockup) return
 
-    const toX = (value: number) => (value - stageRect.left) / stage.scale
-    const toY = (value: number) => (value - stageRect.top) / stage.scale
-    const range = document.createRange()
-
-    const elements = [...lockup.querySelectorAll('h2, p')]
-    const measured = elements.map((block) => {
-      const lines: Line[] = []
-      const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT)
-
-      for (let node = walker.nextNode(); node; node = walker.nextNode()) {
-        if (!node.parentElement) continue
-
-        const { ascent, descent, cap } = fontMetrics(node.parentElement)
-
-        // Word by word, so spaces at line ends never count as platform
-        for (const word of (node.textContent ?? '').matchAll(/\S+/g)) {
-          range.setStart(node, word.index)
-          range.setEnd(node, word.index + word[0].length)
-
-          for (const rect of range.getClientRects()) {
-            // Half-leading is split evenly, so the baseline sits the same distance from the centre either way
-            const bottom = toY((rect.top + rect.bottom) / 2 + (ascent - descent) / 2)
-            const top = bottom - cap / stage.scale
-            const line = lines.find((line) => Math.abs(line.bottom - bottom) < 1)
-
-            if (line) {
-              line.left = Math.min(line.left, toX(rect.left))
-              line.right = Math.max(line.right, toX(rect.right))
-              line.top = Math.min(line.top, top)
-            } else {
-              lines.push({ left: toX(rect.left), right: toX(rect.right), top, bottom })
-            }
-          }
-        }
-      }
-
-      return lines
-    })
-
-    const heading = measured[elements.findIndex((element) => element.tagName === 'H2')] ?? []
+    const measured = measureTextPlatforms(lockup, stageRect, stage.scale)
+    const { heading } = measured
 
     // From its top left, snapped to whole sprite px like Mario's drawing so the two line up
     box.value = heading.length
@@ -273,7 +197,7 @@ export default function useMario(el: Elements) {
         }
       : null
 
-    blocks = measured.filter((lines) => lines.length)
+    blocks = measured.blocks
   }
 
   // Sprite px to screen px, snapped to whole sprite pixels and then onto the device pixel grid. On mobile a sprite pixel
@@ -338,125 +262,6 @@ export default function useMario(el: Elements) {
     settleOnLedge(mario, blocks, box.value)
     if (alien) settleAlien(alien, blocks, box.value)
     render()
-  }
-
-  const unbumpWord = () => {
-    if (!bump) return
-
-    const { node, text, span, tail, animation } = bump
-
-    // Put the text node back exactly as Vue rendered it
-    animation.cancel()
-    span.remove()
-    tail.remove()
-    node.data = text
-    bump = null
-  }
-
-  const unspendWord = () => {
-    if (!spent) return
-    const { node, text, span, tail } = spent
-    span.remove()
-    tail.remove()
-    node.data = text
-    spent = null
-  }
-
-  // Last text node of the copy's last paragraph, and where its last word ends
-  const coinWord = () => {
-    const copy = [...(toValue(el.lockup)?.querySelectorAll('p') ?? [])].at(-1)
-    if (!copy) return null
-
-    const walker = document.createTreeWalker(copy, NodeFilter.SHOW_TEXT)
-    let last: Text | null = null
-
-    for (let node = walker.nextNode(); node; node = walker.nextNode()) {
-      if (node instanceof Text && /\S/.test(node.data)) last = node
-    }
-
-    return last && { node: last, end: last.data.trimEnd().length }
-  }
-
-  // Out of the word, centred on it with its bottom on the baseline
-  const popCoin = (word: HTMLSpanElement, stageRect: DOMRect) => {
-    const rect = word.getBoundingClientRect()
-    const { ascent, descent } = fontMetrics(word)
-    const baseline = (rect.top + rect.bottom) / 2 + (ascent - descent) / 2
-
-    flyingCoins.value = [
-      ...flyingCoins.value.slice(1 - MAX_FLYING_COINS),
-      {
-        id: coinId++,
-        x: (rect.left + rect.right) / 2 - (COIN_WIDTH / 2) * stage.scale - stageRect.left,
-        y: baseline - SIZE * stage.scale - stageRect.top,
-      },
-    ]
-  }
-
-  const removeCoin = (id: number) => {
-    flyingCoins.value = flyingCoins.value.filter((coin) => coin.id !== id)
-  }
-
-  // Pops the word at a stage point up and back, like a bonked block. The copy's last word is a coin block.
-  const bumpWord = (x: number, y: number) => {
-    unbumpWord()
-
-    const stageEl = toValue(el.stage)
-    if (isEditor || !stageEl) return playSound('bump')
-
-    const stageRect = stageEl.getBoundingClientRect()
-    const caret = caretAt(stageRect.left + x * stage.scale, stageRect.top + y * stage.scale)
-    const node = caret?.node
-
-    // A spent coin block just thuds
-    if (!caret || !(node instanceof Text) || !toValue(el.lockup)?.contains(node) || spent?.span.contains(node))
-      return playSound('bump')
-
-    const text = node.data
-    let start = caret.offset
-    let end = caret.offset
-
-    while (start > 0 && /\S/.test(text[start - 1] ?? '')) start--
-    while (end < text.length && /\S/.test(text[end] ?? '')) end++
-
-    if (start === end) return playSound('bump')
-
-    const coin = coinWord()
-    const isCoin = coins < COINS && coin?.node === node && coin.end === end
-    const isSpent = isCoin && ++coins === COINS
-
-    playSound(isCoin ? 'coin' : 'bump')
-
-    if (prefersReducedMotion.value && !isSpent) return
-
-    const word = node.splitText(start)
-    const tail = word.splitText(end - start)
-    const span = document.createElement('span')
-
-    // Inline-block, as transforms don't apply to plain inline boxes. Layered over the stage, so the coin comes out from
-    // behind this word but passes in front of the rest.
-    span.className = isSpent ? 'relative z-1 inline-block opacity-50' : 'relative z-1 inline-block'
-    word.replaceWith(span)
-    span.append(word)
-
-    if (isCoin && !prefersReducedMotion.value) popCoin(span, stageRect)
-
-    const animation = prefersReducedMotion.value
-      ? null
-      : span.animate([{ translate: '0 0' }, { translate: `0 ${-BUMP_HEIGHT}em` }, { translate: '0 0' }], {
-          duration: BUMP_DURATION,
-        })
-
-    // Spent: stays wrapped, so it keeps its fade
-    if (isSpent) {
-      spent = { node, text, span, tail }
-      return
-    }
-
-    if (!animation) return
-
-    animation.onfinish = unbumpWord
-    bump = { node, text, span, tail, animation }
   }
 
   // Hidden, then a ? box, then spent: each hit before that shows the next, with a bounce
@@ -738,18 +543,15 @@ export default function useMario(el: Elements) {
     scope?.stop()
     scope = undefined
     stopLoop()
-    unbumpWord()
-    unspendWord()
+    resetWords()
     hasKeys = false
     releaseInput()
     alien = null
     hasAlien.value = false
     marioLedge = null
     camera = null
-    coins = 0
     landing.value = null
     boxState.value = 'hidden'
-    flyingCoins.value = []
     isVisible.value = false
     phase.value = 'hidden'
   }
@@ -778,7 +580,6 @@ export default function useMario(el: Elements) {
   onScopeDispose(() => {
     scope?.stop()
     stopLoop()
-    unbumpWord()
     hasAlien.value = false
     clearTimeout(rageTimeout)
     clearTimeout(resetTimeout)
