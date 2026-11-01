@@ -165,9 +165,24 @@ const onMouseMove = (event: MouseEvent) => {
   rotation.value = (event.clientX / window.innerWidth) * 80 - 40
 }
 
+// While the page is moving, a swipe that lands on a chip carries on scrolling rather than stopping dead on it
+const PAGE_SCROLL_SETTLE = 300
+const pageScrolling = ref(false)
+
+let pageScrollTimeout: ReturnType<typeof setTimeout> | null = null
+
+const onPageScroll = () => {
+  pageScrolling.value = true
+  if (pageScrollTimeout) clearTimeout(pageScrollTimeout)
+  pageScrollTimeout = setTimeout(() => {
+    pageScrolling.value = false
+  }, PAGE_SCROLL_SETTLE)
+}
+
 onMounted(() => {
   window.addEventListener('mousemove', onMouseMove, { passive: true })
   window.addEventListener('pointerup', resetDrag, { passive: true })
+  window.addEventListener('scroll', onPageScroll, { passive: true })
 
   const el = containerRef.value
   const chips = chipRefs.value
@@ -202,9 +217,59 @@ onMounted(() => {
     Composite.add(engine.world, bodies)
 
     const mouse = Mouse.create(el)
-    // matter-js registers 'wheel' with passive: false and calls preventDefault — remove it so page scroll works
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    mouse.element.removeEventListener('wheel', (mouse as any).mousewheel as EventListener)
+    // Not in matter-js's typings
+    const { mousedown, mousemove, mouseup, mousewheel } = mouse as unknown as Record<
+      'mousedown' | 'mousemove' | 'mouseup' | 'mousewheel',
+      (event: unknown) => void
+    >
+
+    // matter-js registers these with passive: false and calls preventDefault on every wheel and touch, wherever it
+    // lands — remove them so page scroll works
+    el.removeEventListener('wheel', mousewheel)
+    el.removeEventListener('touchstart', mousedown)
+    el.removeEventListener('touchmove', mousemove)
+    el.removeEventListener('touchend', mouseup)
+
+    // Only a touch that starts on a chip reaches matter-js, as a mouse. Anything else is left to scroll the page, and
+    // can't pick up a chip that passes under the finger on the way. touch-action in the template stops a chip's touch
+    // from panning.
+    let chipTouchId: number | null = null
+
+    const asMouse = ({ pageX, pageY }: Touch) => ({ pageX, pageY, button: 0 })
+    const chipTouch = (event: TouchEvent) => [...event.changedTouches].find((t) => t.identifier === chipTouchId)
+
+    const onTouchStart = (event: TouchEvent) => {
+      const touch = event.changedTouches[0]
+
+      if (!touch || chipTouchId !== null || pageScrolling.value) return
+      if (!(event.target instanceof Element && event.target.closest('li'))) return
+
+      chipTouchId = touch.identifier
+      mousedown(asMouse(touch))
+    }
+
+    const onTouchMove = (event: TouchEvent) => {
+      const touch = chipTouch(event)
+
+      if (touch) mousemove(asMouse(touch))
+    }
+
+    const onTouchEnd = (event: TouchEvent) => {
+      const touch = chipTouch(event)
+
+      if (!touch) return
+
+      chipTouchId = null
+      mouseup(asMouse(touch))
+    }
+
+    const touchListeners = new AbortController()
+    const touchOptions = { passive: true, signal: touchListeners.signal }
+
+    el.addEventListener('touchstart', onTouchStart, touchOptions)
+    el.addEventListener('touchmove', onTouchMove, touchOptions)
+    el.addEventListener('touchend', onTouchEnd, touchOptions)
+    el.addEventListener('touchcancel', onTouchEnd, touchOptions)
 
     const mouseConstraint = MouseConstraint.create(engine, {
       mouse,
@@ -274,6 +339,7 @@ onMounted(() => {
       Runner.stop(runner)
       Engine.clear(engine)
       resizeObserver.disconnect()
+      touchListeners.abort()
     }
   }
 
@@ -295,7 +361,9 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('mousemove', onMouseMove)
   window.removeEventListener('pointerup', resetDrag)
+  window.removeEventListener('scroll', onPageScroll)
   stopPhysics?.()
+  if (pageScrollTimeout) clearTimeout(pageScrollTimeout)
   if (rageTimeout) clearTimeout(rageTimeout)
   if (psScreenTimeout) clearTimeout(psScreenTimeout)
   if (jazzInterval) clearInterval(jazzInterval)
@@ -345,14 +413,15 @@ onUnmounted(() => {
 
     <ul
       ref="container"
-      class="absolute inset-0 z-0 select-none"
+      class="absolute inset-0 z-0 select-none touch-pan-y touch-pinch-zoom"
     >
+      <!-- iOS ignores touch-action unless it's on the very element touched, hence **: -->
       <li
         v-for="(service, i) in services"
         :key="service.id"
         ref="chipRef"
-        class="absolute top-0 left-0 will-change-transform transition-opacity duration-500"
-        :class="ready ? 'opacity-100' : 'opacity-0'"
+        class="absolute top-0 left-0 rounded-full touch-pinch-zoom **:touch-pinch-zoom will-change-transform transition-opacity duration-500"
+        :class="[ready ? 'opacity-100' : 'opacity-0', { 'touch-pan-y **:touch-pan-y': pageScrolling }]"
         :style="transforms[i] ? { transform: transforms[i] } : {}"
       >
         <UiChip

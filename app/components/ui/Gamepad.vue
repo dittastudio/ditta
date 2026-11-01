@@ -41,27 +41,24 @@ const buttonEvents = (button: MarioButton) => ({
 <template>
   <!-- Touch screens only. The gap below the panel is padding, not an offset, so translate-y-full hides it all. -->
   <div
-    class="fixed inset-x-0 bottom-0 z-40 hidden only-touch:block px-(--app-gutter-outer) [-webkit-tap-highlight-color:transparent] pb-[max(--spacing(5),env(safe-area-inset-bottom))] pointer-events-none transition-[translate] duration-300 ease-outCubic"
+    class="fixed inset-x-0 bottom-0 z-40 hidden only-touch:block px-[calc(var(--app-gutter-outer)*0.5)] [-webkit-tap-highlight-color:transparent] pb-[max(--spacing(5),env(safe-area-inset-bottom))] pointer-events-none transition-[translate] duration-300 ease-outCubic"
     :class="{ 'translate-y-full': !visible }"
     aria-hidden="true"
   >
-    <!-- Solid while it's up, so a press that misses a button doesn't scroll the page or reach the text under it.
-         Cancelling the touches themselves is what stops iOS zooming on a double tap or raising its magnifier on a
-         hold, which it does despite touch-none; the buttons run on pointer events, which still arrive. -->
     <div
-      class="bg-putty p-4 rounded-10 touch-none"
+      class="bg-putty p-[calc(var(--app-gutter-outer)*0.5)] rounded-10 touch-none shadow-lg"
       :class="{ 'pointer-events-auto': visible }"
       @touchstart.prevent
       @touchend.prevent
     >
-      <div class="flex items-end justify-between bg-charcoal p-4 rounded-5">
-        <div class="flex gap-1 bg-putty p-1 rounded-5">
+      <div class="flex items-end justify-between bg-charcoal p-[calc(var(--app-gutter-outer)*0.5)] rounded-5">
+        <div class="flex gap-1 bg-putty p-1 rounded-[4px]">
           <button
             v-for="button in ['left', 'right'] as const"
             :key="button"
             type="button"
             tabindex="-1"
-            class="flex items-center justify-center size-18 bg-black text-white touch-none select-none [-webkit-touch-callout:none] transition-[scale] duration-75 ease-out data-pressed:scale-90"
+            class="flex items-center justify-center size-18 bg-black text-white touch-none select-none [-webkit-touch-callout:none] transition-[scale] duration-75 ease-out data-pressed:scale-90 rounded-[3px]"
             :class="{ 'pointer-events-auto': visible }"
             :data-pressed="pressed.has(button) || undefined"
             v-on="buttonEvents(button)"
