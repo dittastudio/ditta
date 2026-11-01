@@ -18,4 +18,9 @@ export default defineNuxtPlugin((nuxtApp) => {
   window.addEventListener('pagehide', () => {
     history.scrollRestoration = 'auto'
   })
+
+  // Restored from the back-forward cache: no reload and no app:mounted, so take control again here
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted) ScrollTrigger.clearScrollMemory('manual')
+  })
 })
