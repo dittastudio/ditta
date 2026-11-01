@@ -29,9 +29,6 @@ export const blockServicesBlock = defineBlock({
       type: 'richtext',
     }),
     defineField('services', {
-      allow: [
-        'element_title',
-      ],
       datasource: 'services',
       display_name: 'Services',
       source: 'internal',

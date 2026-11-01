@@ -1,0 +1,19 @@
+name: Check
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: voidzero-dev/setup-vp@v1.22.0
+        with:
+          node-version: '24'
+          cache: true
+      # vp install runs `nuxt prepare` (postinstall), which generates the .nuxt tsconfigs vp check type-checks against
+      - run: vp check
+      - run: npm run typecheck

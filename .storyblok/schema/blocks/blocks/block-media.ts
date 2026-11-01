@@ -17,9 +17,6 @@ export const blockMediaBlock = defineBlock({
         'element_media_image',
         'element_media_autoplay',
       ],
-      filetypes: [
-        'images',
-      ],
       minimum: 1,
       required: true,
       type: 'bloks',

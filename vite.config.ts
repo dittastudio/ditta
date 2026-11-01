@@ -2,7 +2,7 @@ import { defineConfig } from 'vite-plus'
 
 export default defineConfig({
   staged: {
-    '*.{js,ts,vue}': 'vp check --fix',
+    '*': 'vp check --fix',
   },
   fmt: {
     semi: false,
@@ -10,9 +10,10 @@ export default defineConfig({
     singleAttributePerLine: true,
     vueIndentScriptAndStyle: false,
     printWidth: 120,
-    ignorePatterns: ['.storyblok/**/*', '.claude/**/*', '.vscode/**/*', '.agents/**/*'],
+    ignorePatterns: ['.storyblok/**/*', '.claude/**/*', '.vscode/**/*', '.agents/**/*', '.wrangler/**/*'],
   },
   lint: {
+    plugins: ['typescript', 'unicorn', 'oxc', 'vue', 'import'],
     options: {
       typeAware: true,
       typeCheck: true,
