@@ -82,6 +82,7 @@ export interface Hooks {
   onJump: () => void
   onBump: (x: number, y: number) => void // ceiling hit, at a point on the line he hit
   onBumpBox: () => void
+  onBumpRoof: () => void
   onFloor: () => void // landed on the bricks
 }
 
@@ -204,7 +205,7 @@ export const settleOnLedge = (body: Pick<Mario, 'ledge' | 'y' | 'grounded'>, blo
   }
 }
 
-const collide = (mario: Mario, blocks: Blocks, box: Box | null, hooks: Hooks, prevFeet: number) => {
+const collide = (mario: Mario, blocks: Blocks, box: Box | null, roof: number, hooks: Hooks, prevFeet: number) => {
   const left = mario.x + HITBOX_INSET
   const right = mario.x + SIZE - HITBOX_INSET
   const overlaps = (line: Line) => right > line.left && left < line.right
@@ -245,6 +246,13 @@ const collide = (mario: Mario, blocks: Blocks, box: Box | null, hooks: Hooks, pr
         Math.min(Math.max(mario.x + SIZE / 2, ceiling.left), ceiling.right),
         (ceiling.top + ceiling.bottom) / 2,
       )
+      return
+    }
+
+    if (head < roof) {
+      mario.y = roof + SIZE
+      mario.vy = 0
+      hooks.onBumpRoof()
     }
 
     return
@@ -269,8 +277,16 @@ const collideSides = (mario: Mario, box: Box | null) => {
   mario.vx = 0
 }
 
-// One frame on a stage `width` sprite px wide, wrapping at the edges
-export const step = (mario: Mario, input: Input, blocks: Blocks, box: Box | null, width: number, hooks: Hooks) => {
+// One frame on a stage `width` sprite px wide, wrapping at the edges, under a solid `roof` (a y above the bricks)
+export const step = (
+  mario: Mario,
+  input: Input,
+  blocks: Blocks,
+  box: Box | null,
+  roof: number,
+  width: number,
+  hooks: Hooks,
+) => {
   const direction = Number(input.right) - Number(input.left)
   const speed = Math.abs(mario.vx)
   const isForward = mario.vx === 0 || Math.sign(mario.vx) === direction
@@ -328,7 +344,7 @@ export const step = (mario: Mario, input: Input, blocks: Blocks, box: Box | null
     const prevFeet = mario.y
     mario.y += mario.vy
 
-    collide(mario, blocks, box, hooks, prevFeet)
+    collide(mario, blocks, box, roof, hooks, prevFeet)
 
     if (!mario.grounded && mario.y >= 0) {
       mario.y = 0

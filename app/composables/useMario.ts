@@ -35,6 +35,7 @@ export type MarioBoxState = 'hidden' | 'question' | 'empty'
 interface Elements {
   section: Target // Mario's keys work while any of it shows
   stage: Target // bricks run along its top edge
+  ceiling: Target // he can't jump past its top edge, where the block clips him
   sprite: Target
   sheet: Target
   lockup: Target // its headings and paragraphs are platforms
@@ -123,6 +124,7 @@ export default function useMario(el: Elements) {
   const view = { height: 0, maxScroll: 0 } // visible height, above the gamepad on touch screens
 
   let blocks: Blocks = []
+  let roof = -Infinity // sprite px, measured from the ceiling element
   let scope: EffectScope | undefined
   let hasKeys = false // arrows belong to Mario after the first ← / → while visible
   let pipeMouth = 0
@@ -185,6 +187,10 @@ export default function useMario(el: Elements) {
   }
 
   const measureLines = (stageRect: DOMRect) => {
+    const ceiling = toValue(el.ceiling)
+    // Rounded down the screen, so his head never reaches the clip
+    if (ceiling) roof = Math.ceil((ceiling.getBoundingClientRect().top - stageRect.top) / stage.scale)
+
     const lockup = toValue(el.lockup)
     if (!lockup) return
 
@@ -343,6 +349,7 @@ export default function useMario(el: Elements) {
     onJump: () => playSound('jumpSmall'), // NES picks the jump sound by size, not speed; he's small Mario
     onBump: bumpWord,
     onBumpBox: bumpBox,
+    onBumpRoof: () => playSound('bump'),
     onFloor: () => {
       if (phase.value === 'falling') land()
     },
@@ -385,9 +392,9 @@ export default function useMario(el: Elements) {
     if (phase.value === 'resetting') return
 
     // No control, and nothing to land on but the bricks, until he's out of the pipe
-    if (phase.value !== 'playing') return step(mario, noInput, [], null, stage.width, hooks)
+    if (phase.value !== 'playing') return step(mario, noInput, [], null, -Infinity, stage.width, hooks)
 
-    step(mario, input, blocks, box.value, stage.width, hooks)
+    step(mario, input, blocks, box.value, roof, stage.width, hooks)
     if (mario.grounded) marioLedge = mario.ledge
 
     if (!alien) return

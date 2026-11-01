@@ -12,12 +12,13 @@ import IconMarioSequence from '@/assets/icons/mario-sequence.svg'
 interface Props {
   section: HTMLElement | null | undefined // Mario's keys and the page restrictions apply while any of it shows
   stage: HTMLElement | null | undefined // this renders inside it
+  ceiling: HTMLElement | null | undefined // its top edge is as high as he can go
   lockup: HTMLElement | null | undefined
   pipe: HTMLElement | null | undefined
   isRaged: boolean // he comes out when this turns true, and it stays true until he's reported back as hidden
 }
 
-const { section, stage, lockup, pipe, isRaged } = defineProps<Props>()
+const { section, stage, ceiling, lockup, pipe, isRaged } = defineProps<Props>()
 
 const emit = defineEmits<{
   phase: [phase: MarioPhase]
@@ -41,6 +42,7 @@ const {
 } = useMario({
   section: () => section,
   stage: () => stage,
+  ceiling: () => ceiling,
   sprite: useTemplateRef('mario'),
   sheet: useTemplateRef('marioSheet'),
   lockup: () => lockup,

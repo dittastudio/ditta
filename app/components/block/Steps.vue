@@ -54,6 +54,7 @@ const lockup = useTemplateRef('lockup')
 const lockupEl = computed(() => lockup.value?.$el as HTMLElement | undefined)
 const marioSectionEl = useTemplateRef('marioSection')
 const marioStageEl = useTemplateRef('marioStage')
+const marioCeilingEl = useTemplateRef('marioCeiling')
 
 // Everything of Mario's beyond this phase is fetched on the arrow's first poke, as few visitors ever get further. The
 // phase lives here so the arrow can rage straight away, and StepsMario takes over reporting it once it's arrived.
@@ -161,14 +162,15 @@ const onArrowMouseDown = (event: MouseEvent) => {
 </script>
 
 <template>
+  <!-- Mario's headroom, in sprite px at 16 to a brick: a 32 gap, a 16 box, a 21 alien and a 16 hop over the heading -->
   <div
+    ref="marioCeiling"
     v-editable="block"
-    class="flex flex-col gap-(--app-gutter-outer) overflow-clip"
+    class="flex flex-col gap-(--app-gutter-outer) overflow-clip [--mario-headroom:calc(--spacing(10)*85/16)] md:[--mario-headroom:calc(--spacing(12)*85/16)]"
     :class="{
       'pt-(--app-vertical-rhythm)': block.spacing_top && marioPhase === 'hidden',
-      // A brick taller below lg while Mario's out, for headroom over the box and his jumps
-      'pt-[calc(var(--app-vertical-rhythm)+--spacing(10))] md:pt-[calc(var(--app-vertical-rhythm)+--spacing(12))] lg:pt-(--app-vertical-rhythm)':
-        block.spacing_top && marioPhase !== 'hidden',
+      'pt-[max(var(--app-vertical-rhythm),var(--mario-headroom))]': block.spacing_top && marioPhase !== 'hidden',
+      'pt-(--mario-headroom)': !block.spacing_top && marioPhase !== 'hidden',
       'pb-(--app-vertical-rhythm)': block.spacing_bottom,
     }"
   >
@@ -230,6 +232,7 @@ const onArrowMouseDown = (event: MouseEvent) => {
           v-if="marioScene"
           :section="marioSectionEl"
           :stage="marioStageEl"
+          :ceiling="marioCeilingEl"
           :lockup="lockupEl"
           :pipe="arrowLiftEl"
           :is-raged="marioPhase !== 'hidden'"
