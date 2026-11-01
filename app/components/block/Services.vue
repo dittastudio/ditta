@@ -204,6 +204,8 @@ onMounted(() => {
 
   const startPhysics = (chips: HTMLElement[]) => {
     const { width, height } = el.getBoundingClientRect()
+    let worldW = width
+    let worldH = height
     const engine = Engine.create({ gravity: { x: 0, y: 0.5 }, enableSleeping: true })
     let walls = buildWalls(width, height)
 
@@ -299,6 +301,12 @@ onMounted(() => {
       if (!entry) return
 
       const { width: newW, height: newH } = entry.contentRect
+
+      // Fires as soon as it starts observing, and a rebuild drops any chip being dragged
+      if (Math.abs(newW - worldW) < 1 && Math.abs(newH - worldH) < 1) return
+
+      worldW = newW
+      worldH = newH
 
       walls.forEach((wall) => Composite.remove(engine.world, wall))
       walls = buildWalls(newW, newH)
@@ -432,7 +440,7 @@ onUnmounted(() => {
     >
       <div
         :class="isDragging ? '*:pointer-events-none' : '*:pointer-events-auto'"
-        class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-5 relativex pb-80"
+        class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-5 pb-80"
       >
         <UiLockup
           class="col-span-full md:col-span-8"
