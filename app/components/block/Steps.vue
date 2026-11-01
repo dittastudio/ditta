@@ -86,8 +86,10 @@ const {
 })
 
 // In its own size, a brick, so it holds at every breakpoint
-const marioBoxTransform = computed(
-  () => marioBox.value && `translate(${(marioBox.value.left / SIZE) * 100}%, ${(marioBox.value.top / SIZE) * 100}%)`,
+const marioBoxTransform = computed(() =>
+  marioBox.value
+    ? `translate(${(marioBox.value.left / SIZE) * 100}%, ${(marioBox.value.top / SIZE) * 100}%)`
+    : undefined,
 )
 
 const isArrowLocked = computed(() => marioPhase.value !== 'hidden') // upright and red from rage on, through its fade
