@@ -216,8 +216,8 @@ const onArrowMouseDown = (event: MouseEvent) => {
     class="flex flex-col gap-(--app-gutter-outer) overflow-clip"
     :class="{
       'pt-(--app-vertical-rhythm)': block.spacing_top && marioPhase === 'hidden',
-      // Doubled on mobile while Mario's out, for headroom over the box and his jumps
-      'pt-[calc(var(--app-vertical-rhythm)*2)] md:pt-(--app-vertical-rhythm)':
+      // A brick taller below lg while Mario's out, for headroom over the box and his jumps
+      'pt-[calc(var(--app-vertical-rhythm)+--spacing(10))] md:pt-[calc(var(--app-vertical-rhythm)+--spacing(12))] lg:pt-(--app-vertical-rhythm)':
         block.spacing_top && marioPhase !== 'hidden',
       'pb-(--app-vertical-rhythm)': block.spacing_bottom,
     }"
