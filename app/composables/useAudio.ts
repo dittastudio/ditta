@@ -29,6 +29,7 @@ const loadSample = (url: string) => {
 // plays, and stopped when audio is turned off or the component that defined it unmounts.
 export const defineSample = (url: string) => {
   const playing = new Set<AudioBufferSourceNode>()
+  let stops = 0 // a play still waiting on its sample when this moves on has been stopped
 
   const load = () => {
     loadSample(url).catch(() => {})
@@ -38,8 +39,9 @@ export const defineSample = (url: string) => {
   const play = async () => {
     if (!isAudioOn.value) return
 
+    const stopsAtStart = stops
     const [context, buffer] = await Promise.all([ensureReady(), loadSample(url)]).catch(() => [])
-    if (!context || !buffer || !isAudioOn.value) return
+    if (!context || !buffer || !isAudioOn.value || stops !== stopsAtStart) return
 
     const voice = context.createBufferSource()
     voice.buffer = buffer
@@ -57,7 +59,10 @@ export const defineSample = (url: string) => {
     })
   }
 
-  const stop = () => stopVoices(playing)
+  const stop = () => {
+    stops++
+    stopVoices(playing)
+  }
 
   if (getCurrentScope()) onScopeDispose(stop)
 
