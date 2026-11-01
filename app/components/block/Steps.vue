@@ -113,7 +113,6 @@ const {
   onClick: () => play(soundBoop),
   onRage: () => {
     arrowEl.value?.blur() // it's done; otherwise Mario's arrow keys light up its focus ring
-    window.getSelection()?.removeAllRanges() // anything picked up on the way, now that the page can't be selected
     play(soundLevelUp)
     marioPhase.value = 'raging'
     loadMario()
@@ -153,12 +152,6 @@ watch(marioPhase, (phase) => phase === 'hidden' && resetRage())
 const onArrowClick = () => {
   if (marioPhase.value === 'hidden') rageArrow()
 }
-
-// tabindex="-1" still lets a click focus it, so stray clicks after rage would bring the ring back. Rapid clicks
-// (detail > 1) would otherwise select the text around it on the way to rage.
-const onArrowMouseDown = (event: MouseEvent) => {
-  if (marioPhase.value !== 'hidden' || event.detail > 1) event.preventDefault()
-}
 </script>
 
 <template>
@@ -190,12 +183,12 @@ const onArrowMouseDown = (event: MouseEvent) => {
           <button
             ref="arrow"
             type="button"
-            class="relative z-2 block w-30 md:w-40 mx-auto select-none touch-manipulation transition-opacity duration-300 ease-outCubic"
+            class="tappable relative z-2 block w-30 md:w-40 mx-auto transition-opacity duration-300 ease-outCubic"
             :class="{ 'cursor-default': marioPhase !== 'hidden', 'opacity-0 pointer-events-none': isArrowGone }"
             aria-label="Poke the arrow"
             :tabindex="marioPhase === 'hidden' ? undefined : -1"
             :aria-disabled="marioPhase !== 'hidden' || undefined"
-            @mousedown="onArrowMouseDown"
+            @mousedown.prevent
             @click="onArrowClick"
           >
             <!-- On mobile it lifts clear on rage, so Mario has room to come out of the tail. Animated by liftArrow. -->

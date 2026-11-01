@@ -1,3 +1,5 @@
+import { useEventListener } from '@vueuse/core'
+
 interface Options {
   onFirstClick?: () => void // the first of a burst, to get ready for a rage that may follow
   onClick?: () => void
@@ -25,6 +27,10 @@ export default function useRageClicks({ onFirstClick, onClick, onRage }: Options
     return 'shake-3'
   })
 
+  // iOS can select the text beside an unselectable element on a quick second tap, and CSS can't stop it. So for as long
+  // as the clicks keep coming, and through any rage, whatever gets selected is cleared straight away.
+  useEventListener(() => (shakeLevel.value > 0 || inRage.value ? document : null), 'selectionchange', clearSelection)
+
   const clearShakeReset = () => {
     if (shakeResetTimeout) clearTimeout(shakeResetTimeout)
     shakeResetTimeout = null
@@ -32,6 +38,8 @@ export default function useRageClicks({ onFirstClick, onClick, onRage }: Options
 
   const click = () => {
     if (inRage.value) return
+
+    clearSelection() // including anything selected before the first click, as @mousedown.prevent leaves that in place
 
     const now = Date.now()
     clickTimes.push(now)

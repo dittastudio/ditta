@@ -172,7 +172,8 @@ onUnmounted(() => {
           class="max-lg:grow max-lg:w-full flex flex-col items-center justify-center max-lg:py-[calc(var(--app-vertical-rhythm)*0.5)] gap-6"
         >
           <div
-            class="cursor-pointer"
+            class="tappable cursor-pointer"
+            @mousedown.prevent
             @click="onRobotClick"
           >
             <div :class="{ 'transition-[scale] duration-150 ease-out hover:scale-102 active:scale-98': !inRage }">

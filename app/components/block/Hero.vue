@@ -823,10 +823,11 @@ onUnmounted(() => {
     <div class="wrapper min-h-svh flex flex-col justify-end pt-40">
       <svg
         ref="logoEl"
-        class="w-full h-auto -mb-1.5 overflow-visible *:[pointer-events:bounding-box] select-none"
+        class="tappable w-full h-auto -mb-1.5 overflow-visible *:[pointer-events:bounding-box]"
         viewBox="0 0 1802 622"
         xmlns="http://www.w3.org/2000/svg"
         fill="currentColor"
+        @mousedown.prevent
       >
         <g
           ref="iEl"

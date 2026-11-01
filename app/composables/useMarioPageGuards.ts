@@ -12,10 +12,7 @@ export default function useMarioPageGuards(isActive: MaybeRefOrGetter<boolean>) 
   useHead({ htmlAttrs: { 'data-mario': computed(() => (toValue(isActive) ? '' : undefined)) } })
 
   // Anything that still gets selected, by a long press iOS reads as text selection, say, is cleared straight away
-  useEventListener(page, 'selectionchange', () => {
-    const selection = window.getSelection()
-    if (selection && !selection.isCollapsed) selection.removeAllRanges()
-  })
+  useEventListener(page, 'selectionchange', clearSelection)
 
   // Double-tap zoom anywhere else on the page: iOS ignores touch-action: manipulation unless it's on the very element
   // tapped, so a second tap hard on the heels of the first is cancelled. A single tap still clicks.
