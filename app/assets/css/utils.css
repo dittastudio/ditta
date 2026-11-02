@@ -30,6 +30,19 @@
   }
 }
 
+/* The little give in anything made to be poked: up a touch on hover, down a touch when pressed. */
+@utility pokeable {
+  transition: scale 150ms var(--ease-out);
+
+  @variant hover {
+    scale: 1.02;
+  }
+
+  @variant active {
+    scale: 0.98;
+  }
+}
+
 /* For anything made to be tapped over and over: no selecting, no double-tap zoom, no long-press callout. Pair it with
    @mousedown.prevent, as a desktop double-click still selects the text around an unselectable element. */
 @utility tappable {

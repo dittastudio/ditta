@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { useEventListener } from '@vueuse/core'
 import { defineSound } from '@web-kits/audio'
 import { sync } from '@@/.web-kits/core'
 import { useAppStore } from '@/stores/app'
@@ -15,7 +14,9 @@ const containerRef = useTemplateRef('container')
 const chipRefs = useTemplateRef('chipRef')
 const computerRef = useTemplateRef('computer')
 
-const { ready, isDragging, pageScrolling, sectionVisible } = useChipPhysics(containerRef, chipRefs)
+const { ready, isDragging, pageScrolling } = useChipPhysics(containerRef, chipRefs)
+
+useMouseTilt(computerRef)
 
 const services = await useDatasource('services', block.services)
 
@@ -128,16 +129,6 @@ const {
   onRage,
 })
 
-// Written straight to the element, so moving the mouse doesn't re-render the block
-const onMouseMove = (event: MouseEvent) => {
-  const rotation = (event.clientX / window.innerWidth) * 80 - 40
-
-  computerRef.value?.$el.style.setProperty('transform', `rotate(${rotation}deg)`)
-}
-
-// Only while the section is on screen
-useEventListener(() => (sectionVisible.value ? window : null), 'mousemove', onMouseMove, { passive: true })
-
 onUnmounted(() => {
   if (rageTimeout) clearTimeout(rageTimeout)
   if (psScreenTimeout) clearTimeout(psScreenTimeout)
@@ -174,8 +165,8 @@ onUnmounted(() => {
           >
             <IconComputer
               ref="computer"
-              class="tappable animate-bob w-full text-accent cursor-pointer"
-              :class="{ 'transition-[scale,transform] duration-150 ease-out hover:scale-102 active:scale-98': !inRage }"
+              class="tappable animate-bob rotate-(--tilt) w-full text-accent cursor-pointer"
+              :class="{ pokeable: !inRage }"
               :in-rage="inRage"
               :screen-src="rageScreen"
               @mousedown.prevent

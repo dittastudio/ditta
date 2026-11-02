@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import type { RichTextFieldValue } from '@storyblok/schema'
 import { defineSound, type SoundDefinition } from '@web-kits/audio'
-import { useRafFn } from '@vueuse/core'
 
 interface Props {
   text?: RichTextFieldValue | null
@@ -40,26 +39,7 @@ const soundRage = defineSample('/sounds/beepboop.opus')
 
 watch(isAudioOn, (on) => on && soundRage.load(), { immediate: true })
 
-const rotation = ref(0)
-const mouseXPercent = ref(50)
-const mouseYPercent = ref(50)
-
-let lastClientX = 0
-let lastClientY = 0
-
-const onMouseMove = (event: MouseEvent) => {
-  lastClientX = event.clientX
-  lastClientY = event.clientY
-}
-
-const { pause: pauseMouseTracking, resume: resumeMouseTracking } = useRafFn(
-  () => {
-    rotation.value = (lastClientX / window.innerWidth) * 80 - 40
-    mouseXPercent.value = (lastClientX / window.innerWidth) * 100
-    mouseYPercent.value = (lastClientY / window.innerHeight) * 100
-  },
-  { immediate: false },
-)
+useMouseTilt(useTemplateRef('robot'))
 
 const LEG_FLICKER_DURATION_MS = 300
 const LEG_COLOR_DEFAULT = '#FFA4D2'
@@ -131,14 +111,7 @@ const playRage = async () => {
   resetRage()
 }
 
-onMounted(() => {
-  window.addEventListener('mousemove', onMouseMove, { passive: true })
-  resumeMouseTracking()
-})
-
 onUnmounted(() => {
-  window.removeEventListener('mousemove', onMouseMove)
-  pauseMouseTracking()
   if (rageTimeout) clearTimeout(rageTimeout)
   stopLegFlicker()
 })
@@ -176,15 +149,11 @@ onUnmounted(() => {
             @mousedown.prevent
             @click="onRobotClick"
           >
-            <div :class="{ 'transition-[scale] duration-150 ease-out hover:scale-102 active:scale-98': !inRage }">
+            <div :class="{ pokeable: !inRage }">
               <div
-                class="footer__robot relative lg:left-[-2.5%] h-36 md:h-50 aspect-336/278"
+                ref="robot"
+                class="footer__robot relative lg:left-[-2.5%] h-36 md:h-50 aspect-336/278 rotate-(--tilt)"
                 :class="shakeClass"
-                :style="{
-                  transform: `rotate(${rotation}deg)`,
-                  '--mouse-x-percent': mouseXPercent,
-                  '--mouse-y-percent': mouseYPercent,
-                }"
               >
                 <div class="relative animate-bob">
                   <IconRobot

@@ -2,7 +2,6 @@
 import type { MarioPhase } from '@/composables/useMario'
 import type { Themes } from '@/types/app'
 import type { Block } from '#storyblok-schema'
-import { useElementVisibility, useEventListener } from '@vueuse/core'
 import { defineSound } from '@web-kits/audio'
 import { boop, levelUp } from '@@/.web-kits/core'
 import { gsap } from 'gsap'
@@ -82,27 +81,7 @@ const { play } = useAudio()
 const soundBoop = defineSound(boop)
 const soundLevelUp = defineSound(levelUp)
 
-// Written straight to a CSS variable, so following the mouse never re-renders the block. Held still from rage on, and
-// left alone off screen, catching up with the mouse on the way back so it doesn't jump at the next move.
-const isArrowOnScreen = useElementVisibility(arrowEl)
-let mouseX: number | undefined
-
-const tiltArrow = () => {
-  if (mouseX === undefined || !isArrowOnScreen.value || marioPhase.value !== 'hidden') return
-  arrowEl.value?.style.setProperty('--tilt', `${(mouseX / window.innerWidth) * 80 - 40}deg`)
-}
-
-watch(isArrowOnScreen, tiltArrow)
-
-useEventListener(
-  window,
-  'mousemove',
-  (event: MouseEvent) => {
-    mouseX = event.clientX
-    tiltArrow()
-  },
-  { passive: true },
-)
+useMouseTilt(arrowEl, { paused: isArrowLocked })
 
 const {
   shakeClass: arrowShakeClass,
@@ -191,12 +170,12 @@ const onArrowClick = () => {
             @mousedown.prevent
             @click="onArrowClick"
           >
-            <!-- On mobile it lifts clear on rage, so Mario has room to come out of the tail. Animated by liftArrow. -->
+            <!-- On mobile it lifts clear on rage, so Mario has room to come out of the tail. Animated by liftArrow, and the
+                 translate transition carries it back down afterwards. -->
             <div
               ref="arrowLift"
               :class="{
-                'transition-[scale,translate] duration-150 ease-out hover:scale-102 active:scale-98':
-                  marioPhase === 'hidden',
+                'pokeable [transition-property:scale,translate]!': marioPhase === 'hidden',
                 'max-md:-translate-y-(--mario-shift)': isArrowLocked,
               }"
             >

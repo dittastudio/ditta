@@ -297,5 +297,5 @@ export const useChipPhysics = (
     if (pageScrollTimeout) clearTimeout(pageScrollTimeout)
   })
 
-  return { ready, isDragging, pageScrolling, sectionVisible }
+  return { ready, isDragging, pageScrolling }
 }
