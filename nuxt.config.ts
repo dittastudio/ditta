@@ -99,10 +99,15 @@ export default defineNuxtConfig({
   },
   compatibilityDate: '2025-07-15',
   hooks: {
-    // Mario's chunk is fetched by code on the arrow's first poke, not prefetched on every page
+    // Heavy chunks few visitors need, so not prefetched on every page. Mario's is fetched by code on the arrow's first
+    // poke, the video player's preloads on the pages that render one, and the preview bridge is only for the editor.
     'build:manifest': (manifest) => {
+      const notPrefetched = ['block/StepsMario.vue', 'ui/MuxVideo.vue', '@storyblok/preview-bridge/dist/esm/index.js']
+
       for (const chunk of Object.values(manifest)) {
-        chunk.dynamicImports = chunk.dynamicImports?.filter((path) => !path.endsWith('block/StepsMario.vue'))
+        chunk.dynamicImports = chunk.dynamicImports?.filter(
+          (path) => !notPrefetched.some((name) => path.endsWith(name)),
+        )
       }
     },
   },
