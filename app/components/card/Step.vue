@@ -62,6 +62,6 @@ const mergedAttrs = useMergedAttrs('step-card w-full flex flex-col gap-y-20 roun
 @reference "@/assets/css/app.css";
 
 .step-card {
-  padding: utopia.clamp(16, 60);
+  padding: utopia.clamp(24, 60);
 }
 </style>

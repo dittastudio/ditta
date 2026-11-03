@@ -83,21 +83,6 @@ const soundLevelUp = defineSound(levelUp)
 
 useMouseTilt(arrowEl, { paused: isArrowLocked })
 
-const {
-  shakeClass: arrowShakeClass,
-  click: rageArrow,
-  resetRage,
-} = useRageClicks({
-  onFirstClick: loadMario,
-  onClick: () => play(soundBoop),
-  onRage: () => {
-    arrowEl.value?.blur() // it's done; otherwise Mario's arrow keys light up its focus ring
-    play(soundLevelUp)
-    marioPhase.value = 'raging'
-    loadMario()
-  },
-})
-
 // Up into its lifted class from where it sat. A one-shot animation, not a transition: mobile WebKit re-ran a transition
 // from the bottom when the rage shake stopped and the pipe changed layers, so the arrow dropped and rose again.
 // No-op on desktop, where the class doesn't lift it.
@@ -109,24 +94,42 @@ const liftArrow = () => {
   el.animate([{ translate: '0 0' }, {}], { duration: 300, easing })
 }
 
-watch(isArrowLocked, (locked) => locked && liftArrow(), { flush: 'post' })
+const {
+  shakeClass: arrowShakeClass,
+  click: rageArrow,
+  resetRage,
+} = useRageClicks({
+  onFirstClick: loadMario,
+  onClick: () => play(soundBoop),
+  onRage: () => {
+    // The phase takes over from here, and holding the rage would keep clearing selections wherever he's scrolled to
+    resetRage()
+    arrowEl.value?.blur() // it's done; otherwise Mario's arrow keys light up its focus ring
+    play(soundLevelUp)
+    marioPhase.value = 'raging'
+    void nextTick(liftArrow)
+    loadMario()
+  },
+})
 
 // The padding grows above the section when Mario comes out and shrinks when he's gone: scroll by the same amount, so
-// the arrow stays under the finger that raged it and nothing on screen jumps
+// the arrow stays under the finger that raged it and nothing on screen jumps. Through Lenis, or a wheel scroll it's still
+// smoothing would overwrite this on its next frame.
+const lenis = useLenis()
+
 watch(
   () => marioPhase.value === 'hidden',
   async () => {
     const before = marioSectionEl.value?.getBoundingClientRect().top
     await nextTick()
     const after = marioSectionEl.value?.getBoundingClientRect().top
-    if (before !== undefined && after !== undefined && after !== before) {
-      window.scrollBy({ top: after - before, behavior: 'instant' })
-    }
+    if (before === undefined || after === undefined || after === before) return
+
+    const top = window.scrollY + after - before
+    if (lenis.value) lenis.value.scrollTo(top, { immediate: true, force: true })
+    else window.scrollTo({ top, behavior: 'instant' })
   },
 )
-
-// Back from the alien: the arrow can be raged at all over again
-watch(marioPhase, (phase) => phase === 'hidden' && resetRage())
 
 const onArrowClick = () => {
   if (marioPhase.value === 'hidden') rageArrow()
@@ -149,7 +152,7 @@ const onArrowClick = () => {
       ref="marioSection"
       class="flex flex-col gap-(--app-gutter-outer)"
     >
-      <div class="wrapper grid grid-cols-1 md:grid-cols-12 gap-(--mario-copy-to-arrow) md:gap-5">
+      <div class="wrapper grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-5">
         <UiLockup
           ref="lockup"
           class="col-span-full md:col-span-8"
@@ -161,7 +164,7 @@ const onArrowClick = () => {
           <button
             ref="arrow"
             type="button"
-            class="tappable relative z-2 block w-(--mario-arrow-width) md:w-40 mx-auto transition-opacity duration-300 ease-outCubic"
+            class="tappable relative z-2 block w-30 md:w-40 mx-auto transition-opacity duration-300 ease-outCubic"
             :class="{ 'cursor-default': marioPhase !== 'hidden', 'opacity-0 pointer-events-none': isArrowGone }"
             aria-label="Poke the arrow"
             :tabindex="marioPhase === 'hidden' ? undefined : -1"
@@ -260,27 +263,21 @@ const onArrowClick = () => {
   /* Room above the heading, in sprite px: a 32 gap, a 16 box, a 21 alien and a 16 hop */
   --mario-headroom: calc(var(--mario-brick) * 85 / 16);
 
-  /* The rest is mobile only */
-  --mario-copy-to-arrow: --spacing(10);
-  --mario-arrow-width: --spacing(30);
-
-  /* From the arrow's artwork: 110x134, with the mouth at 130 */
-  --mario-arrow-height: calc(var(--mario-arrow-width) * 134 / 110);
-  --mario-arrow-to-mouth: calc(var(--mario-arrow-width) * 130 / 110);
+  /* The rest is mobile only, and worked out from gap-10, the arrow's w-30 and its 110x134 art with the mouth at 130 */
+  --mario-arrow: calc(--spacing(30) * 134 / 110);
+  --mario-mouth: calc(--spacing(30) * 130 / 110);
 
   /* From the bottom of the copy to the bricks */
   --mario-gap: calc(var(--mario-brick) * 3);
 
   /* Raises the bricks to that gap */
-  --mario-shift: calc(
-    var(--mario-copy-to-arrow) + var(--mario-arrow-height) + var(--app-gutter-outer) - var(--mario-gap)
-  );
+  --mario-shift: calc(--spacing(10) + var(--mario-arrow) + var(--app-gutter-outer) - var(--mario-gap));
 
   /* From the arrow's mouth to the bricks. At least a brick, or Mario slides out below them and snaps back up */
   --mario-drop: calc(var(--mario-brick) * 3);
 
   /* Raises the arrow to that drop */
-  --mario-lift: calc(var(--mario-copy-to-arrow) + var(--mario-arrow-to-mouth) + var(--mario-drop) - var(--mario-gap));
+  --mario-lift: calc(--spacing(10) + var(--mario-mouth) + var(--mario-drop) - var(--mario-gap));
 
   @variant md {
     --mario-brick: --spacing(12);
