@@ -18,29 +18,33 @@ const services = await useDatasource('services', story.content.services)
     :key="block._uid"
     :theme="'theme' in block ? (block.theme as Themes) : undefined"
   >
-    <BlockHeroProject
+    <LazyBlockHeroProject
       v-if="block.component === 'block_hero_project'"
       :block="block"
     />
 
-    <BlockCta
+    <LazyBlockCta
       v-else-if="block.component === 'block_cta'"
       :block="block"
+      :hydrate-on-visible="HYDRATE_NEARBY"
     />
 
-    <BlockStatement
+    <LazyBlockStatement
       v-else-if="block.component === 'block_statement'"
       :block="block"
+      :hydrate-on-visible="HYDRATE_NEARBY"
     />
 
-    <BlockProjects
+    <LazyBlockProjects
       v-else-if="block.component === 'block_projects'"
       :block="block"
+      :hydrate-on-visible="HYDRATE_NEARBY"
     />
 
-    <BlockProjectOverview
+    <LazyBlockProjectOverview
       v-else-if="block.component === 'block_project_overview'"
       :block="block"
+      :hydrate-on-visible="HYDRATE_NEARBY"
     >
       <ul class="flex gap-2.5 flex-wrap max-w-[40em]">
         <li
@@ -54,21 +58,24 @@ const services = await useDatasource('services', story.content.services)
           />
         </li>
       </ul>
-    </BlockProjectOverview>
+    </LazyBlockProjectOverview>
 
-    <BlockMedia
+    <LazyBlockMedia
       v-else-if="block.component === 'block_media'"
       :block="block"
+      :hydrate-on-visible="HYDRATE_NEARBY"
     />
 
-    <BlockTestimonial
+    <LazyBlockTestimonial
       v-else-if="block.component === 'block_testimonial'"
       :block="block"
+      :hydrate-on-visible="HYDRATE_NEARBY"
     />
 
-    <BlockText
+    <LazyBlockText
       v-else-if="block.component === 'block_text'"
       :block="block"
+      :hydrate-on-visible="HYDRATE_NEARBY"
     />
   </UiTheme>
 </template>

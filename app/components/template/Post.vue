@@ -59,9 +59,10 @@ const author = computed(() => storyblokRelation<'person'>(story.content.author))
       theme="light"
       :class="`section--${block.component}`"
     >
-      <BlockPostText
+      <LazyBlockPostText
         v-if="block.component === 'block_post_text'"
         :block="block"
+        :hydrate-on-visible="HYDRATE_NEARBY"
       />
     </UiTheme>
 

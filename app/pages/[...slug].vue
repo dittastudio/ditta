@@ -36,17 +36,17 @@ onMounted(() => {
 
 <template>
   <main class="w-full min-h-svh">
-    <TemplatePage
+    <LazyTemplatePage
       v-if="isPage(story)"
       :story="story"
     />
 
-    <TemplateProject
+    <LazyTemplateProject
       v-else-if="isProject(story)"
       :story="story"
     />
 
-    <TemplatePost
+    <LazyTemplatePost
       v-else-if="isPost(story)"
       :story="story"
     />

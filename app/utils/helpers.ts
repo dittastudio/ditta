@@ -5,4 +5,7 @@ const clearSelection = () => {
   if (selection && !selection.isCollapsed) selection.removeAllRanges()
 }
 
-export { clearSelection, wait }
+// For lazy blocks: hydrate a screen ahead of arriving, so their scroll animations are set up before they're on screen
+const HYDRATE_NEARBY = { rootMargin: '100%' }
+
+export { HYDRATE_NEARBY, clearSelection, wait }
