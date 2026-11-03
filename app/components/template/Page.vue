@@ -22,57 +22,49 @@ const { story } = defineProps<Props>()
       :block="block"
     /> -->
 
-    <LazyBlockAccordion
+    <BlockAccordion
       v-if="block.component === 'block_accordion'"
       :block="block"
-      :hydrate-on-visible="HYDRATE_NEARBY"
     />
 
-    <LazyBlockCta
+    <BlockCta
       v-else-if="block.component === 'block_cta'"
       :block="block"
-      :hydrate-on-visible="HYDRATE_NEARBY"
     />
 
-    <LazyBlockHero
+    <BlockHero
       v-else-if="block.component === 'block_hero'"
       :block="block"
     />
 
-    <LazyBlockPosts
+    <BlockPosts
       v-else-if="block.component === 'block_posts'"
       :block="block"
-      :hydrate-on-visible="HYDRATE_NEARBY"
     />
 
-    <LazyBlockProjects
+    <BlockProjects
       v-else-if="block.component === 'block_projects'"
       :block="block"
-      :hydrate-on-visible="HYDRATE_NEARBY"
     />
 
-    <LazyBlockStatement
+    <BlockStatement
       v-else-if="block.component === 'block_statement'"
       :block="block"
-      :hydrate-on-visible="HYDRATE_NEARBY"
     />
 
-    <LazyBlockServices
+    <BlockServices
       v-else-if="block.component === 'block_services'"
       :block="block"
-      :hydrate-on-visible="HYDRATE_NEARBY"
     />
 
-    <LazyBlockTeam
+    <BlockTeam
       v-else-if="block.component === 'block_team'"
       :block="block"
-      :hydrate-on-visible="HYDRATE_NEARBY"
     />
 
-    <LazyBlockSteps
+    <BlockSteps
       v-else-if="block.component === 'block_steps'"
       :block="block"
-      :hydrate-on-visible="HYDRATE_NEARBY"
     />
   </UiTheme>
 </template>

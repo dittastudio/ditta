@@ -177,10 +177,9 @@ onUnmounted(() => {
         href="mailto:hello@ditta.studio"
         aria-label="Email Ditta at hello@ditta.studio"
       >
-        <LazyUiTextMorph
+        <UiTextMorph
           :min-weight="400"
           :text="email"
-          :hydrate-on-visible="HYDRATE_NEARBY"
         />
       </a>
     </div>

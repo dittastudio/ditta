@@ -66,10 +66,9 @@ useHead({
       theme="light"
       :class="`section--${block.component}`"
     >
-      <LazyBlockPostText
+      <BlockPostText
         v-if="block.component === 'block_post_text'"
         :block="block"
-        :hydrate-on-visible="HYDRATE_NEARBY"
       />
     </UiTheme>
 
