@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { Block } from '#storyblok-schema'
+import type Matter from 'matter-js'
 import type { Ref } from 'vue'
 import { onKeyStroke, useIntersectionObserver, useResizeObserver } from '@vueuse/core'
-import { Engine, Bodies, Body, Composite } from 'matter-js'
 import { defineSound } from '@web-kits/audio'
 import { kick, snare, hatClosed, tom } from '@@/.web-kits/drums'
 import { swoosh, whoosh, archive } from '@@/.web-kits/core'
@@ -107,8 +107,15 @@ const smoothstep = (t: number) => t * t * (3 - 2 * t)
 const easeOutCubic = (t: number) => 1 - (1 - t) ** 3
 let smileyDecayEase = smoothstep
 
-let engine: Engine | null = null
-let smileyBody: Body | null = null
+// Fetched on mount, so physics never holds up the first screen. Everything using these waits for engine and smileyBody.
+let Engine: typeof Matter.Engine
+let Bodies: typeof Matter.Bodies
+let Body: typeof Matter.Body
+let Composite: typeof Matter.Composite
+
+let engine: Matter.Engine | null = null
+let smileyBody: Matter.Body | null = null
+let isUnmounted = false
 
 // Reduced motion: at rest unless thrown
 const getSmileyBaseSpeed = () => (prefersReducedMotion.value ? 0 : SMILEY_SPEED)
@@ -776,12 +783,18 @@ onMounted(() => {
   clampSmileyPosition()
   applySmileyTransform()
 
-  setupSmileyEngine()
-  startSmileyLoop()
+  void import('matter-js').then((module) => {
+    if (isUnmounted) return
 
-  // Paint position before fading in
-  requestAnimationFrame(() => {
-    smileyReady.value = true
+    ;({ Engine, Bodies, Body, Composite } = module.default)
+
+    setupSmileyEngine()
+    startSmileyLoop()
+
+    // Paint position before fading in
+    requestAnimationFrame(() => {
+      smileyReady.value = true
+    })
   })
 
   useResizeObserver(heroEl, () => {
@@ -809,6 +822,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  isUnmounted = true
   stopSmileyLoop()
   if (logoSkylineIdleId !== null) cancelIdleCallback(logoSkylineIdleId)
 
