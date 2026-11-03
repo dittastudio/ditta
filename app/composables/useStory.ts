@@ -26,10 +26,9 @@ export async function useStory<T>(
       preventClicks: true,
       ...bridge,
     },
-    transform: (input) => {
-      return input
-    },
-    deep: true,
+    // Only the story is read from here, so the rest of the response stays out of the payload: its headers, and `rels`, a
+    // second copy of every resolved relation. The bridge swaps the whole story on an edit, so nothing here needs deep.
+    transform: (input) => ({ data: { story: pruneRelations(input.data.story) } }) as typeof input,
     ...options,
   })
 

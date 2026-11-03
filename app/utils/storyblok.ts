@@ -67,9 +67,47 @@ const storyblokRelation = <TName extends Blocks['name']>(
   return typeof entry === 'string' || !entry ? undefined : entry
 }
 
+// The content each relation is read for. Everything else on a resolved story is dropped by `pruneRelations`, so a field
+// a component starts reading from a relation has to be added here too.
+const storyRelationFields: Record<string, string[]> = {
+  'block_team.humans': ['image', 'name', 'position'],
+  'block_projects.projects': ['title', 'headline', 'media'],
+  'post.author': ['image', 'name'],
+}
+
 // Shared because `useAsyncStoryblok` keys on the slug and api options: callers fetching the same
 // page story must pass identical relations to share one request and payload entry.
-const storyRelations = ['block_team.humans', 'block_projects.projects', 'post.author']
+const storyRelations = Object.keys(storyRelationFields)
+
+const pruneRelation = (relation: unknown, fields: string[]): unknown => {
+  if (!relation || typeof relation !== 'object') return relation // a UUID the CDN left unresolved
+
+  const { uuid, full_slug, content } = relation as ISbStoryData<Record<string, unknown>>
+
+  return { uuid, full_slug, content: Object.fromEntries(fields.map((field) => [field, content[field]])) }
+}
+
+// Resolving a relation inlines its whole story, and a project's story holds every block on its page, all of which would
+// otherwise ship in the page's payload. Copies rather than edits, as the Storyblok client caches what it returns.
+const pruneRelations = <T>(value: T): T => {
+  if (Array.isArray(value)) return value.map((item) => pruneRelations(item)) as T
+  if (!value || typeof value !== 'object') return value
+
+  const { component } = value as { component?: string }
+
+  return Object.fromEntries(
+    Object.entries(value).map(([key, field]) => {
+      const fields = storyRelationFields[`${component}.${key}`]
+
+      if (!fields) return [key, pruneRelations(field)]
+
+      return [
+        key,
+        Array.isArray(field) ? field.map((item) => pruneRelation(item, fields)) : pruneRelation(field, fields),
+      ]
+    }),
+  ) as T
+}
 
 const storyblokSlug = (path: string): string => (['', '/'].includes(path) ? '/home' : path.replace(/\/+$/, ''))
 
@@ -136,6 +174,7 @@ export {
   isPage,
   isProject,
   isPost,
+  pruneRelations,
   storyRelations,
   storyblokAssetType,
   storyblokEditor,
