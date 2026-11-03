@@ -45,7 +45,7 @@ const DEATH_JUMP = 3 // sprite px per frame
 const DEATH_GRAVITY = 0.12
 
 // Sprite sheet columns
-const Frame = { Idle: 0, Walk: 1, Jump: 4, Die: 5 } as const
+const Frame = { Idle: 0, Walk: 1, Jump: 4, Skid: 5, Die: 6 } as const
 const WALK_FRAMES = 3
 
 // A line of text, from cap height down to the baseline. One-way platform: he passes up through it and
@@ -374,6 +374,11 @@ export const step = (
     mario.frame = Frame.Jump
   } else if (mario.vx === 0) {
     mario.frame = Frame.Idle
+    mario.animTimer = 0
+  } else if (Math.sign(mario.vx) !== (direction || mario.facing)) {
+    // Sliding against his facing, held until he stops even if the direction is let go. A held direction goes first, as
+    // facing only catches up with it the step after landing, and he'd flash this frame having turned round in the air.
+    mario.frame = Frame.Skid
     mario.animTimer = 0
   } else {
     // Walk cycle steps through SMB's three speeds

@@ -88,7 +88,7 @@ const onMarioClick = () => {
   <div
     v-if="box && phase !== 'hidden'"
     ref="marioBoxEl"
-    class="absolute top-0 left-0 size-10 md:size-12 select-none transition-opacity duration-150 ease-outCubic motion-reduce:transition-none"
+    class="absolute top-0 left-0 size-(--mario-brick) select-none transition-opacity duration-150 ease-outCubic motion-reduce:transition-none"
     :class="{ 'opacity-0': boxState === 'hidden' || phase === 'resetting' }"
     :style="{ transform: boxTransform }"
   >
@@ -116,7 +116,7 @@ const onMarioClick = () => {
   <div
     v-if="phase !== 'hidden'"
     ref="alien"
-    class="absolute z-1 bottom-full left-0 w-20 md:w-24 aspect-[32/21] overflow-hidden select-none pointer-events-none transition-opacity duration-300 ease-outCubic"
+    class="absolute z-1 bottom-full left-0 w-[calc(var(--mario-brick)*2)] aspect-[32/21] overflow-hidden select-none pointer-events-none transition-opacity duration-300 ease-outCubic"
     :class="{ invisible: !hasAlien, 'opacity-0': phase === 'resetting' }"
   >
     <div
@@ -134,7 +134,7 @@ const onMarioClick = () => {
   <div
     v-if="phase !== 'hidden'"
     ref="mario"
-    class="absolute bottom-full left-0 size-10 md:size-12 overflow-hidden select-none cursor-pointer"
+    class="absolute bottom-full left-0 size-(--mario-brick) overflow-hidden select-none cursor-pointer"
     :class="{
       invisible: phase === 'raging',
       // In front of the steps below as he falls out of the viewport
@@ -159,7 +159,7 @@ const onMarioClick = () => {
     <IconMarioBrick
       v-for="(brick, index) in bricks"
       :key="index"
-      class="size-10 md:size-12 shrink-0 motion-reduce:[--brick-rise:0]"
+      class="size-(--mario-brick) shrink-0 motion-reduce:[--brick-rise:0]"
       :class="
         !brick
           ? 'opacity-0'

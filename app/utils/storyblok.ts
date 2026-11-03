@@ -67,6 +67,10 @@ const storyblokRelation = <TName extends Blocks['name']>(
   return typeof entry === 'string' || !entry ? undefined : entry
 }
 
+// Shared because `useAsyncStoryblok` keys on the slug and api options: callers fetching the same
+// page story must pass identical relations to share one request and payload entry.
+const storyRelations = ['block_team.humans', 'block_projects.projects', 'post.author']
+
 const storyblokSlug = (path: string): string => (['', '/'].includes(path) ? '/home' : path.replace(/\/+$/, ''))
 
 const isMediaImage = (
@@ -132,6 +136,7 @@ export {
   isPage,
   isProject,
   isPost,
+  storyRelations,
   storyblokAssetType,
   storyblokEditor,
   storyblokImage,

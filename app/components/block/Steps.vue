@@ -134,11 +134,10 @@ const onArrowClick = () => {
 </script>
 
 <template>
-  <!-- Mario's headroom, in sprite px at 16 to a brick: a 32 gap, a 16 box, a 21 alien and a 16 hop over the heading -->
   <div
     ref="marioCeiling"
     v-editable="block"
-    class="flex flex-col gap-(--app-gutter-outer) overflow-clip [--mario-headroom:calc(--spacing(10)*85/16)] md:[--mario-headroom:calc(--spacing(12)*85/16)]"
+    class="steps__mario flex flex-col gap-(--app-gutter-outer) overflow-clip"
     :class="{
       'pt-(--app-vertical-rhythm)': block.spacing_top && marioPhase === 'hidden',
       'pt-[max(var(--app-vertical-rhythm),var(--mario-headroom))]': block.spacing_top && marioPhase !== 'hidden',
@@ -148,9 +147,9 @@ const onArrowClick = () => {
   >
     <div
       ref="marioSection"
-      class="flex flex-col gap-(--app-gutter-outer) [--mario-shift:--spacing(32)]"
+      class="flex flex-col gap-(--app-gutter-outer)"
     >
-      <div class="wrapper grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-5">
+      <div class="wrapper grid grid-cols-1 md:grid-cols-12 gap-(--mario-copy-to-arrow) md:gap-5">
         <UiLockup
           ref="lockup"
           class="col-span-full md:col-span-8"
@@ -162,7 +161,7 @@ const onArrowClick = () => {
           <button
             ref="arrow"
             type="button"
-            class="tappable relative z-2 block w-30 md:w-40 mx-auto transition-opacity duration-300 ease-outCubic"
+            class="tappable relative z-2 block w-(--mario-arrow-width) md:w-40 mx-auto transition-opacity duration-300 ease-outCubic"
             :class="{ 'cursor-default': marioPhase !== 'hidden', 'opacity-0 pointer-events-none': isArrowGone }"
             aria-label="Poke the arrow"
             :tabindex="marioPhase === 'hidden' ? undefined : -1"
@@ -176,7 +175,7 @@ const onArrowClick = () => {
               ref="arrowLift"
               :class="{
                 'pokeable [transition-property:scale,translate]!': marioPhase === 'hidden',
-                'max-md:-translate-y-(--mario-shift)': isArrowLocked,
+                'max-md:-translate-y-(--mario-lift)': isArrowLocked,
               }"
             >
               <!-- The shake sits inside the lift, so stopping it never touches the lift -->
@@ -193,10 +192,11 @@ const onArrowClick = () => {
         </div>
       </div>
 
-      <!-- Holds the bricks' height up front, so the page doesn't move when they arrive -->
+      <!-- Holds the bricks' height up front, so the page doesn't move when they arrive. On mobile they're offset up within
+           reach of the copy, which leaves that space where it is, so the steps below stay clear of the arrow. -->
       <div
         ref="marioStage"
-        class="relative h-10 md:h-12 max-md:-mt-(--mario-shift) md:mt-[calc(var(--app-gutter-outer)*0.5)] lg:mt-0"
+        class="relative h-(--mario-brick) max-md:bottom-(--mario-shift) md:mt-[calc(var(--app-gutter-outer)*0.5)] lg:mt-0"
         aria-hidden="true"
       >
         <component
@@ -249,3 +249,41 @@ const onArrowClick = () => {
     </div>
   </div>
 </template>
+
+<style scoped>
+@reference "@/assets/css/app.css";
+
+.steps__mario {
+  /* Everything in the scene is sized from this: 16 sprite px */
+  --mario-brick: --spacing(10);
+
+  /* Room above the heading, in sprite px: a 32 gap, a 16 box, a 21 alien and a 16 hop */
+  --mario-headroom: calc(var(--mario-brick) * 85 / 16);
+
+  /* The rest is mobile only */
+  --mario-copy-to-arrow: --spacing(10);
+  --mario-arrow-width: --spacing(30);
+
+  /* From the arrow's artwork: 110x134, with the mouth at 130 */
+  --mario-arrow-height: calc(var(--mario-arrow-width) * 134 / 110);
+  --mario-arrow-to-mouth: calc(var(--mario-arrow-width) * 130 / 110);
+
+  /* From the bottom of the copy to the bricks */
+  --mario-gap: calc(var(--mario-brick) * 3);
+
+  /* Raises the bricks to that gap */
+  --mario-shift: calc(
+    var(--mario-copy-to-arrow) + var(--mario-arrow-height) + var(--app-gutter-outer) - var(--mario-gap)
+  );
+
+  /* From the arrow's mouth to the bricks. At least a brick, or Mario slides out below them and snaps back up */
+  --mario-drop: calc(var(--mario-brick) * 3);
+
+  /* Raises the arrow to that drop */
+  --mario-lift: calc(var(--mario-copy-to-arrow) + var(--mario-arrow-to-mouth) + var(--mario-drop) - var(--mario-gap));
+
+  @variant md {
+    --mario-brick: --spacing(12);
+  }
+}
+</style>

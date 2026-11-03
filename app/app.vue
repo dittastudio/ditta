@@ -1,17 +1,38 @@
 <script setup lang="ts">
 import type { Block } from '#storyblok-schema'
+import type { Themes } from '@/types/app'
 import { VueLenis } from 'lenis/vue'
 
 const settings = await useStory<Block<'settings'>>('/settings')
 
 const route = useRoute()
 const router = useRouter()
+const appStore = useAppStore()
+
+// Vue renders the Dock and Tagline before the page's async setup resolves, so the page can't set this in time
+if (import.meta.server) {
+  const page = await useStory<Block<'page'> | Block<'project'>>(
+    route.path,
+    { resolve_relations: storyRelations },
+    { resolveRelations: storyRelations },
+  )
+  const first = page.value.content.blocks?.[0]
+
+  if (first && 'theme' in first) appStore.setTheme(first.theme as Themes)
+  else if (isPost(page.value)) appStore.setTheme('light')
+}
 
 const globalClasses = computed(() => ({
   'is-storyblok-editor': storyblokEditor(route.query),
 }))
 
-const appStore = useAppStore()
+// Prerendered HTML can't read the cookie, so apply the saved accent before first paint
+const accentScript = `try {
+  const accent = JSON.parse(decodeURIComponent(document.cookie.match(/(?:^|; )app=([^;]*)/)?.[1] ?? '{}')).accent
+  if (['pink', 'mood', 'olive'].includes(accent)) {
+    document.documentElement.style.setProperty('--color-accent', 'var(--color-' + accent + ')')
+  }
+} catch {}`
 
 useHead({
   htmlAttrs: {
@@ -20,6 +41,7 @@ useHead({
       () => `--color-accent: var(--color-${appStore.getAccent}); --dock-height: ${appStore.getDockHeight}px`,
     ),
   },
+  script: [{ key: 'accent', innerHTML: accentScript }],
 })
 
 useSeoMeta({

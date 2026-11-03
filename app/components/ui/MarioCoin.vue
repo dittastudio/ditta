@@ -47,7 +47,7 @@ onMounted(() => {
 <template>
   <div
     ref="coin"
-    class="absolute w-5 md:w-6 h-10 md:h-12 overflow-hidden pointer-events-none select-none"
+    class="absolute w-[calc(var(--mario-brick)/2)] h-(--mario-brick) overflow-hidden pointer-events-none select-none"
     :style="{ left: `${x}px`, top: `${y}px` }"
   >
     <div
