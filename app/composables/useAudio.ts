@@ -10,6 +10,7 @@ const soundOff = defineSound(toggleOff)
 
 const samples = new Map<string, Promise<AudioBuffer>>() // decoded once per URL, shared across components
 const voices = new Set<AudioBufferSourceNode>() // every sample playing, so turning audio off silences them
+let mutes = 0 // a play still waiting on its sample when this moves on was muted, even if audio has come back on since
 
 const stopVoices = (playing: Set<AudioBufferSourceNode>) => playing.forEach((voice) => voice.stop())
 
@@ -40,8 +41,9 @@ export const defineSample = (url: string) => {
     if (!isAudioOn.value) return
 
     const stopsAtStart = stops
+    const mutesAtStart = mutes
     const [context, buffer] = await Promise.all([ensureReady(), loadSample(url)]).catch(() => [])
-    if (!context || !buffer || !isAudioOn.value || stops !== stopsAtStart) return
+    if (!context || !buffer || mutes !== mutesAtStart || stops !== stopsAtStart) return
 
     const voice = context.createBufferSource()
     voice.buffer = buffer
@@ -78,6 +80,7 @@ export const useAudio = () => {
     if (isAudioOn.value) {
       soundOn()
     } else {
+      mutes++
       stopVoices(voices)
       soundOff()
     }

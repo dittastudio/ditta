@@ -498,6 +498,7 @@ export default function useMario(el: Elements) {
       useEventListener(window, 'keyup', onKeyUp)
       useEventListener(window, 'blur', releaseInput)
       useResizeObserver([() => toValue(el.stage), () => toValue(el.lockup)], measure)
+      useEventListener(document.fonts, 'loadingdone', measure) // a swapped font moves the words without resizing the block
       // Anything above growing or shrinking moves the stage, and the page's height with it
       useResizeObserver([() => document.body, () => toValue(el.gamepad)], measureView)
       useEventListener(() => window.visualViewport, 'resize', measureView)

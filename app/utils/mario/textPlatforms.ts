@@ -22,7 +22,9 @@ export const fontMetrics = (el: Element) => {
     cap: metrics.actualBoundingBoxAscent,
   }
 
-  metricsCache.set(font, result)
+  // Not until it's loaded, as these are the fallback's until then
+  if (document.fonts.check(font)) metricsCache.set(font, result)
+
   return result
 }
 

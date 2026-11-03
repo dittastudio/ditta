@@ -172,8 +172,6 @@ const onArrowClick = () => {
             @mousedown.prevent
             @click="onArrowClick"
           >
-            <!-- On mobile it lifts clear on rage, so Mario has room to come out of the tail. Animated by liftArrow, and the
-                 translate transition carries it back down afterwards. -->
             <div
               ref="arrowLift"
               :class="{
@@ -181,9 +179,7 @@ const onArrowClick = () => {
                 'max-md:-translate-y-(--mario-lift)': isArrowLocked,
               }"
             >
-              <!-- The shake sits inside the lift, so stopping it never touches the lift -->
               <div :class="marioPhase === 'raging' ? 'shake-3' : arrowShakeClass">
-                <!-- Tail doubles as a pipe: upright and red while raging, until Mario is out -->
                 <IconPixelArrow
                   class="w-full data-rage:[&_[fill='#24F456']]:fill-rage-light data-rage:[&_[fill='#00E640']]:fill-rage data-rage:[&_[fill='#00C340']]:fill-rage-dark"
                   :class="{ 'animate-bob rotate-(--tilt)': !isArrowLocked }"
@@ -195,8 +191,6 @@ const onArrowClick = () => {
         </div>
       </div>
 
-      <!-- Holds the bricks' height up front, so the page doesn't move when they arrive. On mobile they're offset up within
-           reach of the copy, which leaves that space where it is, so the steps below stay clear of the arrow. -->
       <div
         ref="marioStage"
         class="relative h-(--mario-brick) max-md:bottom-(--mario-shift) md:mt-[calc(var(--app-gutter-outer)*0.5)] lg:mt-0"

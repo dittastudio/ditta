@@ -39,11 +39,9 @@ const buttonEvents = (button: MarioButton) => ({
 </script>
 
 <template>
-  <!-- Touch screens only. The gap below the panel is padding, not an offset, so translate-y-full hides it all. -->
   <div
     class="fixed inset-x-0 bottom-0 z-40 hidden only-touch:block px-[calc(var(--app-gutter-outer)*0.5)] [-webkit-tap-highlight-color:transparent] pb-[max(--spacing(5),env(safe-area-inset-bottom))] pointer-events-none transition-[translate] duration-300 ease-outCubic"
     :class="{ 'translate-y-full': !visible }"
-    aria-hidden="true"
   >
     <div
       class="bg-putty p-[calc(var(--app-gutter-outer)*0.5)] rounded-10 touch-none shadow-lg"

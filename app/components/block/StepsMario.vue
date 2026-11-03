@@ -84,7 +84,6 @@ const onMarioClick = () => {
 </script>
 
 <template>
-  <!-- Solid from the start, but unseen until he hits it -->
   <div
     v-if="box && phase !== 'hidden'"
     ref="marioBoxEl"
@@ -112,7 +111,6 @@ const onMarioClick = () => {
     @done="removeCoin(coin.id)"
   />
 
-  <!-- Rises out of the box, then shares Mario's world; under him -->
   <div
     v-if="phase !== 'hidden'"
     ref="alien"
@@ -130,7 +128,6 @@ const onMarioClick = () => {
     </div>
   </div>
 
-  <!-- Over a bumped word and its coins, under the pipe he comes out of -->
   <div
     v-if="phase !== 'hidden'"
     ref="mario"
@@ -154,7 +151,6 @@ const onMarioClick = () => {
     </div>
   </div>
 
-  <!-- Bricks only render once the stage is measured; the stage holds their height until then -->
   <div class="flex justify-center h-full overflow-x-clip">
     <IconMarioBrick
       v-for="(brick, index) in bricks"
@@ -171,7 +167,6 @@ const onMarioClick = () => {
     />
   </div>
 
-  <!-- Only mounted once the pipe rages, so it can slide in when Mario lands -->
   <Teleport
     v-if="phase !== 'hidden'"
     to="#teleports"
