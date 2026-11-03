@@ -764,7 +764,11 @@ const stopSmileyLoop = () => {
 
 onMounted(() => {
   // Not needed until the smiley reaches the logo; contacts are simply off until it exists
-  logoSkylineIdleId = requestIdleCallback(buildLogoSkyline, { timeout: LOGO_SKYLINE_IDLE_TIMEOUT })
+  if (typeof requestIdleCallback === 'function') {
+    logoSkylineIdleId = requestIdleCallback(buildLogoSkyline, { timeout: LOGO_SKYLINE_IDLE_TIMEOUT })
+  } else {
+    buildLogoSkyline()
+  }
 
   measureSmileyBounds()
   smileyCenter.x = smileyRadius + 24
