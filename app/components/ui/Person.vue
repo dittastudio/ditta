@@ -18,6 +18,7 @@ const { name, position } = defineProps<Props>()
         class="block size-full aspect-square object-cover rounded-20 squircle-40"
         :src="image.filename"
         :alt="image.alt || name || ''"
+        sizes="2xs:100vw md:85vw lg:33vw 2xl:580px"
         loading="lazy"
       />
     </UiPixelate>
