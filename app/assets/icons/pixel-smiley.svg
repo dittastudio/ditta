@@ -1,29 +1,12 @@
 <svg width="168" height="168" viewBox="0 0 168 168" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect y="60" width="12" height="48" fill="black"/>
-<rect x="156" y="60" width="12" height="48" fill="black"/>
-<rect x="12" y="108" width="12" height="24" fill="black"/>
-<rect x="12" y="36" width="12" height="24" fill="black"/>
-<rect x="144" y="108" width="12" height="24" fill="black"/>
-<rect x="144" y="36" width="12" height="24" fill="black"/>
-<rect x="60" y="156" width="48" height="12" fill="black"/>
-<rect x="60" width="48" height="12" fill="black"/>
-<rect x="108" y="144" width="24" height="12" fill="black"/>
-<rect x="36" y="144" width="24" height="12" fill="black"/>
-<rect x="36" y="12" width="24" height="12" fill="black"/>
-<rect x="108" y="12" width="24" height="12" fill="black"/>
-<rect x="132" y="132" width="12" height="12" fill="black"/>
-<rect x="24" y="132" width="12" height="12" fill="black"/>
-<rect x="132" y="24" width="12" height="12" fill="black"/>
-<rect x="24" y="24" width="12" height="12" fill="black"/>
+<path d="M60 0h48v12h-48zM36 12h24v12h-24zM108 12h24v12h-24zM24 24h12v12h-12zM132 24h12v12h-12zM12 36h12v24h-12zM144 36h12v24h-12zM0 60h12v48h-12zM156 60h12v48h-12zM12 108h12v24h-12zM144 108h12v24h-12zM24 132h12v12h-12zM132 132h12v12h-12zM36 144h24v12h-24zM108 144h24v12h-24zM60 156h48v12h-48z" fill="black"/>
 <path d="M108 156H60V144H36V132H24V108H12V60H24V36H36V24H60V12H108V24H132V36H144V60H156V108H144V132H132V144H108V156Z" fill="#FFFF00"/>
-<rect x="36" y="108" width="12" height="12" fill="black"/>
+<path d="M36 108h12v12h-12zM120 108h12v12h-12zM48 120h72v12h-72z" fill="black"/>
 <rect x="84.3135" y="73" width="16" height="16" transform="rotate(45 84.3135 73)" fill="currentColor"/>
-<rect x="48" y="120" width="72" height="12" fill="black"/>
-<rect x="120" y="108" width="12" height="12" fill="black"/>
-<circle cx="58" cy="48" r="9" fill="white" stroke="black" stroke-width="2"/>
+<path d="M67 48C67 52.9706 62.9706 57 58 57C53.0294 57 49 52.9706 49 48C49 43.0294 53.0294 39 58 39C62.9706 39 67 43.0294 67 48Z" fill="white" stroke-width="2" stroke="black"/>
 <circle cx="58" cy="48" r="6" fill="#08A504"/>
-<circle cx="108" cy="48" r="9" fill="white" stroke="black" stroke-width="2"/>
+<path d="M117 48C117 52.9706 112.971 57 108 57C103.029 57 99 52.9706 99 48C99 43.0294 103.029 39 108 39C112.971 39 117 43.0294 117 48Z" fill="white" stroke-width="2" stroke="black"/>
 <circle cx="108" cy="48" r="6" fill="#08A504"/>
-<path d="M48.852 38C42.7458 43.0709 42.8814 46.4799 45.352 53" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M117 38C123.106 43.0709 122.97 46.4799 120.5 53" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M48.852 38C42.7458 43.0709 42.8814 46.4799 45.352 53" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="black"/>
+<path d="M117 38C123.106 43.0709 122.97 46.4799 120.5 53" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="black"/>
 </svg>

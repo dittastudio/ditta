@@ -5,5 +5,18 @@
   "enabledPlugins": {
     "figma@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_response.filePath // .tool_input.file_path' | { read -r f; case \"$f\" in *.js|*.ts|*.vue) cd \"$CLAUDE_PROJECT_DIR\" && npx vp fmt \"$f\";; esac; } >/dev/null 2>&1 || true"
+          }
+        ]
+      }
+    ]
   }
 }

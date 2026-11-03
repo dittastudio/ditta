@@ -39,7 +39,7 @@ export default defineNuxtConfig({
           },
         },
         domains: ['storyblok.com', 'ditta.studio'],
-        quality: 90,
+        quality: 85,
         screens: breakpoints,
       },
     ],
@@ -67,7 +67,6 @@ export default defineNuxtConfig({
       link: [
         { rel: 'manifest', href: '/site.webmanifest' },
         { rel: 'preload', type: 'font/woff2', href: '/fonts/SaansVF.woff2', as: 'font', crossorigin: '' },
-        { rel: 'preload', type: 'font/woff2', href: '/fonts/JetBrainsMonoVF.woff2', as: 'font', crossorigin: '' },
         {
           rel: 'icon',
           type: 'image/svg+xml',
@@ -98,6 +97,25 @@ export default defineNuxtConfig({
     },
   },
   compatibilityDate: '2025-07-15',
+  experimental: {
+    defaults: {
+      // A link's page is fetched when it's hovered or focused, not as soon as it scrolls into view
+      nuxtLink: { prefetchOn: { interaction: true, visibility: false } },
+    },
+  },
+  hooks: {
+    // Heavy chunks few visitors need, so not prefetched on every page. Mario's is fetched by code on the arrow's first poke,
+    // the preview bridge is only for the editor, and the video player still preloads on the pages that render one.
+    'build:manifest': (manifest) => {
+      const notPrefetched = ['block/StepsMario.vue', 'ui/MuxVideo.vue', '@storyblok/preview-bridge/dist/esm/index.js']
+
+      for (const chunk of Object.values(manifest)) {
+        chunk.dynamicImports = chunk.dynamicImports?.filter(
+          (path) => !notPrefetched.some((name) => path.endsWith(name)),
+        )
+      }
+    },
+  },
   ssr: !isSpa,
   css: ['~/assets/css/app.css'],
   devtools: { enabled: false },
@@ -131,7 +149,6 @@ export default defineNuxtConfig({
         'gsap/SplitText',
         'lenis/vue',
         'matter-js',
-        'tailwind-merge',
       ],
     },
     plugins: [
@@ -158,6 +175,9 @@ export default defineNuxtConfig({
   },
   seo: {
     automaticOgAndTwitterTags: false,
+  },
+  skewProtection: {
+    enabled: false,
   },
   site: {
     name: 'ditta',

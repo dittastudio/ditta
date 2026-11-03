@@ -44,13 +44,18 @@ const SMILEY_SPIN_FLING_MAX = SMILEY_SPIN_SPEED_MAX * 3 // deg/s, for the hardes
 const SMILEY_FLING_SPEED_MULTIPLIER_MAX = 10
 const SMILEY_FLING_SPEED_MAX = SMILEY_SPEED * SMILEY_FLING_SPEED_MULTIPLIER_MAX // px/s
 const SMILEY_FLING_GAIN = 1.2 // release speed relative to the cursor's
-const SMILEY_FLING_SAMPLE_WINDOW = 80 // ms of cursor movement used for release velocity
+const SMILEY_FLING_SAMPLE_WINDOW = 250 // ms; a throw fades to nothing over this after its fast stretch ends
+const SMILEY_FLING_PEAK_SPAN = 24 // ms; shortest stretch measured, so a single jittery sample can't set the speed
+const SMILEY_FLING_STRETCH_RATIO = 0.6 // the newest stretch this close to the fastest is the throw, so reversals win
+const SMILEY_FLING_PAUSE_GAP = 80 // ms without a move that counts as the pointer having been still
+const SMILEY_FLING_PAUSE_ANCHOR = 16 // ms; assumed duration of the first move after the pointer has been still
 const SMILEY_WHOOSH_SPEED_MIN = 300 // px/s; slower releases get the archive sound
 // Fling decay length scales with the speed gap to SMILEY_SPEED
 const SMILEY_DECAY_DURATION_MIN = 2 // s
 const SMILEY_DECAY_DURATION_MAX = 6 // s
 const SMILEY_VELOCITY_UNIT = 60 // matter-js velocity is px per 1/60s
 const SMILEY_MAX_DT = 0.1 // s; clamp tab-switch gaps
+const SMILEY_REST_SPEED = 1e-6 // matter-js velocity units; slower than this counts as stopped
 const SMILEY_PHYSICS_STEP = 1000 / 60 // max ms per Engine.update
 // Walls/logo collisions are handled manually
 const SMILEY_BODY_OPTIONS = { restitution: 1, frictionAir: 0, friction: 0, frictionStatic: 0, inertia: Infinity }
@@ -65,6 +70,7 @@ const logoViewBox = { left: 0, top: 0, scaleX: 1, scaleY: 1, originY: 0 }
 
 // Logo collides as a solid skyline (topmost filled y per column, viewBox units)
 const LOGO_SKYLINE_UNIT = 2
+const LOGO_SKYLINE_IDLE_TIMEOUT = 200 // ms
 const LOGO_PUSH_MAX_ITERATIONS = 3
 const LOGO_PUSH_EPSILON = 0.5 // px
 const LOGO_TOUCH_MARGIN = 2 // px
@@ -75,6 +81,7 @@ const LOGO_BUMPER_DECAY_DURATION = 4.5 // s
 let logoSkyline = new Float32Array(0)
 let logoSkylineLetter = new Int8Array(0)
 let logoSkylineTop = Infinity
+let logoSkylineIdleId: number | null = null
 
 const SMILEY_DRAG_MAX_STEP_RATIO = 0.5
 const SMILEY_DRAG_MAX_STEPS = 12 // per frame, so fast drags catch up without tunnelling
@@ -85,6 +92,7 @@ const prefersReducedMotion = useAtMedia('(prefers-reduced-motion: reduce)')
 
 let isTouchingLogo = false
 let smileyRafId: number | null = null
+let isHeroInView = true
 let smileyLastTime = 0
 let smileySpinDirection = 1
 let smileySpinSpeed = SMILEY_SPIN_SPEED_MIN
@@ -281,7 +289,7 @@ const findLogoContact = (cx: number, cy: number, r: number) => {
   const first = Math.max(0, Math.floor((cx - r - left) / columnWidth))
   const last = Math.min(logoSkyline.length - 1, Math.ceil((cx + r - left) / columnWidth))
 
-  let nearest = Infinity
+  let nearestSquared = Infinity
   let nearestX = 0
   let nearestY = 0
   let nearestColumn = -1
@@ -300,10 +308,10 @@ const findLogoContact = (cx: number, cy: number, r: number) => {
     }
 
     const y = Math.max(skylineY, cy)
-    const distance = Math.hypot(x - cx, y - cy)
-    if (distance >= nearest) continue
+    const distanceSquared = (x - cx) ** 2 + (y - cy) ** 2
+    if (distanceSquared >= nearestSquared) continue
 
-    nearest = distance
+    nearestSquared = distanceSquared
     nearestX = x
     nearestY = y
     nearestColumn = column
@@ -318,6 +326,7 @@ const findLogoContact = (cx: number, cy: number, r: number) => {
     }
   }
 
+  const nearest = Math.sqrt(nearestSquared)
   if (nearest >= r + LOGO_TOUCH_MARGIN) return null
 
   return {
@@ -341,30 +350,60 @@ const getHeroPointer = (event: PointerEvent) => {
 }
 
 const recordSmileyDragSample = (event: PointerEvent) => {
-  smileyDragSamples.push({ x: event.clientX, y: event.clientY, time: event.timeStamp })
-  while (smileyDragSamples.length > 2 && event.timeStamp - smileyDragSamples[0]!.time > SMILEY_FLING_SAMPLE_WINDOW) {
-    smileyDragSamples.shift()
-  }
+  const time = event.timeStamp
+
+  // Moving again after a pause: keep the resting point as the start of the move, without the time spent resting
+  const previous = smileyDragSamples.at(-1)
+  if (previous && time - previous.time > SMILEY_FLING_PAUSE_GAP) previous.time = time - SMILEY_FLING_PAUSE_ANCHOR
+
+  smileyDragSamples.push({ x: event.clientX, y: event.clientY, time })
+  while (time - smileyDragSamples[0]!.time > SMILEY_FLING_SAMPLE_WINDOW) smileyDragSamples.shift()
 }
 
-// px/s over the last sample window, or null without enough history.
+// The stretch of the sample window that counts as the throw (px/s, plus when it ended), or null without enough
+// history. Using a fast stretch means slowing down before release, or tiny moves after it, can't cancel the flick
+const getSmileyThrowStretch = () => {
+  const samples = smileyDragSamples
+  const stretchBetween = (from: (typeof samples)[number], to: (typeof samples)[number]) => {
+    const seconds = (to.time - from.time) / 1000
+    const x = (to.x - from.x) / seconds
+    const y = (to.y - from.y) / seconds
+    return { x, y, speed: Math.hypot(x, y), time: to.time }
+  }
+
+  const stretches: ReturnType<typeof stretchBetween>[] = []
+  let start = 0
+
+  for (let end = 1; end < samples.length; end++) {
+    const to = samples[end]!
+    while (to.time - samples[start + 1]!.time >= SMILEY_FLING_PEAK_SPAN) start++
+
+    const from = samples[start]!
+    if (to.time - from.time >= SMILEY_FLING_PEAK_SPAN) stretches.push(stretchBetween(from, to))
+  }
+
+  if (stretches.length) {
+    const minSpeed = Math.max(...stretches.map(({ speed }) => speed)) * SMILEY_FLING_STRETCH_RATIO
+    return stretches.findLast(({ speed }) => speed >= minSpeed) ?? null
+  }
+
+  // The whole gesture is shorter than the span
+  const first = samples[0]
+  const last = samples.at(-1)
+  return first && last && last.time > first.time ? stretchBetween(first, last) : null
+}
+
+// px/s at release, or null without enough history. Fades with the time since the throw's fast stretch ended.
 // Pass the release event's timeStamp: a janky frame can run the handler well after the release
 const getSmileyFlingVelocity = (now = performance.now()) => {
-  const last = smileyDragSamples.at(-1)
-  if (!last) return null
+  const stretch = getSmileyThrowStretch()
+  if (!stretch) return null
 
-  // Pointer stopped before release
-  if (now - last.time > SMILEY_FLING_SAMPLE_WINDOW) return { x: 0, y: 0 }
+  const falloff = 1 - (now - stretch.time) / SMILEY_FLING_SAMPLE_WINDOW
+  if (falloff <= 0) return { x: 0, y: 0 }
 
-  // Pruned to the window on each move
-  const first = smileyDragSamples[0]
-  if (!first || last.time - first.time <= 0) return null
-
-  const seconds = (last.time - first.time) / 1000
-  return {
-    x: ((last.x - first.x) / seconds) * SMILEY_FLING_GAIN,
-    y: ((last.y - first.y) / seconds) * SMILEY_FLING_GAIN,
-  }
+  const scale = Math.min(falloff, 1) * SMILEY_FLING_GAIN
+  return { x: stretch.x * scale, y: stretch.y * scale }
 }
 
 const capSmileySpeedAndEaseBack = (duration?: number, ease = smoothstep) => {
@@ -440,6 +479,7 @@ const onSmileyPointerDown = (event: PointerEvent) => {
   smileyDragSamples = [{ x: event.clientX, y: event.clientY, time: event.timeStamp }]
 
   isDraggingSmiley.value = true
+  startSmileyLoop()
   smileyDecayElapsed = null
   play(swooshSound)
 }
@@ -466,20 +506,12 @@ const onSmileyPointerMove = (event: PointerEvent) => {
   smileyDragTarget.y = target.y
 }
 
-const onSmileyPointerUp = (event: PointerEvent) => {
+// Capture can be lost just before pointerup on a fast release, so losing it counts as letting go
+const onSmileyRelease = (event: PointerEvent) => {
   if (event.pointerId !== smileyPointerId) return
 
   smileyPointerId = null
   const fling = getSmileyFlingVelocity(event.timeStamp)
-  // TEMP: confirm the release was being read as stale
-  const last = smileyDragSamples.at(-1)
-  if (last) {
-    console.log('[smiley release]', {
-      sinceLastByNow: performance.now() - last.time,
-      sinceLastByEvent: event.timeStamp - last.time,
-      fling,
-    })
-  }
   reactToSmileyRelease(fling)
   handleSmileyDragEnd(fling)
 }
@@ -629,6 +661,13 @@ const collideSmileyWithWalls = () => {
   return bounced
 }
 
+const isSmileyAtRest = () => {
+  if (!smileyBody || isDraggingSmiley.value || smileyDecayElapsed !== null || smileySpinSpeed !== 0) return false
+
+  const { x, y } = Body.getVelocity(smileyBody)
+  return Math.hypot(x, y) < SMILEY_REST_SPEED
+}
+
 const tickSmiley = (time: number) => {
   if (!engine || !smileyBody) {
     smileyRafId = requestAnimationFrame(tickSmiley)
@@ -700,6 +739,12 @@ const tickSmiley = (time: number) => {
   smileyCenter.y = smileyBody.position.y
   applySmileyTransform()
 
+  // Reduced motion at rest: nothing left to draw until a grab or a preference change restarts the loop
+  if (isSmileyAtRest()) {
+    smileyRafId = null
+    return
+  }
+
   smileyRafId = requestAnimationFrame(tickSmiley)
 }
 
@@ -718,7 +763,12 @@ const stopSmileyLoop = () => {
 }
 
 onMounted(() => {
-  buildLogoSkyline()
+  // Not needed until the smiley reaches the logo; contacts are simply off until it exists
+  if (typeof requestIdleCallback === 'function') {
+    logoSkylineIdleId = requestIdleCallback(buildLogoSkyline, { timeout: LOGO_SKYLINE_IDLE_TIMEOUT })
+  } else {
+    buildLogoSkyline()
+  }
 
   measureSmileyBounds()
   smileyCenter.x = smileyRadius + 24
@@ -741,7 +791,9 @@ onMounted(() => {
   })
 
   useIntersectionObserver(heroEl, ([entry]) => {
-    if (entry?.isIntersecting) {
+    isHeroInView = !!entry?.isIntersecting
+
+    if (isHeroInView) {
       startSmileyLoop()
     } else {
       stopSmileyLoop()
@@ -752,11 +804,13 @@ onMounted(() => {
   watch(prefersReducedMotion, () => {
     smileySpinRestSpeed = getSmileyRestSpin()
     capSmileySpeedAndEaseBack()
+    if (isHeroInView) startSmileyLoop()
   })
 })
 
 onUnmounted(() => {
   stopSmileyLoop()
+  if (logoSkylineIdleId !== null) cancelIdleCallback(logoSkylineIdleId)
 
   if (engine) Engine.clear(engine)
 
@@ -773,10 +827,11 @@ onUnmounted(() => {
     <div class="wrapper min-h-svh flex flex-col justify-end pt-40">
       <svg
         ref="logoEl"
-        class="w-full h-auto -mb-1.5 overflow-visible *:[pointer-events:bounding-box] select-none"
+        class="tappable w-full h-auto -mb-1.5 overflow-visible *:[pointer-events:bounding-box]"
         viewBox="0 0 1802 622"
         xmlns="http://www.w3.org/2000/svg"
         fill="currentColor"
+        @mousedown.prevent
       >
         <g
           ref="iEl"
@@ -825,9 +880,9 @@ onUnmounted(() => {
       @contextmenu.prevent
       @pointerdown="onSmileyPointerDown"
       @pointermove="onSmileyPointerMove"
-      @pointerup="onSmileyPointerUp"
+      @pointerup="onSmileyRelease"
       @pointercancel="onSmileyPointerCancel"
-      @lostpointercapture="onSmileyPointerCancel"
+      @lostpointercapture="onSmileyRelease"
     >
       <div
         ref="smileySpinEl"

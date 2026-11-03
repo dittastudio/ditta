@@ -4,6 +4,8 @@ import type { Themes } from '@/types/app'
 export type Accent = Extract<Themes, 'pink' | 'mood' | 'olive'>
 export type Theme = Themes
 
+const ACCENTS: Accent[] = ['pink', 'mood', 'olive']
+
 export const useAppStore = defineStore(
   'app',
   () => {
@@ -12,6 +14,10 @@ export const useAppStore = defineStore(
 
     function setAccent(value: Accent) {
       accent.value = value
+    }
+
+    function cycleAccent() {
+      accent.value = ACCENTS[(ACCENTS.indexOf(accent.value) + 1) % ACCENTS.length] ?? 'pink'
     }
 
     const theme = ref<Theme>('accent')
@@ -39,6 +45,7 @@ export const useAppStore = defineStore(
       accent,
       getAccent,
       setAccent,
+      cycleAccent,
       theme,
       getTheme,
       setTheme,

@@ -67,6 +67,29 @@ const storyblokRelation = <TName extends Blocks['name']>(
   return typeof entry === 'string' || !entry ? undefined : entry
 }
 
+// Shared because `useAsyncStoryblok` keys on the slug and api options: callers fetching the same
+// page story must pass identical relations to share one request and payload entry.
+const storyRelations = ['block_team.humans', 'block_projects.projects', 'post.author']
+
+const emptyBlocks = (project: string | ISbStoryData) =>
+  typeof project === 'string' ? project : { ...project, content: { ...project.content, blocks: [] } }
+
+// Resolving a project inlines its whole page, and the cards only read its top-level fields. Copies rather than edits, as
+// the Storyblok client caches what it returns.
+const withoutProjectBlocks = <T>(story: ISbStoryData<T>): ISbStoryData<T> => {
+  const content = story.content as { blocks?: { component: string; projects?: (string | ISbStoryData)[] }[] }
+
+  return {
+    ...story,
+    content: {
+      ...content,
+      blocks: content.blocks?.map((block) =>
+        block.component === 'block_projects' ? { ...block, projects: block.projects?.map(emptyBlocks) } : block,
+      ),
+    } as T,
+  }
+}
+
 const storyblokSlug = (path: string): string => (['', '/'].includes(path) ? '/home' : path.replace(/\/+$/, ''))
 
 const isMediaImage = (
@@ -132,6 +155,7 @@ export {
   isPage,
   isProject,
   isPost,
+  storyRelations,
   storyblokAssetType,
   storyblokEditor,
   storyblokImage,
@@ -140,4 +164,5 @@ export {
   storyblokRelations,
   storyblokRichTextContent,
   storyblokSlug,
+  withoutProjectBlocks,
 }

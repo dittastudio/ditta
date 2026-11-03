@@ -19,7 +19,7 @@ const { image, name, position } = defineProps<Props>()
       :alt="name || image.alt"
       width="56"
       height="56"
-      density="1x, 2x"
+      densities="x1 x2"
       loading="lazy"
     />
 

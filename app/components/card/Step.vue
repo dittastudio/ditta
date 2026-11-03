@@ -11,17 +11,11 @@ interface Props {
 }
 
 const { number, title, heading, copy, theme } = defineProps<Props>()
-
-defineOptions({
-  inheritAttrs: false,
-})
-
-const mergedAttrs = useMergedAttrs('step-card w-full flex flex-col gap-y-20 rounded-20 squircle-40')
 </script>
 
 <template>
   <div
-    v-bind="mergedAttrs"
+    class="step-card w-full flex flex-col gap-y-20 rounded-20 squircle-40"
     :class="theme ? themeClasses[theme] : ''"
   >
     <p
@@ -62,6 +56,6 @@ const mergedAttrs = useMergedAttrs('step-card w-full flex flex-col gap-y-20 roun
 @reference "@/assets/css/app.css";
 
 .step-card {
-  padding: utopia.clamp(16, 60);
+  padding: utopia.clamp(24, 60);
 }
 </style>

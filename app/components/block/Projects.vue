@@ -186,6 +186,7 @@ onUnmounted(() => {
                     class="size-full object-cover"
                     :src="project.content.media.filename"
                     :alt="project.content.media.alt"
+                    width="1200"
                     :modifiers="
                       project.content.media.focus ? { filters: { focal: project.content.media.focus } } : undefined
                     "

@@ -10,7 +10,7 @@ const appStore = useAppStore()
 const taglineReady = ref(false)
 
 onMounted(async () => {
-  await wait(300)
+  await wait(150)
 
   taglineReady.value = true
 })

@@ -13,6 +13,13 @@ const publishedDate = useDateFormat(story.published_at || story.created_at, 'Do 
 
 const tags = await useDatasource('tags', story.content.tags)
 const author = computed(() => storyblokRelation<'person'>(story.content.author))
+
+// The title's in it, and posts are the only pages that open on it
+useHead({
+  link: [
+    { rel: 'preload', type: 'font/woff2', href: '/fonts/JetBrainsMonoVF-latin.woff2', as: 'font', crossorigin: '' },
+  ],
+})
 </script>
 
 <template>
