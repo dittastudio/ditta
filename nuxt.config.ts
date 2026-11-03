@@ -39,7 +39,7 @@ export default defineNuxtConfig({
           },
         },
         domains: ['storyblok.com', 'ditta.studio'],
-        quality: 90,
+        quality: 85,
         screens: breakpoints,
       },
     ],
@@ -97,6 +97,12 @@ export default defineNuxtConfig({
     },
   },
   compatibilityDate: '2025-07-15',
+  experimental: {
+    defaults: {
+      // A link's page is fetched when it's hovered or focused, not as soon as it scrolls into view
+      nuxtLink: { prefetchOn: { interaction: true, visibility: false } },
+    },
+  },
   hooks: {
     'build:manifest': (manifest) => {
       // Heavy chunks few visitors need, so not prefetched on every page. Mario's is fetched by code on the arrow's first
