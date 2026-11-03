@@ -34,7 +34,6 @@
     "@nuxt/image": "^2.2.1",
     "@nuxtjs/plausible": "^4.0.0",
     "@pinia/nuxt": "^1.0.3",
-    "@resvg/resvg-js": "^2.6.2",
     "@storyblok/nuxt": "^11.3.0",
     "@vueuse/core": "^15.0.0",
     "@web-kits/audio": "^0.2.0",
@@ -43,7 +42,6 @@
     "matter-js": "^0.20.0",
     "nuxt": "^4.6.4",
     "pinia-plugin-persistedstate": "^4.7.1",
-    "satori": "^0.63.2",
     "vue": "^3.5.44",
     "vue-router": "^5.4.0"
   },
@@ -61,7 +59,6 @@
     "postcss-utopia": "^1.1.0",
     "rolldown": "^1.2.16",
     "storyblok": "^4.26.0",
-    "tailwind-merge": "^3.7.0",
     "tailwindcss": "^4.3.4",
     "typescript": "^7.0.2",
     "vite-plus": "^1.4.0",

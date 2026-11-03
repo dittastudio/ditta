@@ -169,7 +169,6 @@ export default defineNuxtConfig({
         'gsap/SplitText',
         'lenis/vue',
         'matter-js',
-        'tailwind-merge',
       ],
     },
     plugins: [
