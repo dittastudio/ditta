@@ -104,41 +104,17 @@ export default defineNuxtConfig({
     },
   },
   hooks: {
+    // Heavy chunks few visitors need, so not prefetched on every page. Mario's is fetched by code on the arrow's first poke,
+    // the preview bridge is only for the editor, and the video player waits until a video is close, so isn't preloaded.
     'build:manifest': (manifest) => {
-      // Heavy chunks few visitors need, so not prefetched on every page. Mario's is fetched by code on the arrow's first
-      // poke, the video player's once a video is on its way, and the preview bridge is only for the editor.
       const notPrefetched = ['block/StepsMario.vue', 'ui/MuxVideo.vue', '@storyblok/preview-bridge/dist/esm/index.js']
-
-      // Only what the first screen runs on is preloaded. Nuxt would preload every block a page renders, including those
-      // that wait to hydrate, so they'd compete with the first screen for code that isn't needed yet.
-      const isFirstScreen = (key: string) =>
-        /(entry\.js|pages\/.*|template\/\w+\.vue|block\/Hero(Project)?\.vue)$/.test(key)
-
-      const closure = (key: string, seen = new Set<string>()) => {
-        if (!seen.has(key) && manifest[key]) {
-          seen.add(key)
-          manifest[key].imports?.forEach((dep) => closure(dep, seen))
-        }
-
-        return seen
-      }
-
-      const deferred = Object.keys(manifest).filter((key) => !isFirstScreen(key) && key.endsWith('.vue'))
-      const stylesheets = new Map(
-        deferred.map((key) => [key, [...closure(key)].flatMap((dep) => manifest[dep]?.css ?? [])]),
-      )
 
       for (const [key, chunk] of Object.entries(manifest)) {
         chunk.dynamicImports = chunk.dynamicImports?.filter(
           (path) => !notPrefetched.some((name) => path.endsWith(name)),
         )
 
-        // Imports here only tell the renderer what to preload. The browser still follows the chunk's own at runtime.
-        if (stylesheets.has(key)) {
-          chunk.preload = false
-          chunk.css = [...new Set(stylesheets.get(key))]
-          chunk.imports = []
-        }
+        if (key.endsWith('ui/MuxVideo.vue')) chunk.preload = false
       }
     },
   },
