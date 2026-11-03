@@ -1,0 +1,9 @@
+# Not hashed like /_nuxt/*, so give a changed font a new filename. Without this they're revalidated on every visit.
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/sounds/*
+  Cache-Control: public, max-age=2592000
+
+/imgs/*
+  Cache-Control: public, max-age=2592000
