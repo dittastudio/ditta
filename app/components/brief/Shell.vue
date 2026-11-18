@@ -1,6 +1,9 @@
 <script lang="ts" setup>
+import { briefAnswersSchema } from '#shared/schemas/brief'
+
 const brief = useBriefStore()
 const lenis = useLenis()
+const question = useTemplateRef('question')
 
 const isDraft = computed(() => brief.status === 'draft')
 const position = computed(() => brief.stepIndex + 1)
@@ -15,25 +18,37 @@ const primaryLabel = computed(() => {
   if (brief.isSummary) return 'Send brief'
   if (brief.editingFromSummary) return 'Back to summary'
   if (brief.step?.field === 'email') return 'Review'
-  if (brief.step && !brief.step.required && !isBriefAnswered(brief.answers[brief.step.key])) return 'Skip'
+  if (brief.step && !isBriefStepRequired(brief.step) && !hasBriefAnswer(brief.answers[brief.step.key])) return 'Skip'
 
   return 'Next'
 })
 
-function primary() {
+function shake() {
+  shaking.value = false
+  requestAnimationFrame(() => (shaking.value = true))
+}
+
+// The whole brief is checked against the same schema the server will use. If anything slipped through, go to it.
+function send() {
+  const result = briefAnswersSchema.safeParse(brief.answers)
+  if (result.success) return brief.setStatus('sent')
+
+  const keys = result.error.issues.map((issue) => issue.path[0])
+  const index = briefSteps.findIndex(
+    (step) => keys.includes(step.key) || visibleFollowUps(step, brief.answers).some((f) => keys.includes(f.key)),
+  )
+
+  error.value = 'One answer needs another look'
+  shake()
+  if (index >= 0) brief.goTo(index, true)
+}
+
+async function primary() {
   if (brief.status === 'sent') return brief.setStatus('confirmed')
   if (brief.status === 'confirmed') return brief.reset()
-  if (brief.isSummary) return brief.setStatus('sent')
+  if (brief.isSummary) return send()
 
-  const step = brief.step
-  const message = step ? briefStepError(step, brief.answers) : null
-
-  if (message) {
-    error.value = message
-    shaking.value = false
-    requestAnimationFrame(() => (shaking.value = true))
-    return
-  }
+  if (question.value && !(await question.value.validate())) return shake()
 
   brief.next()
 }
@@ -43,22 +58,15 @@ function back() {
   brief.back()
 }
 
-// Auto-advance only moves on when the step is actually complete
-function advance() {
-  if (brief.step && !briefStepError(brief.step, brief.answers)) brief.next()
-}
+watch(
+  () => [brief.stepIndex, brief.status],
+  () => lenis.value?.scrollTo(0, { immediate: true }),
+)
 
 watch(
   () => brief.answers,
   () => (error.value = null),
-)
-
-watch(
-  () => [brief.stepIndex, brief.status],
-  () => {
-    error.value = null
-    lenis.value?.scrollTo(0, { immediate: true })
-  },
+  { deep: true },
 )
 
 const screenKey = computed(() => (isDraft.value ? `step-${brief.stepIndex}` : brief.status))
@@ -106,8 +114,9 @@ const screenKey = computed(() => (isDraft.value ? `step-${brief.stepIndex}` : br
 
               <BriefQuestion
                 v-else-if="brief.step"
+                ref="question"
                 :step="brief.step"
-                @advance="advance"
+                @advance="brief.next()"
                 @submit="primary"
               />
             </div>

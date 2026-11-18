@@ -1,9 +1,12 @@
 <script lang="ts" setup>
+import { briefAnswersSchema } from '#shared/schemas/brief'
+
 const brief = useBriefStore()
 
-const email = computed(() => (typeof brief.answers.email === 'string' ? brief.answers.email.trim() : ''))
+const email = computed(() => brief.answers.email?.trim() ?? '')
 const firstName = computed(() => briefFirstName(brief.answers))
-const payload = computed(() => JSON.stringify(visibleBriefAnswers(brief.answers), null, 2))
+// Parsed by the same schema the API will use: hidden follow-ups dropped, links normalised
+const payload = computed(() => JSON.stringify(briefAnswersSchema.safeParse(brief.answers).data ?? null, null, 2))
 </script>
 
 <template>

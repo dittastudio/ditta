@@ -1,10 +1,12 @@
 <script lang="ts" setup>
+// Attributes (aria-labelledby, aria-describedby) belong on the range input, not the wrapper
+defineOptions({ inheritAttrs: false })
+
 interface Props {
-  options: string[]
-  label?: string
+  options: readonly string[]
 }
 
-const { options, label } = defineProps<Props>()
+const { options } = defineProps<Props>()
 const model = defineModel<string | undefined>()
 
 // Starts on the first point, so it always has an answer (see docs/plans/brief-builder-flow.md, screen 8)
@@ -24,18 +26,18 @@ const index = computed({
   <div class="flex flex-col gap-3">
     <p
       class="text-28 font-medium leading-none sm:text-40"
-      aria-live="polite"
+      aria-hidden="true"
     >
       {{ options[index] }}
     </p>
 
     <input
+      v-bind="$attrs"
       v-model.number="index"
       type="range"
       min="0"
       :max="options.length - 1"
       step="1"
-      :aria-label="label"
       :aria-valuetext="options[index]"
       class="w-full accent-black"
     />
@@ -45,6 +47,7 @@ const index = computed({
         v-for="(option, i) in options"
         :key="option"
         type="button"
+        tabindex="-1"
         class="text-12 leading-tight transition-opacity"
         :class="[
           i === index ? 'font-medium opacity-100' : 'opacity-50',

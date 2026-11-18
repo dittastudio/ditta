@@ -1,14 +1,33 @@
 <script lang="ts" setup>
-import type { BriefAnswer, BriefLink, BriefQuestion } from '@/utils/brief'
+import type { BriefLinkRow, BriefQuestion } from '@/utils/brief'
 
 interface Props {
   question: BriefQuestion
-  autofocus?: boolean
+  labelledby: string
+  errors?: string[]
+  rowErrors?: string[][]
+  focusOnMount?: boolean
 }
 
-const { question, autofocus = false } = defineProps<Props>()
-const model = defineModel<BriefAnswer | undefined>()
+const { question, labelledby, errors = [], rowErrors = [], focusOnMount = false } = defineProps<Props>()
+const model = defineModel<unknown>()
 const emit = defineEmits<{ picked: [option: string]; submit: [] }>()
+
+// Shows what Regle reports; never validates anything itself
+const errorId = useId()
+const a11y = computed(() => ({
+  'aria-labelledby': labelledby,
+  'aria-describedby': errors.length ? errorId : undefined,
+  'aria-invalid': errors.length ? true : undefined,
+}))
+
+const as = <T>() =>
+  computed({
+    get: () => model.value as T,
+    set: (value: T) => {
+      model.value = value
+    },
+  })
 
 const text = computed({
   get: () => (typeof model.value === 'string' ? model.value : ''),
@@ -16,60 +35,55 @@ const text = computed({
     model.value = value
   },
 })
+const options = as<string | string[] | undefined>()
+const single = as<string | undefined>()
+const links = as<BriefLinkRow[] | undefined>()
 
-const options = computed({
-  get: () => model.value as string | string[] | undefined,
-  set: (value) => {
-    model.value = value
-  },
-})
-
-const links = computed({
-  get: () => model.value as BriefLink[] | undefined,
-  set: (value) => {
-    model.value = value
-  },
-})
-
-const single = computed({
-  get: () => (typeof model.value === 'string' ? model.value : undefined),
-  set: (value) => {
-    model.value = value
-  },
-})
+const inputmode = { email: 'email', url: 'url' } as const
 </script>
 
 <template>
-  <BriefOptions
-    v-if="question.field === 'cards' || question.field === 'chips'"
-    v-model="options"
-    :options="question.options ?? []"
-    :variant="question.field"
-    :multiple="question.multiple"
-    @picked="emit('picked', $event)"
-  />
+  <div class="flex flex-col gap-2">
+    <BriefOptions
+      v-if="question.field === 'cards' || question.field === 'chips'"
+      v-model="options"
+      v-bind="a11y"
+      :options="question.options ?? []"
+      :variant="question.field"
+      :multiple="question.multiple"
+      @picked="emit('picked', $event)"
+    />
 
-  <BriefSlider
-    v-else-if="question.field === 'slider'"
-    v-model="single"
-    :options="question.options ?? []"
-    :label="question.title"
-  />
+    <BriefSlider
+      v-else-if="question.field === 'slider'"
+      v-model="single"
+      v-bind="a11y"
+      :options="question.options ?? []"
+    />
 
-  <BriefLinks
-    v-else-if="question.field === 'links'"
-    v-model="links"
-    @submit="emit('submit')"
-  />
+    <BriefLinks
+      v-else-if="question.field === 'links'"
+      v-model="links"
+      v-bind="a11y"
+      :row-errors="rowErrors"
+      @submit="emit('submit')"
+    />
 
-  <BriefTextInput
-    v-else
-    v-model="text"
-    :type="question.field === 'email' || question.field === 'url' ? question.field : 'text'"
-    :placeholder="question.placeholder"
-    :autocomplete="question.autocomplete"
-    :label="question.title"
-    :autofocus="autofocus"
-    @submit="emit('submit')"
-  />
+    <BriefTextInput
+      v-else
+      v-model="text"
+      v-bind="a11y"
+      :type="question.field === 'email' || question.field === 'url' ? question.field : 'text'"
+      :inputmode="question.field === 'email' || question.field === 'url' ? inputmode[question.field] : undefined"
+      :placeholder="question.placeholder"
+      :autocomplete="question.autocomplete ?? 'off'"
+      :focus-on-mount="focusOnMount"
+      @submit="emit('submit')"
+    />
+
+    <BriefFieldError
+      :id="errorId"
+      :errors="errors"
+    />
+  </div>
 </template>

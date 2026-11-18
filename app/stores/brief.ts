@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
-import type { BriefAnswer, BriefAnswers } from '@/utils/brief'
+import type { BriefFieldKey } from '#shared/schemas/brief'
+import type { BriefDraft } from '@/utils/brief'
 
 export type BriefStatus = 'draft' | 'sent' | 'confirmed'
 
@@ -7,7 +8,8 @@ export type BriefStatus = 'draft' | 'sent' | 'confirmed'
 export const useBriefStore = defineStore(
   'brief',
   () => {
-    const answers = ref<BriefAnswers>({})
+    // Typed from the shared Zod schema. Mutated in place so Regle, bound to it, sees every change.
+    const answers = ref<BriefDraft>({})
     const stepIndex = ref(0)
     const editingFromSummary = ref(false)
     const status = ref<BriefStatus>('draft')
@@ -19,8 +21,9 @@ export const useBriefStore = defineStore(
     const step = computed(() => briefSteps[stepIndex.value])
     const isSummary = computed(() => stepIndex.value === summaryIndex)
 
-    function setAnswer(key: string, value: BriefAnswer) {
-      answers.value = { ...answers.value, [key]: value }
+    function setAnswer<K extends BriefFieldKey>(key: K, value: BriefDraft[K]) {
+      if (value === undefined) delete answers.value[key]
+      else answers.value[key] = value
     }
 
     function goTo(index: number, fromSummary = false) {

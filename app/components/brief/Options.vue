@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 interface Props {
-  options: string[]
+  options: readonly string[]
   variant?: 'cards' | 'chips'
   multiple?: boolean
 }

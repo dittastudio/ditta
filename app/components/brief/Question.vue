@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-import type { BriefAnswer, BriefStep } from '@/utils/brief'
+import type { BriefFieldKey } from '#shared/schemas/brief'
+import type { BriefStep } from '@/utils/brief'
+import { briefStepSchemas } from '#shared/schemas/brief'
 
 interface Props {
   step: BriefStep
@@ -10,37 +12,60 @@ const emit = defineEmits<{ advance: []; submit: [] }>()
 
 const brief = useBriefStore()
 
-const answer = (key: string) => brief.answers[key]
-const setAnswer = (key: string, value: BriefAnswer | undefined) => brief.setAnswer(key, value ?? '')
+// This screen's schema: its question plus its follow-ups. Errors show once a field is dirty or after Next.
+const { r$ } = useRegleSchema(toRef(brief, 'answers'), briefStepSchemas[step.key])
 
-const followUps = computed(() => visibleFollowUps(step, brief.answers))
+const titleId = useId()
 const title = computed(() => personaliseBrief(step.title, brief.answers))
-const emailSuggestion = computed(() => {
-  const value = answer('email')
-  return step.field === 'email' && typeof value === 'string' ? suggestBriefEmail(value) : null
-})
+const followUps = computed(() => visibleFollowUps(step, brief.answers))
+
+const emailSuggestion = computed(() =>
+  step.field === 'email' && brief.answers.email ? suggestBriefEmail(brief.answers.email) : null,
+)
+
+type ErrorNode = string[] | { $self?: string[]; $each?: ({ url?: ErrorNode } | undefined)[] } | undefined
+
+const errorTree = computed(() => r$.$errors as Partial<Record<BriefFieldKey, ErrorNode>>)
+const ownErrors = (node: ErrorNode): string[] => (Array.isArray(node) ? node : (node?.$self ?? []))
+const errorsFor = (key: BriefFieldKey) => ownErrors(errorTree.value[key])
+const rowErrorsFor = (key: BriefFieldKey) => {
+  const node = errorTree.value[key]
+  return Array.isArray(node) ? [] : (node?.$each?.map((row) => ownErrors(row?.url)) ?? [])
+}
+
+const answer = (key: BriefFieldKey) => brief.answers[key]
+const setAnswer = (key: BriefFieldKey, value: unknown) => brief.setAnswer(key, value as never)
+
+async function validate() {
+  const { valid } = await r$.$validate()
+  return valid
+}
 
 // A single-select pick moves on by itself, unless it opens a follow-up that still needs answering
 let timer: ReturnType<typeof setTimeout> | undefined
 
-function onPicked(option: string) {
+function onPicked() {
   clearTimeout(timer)
-  if (step.followUps?.some((followUp) => followUp.showsWhen === option)) return
+  if (followUps.value.length) return
 
-  timer = setTimeout(() => emit('advance'), 380)
+  timer = setTimeout(async () => {
+    if (await validate()) emit('advance')
+  }, 380)
 }
 
 onUnmounted(() => clearTimeout(timer))
+
+defineExpose({ validate })
 </script>
 
 <template>
   <section
-    :aria-labelledby="`brief-${step.key}`"
+    :aria-labelledby="titleId"
     class="flex flex-col gap-6"
   >
     <div class="flex flex-col gap-2">
       <h1
-        :id="`brief-${step.key}`"
+        :id="titleId"
         class="text-28 font-medium leading-tight text-balance sm:text-40"
       >
         {{ title }}
@@ -56,8 +81,11 @@ onUnmounted(() => clearTimeout(timer))
 
     <BriefField
       :question="step"
+      :labelledby="titleId"
       :model-value="answer(step.key)"
-      autofocus
+      :errors="errorsFor(step.key)"
+      :row-errors="rowErrorsFor(step.key)"
+      focus-on-mount
       @update:model-value="setAnswer(step.key, $event)"
       @picked="onPicked"
       @submit="emit('submit')"
@@ -94,14 +122,19 @@ onUnmounted(() => clearTimeout(timer))
         :key="followUp.key"
         class="flex flex-col gap-3"
       >
-        <p class="text-18 font-medium">
+        <p
+          :id="`${titleId}-${followUp.key}`"
+          class="text-18 font-medium"
+        >
           {{ followUp.title }}
         </p>
 
         <BriefField
           :question="followUp"
+          :labelledby="`${titleId}-${followUp.key}`"
           :model-value="answer(followUp.key)"
-          autofocus
+          :errors="errorsFor(followUp.key)"
+          focus-on-mount
           @update:model-value="setAnswer(followUp.key, $event)"
           @submit="emit('submit')"
         />

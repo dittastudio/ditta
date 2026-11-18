@@ -14,6 +14,7 @@ export default defineNuxtConfig({
   modules: [
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',
+    '@regle/nuxt',
     '@nuxtjs/seo',
     [
       '@nuxtjs/plausible',

@@ -14,7 +14,7 @@ The form is for prospective clients who often don't know exactly what they want 
 
 1. **One question per screen.** A follow-up question can appear underneath its parent on the same screen. Follow-ups don't count as a second question.
 2. **Tap rather than type.** Use cards, chips and sliders wherever there's a known set of answers. Only use text fields for things only the client can know (their business, name, email, links).
-3. **No textareas.** Every text answer is a single-line input.
+3. **Single-line by default.** Text answers are single-line inputs. A textarea is allowed where an answer genuinely needs more room, but none of the current questions use one.
 4. **Every screen fits a small phone (320 × 568) without scrolling**, including any follow-up that might open. The summary is the only exception.
 5. **Email comes last.** Nothing is sent to the server until the client presses **Send brief** on the summary (see the technical doc).
 6. **UK English. Prices in GBP (£).** Plain, friendly copy, no jargon.
@@ -335,7 +335,7 @@ The review screen. It lists **every visible question in order**, numbered, with 
 
 | Type                | Looks like                             | Answer shape               | Notes                     |
 | ------------------- | -------------------------------------- | -------------------------- | ------------------------- |
-| Text                | One-line input                         | `string`                   | Never a textarea          |
+| Text                | One-line input                         | `string`                   | Textarea only if needed   |
 | Email               | One-line input                         | `string`                   | Format validated          |
 | URL                 | One-line input, `https://` placeholder | `string`                   |                           |
 | Links, add another  | URL rows + optional note               | `{ url, note? }[]`, max 3  | Paste splitting           |

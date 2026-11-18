@@ -37,6 +37,20 @@ Each milestone should leave the site deployable. The builder stays unlinked and 
 
 ---
 
+## M1.5: Validation on Regle + Zod
+
+**Goal:** the prototype validates the way the real thing will (see "Validation — Regle + Zod" in `brief-builder.md` and "Forms & Validation" in `AGENTS.md`), so M2 designs the final field components and M3 reuses the rules.
+
+- `shared/schemas/brief.ts` holds the options, one Zod schema per screen (`briefStepSchemas`), the whole-brief `briefAnswersSchema`, and the follow-up rules (when each shows, required only while shown, dropped when hidden).
+- Each question screen binds its schema with `useRegleSchema`. Next and auto-advance call `r$.$validate()`, and errors show under the field they belong to, linked with `useId()` and `aria-describedby`.
+- Links accept "acme.com" and are stored as "https://acme.com".
+- The draft store is typed from the schema (`z.input`). Send brief checks the whole brief against `briefAnswersSchema`.
+- Still to add in M3: `briefDetailsSchema` (consent, honeypot) and the resend/confirm schemas, once those fields exist.
+
+**Done when:** every check from M1 still behaves the same, with no hand-written validation left in `app/`.
+
+---
+
 ## M2: Design and feel
 
 **Goal:** the builder looks and feels like ditta.

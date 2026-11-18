@@ -1,16 +1,23 @@
 <script lang="ts" setup>
-import type { BriefLink } from '@/utils/brief'
+import type { BriefLinkRow } from '@/utils/brief'
 
 const MAX = 3
 
-const model = defineModel<BriefLink[] | undefined>()
+interface Props {
+  rowErrors?: string[][]
+}
+
+const { rowErrors = [] } = defineProps<Props>()
+const model = defineModel<BriefLinkRow[] | undefined>()
 const emit = defineEmits<{ submit: [] }>()
 
-// Always at least one row to type into
-const rows = computed<BriefLink[]>(() => (model.value?.length ? model.value : [{ url: '', note: '' }]))
-const canAdd = computed(() => rows.value.length < MAX && !!rows.value.at(-1)?.url.trim())
+const id = useId()
 
-function update(index: number, patch: Partial<BriefLink>) {
+// Always at least one row to type into
+const rows = computed<BriefLinkRow[]>(() => (model.value?.length ? model.value : [{ url: '', note: '' }]))
+const canAdd = computed(() => rows.value.length < MAX && !!rows.value.at(-1)?.url?.trim())
+
+function update(index: number, patch: Partial<BriefLinkRow>) {
   model.value = rows.value.map((row, i) => (i === index ? { ...row, ...patch } : row))
 }
 
@@ -28,9 +35,8 @@ function onPaste(index: number, event: ClipboardEvent) {
   if (urls.length < 2) return
 
   event.preventDefault()
-  const before = rows.value.slice(0, index)
   const pasted = urls.map((url) => ({ url, note: '' }))
-  model.value = [...before, ...pasted].slice(0, MAX)
+  model.value = [...rows.value.slice(0, index), ...pasted].slice(0, MAX)
 }
 </script>
 
@@ -43,11 +49,14 @@ function onPaste(index: number, event: ClipboardEvent) {
     >
       <div class="flex items-center gap-2">
         <BriefTextInput
-          :model-value="row.url"
+          :model-value="row.url ?? ''"
           type="url"
-          placeholder="https://"
-          :label="`Link ${index + 1}`"
-          :autofocus="index === 0"
+          inputmode="url"
+          placeholder="acme.com"
+          :aria-label="`Link ${index + 1}`"
+          :aria-invalid="rowErrors[index]?.length ? true : undefined"
+          :aria-describedby="rowErrors[index]?.length ? `${id}-${index}` : undefined"
+          :focus-on-mount="index === 0"
           @update:model-value="update(index, { url: $event })"
           @paste="onPaste(index, $event)"
           @submit="emit('submit')"
@@ -64,11 +73,16 @@ function onPaste(index: number, event: ClipboardEvent) {
         </button>
       </div>
 
+      <BriefFieldError
+        :id="`${id}-${index}`"
+        :errors="rowErrors[index]"
+      />
+
       <BriefTextInput
-        v-if="row.url.trim()"
-        :model-value="row.note"
+        v-if="row.url?.trim()"
+        :model-value="row.note ?? ''"
         placeholder="What do you like about it? (optional)"
-        :label="`Note for link ${index + 1}`"
+        :aria-label="`Note for link ${index + 1}`"
         small
         @update:model-value="update(index, { note: $event })"
         @submit="emit('submit')"

@@ -9,7 +9,7 @@ const rows = computed(() =>
       stepIndex,
       title: personaliseBrief(question.title, brief.answers),
       answer: formatBriefAnswer(brief.answers[question.key]),
-      required: question === step ? step.required : true,
+      required: question === step ? isBriefStepRequired(step) : true,
     })),
   ),
 )
