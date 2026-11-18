@@ -5,14 +5,10 @@ import { breakpoints } from './app/utils/breakpoints'
 
 // Workers Builds sets WORKERS_CI_BRANCH at build time only, and its build variables are shared by every branch, so
 // the branch decides: `main` prerenders the live site, any other branch (`develop`) builds the Storyblok editor
-// preview as an SPA. Elsewhere (local, Netlify) `NUXT_PRERENDER=false` does. At runtime, wrangler.jsonc's vars decide.
+// preview as an SPA. Locally, `NUXT_PRERENDER=false` does. At runtime, wrangler.jsonc's vars decide.
 const ciBranch = process.env.WORKERS_CI_BRANCH
 const isSpa = ciBranch ? ciBranch !== 'main' : process.env.NUXT_PRERENDER === 'false'
-
-const isProduction =
-  process.env.CONTEXT === 'production' || // Netlify
-  process.env.CF_PAGES_BRANCH === 'main' || // Cloudflare Pages
-  ciBranch === 'main' // Cloudflare Workers (Builds)
+const isProduction = ciBranch === 'main'
 
 export default defineNuxtConfig({
   modules: [
@@ -26,7 +22,7 @@ export default defineNuxtConfig({
         autoOutboundTracking: true,
         fileDownloads: true,
         formSubmissions: true,
-        ignoredHostnames: ['localhost', 'workers.dev', 'netlify.app', 'vercel.app'],
+        ignoredHostnames: ['localhost', 'workers.dev'],
       },
     ],
     'lenis/nuxt',
