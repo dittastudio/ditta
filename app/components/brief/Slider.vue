@@ -1,0 +1,59 @@
+<script lang="ts" setup>
+interface Props {
+  options: string[]
+  label?: string
+}
+
+const { options, label } = defineProps<Props>()
+const model = defineModel<string | undefined>()
+
+// Starts on the first point, so it always has an answer (see docs/plans/brief-builder-flow.md, screen 8)
+onMounted(() => {
+  if (!model.value || !options.includes(model.value)) model.value = options[0]
+})
+
+const index = computed({
+  get: () => Math.max(options.indexOf(model.value ?? ''), 0),
+  set: (value: number) => {
+    model.value = options[value]
+  },
+})
+</script>
+
+<template>
+  <div class="flex flex-col gap-3">
+    <p
+      class="text-28 font-medium leading-none sm:text-40"
+      aria-live="polite"
+    >
+      {{ options[index] }}
+    </p>
+
+    <input
+      v-model.number="index"
+      type="range"
+      min="0"
+      :max="options.length - 1"
+      step="1"
+      :aria-label="label"
+      :aria-valuetext="options[index]"
+      class="w-full accent-black"
+    />
+
+    <div class="flex justify-between gap-1">
+      <button
+        v-for="(option, i) in options"
+        :key="option"
+        type="button"
+        class="text-12 leading-tight transition-opacity"
+        :class="[
+          i === index ? 'font-medium opacity-100' : 'opacity-50',
+          i === 0 ? 'text-left' : i === options.length - 1 ? 'text-right' : 'text-center',
+        ]"
+        @click="index = i"
+      >
+        {{ option }}
+      </button>
+    </div>
+  </div>
+</template>

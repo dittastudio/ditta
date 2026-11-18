@@ -85,6 +85,11 @@ export default defineNuxtConfig({
     '/**': {
       prerender: !isSpa,
     },
+    // Per-visitor form state, nothing to prerender (docs/plans/brief-builder-milestones.md)
+    '/brief': {
+      ssr: false,
+      prerender: false,
+    },
   },
   nitro: {
     cloudflare: {
