@@ -163,6 +163,25 @@ When `sb:schema-push` detects a breaking change it offers to scaffold the matchi
 
 `sb:migrations-run` saves stories without publishing, so changes land as drafts. Pass `--publish published` to republish stories that were already live, or `--publish all` for everything. Scope a run with `--starts-with="/work/"` or `--query="[highlighted][in]=true"` when a migration should not touch the whole space.
 
+## Forms & Validation
+
+- **IMPORTANT: All form validation goes through Regle + Zod.** Do not hand-roll validation in components, use native `required`/`pattern` as the source of truth, or add another validation library (VeeValidate, Vuelidate, Yup, Valibot, etc.).
+- **One Zod schema per form, shared by client and server.** Schemas live in `shared/schemas/` (Nuxt's `shared/` directory is bundled into both `app/` and `server/`) and are imported via `#shared/schemas/<name>`. Never duplicate a schema, or a copy of its rules, on either side.
+- **Client:** bind the schema with `useRegleSchema(state, schema)` from `@regle/schemas`. Read field errors and dirty/invalid state from the returned `r$`, and call `r$.$validate()` before submitting.
+- **Server:** every API route that accepts form data parses the body with the same schema (`readValidatedBody(event, schema.parse)`) before doing anything else: DB writes, emails via Resend, anything. The server is the authority; client validation is only for UX.
+- Export the inferred type (`z.infer<typeof schema>`) from the schema file and use it for the form state, the request body and anything downstream (DB rows, email templates). Don't hand-write form types.
+- Server-only checks that the client can't run (rate limits, token validity, honeypot, ownership via cookie) stay in the route, not in the shared schema. Keep secrets and server-only logic out of `shared/`.
+
+### Form components
+
+- **Build from the existing design system.** Style inputs, labels, errors and focus states with the `@theme` tokens and existing utilities, and reuse components in `app/components/ui/` (e.g. `Button.vue`, `Chip.vue`, `Step.vue`) before making new ones. If a form needs a value that isn't a token, add it to `@theme` first, as with any other component.
+- **Use modern Vue 3.5 features to keep components small:**
+  - `defineModel()` for two-way binding, never a hand-written `modelValue` prop plus an `update:modelValue` emit. Use named models (`defineModel('email')`) and modifiers where a component binds more than one value.
+  - Destructured props with JS default values (`const { label, required = false } = defineProps<Props>()`), not `withDefaults`.
+  - `useId()` to link labels, hints and error messages (`for`/`id`, `aria-describedby`), not ids built by hand.
+  - `useTemplateRef()` for element refs, and `defineSlots` / `defineOptions` / generic components (`<script setup lang="ts" generic="T">`) where they remove boilerplate.
+- **Keep fields simple.** A field component takes a model plus the Regle field (`r$.fieldName`) or its errors, and shows them. It doesn't validate anything itself. Pass native attributes through (`autocomplete`, `inputmode`, `type`) rather than redeclaring them as props.
+
 ## Linting & Formatting
 
 - **Lint:** `vp check` (vite-plus, oxc-based, with type-aware rules). Run via the staged hook on commit.
@@ -221,6 +240,7 @@ These rules govern every Figma-driven implementation in this repo.
 | Add a route                     | `app/pages/...` (file-based)                                         |
 | Add a composable                | `app/composables/use<Name>.ts` (auto-imported)                       |
 | Change a Storyblok block        | Edit `.storyblok/schema/`, then `npm run sb:schema-push`             |
+| Add a form schema               | `shared/schemas/<name>.ts` (Zod), used by Regle and the API route    |
 | Run dev server                  | `npm run dev`                                                        |
 
 ## Agent skills

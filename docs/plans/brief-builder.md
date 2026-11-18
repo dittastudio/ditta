@@ -19,6 +19,7 @@ This plan covers the **flow**: the screens, the states a brief moves through, th
 
 - **Database:** Cloudflare D1
 - **Email:** Resend
+- **Validation:** Regle + Zod, with one shared set of Zod schemas used by both the form and the API routes (see [Validation](#validation--regle--zod-one-schema-for-both-sides))
 - **Deliverable:** when a brief is confirmed, it's summarised into a **branded PDF** and attached to both the internal email to ditta and the client's copy.
 
 ---
@@ -165,6 +166,33 @@ Bind D1 in `wrangler.toml`/Nitro config and access it through Nitro's `useDataba
 - `GET /:id/status`: the Check-your-inbox screen polls this to know when to flip to Thank you
 - `GET /confirm?token=`: validate and return a summary for the landing page (no side effects)
 - `POST /confirm`: mark confirmed, clear the token, generate the PDF, then send both emails with it attached (see below)
+
+### Validation — Regle + Zod, one schema for both sides
+
+All validation in the brief builder is done with **Zod** schemas, run on the client by **Regle** and on the server by the API routes. The same schema files are used by both, so the browser and the Worker can never disagree about what a valid brief is.
+
+- **Where:** `shared/schemas/brief.ts`, imported as `#shared/schemas/brief` from both `app/` and `server/`.
+- **What it holds:**
+  - one schema per step (e.g. `briefStepSchemas[stepId]`), so each step validates on its own before Next
+  - `briefAnswersSchema`: all steps combined, used by Review and stored as the `answers` JSON
+  - `briefDetailsSchema`: name, email, consent (and the honeypot field, which must be empty)
+  - `briefSubmitSchema`: answers + details, the body of `POST /api/brief`
+  - `briefResendSchema`: optional corrected email, the body of `POST /:id/resend`
+  - `briefConfirmSchema`: the token, for `GET`/`POST /confirm`
+- **Client:** each step binds its schema with `useRegleSchema(state, schema)` (`@regle/schemas`, via the `@regle/nuxt` module). Next and Submit call `r$.$validate()`, and field errors come from `r$`. The Pinia draft store is typed with `z.infer<typeof briefAnswersSchema>`.
+- **Server:** every `/api/brief/*` route parses its body or query with the matching schema (`readValidatedBody(event, briefSubmitSchema.parse)`) before touching D1 or Resend. Invalid input returns a 400 with Zod's field errors and sends no email. The values passed to the email templates and the PDF are the **parsed** values, never the raw body.
+- **Not in the schema:** server-only checks stay in the routes: rate limits, token hash/expiry, draft-cookie ownership, minimum time-on-form, Turnstile.
+- If the step list moves to Storyblok, the step schemas still have to exist in code (or be built from the Storyblok config by a shared function), so the server can validate without trusting the client.
+
+Dependencies to add: `zod`, `@regle/core`, `@regle/schemas`, `@regle/nuxt`.
+
+### Form components
+
+The brief's inputs (text, textarea, choice chips, radio/checkbox groups, selects) are built as small, reusable components that follow the **Forms & Validation → Form components** rules in `AGENTS.md`:
+
+- They're styled only with the existing `@theme` tokens, and reuse `app/components/ui/` (`Button`, `Chip`, `Step`) wherever possible.
+- They use `defineModel()` for two-way binding, destructured props with defaults, and `useId()` for label and error wiring, so there's no `modelValue`/emit boilerplate.
+- They only display Regle's state. Each step page owns `useRegleSchema`, and the fields render what `r$` gives them.
 
 ### Rendering
 
