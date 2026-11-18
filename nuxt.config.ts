@@ -3,12 +3,12 @@ import tailwindcss from '@tailwindcss/vite'
 import svgLoader from 'vite-svg-loader'
 import { breakpoints } from './app/utils/breakpoints'
 
-const isProduction =
-  process.env.CONTEXT === 'production' || // Netlify
-  process.env.CF_PAGES_BRANCH === 'main' || // Cloudflare Pages
-  process.env.WORKERS_CI_BRANCH === 'main' // Cloudflare Workers (Builds)
-
-const isSpa = process.env.IS_SPA === 'true'
+// Workers Builds sets WORKERS_CI_BRANCH at build time only, and its build variables are shared by every branch, so
+// the branch decides: `main` prerenders the live site, any other branch (`develop`) builds the Storyblok editor
+// preview as an SPA. Locally, `NUXT_PRERENDER=false` does. At runtime, wrangler.jsonc's vars decide.
+const ciBranch = process.env.WORKERS_CI_BRANCH
+const isSpa = ciBranch ? ciBranch !== 'main' : process.env.NUXT_PRERENDER === 'false'
+const isProduction = ciBranch === 'main'
 
 export default defineNuxtConfig({
   modules: [
@@ -22,7 +22,7 @@ export default defineNuxtConfig({
         autoOutboundTracking: true,
         fileDownloads: true,
         formSubmissions: true,
-        ignoredHostnames: ['localhost', 'netlify.app', 'vercel.app'],
+        ignoredHostnames: ['localhost', 'workers.dev'],
       },
     ],
     'lenis/nuxt',
@@ -66,7 +66,13 @@ export default defineNuxtConfig({
       ],
       link: [
         { rel: 'manifest', href: '/site.webmanifest' },
-        { rel: 'preload', type: 'font/woff2', href: '/fonts/SaansVF.woff2', as: 'font', crossorigin: '' },
+        {
+          rel: 'preload',
+          type: 'font/woff2',
+          href: '/fonts/SaansVF.woff2',
+          as: 'font',
+          crossorigin: '',
+        },
         {
           rel: 'icon',
           type: 'image/svg+xml',
@@ -81,6 +87,10 @@ export default defineNuxtConfig({
     },
   },
   nitro: {
+    cloudflare: {
+      deployConfig: true, // writes .output/server/wrangler.json for `wrangler deploy`
+      nodeCompat: true, // merged with the root wrangler.jsonc
+    },
     experimental: {
       wasm: true, // ...for Cloudflare Workers
     },
@@ -120,9 +130,10 @@ export default defineNuxtConfig({
   css: ['~/assets/css/app.css'],
   devtools: { enabled: false },
   runtimeConfig: {
+    // The Storyblok token lives in the module's `public.storyblok.accessToken`. On Cloudflare, runtime vars override
+    // both at request time: NUXT_PUBLIC_STORYBLOK_ACCESS_TOKEN (the previews' secret) and NUXT_PUBLIC_STORYBLOK_VERSION.
     public: {
-      STORYBLOK_TOKEN: process.env.NUXT_STORYBLOK_TOKEN,
-      STORYBLOK_VERSION: process.env.NUXT_STORYBLOK_VERSION,
+      STORYBLOK_VERSION: ciBranch ? (isSpa ? 'draft' : 'published') : process.env.NUXT_STORYBLOK_VERSION,
     },
   },
   vite: {

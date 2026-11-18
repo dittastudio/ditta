@@ -27,11 +27,11 @@ logs
 !.env.example
 *.pem
 
-# Local Netlify folder
-.netlify
-
 # MCP credentials
 .mcp.json
 
 # Claude
 .claude/settings.local.json
+
+# Wrangler (Nitro writes .wrangler/deploy/config.json on every build)
+.wrangler

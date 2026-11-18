@@ -1,0 +1,27 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // Nitro merges this into the config it generates at .output/server/wrangler.json (main, assets and compatibility
+  // flags come from there), which is what `wrangler deploy` and `wrangler preview` read.
+  "name": "ditta",
+  // Workers Logs (free plan: 200k events/day). Kept in config so deploys don't switch it off.
+  "observability": { "enabled": true },
+  // The live site is served only at ditta.studio (a Custom Domain on this Worker, with www redirected by a zone rule),
+  // so ditta.ditta.workers.dev is off rather than serving a second copy of it.
+  "workers_dev": false,
+  // Branch previews (<branch>-ditta.<subdomain>.workers.dev) stay on. `develop` is the Storyblok Visual Editor's
+  // preview URL.
+  "preview_urls": true,
+  // Production (`main`): prerendered, published content. Its token is baked in at build from the
+  // NUXT_STORYBLOK_TOKEN build variable (the public token), so no runtime secret is needed.
+  "vars": {
+    "NUXT_PUBLIC_STORYBLOK_VERSION": "published",
+  },
+  // Worker Previews (non-production branches): SPA, draft content + Visual Editor. Nothing is inherited from the top
+  // level, so vars are repeated here. Set the preview token in the dashboard (Settings → Runtime variables and
+  // secrets → Previews Base) or with `npx wrangler preview base-config secret put NUXT_PUBLIC_STORYBLOK_ACCESS_TOKEN`.
+  "previews": {
+    "vars": {
+      "NUXT_PUBLIC_STORYBLOK_VERSION": "draft",
+    },
+  },
+}
