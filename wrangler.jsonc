@@ -5,9 +5,11 @@
   "name": "ditta",
   // Workers Logs (free plan: 200k events/day). Kept in config so deploys don't switch it off.
   "observability": { "enabled": true },
-  // Branch previews (<branch>-ditta.<subdomain>.workers.dev). `develop` is the Storyblok Visual Editor's preview URL.
-  // Once ditta.studio is a Custom Domain on this Worker, add "workers_dev": false so ditta.ditta.workers.dev stops
-  // serving a second copy of the live site.
+  // The live site is served only at ditta.studio (a Custom Domain on this Worker, with www redirected by a zone rule),
+  // so ditta.ditta.workers.dev is off rather than serving a second copy of it.
+  "workers_dev": false,
+  // Branch previews (<branch>-ditta.<subdomain>.workers.dev) stay on. `develop` is the Storyblok Visual Editor's
+  // preview URL.
   "preview_urls": true,
   // Production (`main`): prerendered, published content. Its token is baked in at build from the
   // NUXT_STORYBLOK_TOKEN build variable (the public token), so no runtime secret is needed.

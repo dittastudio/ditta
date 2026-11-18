@@ -125,7 +125,7 @@ The default Tailwind palette, spacing, breakpoints and font scales are **reset t
 
 The site runs on **Cloudflare Workers** as a single Worker, `ditta`, built by Workers Builds from GitHub. `wrangler.jsonc` holds the Worker config; Nitro merges it into the config it generates at build.
 
-- **`main`** is the live site (ditta.studio): prerendered, published content. Deploy command `npx wrangler deploy`.
+- **`main`** is the live site, served only at ditta.studio (a Custom Domain on the Worker; `workers_dev` is off, and a zone Redirect Rule sends www to the apex): prerendered, published content. Deploy command `npx wrangler deploy`.
 - **Every other branch** is a Worker Preview (`<branch>-ditta.ditta.workers.dev`): an SPA reading draft content, for the Storyblok Visual Editor. Preview command `npx wrangler preview`. `develop-ditta.ditta.workers.dev` is the editor's preview URL, so keep `develop` deployable.
 
 Build variables are shared by every branch, so `nuxt.config.ts` lets `WORKERS_CI_BRANCH` choose between the two builds (locally, `NUXT_PRERENDER=false` does). Set these once under Worker → Settings → Build → Variables and secrets: `NUXT_STORYBLOK_TOKEN` (the **public** token), `NUXT_STORYBLOK_VERSION=published`, `NUXT_OG_IMAGE_SECRET` and `NODE_VERSION=24`.
