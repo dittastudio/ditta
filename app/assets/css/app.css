@@ -14,10 +14,12 @@
   --color-blue: blue;
   --color-beige: oklch(0.8643 0.0104 32.52);
   --color-charcoal: oklch(29.72% 0 0);
+  --color-coral: oklch(73.99% 0.137 20.91);
   --color-crema: oklch(0.8102 0.0532 66.96);
   --color-forest: oklch(0.2505 0.0852 142.5);
   --color-grey: oklch(97.315% 0 0);
   --color-mood: oklch(0.6385 0.0312 42.55);
+  --color-offblack: oklch(22.21% 0 0);
   --color-olive: oklch(0.7442 0.0554 154.96);
   --color-pink: oklch(0.8221 0.1207 348.4);
   --color-putty: oklch(90.72% 0.0017 67.8);

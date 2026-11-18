@@ -17,7 +17,8 @@ export const useBriefStore = defineStore(
     const direction = ref<1 | -1>(1)
 
     const summaryIndex = briefSteps.length
-    const total = briefSteps.length + 1
+    // The summary isn't counted: "1 of 12" covers the questions
+    const total = briefSteps.length
     const step = computed(() => briefSteps[stepIndex.value])
     const isSummary = computed(() => stepIndex.value === summaryIndex)
 

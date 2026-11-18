@@ -23,9 +23,9 @@ const index = computed({
 </script>
 
 <template>
-  <div class="flex flex-col gap-3">
+  <div class="flex flex-col gap-6">
     <p
-      class="text-28 font-medium leading-none sm:text-40"
+      class="text-40 leading-none trim-both md:text-64"
       aria-hidden="true"
     >
       {{ options[index] }}
@@ -39,7 +39,7 @@ const index = computed({
       :max="options.length - 1"
       step="1"
       :aria-valuetext="options[index]"
-      class="w-full accent-black"
+      class="w-full accent-coral"
     />
 
     <div class="flex justify-between gap-1">
@@ -48,7 +48,7 @@ const index = computed({
         :key="option"
         type="button"
         tabindex="-1"
-        class="text-12 leading-tight transition-opacity"
+        class="text-14 leading-tight transition-opacity"
         :class="[
           i === index ? 'font-medium opacity-100' : 'opacity-50',
           i === 0 ? 'text-left' : i === options.length - 1 ? 'text-right' : 'text-center',

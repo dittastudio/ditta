@@ -22,8 +22,8 @@ onMounted(() => {
     v-model="model"
     maxlength="200"
     enterkeyhint="next"
-    class="w-full rounded-10 bg-white px-4 text-black outline-none placeholder:text-black/40 focus-visible:ring-2 focus-visible:ring-black aria-invalid:ring-2 aria-invalid:ring-rage"
-    :class="small ? 'py-2 text-14' : 'py-3 text-16'"
+    class="w-full rounded-10 border border-white/25 bg-white/10 px-5 text-white outline-none transition-colors duration-200 ease-outCubic placeholder:text-white/40 focus:border-olive aria-invalid:border-coral"
+    :class="small ? 'py-3 text-16' : 'py-4 text-20'"
     @keydown.enter.prevent="emit('submit')"
   />
 </template>

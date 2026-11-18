@@ -9,7 +9,7 @@ const { errors = [] } = defineProps<Props>()
 <template>
   <p
     v-if="errors.length"
-    class="text-14 text-rage-dark"
+    class="text-16 text-coral"
   >
     {{ errors[0] }}
   </p>

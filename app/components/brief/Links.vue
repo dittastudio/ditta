@@ -65,7 +65,7 @@ function onPaste(index: number, event: ClipboardEvent) {
         <button
           v-if="rows.length > 1"
           type="button"
-          class="shrink-0 px-2 text-20 leading-none opacity-50 only-hover:hover:opacity-100"
+          class="shrink-0 px-2 text-28 leading-none opacity-50 only-hover:hover:opacity-100"
           :aria-label="`Remove link ${index + 1}`"
           @click="remove(index)"
         >
@@ -92,7 +92,7 @@ function onPaste(index: number, event: ClipboardEvent) {
     <button
       v-if="canAdd"
       type="button"
-      class="self-start text-14 font-medium underline underline-offset-4"
+      class="self-start text-16 text-beige underline underline-offset-4 only-hover:hover:text-white"
       @click="add"
     >
       + Add another link

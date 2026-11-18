@@ -16,34 +16,34 @@ const rows = computed(() =>
 </script>
 
 <template>
-  <section class="flex flex-col gap-6">
-    <h1 class="text-28 font-medium leading-tight text-balance sm:text-40">
+  <section class="flex flex-col gap-10 md:gap-15">
+    <h1 class="text-24 leading-tight text-balance trim-both md:text-28">
       Check your information is correct before sending
     </h1>
 
-    <ol class="flex flex-col divide-y divide-black/10">
+    <ol class="flex flex-col divide-y divide-white/25 border-y border-white/25">
       <li
         v-for="(row, index) in rows"
         :key="row.key"
-        class="flex items-start gap-3 py-3"
+        class="flex items-start gap-4 py-5"
       >
-        <span class="w-5 shrink-0 text-14 font-mono opacity-50">{{ index + 1 }}</span>
+        <span class="w-6 shrink-0 text-14 leading-snug text-beige">{{ index + 1 }}</span>
 
-        <div class="flex min-w-0 flex-1 flex-col gap-1">
-          <p class="text-14 opacity-60">
+        <div class="flex min-w-0 flex-1 flex-col gap-2">
+          <p class="text-14 leading-snug text-beige md:text-16">
             {{ row.title }}
           </p>
 
           <p
             v-if="row.answer"
-            class="text-16 font-medium break-words"
+            class="text-18 leading-snug break-words md:text-20"
           >
             {{ row.answer }}
           </p>
 
           <p
             v-else
-            class="text-16 italic opacity-50"
+            class="text-18 leading-snug italic opacity-40 md:text-20"
           >
             {{ row.required ? 'Not answered' : 'Skipped' }}
           </p>
@@ -51,7 +51,7 @@ const rows = computed(() =>
 
         <button
           type="button"
-          class="shrink-0 rounded-full bg-white px-3 py-1.5 text-12 font-medium only-hover:hover:bg-putty"
+          class="pokeable shrink-0 rounded-full bg-white/10 px-4 py-2.5 text-14 font-medium leading-none only-hover:hover:bg-white/20"
           @click="brief.goTo(row.stepIndex, true)"
         >
           Edit

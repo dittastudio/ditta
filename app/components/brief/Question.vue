@@ -61,19 +61,19 @@ defineExpose({ validate })
 <template>
   <section
     :aria-labelledby="titleId"
-    class="flex flex-col gap-6"
+    class="flex flex-col gap-10 md:gap-15"
   >
-    <div class="flex flex-col gap-2">
+    <div class="flex flex-col gap-5 md:gap-7.5">
       <h1
         :id="titleId"
-        class="text-28 font-medium leading-tight text-balance sm:text-40"
+        class="text-24 leading-tight text-balance trim-both md:text-28"
       >
         {{ title }}
       </h1>
 
       <p
         v-if="step.hint"
-        class="text-16 italic opacity-60"
+        class="text-16 text-beige text-pretty trim-both md:text-20"
       >
         {{ step.hint }}
       </p>
@@ -86,6 +86,7 @@ defineExpose({ validate })
       :errors="errorsFor(step.key)"
       :row-errors="rowErrorsFor(step.key)"
       focus-on-mount
+      shortcuts
       @update:model-value="setAnswer(step.key, $event)"
       @picked="onPicked"
       @submit="emit('submit')"
@@ -93,7 +94,7 @@ defineExpose({ validate })
 
     <p
       v-if="emailSuggestion"
-      class="-mt-3 text-14"
+      class="-mt-6 text-16 text-beige md:-mt-9"
     >
       Did you mean
       <button
@@ -107,7 +108,7 @@ defineExpose({ validate })
 
     <p
       v-if="step.field === 'email'"
-      class="-mt-3 text-14 opacity-60"
+      class="-mt-6 text-16 text-beige md:-mt-9"
     >
       We'll only use this to reply about your project.
     </p>
@@ -115,16 +116,16 @@ defineExpose({ validate })
     <TransitionGroup
       name="fade"
       tag="div"
-      class="flex flex-col gap-6 empty:hidden"
+      class="flex flex-col gap-10 empty:hidden md:gap-15"
     >
       <div
         v-for="followUp in followUps"
         :key="followUp.key"
-        class="flex flex-col gap-3"
+        class="flex flex-col gap-5"
       >
         <p
           :id="`${titleId}-${followUp.key}`"
-          class="text-18 font-medium"
+          class="text-20 leading-tight trim-both"
         >
           {{ followUp.title }}
         </p>

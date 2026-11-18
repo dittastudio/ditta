@@ -8,7 +8,7 @@ useSeoMeta({
 const appStore = useAppStore()
 
 onMounted(() => {
-  appStore.setTheme('light')
+  appStore.setTheme('dark')
 })
 </script>
 

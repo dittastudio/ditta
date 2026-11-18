@@ -7,9 +7,17 @@ interface Props {
   errors?: string[]
   rowErrors?: string[][]
   focusOnMount?: boolean
+  shortcuts?: boolean
 }
 
-const { question, labelledby, errors = [], rowErrors = [], focusOnMount = false } = defineProps<Props>()
+const {
+  question,
+  labelledby,
+  errors = [],
+  rowErrors = [],
+  focusOnMount = false,
+  shortcuts = false,
+} = defineProps<Props>()
 const model = defineModel<unknown>()
 const emit = defineEmits<{ picked: [option: string]; submit: [] }>()
 
@@ -43,13 +51,15 @@ const inputmode = { email: 'email', url: 'url' } as const
 </script>
 
 <template>
-  <div class="flex flex-col gap-2">
+  <div class="flex flex-col gap-3">
     <BriefOptions
       v-if="question.field === 'cards' || question.field === 'chips'"
       v-model="options"
       v-bind="a11y"
       :options="question.options ?? []"
+      :descriptions="question.descriptions"
       :variant="question.field"
+      :shortcuts="shortcuts"
       :multiple="question.multiple"
       @picked="emit('picked', $event)"
     />

@@ -7,7 +7,7 @@ const settings = await useStory<Block<'settings'>>('/settings')
 
 const route = useRoute()
 const router = useRouter()
-// The brief builder is a full-screen form, so it goes without the tagline and footer
+// The brief builder has its own heading, so it goes without the tagline
 const isBrief = computed(() => route.path.startsWith('/brief'))
 const appStore = useAppStore()
 
@@ -85,10 +85,7 @@ router.afterEach(() => {
 
     <NuxtPage />
 
-    <AppFooter
-      v-if="!isBrief"
-      :text="settings.content.footer_copy_v2"
-    />
+    <AppFooter :text="settings.content.footer_copy_v2" />
 
     <DevOnly>
       <DevGuide

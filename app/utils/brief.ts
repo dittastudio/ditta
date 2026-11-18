@@ -14,6 +14,8 @@ interface BriefQuestion {
   field: BriefField
   multiple?: boolean
   options?: readonly string[]
+  // A line under an option card's title, keyed by option
+  descriptions?: Partial<Record<string, string>>
   placeholder?: string
   autocomplete?: string
 }
@@ -26,10 +28,16 @@ const briefSteps: BriefStep[] = [
   {
     key: 'services',
     title: 'What do you need help with?',
-    hint: 'Select all that apply.',
+    hint: 'Select all that apply',
     field: 'cards',
     multiple: true,
     options: briefOptions.services,
+    descriptions: {
+      'Web Design': 'Planning, organising, and building the visual and interactive layers of a website.',
+      'Web Build': 'Planning, organising, and building the website based on a design.',
+      'Existing project': "You have something already that you'd like us to look at.",
+      Other: 'Anything else that might not be covered here.',
+    },
   },
   {
     key: 'business',
