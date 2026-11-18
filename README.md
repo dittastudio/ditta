@@ -20,12 +20,12 @@ The dev server runs on <http://localhost:3000>.
 
 ### Environment variables
 
-| Variable                 | Purpose                                                                          |
-| ------------------------ | -------------------------------------------------------------------------------- |
-| `NUXT_STORYBLOK_TOKEN`   | Storyblok content delivery API token. **Required** — nothing renders without it. |
-| `NUXT_STORYBLOK_VERSION` | `draft` or `published`. Use `draft` locally to see unpublished content.          |
-| `NUXT_OG_IMAGE_SECRET`   | Any UUID. Used for signing OG image URLs.                                        |
-| `IS_SPA`                 | `true` / `false`. Toggles SPA mode.                                              |
+| Variable                 | Purpose                                                                                                                              |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `NUXT_STORYBLOK_TOKEN`   | Storyblok content delivery API token. **Required** — nothing renders without it.                                                     |
+| `NUXT_STORYBLOK_VERSION` | `draft` or `published`. Use `draft` locally to see unpublished content.                                                              |
+| `NUXT_OG_IMAGE_SECRET`   | Any UUID. Used for signing OG image URLs.                                                                                            |
+| `NUXT_PRERENDER`         | `true` (default) prerenders the site; `false` builds an SPA for the editor preview. Ignored on Cloudflare, where the branch decides. |
 
 Ask an existing team member for the Storyblok token — don't commit it.
 
@@ -120,6 +120,19 @@ The default Tailwind palette, spacing, breakpoints and font scales are **reset t
 - Breakpoints: `2xs` 375, `xs` 480, `sm` 600, `md` 800, `lg` 1200, `xl` 1440, `2xl` 1800.
 - Custom variants: `only-hover:` and `only-touch:`.
 - Components use utility classes — there are no `<style scoped>` blocks, keep it that way.
+
+## Deployment
+
+The site runs on **Cloudflare Workers** as a single Worker, `ditta`, built by Workers Builds from GitHub. `wrangler.jsonc` holds the Worker config; Nitro merges it into the config it generates at build.
+
+- **`main`** is the live site (ditta.studio): prerendered, published content. Deploy command `npx wrangler deploy`.
+- **Every other branch** is a Worker Preview (`<branch>-ditta.ditta.workers.dev`): an SPA reading draft content, for the Storyblok Visual Editor. Preview command `npx wrangler preview`. `develop-ditta.ditta.workers.dev` is the editor's preview URL, so keep `develop` deployable.
+
+Build variables are shared by every branch, so `nuxt.config.ts` lets `WORKERS_CI_BRANCH` choose between the two builds (locally, `NUXT_PRERENDER=false` does). Set these once under Worker → Settings → Build → Variables and secrets: `NUXT_STORYBLOK_TOKEN` (the **public** token), `NUXT_STORYBLOK_VERSION=published`, `NUXT_OG_IMAGE_SECRET` and `NODE_VERSION=24`.
+
+What differs at runtime lives in `wrangler.jsonc`: `vars` for production, `previews.vars` for previews. The preview token is a runtime secret on previews only, `NUXT_PUBLIC_STORYBLOK_ACCESS_TOKEN`, set under Settings → Runtime variables and secrets → **Previews Base**, or with `npx wrangler preview base-config secret put NUXT_PUBLIC_STORYBLOK_ACCESS_TOKEN`.
+
+Publishing in Storyblok fires a webhook at a Workers Builds deploy hook for `main` (Settings → Build → Deploy Hooks), which rebuilds the live site. The preview needs no rebuild, as it fetches drafts at runtime.
 
 ## Scripts
 
