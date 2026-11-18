@@ -158,7 +158,7 @@ const screenKey = computed(() => (isDraft.value ? `step-${brief.stepIndex}-${res
               >
                 <div
                   class="absolute inset-y-0 left-0 w-full origin-left bg-coral transition-transform duration-500 ease-outQuart"
-                  :style="{ transform: `scaleX(${Math.max(progress, 1 / brief.total)})` }"
+                  :style="{ transform: `scaleX(${progress})` }"
                 />
               </div>
 
