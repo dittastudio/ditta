@@ -53,10 +53,12 @@ onKeyStroke((event) => {
       :key="option"
       type="button"
       :aria-pressed="isSelected(option)"
-      class="edge-light flex flex-col items-start gap-4 rounded-10 border bg-white/10 text-left transition-[border-color,background-color] duration-200 ease-outCubic md:gap-5"
+      class="edge-light edge-glow flex flex-col items-start gap-4 rounded-10 border bg-white/10 text-left transition-[border-color,background-color] duration-200 ease-outCubic md:gap-5"
       :class="[
         hasDescriptions ? 'p-5 md:p-7.5' : 'p-4 md:p-6',
-        isSelected(option) ? 'border-olive' : 'border-white/25 only-hover:hover:border-white/50',
+        isSelected(option)
+          ? 'border-olive [--eg-color:var(--color-olive)] [--el-color:var(--color-olive-light)]'
+          : 'border-white/25 only-hover:hover:border-white/50',
       ]"
       @click="toggle(option)"
     >
