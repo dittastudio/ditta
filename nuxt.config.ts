@@ -91,7 +91,6 @@ export default defineNuxtConfig({
     },
   },
   nitro: {
-    preset: 'cloudflare_module',
     cloudflare: {
       deployConfig: true, // writes .output/server/wrangler.json for `wrangler deploy`
       nodeCompat: true, // merged with the root wrangler.jsonc
