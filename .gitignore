@@ -27,9 +27,6 @@ logs
 !.env.example
 *.pem
 
-# Local Netlify folder
-.netlify
-
 # MCP credentials
 .mcp.json
 
