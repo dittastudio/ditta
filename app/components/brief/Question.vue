@@ -110,7 +110,13 @@ defineExpose({ validate })
       v-if="step.field === 'email'"
       class="-mt-6 text-16 text-beige md:-mt-9"
     >
-      We'll only use this to reply about your project.
+      We'll only use this to reply about your project. See our
+      <NuxtLink
+        to="/privacy-policy"
+        target="_blank"
+        class="underline underline-offset-4 only-hover:hover:text-white"
+        >privacy policy</NuxtLink
+      >.
     </p>
 
     <TransitionGroup

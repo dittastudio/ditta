@@ -4,7 +4,7 @@ This file covers **what the brief builder asks and how each question is answered
 
 The technical design (D1, Resend, tokens, PDF, endpoints) is in the separate **Brief Builder: UX Flow & System Plan** doc. Where the two meet, this file says so. If they disagree, raise it rather than guessing.
 
-Source of truth for the wording: the "Brief Builder Plan" artifact (claude.ai). Update this file whenever the questions change there.
+Source of truth for the wording: the repo. Questions, hints and options live in `app/utils/brief.ts` and `shared/schemas/brief.ts`; keep this file in step with them. The "Brief Builder Plan" artifact on claude.ai is retired.
 
 ---
 
@@ -15,7 +15,7 @@ The form is for prospective clients who often don't know exactly what they want 
 1. **One question per screen.** A follow-up question can appear underneath its parent on the same screen. Follow-ups don't count as a second question.
 2. **Tap rather than type.** Use cards, chips and sliders wherever there's a known set of answers. Only use text fields for things only the client can know (their business, name, email, links).
 3. **Single-line by default.** Text answers are single-line inputs. A textarea is allowed where an answer genuinely needs more room, but none of the current questions use one.
-4. **Every screen fits a small phone (320 × 568) without scrolling**, including any follow-up that might open. The summary is the only exception.
+4. **Every screen fits a small phone (320 × 568) without scrolling**, including any follow-up that might open. The exceptions are the summary, and screen 3 with both follow-ups open.
 5. **Email comes last.** Nothing is sent to the server until the client presses **Send brief** on the summary (see the technical doc).
 6. **UK English. Prices in GBP (£).** Plain, friendly copy, no jargon.
 
@@ -76,7 +76,7 @@ The form is for prospective clients who often don't know exactly what they want 
 
 Suggested `key`s are stable names for the answers JSON (the `answers` blob in D1), so the data doesn't depend on wording. The plan's internal ids are listed for cross-reference.
 
-Contact screens 9–12 are labelled **a–d** in the plan so the end feels close. Decide whether the client sees those letters or just "9 of 13". The progress bar counts all 13 either way.
+Contact screens 9–12 were labelled a–d in the original plan. The client sees plain numbering ("9 of 12"); the progress counts the 12 question screens, and the summary shows "Review".
 
 ---
 
@@ -132,7 +132,7 @@ _Hint:_ Pick what matters most.
 - When `objectives` includes **Sell online**: **Roughly how many products?** · snapping slider · options _Under 10 · 10–50 · 50–200 · 200–1000 · 1000+_ · key `productCount` / `q3b`. This is the biggest cost driver for a shop.
 - When `objectives` includes **Other**: **What else can we help with?** · single-line text · key `objectivesOther` / `qapu9km`
 
-> With 8 cards plus two possible follow-ups, this is the tallest screen. Check it on a 320 × 568 phone with both follow-ups open.
+> With 8 cards plus two possible follow-ups, this is the tallest screen, and the one screen allowed to scroll on a 320 × 568 phone when both follow-ups are open.
 
 ---
 
@@ -177,21 +177,15 @@ Behaviour:
 ### 6. Files or link
 
 **Is there anything you'd like to share?** · optional
-_Hint:_ Designs, brand guidelines or a working brief. Upload a file or zip (up to 10MB), or paste a link.
+_Hint:_ Designs, brand guidelines or a working brief.
 
-|          |                                                   |
-| -------- | ------------------------------------------------- |
-| Field    | Upload + link                                     |
-| Key / id | `files` / `q7`                                    |
-| Answer   | `{ file?, link? }`. Answered if either is present |
+|          |                                                                       |
+| -------- | --------------------------------------------------------------------- |
+| Field    | URL, placeholder "Paste a Figma or design link"                       |
+| Key / id | `files` / `q7`                                                        |
+| Answer   | `string`, a link or empty. "acme.com" is stored as "https://acme.com" |
 
-Behaviour:
-
-- A dashed drop zone, "**Choose file** or drag here". Once attached it shows "Attached: filename.pdf" with **Remove**.
-- Under it, "or", then an optional single-line field: "Paste a Figma or design link".
-- One file or a zip, 10MB maximum.
-
-> ⚠️ **Gap in the technical doc:** it doesn't cover uploads yet. A file can't be kept in localStorage, and nothing reaches the server before Submit. Decide whether files go to R2 at Submit, before Submit to a temporary key, or whether this screen becomes link-only for v1.
+Link-only for v1. File uploads (drop zone, one file or zip up to 10MB, R2 at Submit) are M6 in `brief-builder-milestones.md`.
 
 ---
 
@@ -229,14 +223,14 @@ _Hint:_ Most of our projects are between £X and £Y. **← placeholder: fill in
 
 Behaviour:
 
-- One handle, which **starts at the first point** (Under £5k).
+- **Starts with nothing chosen.** The large text reads "Drag to choose" and the slider is dimmed. The first drag, tap or arrow key picks a band, so every budget is one the client actually chose. Next stays blocked ("Answer to continue") until then.
 - Dragging snaps to the nearest point. Tapping a point's label jumps straight to it. Arrow keys move one point.
 - The current band shows large above the slider and updates live.
-- Because it starts on a value, the question always counts as answered. Treat an untouched "Under £5k" as a possibly unconsidered answer. Optionally record whether the slider was moved (`budgetTouched: boolean`).
+- The same slider is used for the `productCount` follow-up on screen 3, and behaves the same way.
 
 ---
 
-### 9. (a) Name
+### 9. Name
 
 **What's your full name?** · required
 
@@ -248,7 +242,7 @@ Behaviour:
 
 ---
 
-### 10. (b) Website
+### 10. Website
 
 **And your current website, [name]?** · optional
 _Hint:_ Skip if you don't have one yet.
@@ -261,7 +255,7 @@ _Hint:_ Skip if you don't have one yet.
 
 ---
 
-### 11. (c) Source
+### 11. Source
 
 **How did you find us?** · optional
 
@@ -278,7 +272,7 @@ _Hint:_ Skip if you don't have one yet.
 
 ---
 
-### 12. (d) Email
+### 12. Email
 
 **And finally, what's your email?** · required
 _Hint:_ We'll send you a copy of your brief.
@@ -290,11 +284,11 @@ _Hint:_ We'll send you a copy of your brief.
 | Validation     | Basic format check; message "Enter a valid email" |
 | Primary button | **Review**                                        |
 
-Per the technical doc, this screen also carries:
+This screen also carries:
 
 - a light "did you mean gmail.com?" typo check
-- a **consent** line or checkbox with a privacy policy link, e.g. "We'll only use this to reply about your project."
-- the hidden **honeypot** field
+- a **consent** line, with no checkbox: "We'll only use this to reply about your project. See our privacy policy." The link goes to `/privacy-policy`, which has to exist before launch (M7).
+- the hidden **honeypot** field, added in M3 with the endpoint
 
 ---
 
@@ -322,29 +316,28 @@ The review screen. It lists **every visible question in order**, numbered, with 
   - multi-select: comma-separated
   - slider: the band label
   - links: "url (note)", comma-separated
-  - upload: file name and/or link
+  - files: the link
 - **Edit** jumps to that screen. Its primary button becomes **Back to summary**, and picking a single-select option returns to the summary automatically.
 - This screen may scroll.
 - Primary button: **Send brief**. This is the **Submit** in the technical doc: it creates the pending record and sends the "Confirm & send your brief" email. The flow then goes to **Check your inbox** and the rest of the technical doc's screens.
 
-**Thank you** (after confirmation): "Thanks, {first name}. Your brief is on its way. We'll reply within two working days to book a short call." Confirm the response time with the team before launch.
+**Thank you** (after confirmation): "Thanks, {first name}. Your brief is on its way. We'll reply within two working days to book a short call." The same two-working-day promise goes in the emails.
 
 ---
 
 ## Field types reference
 
-| Type                | Looks like                             | Answer shape               | Notes                     |
-| ------------------- | -------------------------------------- | -------------------------- | ------------------------- |
-| Text                | One-line input                         | `string`                   | Textarea only if needed   |
-| Email               | One-line input                         | `string`                   | Format validated          |
-| URL                 | One-line input, `https://` placeholder | `string`                   |                           |
-| Links, add another  | URL rows + optional note               | `{ url, note? }[]`, max 3  | Paste splitting           |
-| Single-select cards | Grid of cards with letter badges       | `string`                   | Auto-advances             |
-| Multi-select cards  | Same, several can be on                | `string[]`                 | Hint says "Pick any"      |
-| Single-select chips | Wrapping pill buttons                  | `string`                   | For short labels          |
-| Snapping slider     | One handle + labelled points           | `string` (label) + `index` | Starts at the first point |
-| Upload + link       | Drop zone, "or", link field            | `{ file?, link? }`         | 10MB, one file or zip     |
-| Info                | No input                               | n/a                        | Used for the summary      |
+| Type                | Looks like                             | Answer shape              | Notes                      |
+| ------------------- | -------------------------------------- | ------------------------- | -------------------------- |
+| Text                | One-line input                         | `string`                  | Textarea only if needed    |
+| Email               | One-line input                         | `string`                  | Format validated           |
+| URL                 | One-line input, `https://` placeholder | `string`                  |                            |
+| Links, add another  | URL rows + optional note               | `{ url, note? }[]`, max 3 | Paste splitting            |
+| Single-select cards | Grid of cards with letter badges       | `string`                  | Auto-advances              |
+| Multi-select cards  | Same, several can be on                | `string[]`                | Hint says "Pick any"       |
+| Single-select chips | Wrapping pill buttons                  | `string`                  | For short labels           |
+| Snapping slider     | One handle + labelled points           | `string` (label)          | Starts with nothing chosen |
+| Info                | No input                               | n/a                       | Used for the summary       |
 
 Options marked "Not sure" or "No idea" (none at present) get a dashed border so they read as a valid answer, not a failure.
 
@@ -352,13 +345,6 @@ Options marked "Not sure" or "No idea" (none at present) get a dashed border so 
 
 ## Things still to settle
 
-1. **Budget hint:** replace "£X and £Y" with real figures, and check the five bands.
-2. **File uploads:** storage isn't covered by the technical doc (see screen 6).
-3. **Order of Review and details:** the technical doc puts Review **before** name and email. This builder puts the contact screens (9–12) **before** the Summary, and Send brief on the Summary is the Submit. Pick one and update the other doc.
-4. **Consent and honeypot:** add them to screen 12 (they're in the technical doc but not in the builder plan).
-5. **Contact lettering:** show "a–d" to the client, or plain numbering.
-6. **Out-of-date planning notes** that don't match the final questions:
-   - Screen 3's note says "one pick", but it's now multi-select.
-   - Screen 7's note mentions "Some of it / Not yet"; the options are now Partially ready / Not ready.
-   - The summary note mentions tips generated from "not sure" answers. They aren't in the current summary, so decide whether they're wanted.
-7. **Response-time promise** on the thank-you screen and in emails.
+1. **Budget hint:** replace "£X and £Y" in screen 8's hint with real figures. The five bands are confirmed.
+
+Settled in M0 (see `brief-builder-milestones.md`): order of contact screens and summary, link-only screen 6, consent wording, plain numbering, the small-phone exception for screen 3, the repo as source of truth, the two-working-day promise, and no "not sure" tips on the summary for v1.

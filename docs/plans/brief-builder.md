@@ -27,8 +27,8 @@ This plan covers the **flow**: the screens, the states a brief moves through, th
 ## Core principle: nothing touches the server until they submit
 
 - The brief is filled in entirely in the browser. Answers live in a persisted Pinia store (localStorage), so a refresh or coming back later on the same browser resumes where they left off.
-- The **last step** asks for name and email (and consent).
-- Pressing **Submit** is the first moment a DB record is created and an email is sent.
+- The **last question screens** ask for name and email (with a consent line), then a **Summary** shows everything.
+- Pressing **Send brief** on the Summary (the Submit) is the first moment a DB record is created and an email is sent.
 - The brief only counts as **received** once they click the link in that email.
 
 ## Happy path
@@ -37,14 +37,15 @@ This plan covers the **flow**: the screens, the states a brief moves through, th
 [CTA "Start a brief"] → /brief
         │
         ▼
-[Steps 1…N: the brief]          answers saved locally only (Pinia + localStorage)
+[Steps 1…8: the brief]          answers saved locally only (Pinia + localStorage)
         │
         ▼
-[Review]                         summary of all answers, "Edit" per section
+[Steps 9…12: name, website,      consent line on the email step
+ source, email]
         │
         ▼
-[Final step: name + email + consent]
-        │  Submit
+[Summary]                        every answer, "Edit" per question, email visible
+        │  Send brief (Submit)
         ▼
 POST /api/brief  ──►  create record (status: pending), store answers,
                       generate token, send "Confirm your brief" email
@@ -120,12 +121,12 @@ If they go **back** to edit answers while pending, the next Submit updates the s
 
 ## Screens
 
-1. **Brief steps**: one topic per step, progress indicator, Back/Next, local autosave.
-2. **Review**: grouped summary with edit links.
-3. **Your details**: name, email (with a light "did you mean gmail.com?" check), consent, Submit. Honeypot field here.
+1. **Brief steps**: one topic per step, progress indicator, Back/Next, local autosave. Screen 6 takes a link only; file uploads are M6.
+2. **Your details** (steps 9–12): name, website, source and email (with a light "did you mean gmail.com?" check and a consent line linking to the privacy policy). Honeypot field on the email step.
+3. **Summary**: every answer with Edit links, then **Send brief**, which is the Submit. Putting it after the details means the email is on screen to check before anything is sent.
 4. **Check your inbox**: shows the address, "Not received your email?" panel, auto-advances on confirm.
 5. **Confirm landing** (`/brief/confirm`): a short summary and a **Confirm & send** button. A button rather than auto-confirm on GET, because email link scanners (Outlook Safe Links and similar) pre-fetch URLs and would otherwise "confirm" on the person's behalf.
-6. **Thank you**: what happens next and expected response time.
+6. **Thank you**: what happens next, and the promise to reply within two working days.
 7. **Expired / already-confirmed** landing states.
 
 The step list comes from one config (or Storyblok), so the questions can change without touching the flow.
@@ -245,11 +246,11 @@ No reminder emails are sent. Emails 2 and 3 can go in one `resend.batch.send` ca
 
 ## Security & abuse
 
-- Honeypot and a minimum time-on-form before `POST /`. Add Cloudflare Turnstile at the details step if spam appears.
+- Honeypot and a minimum time-on-form before `POST /`. Add Cloudflare Turnstile on the email step if spam appears.
 - Rate limit create and resend per IP and per brief/email, so the form can't be used to send email to arbitrary addresses.
 - Tokens: 32+ random bytes, hashed, single-use, expiring. The old token dies on resend.
 - Cookies: httpOnly, Secure, SameSite=Lax.
-- GDPR: consent at the details step, privacy link, auto-delete unconfirmed records, and a retention policy for confirmed ones.
+- GDPR: a consent line and privacy link on the email step (no checkbox), auto-delete unconfirmed records, and a retention policy for confirmed ones.
 
 ---
 

@@ -6,20 +6,24 @@ Each milestone should leave the site deployable. The builder stays unlinked and 
 
 ---
 
-## M0: Settle the open questions
+## M0: Settle the open questions ✅
 
 **Goal:** the two plan docs agree with each other and with what we're building.
 
-- **Order:** the contact screens (9–12) come **before** the Summary, and **Send brief** on the Summary is the Submit. Update the Happy path and Screens sections of `brief-builder.md` to match. With the email visible on the Summary, people catch typos before anything is sent.
-- **Uploads:** screen 6 is **link-only** for v1. File uploads move to M6.
-- **Budget:** add the real "£X and £Y" figures and check the five bands. Decide whether the slider starts on "Under £5k" (as the docs say now) or starts with nothing selected and needs a touch. Starting on the lowest band anchors people low, and the screen always counts as answered.
-- **Screen 12:** wording for the consent line and the privacy link. Decide whether a checkbox is needed.
-- **Contact lettering:** show "a–d", or plain "9 of 13". The prototype uses plain numbering.
-- **Small-phone rule:** relax "fits 320 × 568 without scrolling" for screen 3. With 8 cards and two follow-ups, it can't fit.
-- **Source of truth:** once the copy is in code (`app/utils/brief.ts`), the repo owns it, not the claude.ai artifact. Update the note at the top of `brief-builder-flow.md`.
-- **Response-time promise** for the thank-you screen and the emails.
+Decided (18 Nov 2026), and written into both docs:
 
-**Done when:** both docs are updated and nothing in "Things still to settle" blocks M1–M3.
+- **Order:** the contact screens (9–12) come **before** the Summary, and **Send brief** on the Summary is the Submit.
+- **Uploads:** screen 6 is **link-only** for v1. File uploads move to M6.
+- **Budget bands:** Under £5k · £5k–£10k · £10k–£20k · £20k–£40k · £40k+ stay. The slider **starts with nothing chosen** and needs a drag, tap or arrow key before Next works.
+- **Consent:** a line on screen 12, no checkbox: "We'll only use this to reply about your project. See our privacy policy." The `/privacy-policy` page doesn't exist yet (see M7).
+- **Numbering:** plain "9 of 12", no a–d lettering.
+- **Small phones:** every screen fits 320 × 568 except the summary and screen 3 with both follow-ups open.
+- **Source of truth:** the repo (`app/utils/brief.ts`, `shared/schemas/brief.ts`). The claude.ai artifact is retired.
+- **Response time:** "within two working days", on the thank-you screen and in the emails.
+- **"Not sure" tips** on the summary: dropped for v1.
+- **Honeypot:** added in M3 with the endpoint.
+
+**Still open:** the real figures for the budget hint, "Most of our projects are between £X and £Y". The hint stays as a placeholder until then; it blocks M7 only.
 
 ---
 
@@ -125,7 +129,8 @@ No database and no email verification yet. This milestone tells us how much spam
 
 - "Start a brief" CTA from the site (Storyblok-managed, so it can be placed without a deploy). Remove `noindex`.
 - Plausible custom events for each step reached, Send brief and confirmed, so we can see where people drop off.
-- Privacy policy covers brief data and how long it's kept.
-- Team process: who answers a brief, and how fast (to match the promise on the thank-you screen).
+- A privacy policy page at `/privacy-policy` (it doesn't exist yet; the consent line already links to it) covering brief data and how long it's kept.
+- Real figures in the budget hint, replacing "£X and £Y".
+- Team process: who answers a brief, and how they keep to "within two working days".
 
 **Done when:** it's live, linked from the site, and the funnel shows up in Plausible.
