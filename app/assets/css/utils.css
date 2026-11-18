@@ -40,6 +40,44 @@
   }
 }
 
+/* A light that follows the mouse around a card's border, spilling onto neighbouring cards. Put it on each card, inside a
+   UiEdgeLight wrapper that reports the pointer. Mouse only, and off for reduced motion. Ported from webinar-rebels. */
+@utility edge-light {
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border: 1px solid transparent;
+      border-radius: inherit;
+      pointer-events: none;
+      background: radial-gradient(
+          circle calc(var(--el-w, 650px) * var(--el-spread, 0.5)) at var(--el-x, -999px) var(--el-y, -999px),
+          currentColor 25%,
+          color-mix(in oklab, currentColor 80%, transparent) 40%,
+          color-mix(in oklab, currentColor 50%, transparent) 59%,
+          color-mix(in oklab, currentColor 20%, transparent) 78%,
+          color-mix(in oklab, currentColor 5%, transparent) 91%,
+          transparent
+        )
+        border-box;
+      mask:
+        linear-gradient(#000 0 0) padding-box,
+        linear-gradient(#000 0 0);
+      mask-composite: exclude;
+      opacity: 0;
+      transition: opacity 500ms var(--ease-outCubic);
+    }
+
+    [data-edge-light]:hover &::after {
+      opacity: var(--el-peak, 1);
+      transition-duration: 300ms;
+    }
+  }
+}
+
 /* The little give in anything made to be poked: up a touch on hover, down a touch when pressed. */
 @utility pokeable {
   transition: scale 150ms var(--ease-out);

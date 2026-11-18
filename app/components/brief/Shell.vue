@@ -55,6 +55,31 @@ async function primary() {
   brief.next()
 }
 
+// "Start again" wipes the whole draft, so it takes a second tap within a few seconds
+const hasStarted = computed(() => brief.stepIndex > 0 || Object.keys(brief.answers).length > 0)
+const confirmingRestart = ref(false)
+// Bumped on restart so the first screen is rebuilt clean, even when restarting from it, rather than flagging the
+// answers that just disappeared as missing
+const restarts = ref(0)
+let restartTimer: ReturnType<typeof setTimeout> | undefined
+
+function restart() {
+  clearTimeout(restartTimer)
+
+  if (!confirmingRestart.value) {
+    confirmingRestart.value = true
+    restartTimer = setTimeout(() => (confirmingRestart.value = false), 3000)
+    return
+  }
+
+  confirmingRestart.value = false
+  error.value = null
+  brief.reset()
+  restarts.value++
+}
+
+onUnmounted(() => clearTimeout(restartTimer))
+
 function back() {
   if (brief.status === 'sent') return brief.setStatus('draft')
   brief.back()
@@ -75,7 +100,7 @@ watch(
   { deep: true },
 )
 
-const screenKey = computed(() => (isDraft.value ? `step-${brief.stepIndex}` : brief.status))
+const screenKey = computed(() => (isDraft.value ? `step-${brief.stepIndex}-${restarts.value}` : brief.status))
 </script>
 
 <template>
@@ -118,7 +143,7 @@ const screenKey = computed(() => (isDraft.value ? `step-${brief.stepIndex}` : br
           >
             <div
               v-if="isDraft"
-              class="flex w-full flex-col gap-2.5 px-1 pt-1 md:w-60 md:px-0 md:pt-0 md:pl-1"
+              class="flex min-h-16 w-full flex-col gap-2.5 self-stretch px-1 pt-1 md:w-60 md:px-0 md:pt-0 md:pl-1"
             >
               <p class="text-14 leading-none trim-both">
                 {{ brief.isSummary ? 'Review' : `${position} of ${brief.total}` }}
@@ -136,6 +161,16 @@ const screenKey = computed(() => (isDraft.value ? `step-${brief.stepIndex}` : br
                   :style="{ transform: `scaleX(${Math.max(progress, 1 / brief.total)})` }"
                 />
               </div>
+
+              <button
+                v-if="hasStarted"
+                type="button"
+                class="mt-auto self-start text-12 leading-none text-beige underline-offset-4 transition-colors only-hover:hover:text-white only-hover:hover:underline"
+                :class="{ 'text-coral only-hover:hover:text-coral': confirmingRestart }"
+                @click="restart"
+              >
+                {{ confirmingRestart ? 'Tap again to clear' : 'Start again' }}
+              </button>
             </div>
 
             <p

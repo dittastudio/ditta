@@ -42,10 +42,10 @@ onKeyStroke((event) => {
 </script>
 
 <template>
-  <div
+  <UiEdgeLight
     v-if="variant === 'cards'"
     role="group"
-    class="grid gap-2.5"
+    class="grid gap-(--app-gutter-inner)"
     :class="hasDescriptions ? 'sm:grid-cols-2' : 'grid-cols-2'"
   >
     <button
@@ -53,7 +53,7 @@ onKeyStroke((event) => {
       :key="option"
       type="button"
       :aria-pressed="isSelected(option)"
-      class="pokeable flex flex-col items-start gap-4 rounded-10 border bg-white/10 text-left transition-[border-color,background-color,scale] duration-200 ease-outCubic md:gap-5"
+      class="edge-light flex flex-col items-start gap-4 rounded-10 border bg-white/10 text-left transition-[border-color,background-color] duration-200 ease-outCubic md:gap-5"
       :class="[
         hasDescriptions ? 'p-5 md:p-7.5' : 'p-4 md:p-6',
         isSelected(option) ? 'border-olive' : 'border-white/25 only-hover:hover:border-white/50',
@@ -73,19 +73,19 @@ onKeyStroke((event) => {
         {{ descriptions[option] }}
       </span>
     </button>
-  </div>
+  </UiEdgeLight>
 
   <div
     v-else
     role="group"
-    class="flex flex-wrap gap-2.5"
+    class="flex flex-wrap gap-(--app-gutter-inner)"
   >
     <button
       v-for="option in options"
       :key="option"
       type="button"
       :aria-pressed="isSelected(option)"
-      class="pokeable rounded-full px-5 py-3 text-16 font-medium leading-none transition-colors duration-200 ease-outCubic"
+      class="rounded-full px-5 py-3 text-16 font-medium leading-none transition-colors duration-200 ease-outCubic"
       :class="isSelected(option) ? 'bg-white text-black' : 'bg-white/10 text-white only-hover:hover:bg-white/20'"
       @click="toggle(option)"
     >
