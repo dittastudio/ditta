@@ -11,6 +11,7 @@ const { step } = defineProps<Props>()
 const emit = defineEmits<{ advance: []; submit: [] }>()
 
 const brief = useBriefStore()
+const frame = useBriefFrame()
 
 // This screen's schema: its question plus its follow-ups. Errors show once a field is dirty or after Next.
 const { r$ } = useRegleSchema(toRef(brief, 'answers'), briefStepSchemas[step.key])
@@ -61,11 +62,13 @@ defineExpose({ validate })
 <template>
   <section
     :aria-labelledby="titleId"
+    data-brief-question
     class="flex flex-col gap-10 md:gap-15"
   >
     <div class="flex flex-col gap-5 md:gap-7.5">
       <h1
         :id="titleId"
+        data-brief-heading
         class="text-24 leading-tight text-balance trim-both md:text-28"
       >
         {{ title }}
@@ -123,14 +126,17 @@ defineExpose({ validate })
       name="fade"
       tag="div"
       class="flex flex-col gap-10 empty:hidden md:gap-15"
+      @enter="(el: Element) => frame(el.querySelector('[data-brief-target]'))"
     >
       <div
         v-for="followUp in followUps"
         :key="followUp.key"
+        data-brief-question
         class="flex flex-col gap-5"
       >
         <p
           :id="`${titleId}-${followUp.key}`"
+          data-brief-heading
           class="text-20 leading-tight trim-both"
         >
           {{ followUp.title }}

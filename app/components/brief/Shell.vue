@@ -2,10 +2,11 @@
 import { briefAnswersSchema } from '#shared/schemas/brief'
 
 const brief = useBriefStore()
-const appStore = useAppStore()
-const lenis = useLenis()
 const root = useTemplateRef('root')
+const nav = useTemplateRef('nav')
 const question = useTemplateRef('question')
+
+const { frame, alignTop, frameFirstError, engagement, disengage } = useBriefScroll(nav)
 
 const isDraft = computed(() => brief.status === 'draft')
 const position = computed(() => brief.stepIndex + 1)
@@ -50,7 +51,11 @@ async function primary() {
   if (brief.status === 'confirmed') return brief.reset()
   if (brief.isSummary) return send()
 
-  if (question.value && !(await question.value.validate())) return shake()
+  if (question.value && !(await question.value.validate())) {
+    shake()
+    await nextTick()
+    return frameFirstError(root.value)
+  }
 
   brief.next()
 }
@@ -76,6 +81,7 @@ function restart() {
   error.value = null
   brief.reset()
   restarts.value++
+  disengage()
 }
 
 onUnmounted(() => clearTimeout(restartTimer))
@@ -85,14 +91,12 @@ function back() {
   brief.back()
 }
 
-// Only scroll when the top of the form has gone out of view, so short screens don't jump
-watch(
-  () => [brief.stepIndex, brief.status],
-  () => {
-    const top = root.value?.getBoundingClientRect().top ?? 0
-    if (top < 0) lenis.value?.scrollTo(root.value!, { offset: -appStore.getDockHeight, immediate: true })
-  },
-)
+// Each new screen frames its field once it has mounted, so it measures the real thing. Doesn't run on first render.
+function onEnter(el: Element) {
+  const target = el.querySelector('[data-brief-target]')
+  if (target) frame(target)
+  else alignTop(el)
+}
 
 watch(
   () => brief.answers,
@@ -118,10 +122,14 @@ const screenKey = computed(() => (isDraft.value ? `step-${brief.stepIndex}-${res
           <Transition
             :name="brief.direction === 1 ? 'brief-forward' : 'brief-back'"
             mode="out-in"
+            @enter="onEnter"
           >
             <div
               :key="screenKey"
               class="w-full"
+              @pointerdown="engagement.onPointerdown"
+              @click="engagement.onClick"
+              @focusin="engagement.onFocusin"
             >
               <BriefSent v-if="!isDraft" />
 
@@ -138,6 +146,7 @@ const screenKey = computed(() => (isDraft.value ? `step-${brief.stepIndex}-${res
           </Transition>
 
           <nav
+            ref="nav"
             aria-label="Brief steps"
             class="sticky bottom-4 z-1 flex flex-wrap items-center justify-between gap-x-5 gap-y-4 rounded-10 bg-offblack p-2.5 md:static"
           >

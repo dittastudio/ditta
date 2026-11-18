@@ -51,7 +51,10 @@ const inputmode = { email: 'email', url: 'url' } as const
 </script>
 
 <template>
-  <div class="flex flex-col gap-3">
+  <div
+    data-brief-target
+    class="flex flex-col gap-3"
+  >
     <BriefOptions
       v-if="question.field === 'cards' || question.field === 'chips'"
       v-model="options"

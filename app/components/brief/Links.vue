@@ -12,6 +12,11 @@ const model = defineModel<BriefLinkRow[] | undefined>()
 const emit = defineEmits<{ submit: [] }>()
 
 const id = useId()
+const list = useTemplateRef('list')
+const frame = useBriefFrame()
+
+// A row added by hand takes focus and comes into view; the rows already there on load leave focus to the first
+const added = ref(false)
 
 // Always at least one row to type into
 const rows = computed<BriefLinkRow[]>(() => (model.value?.length ? model.value : [{ url: '', note: '' }]))
@@ -21,8 +26,12 @@ function update(index: number, patch: Partial<BriefLinkRow>) {
   model.value = rows.value.map((row, i) => (i === index ? { ...row, ...patch } : row))
 }
 
-function add() {
+async function add() {
+  added.value = true
   model.value = [...rows.value, { url: '', note: '' }]
+
+  await nextTick()
+  frame([...(list.value?.querySelectorAll('[data-brief-row]') ?? [])].at(-1))
 }
 
 function remove(index: number) {
@@ -41,10 +50,14 @@ function onPaste(index: number, event: ClipboardEvent) {
 </script>
 
 <template>
-  <div class="flex flex-col gap-3">
+  <div
+    ref="list"
+    class="flex flex-col gap-3"
+  >
     <div
       v-for="(row, index) in rows"
       :key="index"
+      data-brief-row
       class="flex flex-col gap-1.5"
     >
       <div class="flex items-center gap-2">
@@ -56,7 +69,7 @@ function onPaste(index: number, event: ClipboardEvent) {
           :aria-label="`Link ${index + 1}`"
           :aria-invalid="rowErrors[index]?.length ? true : undefined"
           :aria-describedby="rowErrors[index]?.length ? `${id}-${index}` : undefined"
-          :focus-on-mount="index === 0"
+          :focus-on-mount="index === 0 || added"
           @update:model-value="update(index, { url: $event })"
           @paste="onPaste(index, $event)"
           @submit="emit('submit')"

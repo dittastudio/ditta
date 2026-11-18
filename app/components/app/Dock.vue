@@ -116,6 +116,7 @@ const onScroll = () => {
 onMounted(async () => {
   if (dock.value) {
     appStore.setDockHeight(dock.value.clientHeight)
+    appStore.setDockBottom(dock.value.getBoundingClientRect().bottom)
   }
 
   lastScrollY = window.scrollY
