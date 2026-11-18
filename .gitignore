@@ -35,3 +35,6 @@ logs
 
 # Claude
 .claude/settings.local.json
+
+# Wrangler (Nitro writes .wrangler/deploy/config.json on every build)
+.wrangler
