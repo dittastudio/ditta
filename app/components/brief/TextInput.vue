@@ -41,7 +41,7 @@ watchEffect((onCleanup) => {
 </script>
 
 <template>
-  <div class="relative grid">
+  <div class="relative grid w-full min-w-0">
     <input
       ref="input"
       v-bind="$attrs"
