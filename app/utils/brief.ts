@@ -48,10 +48,10 @@ const briefSteps: BriefStep[] = [
     field: 'text',
     placeholders: [
       'A physio clinic in Ealing',
-      'An architecture studio in Bristol',
-      'Handmade ceramics, sold online',
-      'A boutique hotel in the Cotswolds',
-      'Accounting software for small firms',
+      'An architect in Bristol',
+      'Handmade ceramics',
+      'A hotel in the Cotswolds',
+      'Software for accountants',
     ],
   },
   {
