@@ -6,15 +6,19 @@ defineOptions({ inheritAttrs: false })
 
 interface Props {
   options: readonly string[]
+  initial?: string
 }
 
-const { options } = defineProps<Props>()
+const { options, initial } = defineProps<Props>()
 const model = defineModel<string | undefined>()
+
+// A slider with an `initial` option starts on it, already chosen, so it can be accepted as it is
+if (initial && !(model.value && options.includes(model.value)) && options.includes(initial)) model.value = initial
 
 const last = computed(() => options.length - 1)
 
-// Starts with nothing chosen, so the answer is one someone actually picked rather than wherever the handle began (see
-// docs/plans/brief-builder-flow.md, screen 8)
+// Otherwise starts with nothing chosen, so the answer is one someone actually picked rather than wherever the handle
+// began (see docs/plans/brief-builder-flow.md, screen 3)
 const chosen = computed(() => (model.value && options.includes(model.value) ? options.indexOf(model.value) : -1))
 
 const track = useTemplateRef('track')

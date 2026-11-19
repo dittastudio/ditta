@@ -63,6 +63,7 @@ const inputmode = { email: 'email', url: 'url' } as const
       v-model="single"
       v-bind="a11y"
       :options="question.options ?? []"
+      :initial="question.initial"
     />
 
     <BriefLinks

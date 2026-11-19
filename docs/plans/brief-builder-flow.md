@@ -219,10 +219,10 @@ _Hint:_ Most of our projects are between £10k and £20k.
 
 Behaviour:
 
-- **Starts with nothing chosen.** The large text reads "Drag to choose" and the slider is dimmed. The first drag, tap or arrow key picks a band, so every budget is one the client actually chose. Next stays blocked ("Answer to continue") until then.
+- **Starts on £10k–£20k, already chosen**, where most of our projects sit. Next works straight away; the client can move it or accept it as it is.
 - Dragging snaps to the nearest point. Tapping a point's label jumps straight to it. Arrow keys move one point.
 - The current band shows large above the slider and updates live.
-- The same slider is used for the `productCount` follow-up on screen 3, and behaves the same way.
+- The same slider is used for the `productCount` follow-up on screen 3, which instead starts with nothing chosen: the large text reads "Drag to choose" and Next stays blocked ("Answer to continue") until a drag, tap or arrow key picks a band.
 
 ---
 

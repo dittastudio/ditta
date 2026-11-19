@@ -19,6 +19,8 @@ interface BriefQuestion {
   field: BriefField
   multiple?: boolean
   options?: readonly string[]
+  // The option a slider starts on, chosen for them, rather than starting with nothing chosen
+  initial?: string
   // A line under an option card's title, keyed by option
   descriptions?: Partial<Record<string, string>>
   // A big figure with its unit under it in place of an option card's title, keyed by option
@@ -108,6 +110,7 @@ const briefSteps: BriefStep[] = [
     hint: 'Most of our projects are between £10k and £20k.',
     field: 'slider',
     options: briefOptions.budget,
+    initial: '£10k–£20k',
   },
   {
     key: 'name',
