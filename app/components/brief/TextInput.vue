@@ -48,8 +48,11 @@ watchEffect((onCleanup) => {
       v-model="model"
       maxlength="200"
       enterkeyhint="next"
-      class="w-full scroll-mt-[calc(var(--dock-height)+--spacing(13.5))] rounded-10 border border-white/25 bg-white/10 px-5 text-white outline-none transition-colors duration-200 ease-outCubic placeholder:text-white/40 focus:border-olive aria-invalid:border-coral"
-      :class="[small ? 'py-3 text-16' : 'py-4 text-20', { 'placeholder:text-transparent': rotates }]"
+      class="w-full scroll-mt-[calc(var(--dock-height)+--spacing(13.5))] rounded-10 border border-white/25 bg-white/10 px-5 text-white outline-none transition-colors duration-200 ease-outCubic focus:border-olive aria-invalid:border-coral"
+      :class="[
+        small ? 'py-3 text-16' : 'py-4 text-20',
+        rotates ? 'placeholder:text-transparent' : 'placeholder:text-white/40',
+      ]"
       @keydown.enter.prevent="emit('submit')"
     />
 
