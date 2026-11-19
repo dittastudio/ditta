@@ -217,6 +217,53 @@ onKeyStroke('Escape', () => cancelClear())
 onClickOutside(nav, () => cancelClear({ refocus: false }))
 onUnmounted(() => clearTimeout(clearingTimer))
 
+// Previous sits beside Start again, so it coming or going moves Start again by its width. Start again glides there
+// rather than jumping: measured just before the change, then eased back from where it was (FLIP). It moves with
+// the pop's own timing, so the two land together.
+let resetFrom: number | undefined
+let resetGlide: gsap.core.Tween | undefined
+
+function measureReset() {
+  resetFrom = resetButton.value?.getBoundingClientRect().left
+}
+
+function glideReset(duration: number, ease: string) {
+  const el = resetButton.value?.parentElement
+  const from = resetFrom
+  resetFrom = undefined
+  if (!el || from === undefined || reducedMotion.value === 'reduce') return
+
+  // The measured spot includes any glide still running, so carry on from wherever it has got to
+  const current = Number(gsap.getProperty(el, 'x'))
+  const offset = from - (el.getBoundingClientRect().left - current)
+  if (Math.abs(offset) < 1) return
+
+  resetGlide?.kill()
+  resetGlide = gsap.fromTo(el, { x: offset }, { x: 0, duration, ease, clearProps: 'transform' })
+}
+
+// Single-argument hooks, so Vue still runs the pop's CSS transition and tracks when it ends
+function onPreviousEnter() {
+  // power4.out is --ease-outQuart, the pop's enter curve
+  glideReset(0.3, 'power4.out')
+}
+
+// A leaving Previous would hold its space until it had faded, and Start again would jump after. Lifted out of the
+// row where it stands, it fades in place while Start again closes the gap.
+function onPreviousLeave(el: Element) {
+  measureReset()
+  const wrapper = el as HTMLElement
+  Object.assign(wrapper.style, {
+    position: 'absolute',
+    left: `${wrapper.offsetLeft}px`,
+    top: `${wrapper.offsetTop}px`,
+  })
+  // power3.out is --ease-outCubic, the pop's leave curve
+  glideReset(0.2, 'power3.out')
+}
+
+onUnmounted(() => resetGlide?.kill())
+
 function back() {
   if (brief.status === 'sent') return brief.setStatus('draft')
   brief.back()
@@ -424,7 +471,12 @@ const screenKey = computed(() => (isDraft.value ? `step-${brief.stepIndex}-${res
                   </button>
 
                   <!-- Not on the first step, where there's nowhere to go back to. Pops in on the second, as Start again does -->
-                  <Transition name="brief-pop">
+                  <Transition
+                    name="brief-pop"
+                    @before-enter="measureReset"
+                    @enter="onPreviousEnter"
+                    @leave="onPreviousLeave"
+                  >
                     <div
                       v-if="hasPrevious"
                       class="flex"
