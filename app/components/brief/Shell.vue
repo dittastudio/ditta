@@ -21,12 +21,12 @@ const contentTop = () => (content.value ? content.value.getBoundingClientRect().
 
 // Where the nav's top sits on screen for a screen at a given page position and height: just under it, or pinned,
 // whichever is higher. Worked out from the content, since the nav itself may be mid-glide.
-function navTopFor(top: number, height: number) {
+function navTopFor(top: number, height: number, scroll = window.scrollY) {
   const pinned = pinnedNavTop()
   if (!content.value || pinned === undefined) return
 
   const gap = Number.parseFloat(getComputedStyle(content.value.parentElement!).rowGap) || 0
-  return Math.min(top + height + gap - window.scrollY, pinned)
+  return Math.min(top + height + gap - scroll, pinned)
 }
 
 // Fields are framed against the pinned nav, not wherever it sits now: scrolled down past a short step, the nav
@@ -40,6 +40,14 @@ const { frame, alignTop, frameFirstError, engagement, disengage } = useBriefScro
 // The content's last size and page position. The position is kept because a new height moves the content's top
 // too (the brief is centred on the screen), and by the time the resize is reported the old top is gone.
 let last: { width: number; height: number; top: number } | undefined
+// A new step jumps the scroll as it mounts, before its resize is reported. The nav was last drawn against the scroll
+// from before that jump, so that's where its glide starts from. Taken as the old step starts to leave, while the page
+// is still as it was drawn: once it's gone, scroll anchoring and a text field focusing as it mounts can both move the
+// scroll before the enter hook runs.
+let scrollBeforeSwap: number | undefined
+const onBeforeLeave = () => (scrollBeforeSwap = window.scrollY)
+
+const onAfterEnter = () => (scrollBeforeSwap = undefined)
 
 function stopGliding() {
   if (nav.value) gsap.killTweensOf(nav.value)
@@ -50,6 +58,8 @@ useResizeObserver(content, ([entry]) => {
   const { width, height } = entry!.contentRect
   const previous = last
   last = { width, height, top: contentTop() }
+  const scroll = scrollBeforeSwap
+  scrollBeforeSwap = undefined
 
   // A new width is the window resizing, which should follow the window straight away
   if (!previous || !nav.value || width !== previous.width) {
@@ -57,7 +67,7 @@ useResizeObserver(content, ([entry]) => {
     return
   }
 
-  const from = navTopFor(previous.top, previous.height)
+  const from = navTopFor(previous.top, previous.height, scroll)
   const to = navTopFor(last.top, height)
   if (from === undefined || to === undefined) return
 
@@ -69,10 +79,14 @@ useResizeObserver(content, ([entry]) => {
   })
 })
 
-// A window only getting taller or shorter re-centres the brief without resizing its content
-useEventListener('resize', () => {
+// The content can move without resizing, which the observer never hears of: a window only getting taller or shorter
+// re-centres it, and on first load it's measured before everything around it has settled. So its position is taken
+// again on resize and at the start of every press or key, just before anything done to the brief can resize it.
+const refreshTop = () => {
   if (last) last.top = contentTop()
-})
+}
+
+useEventListener('resize', refreshTop)
 
 onBeforeUnmount(stopGliding)
 
@@ -162,7 +176,9 @@ function focusScreen(el: Element) {
 }
 
 // Each new screen centres its field once it has mounted, so it measures the real thing. Doesn't run on first render.
-// Centred even when already in view: a new step should land in the same place every time.
+// Centred even when already in view: a new step should land in the same place every time. It jumps there rather than
+// gliding: the old screen has gone and the new one hasn't faded in yet, so there's nothing on it to see move. A glide
+// would only show the page under it, and the footer coming up past a step shorter than the one it replaced.
 function onEnter(el: Element) {
   // After a clear, the first card takes focus in place of the confirm that just went. It does so while `cleared` is
   // still set, so that focus isn't taken for a first touch, and the centring below does the scrolling.
@@ -174,7 +190,7 @@ function onEnter(el: Element) {
   }
 
   const target = el.querySelector('[data-brief-target]')
-  if (target) frame(target, { centre: true })
+  if (target) frame(target, { centre: true, instant: true })
   else alignTop(el)
 }
 
@@ -194,6 +210,8 @@ const screenKey = computed(() => (isDraft.value ? `step-${brief.stepIndex}-${res
   <!-- A faint dashed focus ring for keyboard users. Not on text fields, which turn olive, or on headings focused in code. -->
   <div
     class="flex min-h-svh flex-col justify-center bg-black text-white [&_:focus-visible:not(input,[tabindex='-1'])]:outline-1 [&_:focus-visible:not(input,[tabindex='-1'])]:outline-dashed [&_:focus-visible:not(input,[tabindex='-1'])]:outline-offset-4 [&_:focus-visible:not(input,[tabindex='-1'])]:outline-white/50 [&_[tabindex='-1']]:outline-none"
+    @pointerdown.capture="refreshTop"
+    @keydown.capture="refreshTop"
   >
     <div
       class="wrapper pt-[calc(var(--dock-height)+--spacing(20))] pb-30 md:pt-[calc(var(--dock-height)+--spacing(40))] md:pb-60"
@@ -208,7 +226,9 @@ const screenKey = computed(() => (isDraft.value ? `step-${brief.stepIndex}-${res
             <Transition
               :name="brief.direction === 1 ? 'brief-forward' : 'brief-back'"
               mode="out-in"
+              @before-leave="onBeforeLeave"
               @enter="onEnter"
+              @after-enter="onAfterEnter"
             >
               <div
                 :key="screenKey"
