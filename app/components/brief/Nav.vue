@@ -161,9 +161,11 @@ defineExpose({ el: nav, primaryLabel })
 </script>
 
 <template>
+  <!-- Crumbs from the thanks screen's burger can land on top of the bar -->
   <nav
     ref="nav"
     aria-label="Brief steps"
+    data-crumb-surface="box"
     class="sticky bottom-4 z-10 grid rounded-20 corner-shape-squircle bg-offblack-glass/50 text-grey outline outline-1 outline-white/15 backdrop-blur-sm shadow-2xl"
   >
     <!-- The bar's own background fills as the brief goes on. Clipped in its own layer, not on the nav, so the

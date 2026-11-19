@@ -8,6 +8,8 @@ const finished = defineModel<boolean>('finished', { default: false })
 const { width, height, paths, total, remaining, isEmpty, bitesLeft, bite, reset } = useBites(art)
 
 const svg = useTemplateRef('svg')
+const canvas = useTemplateRef('canvas')
+const crumbs = useCrumbs(canvas)
 const reducedMotion = usePreferredReducedMotion()
 
 // Leans towards the mouse, like the footer robot and the services computer. On the wrapper, which stays put while each
@@ -16,6 +18,25 @@ useMouseTilt(useTemplateRef('tilt'))
 
 // How long the empty plate waits for the next burger
 const NEXT_BURGER = 4000
+// Crumbs shaken loose per bite, and from the last one, which takes the most
+const CRUMBS = 9
+const LAST_CRUMBS = 16
+
+// The physics loads as the pointer comes over the burger, so it's ready by the first bite
+let physicsWarm = false
+
+function warm() {
+  if (physicsWarm || reducedMotion.value === 'reduce') return
+  physicsWarm = true
+  crumbs.warm()
+}
+
+// A touch has no hover to get ahead of the first tap, so on touch screens the warm-up waits for the browser to be idle
+onMounted(() => {
+  if (!matchMedia('(hover: none)').matches) return
+  if ('requestIdleCallback' in window) requestIdleCallback(warm, { timeout: 2000 })
+  else setTimeout(warm, 1000)
+})
 
 // Squashes a touch with each bite and springs back
 const squashed = ref(false)
@@ -31,8 +52,36 @@ let nextBurger: ReturnType<typeof setTimeout> | undefined
 // Holds a new burger small and see-through for a frame, so it has something to scale and fade in from
 const arriving = ref(false)
 
+// Crumbs start where their cell is on screen, tilt and bob included, and fly out the way the bite faced
+function shake(removed: { x: number; y: number; color: string }[], direction: { x: number; y: number }, count: number) {
+  const matrix = svg.value?.getScreenCTM()
+  if (!matrix || reducedMotion.value === 'reduce') return
+
+  const size = Math.hypot(matrix.a, matrix.b)
+  const angle = Math.atan2(matrix.b, matrix.a)
+  const length = Math.hypot(direction.x, direction.y) || 1
+  const out = { x: direction.x / length, y: direction.y / length }
+  const sample = [...removed].sort(() => Math.random() - 0.5).slice(0, count)
+
+  crumbs.drop(
+    sample.map((cell) => {
+      const { x, y } = new DOMPoint(cell.x + 0.5, cell.y + 0.5).matrixTransform(matrix)
+      return {
+        x,
+        y,
+        size,
+        angle,
+        color: cell.color,
+        vx: (out.x * 2.5 + (Math.random() - 0.5) * 2) * (size / 5),
+        vy: (Math.min(out.y, 0) * 2 - 1.5 - Math.random() * 2) * (size / 5),
+      }
+    }),
+  )
+}
+
 function onClick(event: MouseEvent) {
   if (isEmpty.value) return
+  warm()
 
   // A keyboard press clicks with no pointer position: that bite comes from the right
   let at: { x: number; y: number } | undefined
@@ -43,10 +92,11 @@ function onClick(event: MouseEvent) {
     at = { x: point.x, y: point.y }
   }
 
-  const { removed } = bite(at)
+  const { removed, direction } = bite(at)
   if (!removed.length) return
 
   squash()
+  shake(removed, direction, isEmpty.value ? LAST_CRUMBS : CRUMBS)
 
   if (!isEmpty.value) {
     announcement.value = bitesLeft.value === 1 ? '1 bite left' : `${bitesLeft.value} bites left`
@@ -65,6 +115,9 @@ function serve() {
   requestAnimationFrame(() => requestAnimationFrame(() => (arriving.value = false)))
   announcement.value = 'A fresh burger'
 }
+
+// The heading's last line changes with `finished`: crumbs resting on the old words settle on the new ones
+watch(finished, () => nextTick(crumbs.measure))
 
 onBeforeUnmount(() => clearTimeout(nextBurger))
 </script>
@@ -87,6 +140,8 @@ onBeforeUnmount(() => clearTimeout(nextBurger))
       :class="isEmpty ? 'cursor-default' : 'cursor-pointer'"
       :aria-disabled="isEmpty"
       aria-label="Take a bite"
+      @pointerenter="warm"
+      @focus="warm"
       @click="onClick"
     >
       <!-- Tilt and squash are separate properties (rotate, scale), so neither undoes the other -->
@@ -125,5 +180,14 @@ onBeforeUnmount(() => clearTimeout(nextBurger))
     >
       {{ announcement }}
     </p>
+
+    <Teleport to="body">
+      <canvas
+        v-if="crumbs.active.value"
+        ref="canvas"
+        class="pointer-events-none fixed inset-0 z-20 size-full"
+        aria-hidden="true"
+      />
+    </Teleport>
   </div>
 </template>
