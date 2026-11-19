@@ -22,6 +22,11 @@
   --color-offblack: oklch(22.21% 0 0);
   --color-olive: oklch(0.7442 0.0554 154.96);
   --color-olive-light: oklch(83.37% 0.036 154.96); /* olive with 35% white */
+  --color-olive-dark: color-mix(
+    in srgb,
+    var(--color-olive) 15%,
+    var(--color-offblack)
+  ); /* olive at 10% over offblack */
   --color-pink: oklch(0.8221 0.1207 348.4);
   --color-putty: oklch(90.72% 0.0017 67.8);
   --color-red: oklch(64.645% 0.12902 21.246);

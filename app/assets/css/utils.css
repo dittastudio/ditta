@@ -42,7 +42,8 @@
 
 /* A light that follows the mouse around a card's border, spilling onto neighbouring cards. Put it on each card, inside a
    UiEdgeLight wrapper that reports the pointer. Mouse only, and off for reduced motion. Ported from webinar-rebels.
-   It shines in the card's text colour; set --el-color to change it (fades over 300ms). */
+   It shines in the card's text colour; set --el-color to change it. The colour change takes --el-fade (200ms) with
+   --el-fade-ease (outCubic), which edge-glow shares, so a card can keep both in step with its own transitions. */
 @utility edge-light {
   @media (hover: hover) and (prefers-reduced-motion: no-preference) {
     position: relative;
@@ -73,21 +74,22 @@
       /* Leaving: drops straight away and quicker than it arrived, so it never trails behind the mouse */
       transition:
         opacity 200ms var(--ease-outCubic),
-        color 200ms var(--ease-outCubic);
+        color var(--el-fade, 200ms) var(--el-fade-ease, var(--ease-outCubic));
     }
 
     [data-edge-light]:hover &::after {
       opacity: var(--el-peak, 1);
       transition:
         opacity 250ms var(--ease-outQuart),
-        color 200ms var(--ease-outCubic);
+        color var(--el-fade, 200ms) var(--el-fade-ease, var(--ease-outCubic));
     }
   }
 }
 
 /* A soft glow inside the card under the mouse, partner to edge-light: add `edge-glow` to the same card, inside the same
    UiEdgeLight wrapper. A fixed-size, blurred spot that follows the pointer and only fades in and out; it doesn't spill
-   into neighbours. Set --eg-color (colour), --eg-peak (strength), --eg-size (radius), --eg-blur, --eg-radius (corners). */
+   into neighbours. Set --eg-color (colour), --eg-peak (strength), --eg-size (radius), --eg-blur, --eg-radius (corners). Its colour
+   change follows edge-light's --el-fade and --el-fade-ease. */
 @utility edge-glow {
   @media (hover: hover) and (prefers-reduced-motion: no-preference) {
     &::before {
@@ -125,14 +127,14 @@
          glow's faint edge first and looks like it's shrinking. */
       transition:
         opacity 150ms var(--ease-outCubic),
-        color 200ms var(--ease-outCubic);
+        color var(--el-fade, 200ms) var(--el-fade-ease, var(--ease-outCubic));
     }
 
     &:hover::before {
       opacity: var(--eg-peak, 0.08);
       transition:
         opacity 200ms var(--ease-outQuart),
-        color 200ms var(--ease-outCubic);
+        color var(--el-fade, 200ms) var(--el-fade-ease, var(--ease-outCubic));
     }
 
     /* The card's content sits above the glow */
