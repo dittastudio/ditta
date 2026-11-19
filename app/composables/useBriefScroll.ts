@@ -1,4 +1,5 @@
 import type { InjectionKey } from 'vue'
+import { usePreferredReducedMotion } from '@vueuse/core'
 
 // `centre` skips the comfort zone and centres the field even when it's already in view
 type Frame = (target: Element | null | undefined, options?: { centre?: boolean }) => void
@@ -31,6 +32,7 @@ const COMFORT_MARGIN = 0.15
 export function useBriefScroll(navTop: () => number | undefined) {
   const lenis = useLenis()
   const appStore = useAppStore()
+  const reducedMotion = usePreferredReducedMotion()
 
   // The part of the screen a field can be seen in: below the dock, above the sticky nav
   const band = () => ({
@@ -48,8 +50,7 @@ export function useBriefScroll(navTop: () => number | undefined) {
     // without Lenis hearing of it.
     if (lenis.value) return lenis.value.scrollTo(lenis.value.actualScroll + delta, SCROLL)
 
-    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
-    window.scrollBy({ top: delta, behavior: reduce ? 'instant' : 'smooth' })
+    window.scrollBy({ top: delta, behavior: reducedMotion.value === 'reduce' ? 'instant' : 'smooth' })
   }
 
   const frame: Frame = (target, { centre: always = false } = {}) => {

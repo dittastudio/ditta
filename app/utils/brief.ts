@@ -1,7 +1,7 @@
 // Brief builder copy and display helpers. Validation lives in #shared/schemas/brief; the copy follows
 // docs/plans/brief-builder-flow.md.
 import type { BriefAnswersInput, BriefFieldKey, BriefFollowUpKey, BriefStepKey } from '#shared/schemas/brief'
-import { briefFollowUps, briefOptions, isBriefFieldRequired, isFollowUpShown } from '#shared/schemas/brief'
+import { briefFollowUps, briefOptions, hasValue, isBriefFieldRequired, isFollowUpShown } from '#shared/schemas/brief'
 
 type BriefField = 'cards' | 'chips' | 'text' | 'email' | 'url' | 'links' | 'slider'
 type BriefDraft = Partial<BriefAnswersInput>
@@ -154,14 +154,11 @@ const visibleFollowUps = (step: BriefStep, answers: BriefDraft): BriefQuestion[]
     .map((followUp) => ({ key: followUp.key, ...briefFollowUpCopy[followUp.key] }))
 
 // Display only (Skip label, summary). Whether an answer is *valid* is the schema's call.
-const hasBriefAnswer = (value: unknown): boolean => {
-  if (typeof value === 'string') return value.trim() !== ''
-  if (Array.isArray(value)) {
-    return value.some((item) => (typeof item === 'string' ? true : !!(item as BriefLinkRow).url?.trim()))
-  }
-
-  return value != null
-}
+// A list counts once it has a choice, or a link row with a link in it.
+const hasBriefAnswer = (value: unknown): boolean =>
+  Array.isArray(value)
+    ? value.some((item) => (typeof item === 'string' ? true : !!(item as BriefLinkRow).url?.trim()))
+    : hasValue(value)
 
 const isBriefStepRequired = (step: BriefStep) => isBriefFieldRequired(step.key)
 

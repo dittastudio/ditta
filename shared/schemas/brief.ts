@@ -115,7 +115,8 @@ export const isFollowUpShown = (followUp: BriefFollowUpRule, answers: LooseAnswe
   return Array.isArray(parent) ? parent.includes(followUp.showsWhen) : parent === followUp.showsWhen
 }
 
-const hasValue = (value: unknown) => (typeof value === 'string' ? value.trim() !== '' : value != null)
+// Whether a single answer has been given: a string with something in it, or anything else that's set
+export const hasValue = (value: unknown) => (typeof value === 'string' ? value.trim() !== '' : value != null)
 
 const requireShownFollowUps =
   (followUps: readonly BriefFollowUpRule[]) => (answers: LooseAnswers, ctx: z.RefinementCtx) => {
@@ -135,8 +136,12 @@ export const stripHiddenFollowUps = <T extends LooseAnswers>(answers: T): T => {
   return result
 }
 
-// Whether a question must be answered, read off its schema rather than declared twice
-export const isBriefFieldRequired = (key: BriefFieldKey) => !briefFields[key].safeParse(undefined).success
+// Whether a question must be answered, read off its schema rather than declared twice. Worked out once, up front.
+const requiredFields = new Set(
+  (Object.keys(briefFields) as BriefFieldKey[]).filter((key) => !briefFields[key].safeParse(undefined).success),
+)
+
+export const isBriefFieldRequired = (key: BriefFieldKey) => requiredFields.has(key)
 
 const pickFields = (keys: BriefFieldKey[]) => Object.fromEntries(keys.map((key) => [key, briefFields[key]]))
 
