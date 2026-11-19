@@ -26,15 +26,15 @@ const { width } = useElementSize(track)
 const reducedMotion = usePreferredReducedMotion()
 const still = computed(() => reducedMotion.value === 'reduce')
 
-// The handle is a blob on a rubber band. Dragging pulls it out of shape and only gives a little ground; past halfway it
-// lets go, flies to the next band, overshoots and wobbles to rest. Two springs, one for where it is and one for its
-// shape, both always running while it's held, so every motion flows into the next with no hand-overs.
+// The handle is a blob on a rubber band. Dragging pulls it slightly out of shape and only gives a little ground; past
+// halfway it lets go and glides to the next band with a touch of overshoot. Two springs, one for where it is and one for
+// its shape, both always running while it's held, so every motion flows into the next with no hand-overs.
 const RESISTANCE = 0.2 // how far the handle follows the pointer within a band
-const PULL = 0.8 // how much it stretches towards the pointer while held
-const SPEED_STRETCH = 0.06 // how much it stretches with speed in flight
-const MAX_STRETCH = 0.25
-const MOVE = { stiffness: 500, damping: 20 } // under-damped (ζ ≈ 0.45): overshoots about a fifth of a band, swings back
-const SHAPE = { stiffness: 800, damping: 16 } // looser still (ζ ≈ 0.27), so the shape jiggles after it lands
+const PULL = 0.55 // how much it stretches towards the pointer while held
+const SPEED_STRETCH = 0.045 // how much it stretches with speed in flight
+const MAX_STRETCH = 0.18
+const MOVE = { stiffness: 500, damping: 26 } // under-damped (ζ ≈ 0.58): a small overshoot, then settles
+const SHAPE = { stiffness: 800, damping: 26 } // ζ ≈ 0.46, so the shape gives a little wobble as it lands
 
 interface Spring {
   value: number
