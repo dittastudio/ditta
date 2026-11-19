@@ -98,12 +98,12 @@ function measureReset() {
   resetFrom = resetButton.value?.getBoundingClientRect().left
 }
 
-function glideReset(duration: number, ease: string) {
+function glideReset(duration: number, ease: string, delay = 0) {
   const el = resetButton.value?.parentElement
   const from = resetFrom
   resetFrom = undefined
   // Both measurements include any glide still running, which glide() then carries on from
-  if (el && from !== undefined) glide(el, 'x', from - el.getBoundingClientRect().left, { duration, ease })
+  if (el && from !== undefined) glide(el, 'x', from - el.getBoundingClientRect().left, { duration, ease, delay })
 }
 
 // Single-argument hooks, so Vue still runs the pop's CSS transition and tracks when it ends
@@ -113,7 +113,8 @@ function onPreviousEnter() {
 }
 
 // A leaving Previous would hold its space until it had faded, and Start again would jump after. Lifted out of the
-// row where it stands, it fades in place while Start again closes the gap.
+// row where it stands, it fades in place, and Start again waits the same beat Previous does coming in before it
+// closes the gap, so it never slides over Previous while it's still visible.
 function onPreviousLeave(el: Element) {
   measureReset()
   const wrapper = el as HTMLElement
@@ -123,7 +124,7 @@ function onPreviousLeave(el: Element) {
     top: `${wrapper.offsetTop}px`,
   })
   // power3.out is --ease-outCubic, the pop's leave curve
-  glideReset(0.2, 'power3.out')
+  glideReset(0.2, 'power3.out', 0.15)
 }
 
 onBeforeUnmount(() => {
