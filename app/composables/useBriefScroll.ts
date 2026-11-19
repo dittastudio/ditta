@@ -1,6 +1,7 @@
 import type { InjectionKey } from 'vue'
 
-type Frame = (target: Element | null | undefined) => void
+// `centre` skips the comfort zone and centres the field even when it's already in view
+type Frame = (target: Element | null | undefined, options?: { centre?: boolean }) => void
 
 const frameKey: InjectionKey<Frame> = Symbol('briefFrame')
 
@@ -51,7 +52,7 @@ export function useBriefScroll(navTop: () => number | undefined) {
     window.scrollBy({ top: delta, behavior: reduce ? 'instant' : 'smooth' })
   }
 
-  const frame: Frame = (target) => {
+  const frame: Frame = (target, { centre: always = false } = {}) => {
     if (!target) return
 
     // A text field that has just taken focus on touch may be opening the keyboard, and WebKit scrolls it into view
@@ -71,7 +72,7 @@ export function useBriefScroll(navTop: () => number | undefined) {
     const inZone = fits
       ? field.top >= zone.top && field.bottom <= zone.bottom
       : field.top >= zone.top && field.top <= zone.bottom
-    if (inZone && headingTop >= top) return
+    if (!always && inZone && headingTop >= top) return
 
     // Centre the field, but never scroll its heading up under the dock. A field too tall to centre lines its
     // heading up there instead.

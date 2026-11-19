@@ -17,9 +17,7 @@ const rows = computed(() =>
 
 <template>
   <section class="flex flex-col gap-10 md:gap-15">
-    <h1 class="text-24 leading-tight text-balance trim-both md:text-28">
-      Check your information is correct before sending
-    </h1>
+    <p class="text-24 leading-tight text-balance trim-both md:text-28">Check everything's right before you send it</p>
 
     <ol class="flex flex-col divide-y divide-white/25 border-y border-white/25">
       <li

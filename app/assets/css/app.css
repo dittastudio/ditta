@@ -20,6 +20,7 @@
   --color-grey: oklch(97.315% 0 0);
   --color-mood: oklch(0.6385 0.0312 42.55);
   --color-offblack: oklch(22.21% 0 0);
+  --color-offblack-glass: oklch(33.28% 0 0); /* reads as offblack at 50% over black */
   --color-olive: oklch(0.7442 0.0554 154.96);
   --color-olive-light: oklch(83.37% 0.036 154.96); /* olive with 35% white */
   --color-olive-dark: color-mix(

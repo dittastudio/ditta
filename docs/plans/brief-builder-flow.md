@@ -289,7 +289,7 @@ This screen also carries:
 
 ### 13. Summary
 
-**Check your information is correct before sending**
+**Review your brief**, with "Check everything's right before you send it" underneath
 
 The review screen. It lists **every visible question in order**, numbered, with the answer underneath and a small **Edit** button.
 
