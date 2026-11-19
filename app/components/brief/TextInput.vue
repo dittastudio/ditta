@@ -34,8 +34,8 @@ watchEffect((onCleanup) => {
   if (!rotates.value || model.value || swaps.value >= placeholders.length) return
   if (reducedMotion.value === 'reduce' || visibility.value !== 'visible') return
 
-  // A longer first hold, so the question gets read before anything moves
-  const timer = setTimeout(() => swaps.value++, swaps.value === 0 ? 3500 : 2800)
+  // A short first hold: long enough for the step to settle, soon enough that the rotation reads as part of arriving
+  const timer = setTimeout(() => swaps.value++, swaps.value === 0 ? 1500 : 2800)
   onCleanup(() => clearTimeout(timer))
 })
 </script>
