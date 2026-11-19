@@ -167,7 +167,7 @@ function onEnter(el: Element) {
   // After a clear, the first card takes focus in place of the confirm that just went. It does so while `cleared` is
   // still set, so that focus isn't taken for a first touch, and the centring below does the scrolling.
   if (cleared) {
-    el.querySelector<HTMLElement>('[data-brief-target] button')?.focus({ preventScroll: true })
+    el.querySelector<HTMLElement>('[data-brief-target] input')?.focus({ preventScroll: true })
     cleared = false
   } else {
     focusScreen(el)
