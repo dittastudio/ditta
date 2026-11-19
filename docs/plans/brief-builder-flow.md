@@ -15,7 +15,7 @@ The form is for prospective clients who often don't know exactly what they want 
 1. **One question per screen.** A follow-up question can appear underneath its parent on the same screen. Follow-ups don't count as a second question.
 2. **Tap rather than type.** Use cards, chips and sliders wherever there's a known set of answers. Only use text fields for things only the client can know (their business, name, email, links).
 3. **Single-line by default.** Text answers are single-line inputs. A textarea is allowed where an answer genuinely needs more room, but none of the current questions use one.
-4. **Every screen fits a small phone (320 × 568) without scrolling**, including any follow-up that might open. The exceptions are the summary, and screen 3 with both follow-ups open.
+4. **Every screen fits a small phone (320 × 568) without scrolling before a follow-up opens.** The exceptions are screen 1 (its cards keep their descriptions, so they stack one per row) and screen 3 (eight cards), plus the summary. Once a follow-up opens or a link row is added, the screen may scroll: the brief keeps the active field and the nav in view.
 5. **Email comes last.** Nothing is sent to the server until the client presses **Send brief** on the summary (see the technical doc).
 6. **UK English. Prices in GBP (£).** Plain, friendly copy, no jargon.
 
@@ -129,7 +129,7 @@ _Hint:_ Pick what matters most.
 - When `objectives` includes **Sell online**: **Roughly how many products?** · snapping slider · options _Under 10 · 10–50 · 50–200 · 200–1000 · 1000+_ · key `productCount` / `q3b`. This is the biggest cost driver for a shop.
 - When `objectives` includes **Other**: **What else can we help with?** · single-line text · key `objectivesOther` / `qapu9km`
 
-> With 8 cards plus two possible follow-ups, this is the tallest screen, and the one screen allowed to scroll on a 320 × 568 phone when both follow-ups are open.
+> With 8 cards plus two possible follow-ups, this is the tallest question screen. On a 320 × 568 phone it scrolls a little even before a follow-up opens.
 
 ---
 

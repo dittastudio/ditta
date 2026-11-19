@@ -177,6 +177,15 @@ function onInput(event: Event) {
   model.value = options[index]
 }
 
+// With nothing chosen the native input still sits at the first band, so Left or Home wouldn't move it and the first
+// band could only be reached by going right and back. Any of them picks it instead.
+function onKeydown(event: KeyboardEvent) {
+  if (chosen.value !== -1 || !['ArrowLeft', 'ArrowDown', 'Home', 'PageDown'].includes(event.key)) return
+  event.preventDefault()
+  place(0)
+  model.value = options[0]
+}
+
 // Keep the handle in step when the answer changes from outside (Start again, a restored draft)
 watch(chosen, (index) => {
   if (!dragging.value && !isActive.value) place(Math.max(index, 0))
@@ -231,6 +240,7 @@ const fillStyle = computed(() => ({ transform: `scaleX(${width.value ? handleX.v
         :aria-valuetext="chosen === -1 ? 'Not chosen yet' : options[chosen]"
         class="peer pointer-events-none absolute inset-0 size-full opacity-0"
         @input="onInput"
+        @keydown="onKeydown"
       />
 
       <div class="absolute inset-x-0 top-1/2 h-0.5 -translate-y-1/2 bg-white/25">

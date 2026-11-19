@@ -49,7 +49,7 @@ defineExpose({ validate })
   <section
     :aria-labelledby="titleId"
     data-brief-question
-    class="flex flex-col gap-10 md:gap-15"
+    class="flex flex-col gap-6 md:gap-15"
   >
     <div class="flex flex-col gap-5 md:gap-7.5">
       <h1
@@ -81,7 +81,7 @@ defineExpose({ validate })
 
     <p
       v-if="emailSuggestion"
-      class="-mt-6 text-16 text-beige md:-mt-9"
+      class="-mt-2 text-16 text-beige md:-mt-9"
     >
       Did you mean
       <button
@@ -95,7 +95,7 @@ defineExpose({ validate })
 
     <p
       v-if="step.field === 'email'"
-      class="-mt-6 text-16 text-beige md:-mt-9"
+      class="-mt-2 text-16 text-beige md:-mt-9"
     >
       We'll only use this to reply about your project. See our
       <NuxtLink
@@ -109,14 +109,14 @@ defineExpose({ validate })
     <TransitionGroup
       name="fade"
       tag="div"
-      class="flex flex-col gap-10 empty:hidden md:gap-15"
+      class="flex flex-col gap-6 empty:hidden md:gap-15"
       @enter="(el: Element) => frame(el.querySelector('[data-brief-target]'))"
     >
       <div
         v-for="followUp in followUps"
         :key="followUp.key"
         data-brief-question
-        class="flex flex-col gap-5"
+        class="flex flex-col gap-4 md:gap-5"
       >
         <p
           :id="`${titleId}-${followUp.key}`"

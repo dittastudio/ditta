@@ -17,7 +17,7 @@ Decided (18 Nov 2026), and written into both docs:
 - **Budget bands:** Under £5k · £5k–£10k · £10k–£20k · £20k–£40k · £40k+ stay. The slider **starts with nothing chosen** and needs a drag, tap or arrow key before Next works.
 - **Consent:** a line on screen 12, no checkbox: "We'll only use this to reply about your project. See our privacy policy." The `/privacy-policy` page doesn't exist yet (see M7).
 - **Numbering:** plain "9 of 12", no a–d lettering.
-- **Small phones:** every screen fits 320 × 568 except the summary and screen 3 with both follow-ups open.
+- **Small phones:** every screen fits 320 × 568 before a follow-up opens, except screens 1 and 3 and the summary. Revised in M2 (19 Nov 2026) after measuring; follow-ups and extra link rows may scroll.
 - **Source of truth:** the repo (`app/utils/brief.ts`, `shared/schemas/brief.ts`). The claude.ai artifact is retired.
 - **Response time:** "within two working days", on the thank-you screen and in the emails.
 - **"Not sure" tips** on the summary: dropped for v1.
@@ -57,7 +57,7 @@ Built. The phone testing below is parked until later (19 Nov 2026) and doesn't b
 
 ---
 
-## M2: Design and feel
+## M2: Design and feel ✅
 
 **Goal:** the builder looks and feels like ditta.
 
@@ -68,6 +68,8 @@ Built. The phone testing below is parked until later (19 Nov 2026) and doesn't b
 - Big-number style for the timing cards. Rotating placeholder examples on screen 2.
 
 **Done when:** it matches the design on a 320 × 568 phone and on desktop, and passes a keyboard-only run-through.
+
+Done (19 Nov 2026). Letter shortcuts were dropped. Measured at 320 × 568, every screen fits before a follow-up opens except 1 and 3 (see Small phones in M0). Still worth a pass with a real screen reader (VoiceOver) before M7.
 
 ---
 

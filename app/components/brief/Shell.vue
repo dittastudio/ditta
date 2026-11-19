@@ -276,7 +276,7 @@ const screenKey = computed(() => (isDraft.value ? `step-${brief.stepIndex}-${res
         class="mx-auto w-full max-w-174"
       >
         <!-- Only as tall as the step, so the nav sits right under it. Still sticky for steps taller than the screen -->
-        <div class="flex w-full flex-col gap-10 md:gap-15">
+        <div class="flex w-full flex-col gap-6 md:gap-15">
           <div ref="content">
             <Transition
               :name="brief.direction === 1 ? 'brief-forward' : 'brief-back'"
@@ -285,7 +285,7 @@ const screenKey = computed(() => (isDraft.value ? `step-${brief.stepIndex}-${res
             >
               <div
                 :key="screenKey"
-                class="flex w-full flex-col gap-12 md:gap-25"
+                class="flex w-full flex-col gap-8 md:gap-25"
                 @pointerdown="engagement.onPointerdown"
                 @click="engagement.onClick"
                 @focusin="!cleared && engagement.onFocusin($event)"
