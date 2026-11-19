@@ -96,6 +96,7 @@ useEventListener('resize', () => {
 onUnmounted(stopGliding)
 
 const isDraft = computed(() => brief.status === 'draft')
+const hasPrevious = computed(() => brief.status === 'sent' || (isDraft.value && brief.stepIndex > 0))
 const position = computed(() => brief.stepIndex + 1)
 const progress = computed(() => (brief.isSummary ? 1 : brief.stepIndex / brief.total))
 
@@ -422,27 +423,33 @@ const screenKey = computed(() => (isDraft.value ? `step-${brief.stepIndex}-${res
                     />
                   </button>
 
-                  <button
-                    v-if="brief.status !== 'confirmed'"
-                    type="button"
-                    class="rounded-full disabled:pointer-events-none disabled:opacity-30"
-                    aria-label="Previous"
-                    :disabled="isDraft && brief.stepIndex === 0"
-                    @click="back"
-                  >
-                    <UiButton
-                      text="Previous"
-                      theme="dark"
-                      size="medium"
-                      class="max-md:hidden"
-                    />
+                  <!-- Not on the first step, where there's nowhere to go back to. Pops in on the second, as Start again does -->
+                  <Transition name="brief-pop">
+                    <div
+                      v-if="hasPrevious"
+                      class="flex"
+                    >
+                      <button
+                        type="button"
+                        class="rounded-full"
+                        aria-label="Previous"
+                        @click="back"
+                      >
+                        <UiButton
+                          text="Previous"
+                          theme="dark"
+                          size="medium"
+                          class="max-md:hidden"
+                        />
 
-                    <span class="flex size-11 items-center justify-center rounded-full bg-black md:hidden">
-                      <span class="flex size-7 items-center justify-center rounded-full bg-accent">
-                        <IconPixelArrow class="w-[55%] -rotate-90" />
-                      </span>
-                    </span>
-                  </button>
+                        <span class="flex size-11 items-center justify-center rounded-full bg-black md:hidden">
+                          <span class="flex size-7 items-center justify-center rounded-full bg-accent">
+                            <IconPixelArrow class="w-[55%] -rotate-90" />
+                          </span>
+                        </span>
+                      </button>
+                    </div>
+                  </Transition>
 
                   <!-- Stays while its icon spins after a clear, then goes: there's nothing left to clear -->
                   <Transition
