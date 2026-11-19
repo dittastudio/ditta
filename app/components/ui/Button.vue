@@ -8,9 +8,10 @@ interface Props {
   theme?: Themes
   text?: string
   size?: 'large' | 'medium'
+  icon?: boolean
 }
 
-const { theme = 'light', text, size = 'large' } = defineProps<Props>()
+const { theme = 'light', text, size = 'large', icon = true } = defineProps<Props>()
 
 const soundSwoosh = defineSound(swoosh)
 const { play } = useAudio()
@@ -19,8 +20,8 @@ const root = useTemplateRef('root')
 const width = ref(0)
 const height = ref(0)
 
-const scaleX = computed(() => (width.value ? (width.value + 6) / width.value : 1))
-const scaleY = computed(() => (height.value ? (height.value + 6) / height.value : 1))
+const scaleX = computed(() => (width.value ? Math.round(((width.value + 6) / width.value) * 100) / 100 : 1))
+const scaleY = computed(() => (height.value ? Math.round(((height.value + 6) / height.value) * 100) / 100 : 1))
 
 let observer: ResizeObserver | null = null
 
@@ -46,11 +47,13 @@ onUnmounted(() => {
   <span
     ref="root"
     :style="{ '--scale-x': scaleX, '--scale-y': scaleY }"
-    class="ui-button relative isolate select-none inline-flex items-center gap-[0.71em] font-medium leading-none rounded-full"
+    class="ui-button relative isolate select-none inline-flex items-center font-medium leading-none rounded-full"
     @pointerenter="play(soundSwoosh)"
     :class="[
       `ui-button--${size}`,
-      size === 'large' ? 'py-2.5 md:py-3.75 pr-2.5 md:pr-3.75 pl-5 md:pl-6' : 'py-2 pr-2 pl-4',
+      { 'gap-[0.71em]': icon },
+      size === 'large' ? 'py-2.5 md:py-3.75 pl-5 md:pl-6' : 'py-2 pl-4',
+      size === 'large' ? (icon ? 'pr-2.5 md:pr-3.75' : 'pr-5 md:pr-6') : icon ? 'pr-2' : 'pr-4',
       theme ? themeTextClasses[theme as Themes] : '',
     ]"
   >
@@ -66,10 +69,15 @@ onUnmounted(() => {
       {{ text }}
     </span>
 
+    <!-- Without the icon it stays as a zero-width strut, so the button keeps the height it has with one -->
     <span
       class="ui-button__icon size-[1em] rounded-full aspect-square bg-accent flex items-center justify-center overflow-hidden"
+      :class="{ 'w-0 invisible': !icon }"
     >
-      <IconPixelArrow class="ui-button__arrow w-[55%] rotate-45" />
+      <IconPixelArrow
+        v-if="icon"
+        class="ui-button__arrow w-[55%] rotate-45"
+      />
     </span>
   </span>
 </template>
@@ -89,7 +97,7 @@ onUnmounted(() => {
   font-size: utopia.clamp(14, 18);
 
   .ui-button__icon {
-    font-size: utopia.clamp(24, 30);
+    font-size: var(--ui-button-medium-icon);
   }
 }
 

@@ -90,26 +90,32 @@ watch(
 )
 
 // Previous sits beside Start again, so it coming or going moves Start again by its width. Start again glides there
-// rather than jumping: measured just before the change, then eased back from where it was (FLIP). It moves with
-// the pop's own timing, so the two land together.
+// rather than jumping: measured just before the change, then sprung back from where it was (FLIP). It starts with
+// the pop and overshoots a touch before settling, so it reads as being nudged aside rather than slid.
 let resetFrom: number | undefined
 
 function measureReset() {
   resetFrom = resetButton.value?.getBoundingClientRect().left
 }
 
-function glideReset(duration: number, ease: string, delay = 0) {
+function glideReset(delay = 0) {
   const el = resetButton.value?.parentElement
   const from = resetFrom
   resetFrom = undefined
   // Both measurements include any glide still running, which glide() then carries on from
-  if (el && from !== undefined) glide(el, 'x', from - el.getBoundingClientRect().left, { duration, ease, delay })
+  if (el && from !== undefined)
+    glide(el, 'x', from - el.getBoundingClientRect().left, {
+      duration: 0.7,
+      // elastic is a damped sine, the shape of a spring: a 0.9 period overshoots by about 7% and settles with
+      // barely a dip, much like --ease-spring-2
+      ease: 'elastic.out(1, 0.9)',
+      delay,
+    })
 }
 
 // Single-argument hooks, so Vue still runs the pop's CSS transition and tracks when it ends
 function onPreviousEnter() {
-  // power4.out is --ease-outQuart, the pop's enter curve
-  glideReset(0.3, 'power4.out')
+  glideReset()
 }
 
 // A leaving Previous would hold its space until it had faded, and Start again would jump after. Lifted out of the
@@ -123,8 +129,7 @@ function onPreviousLeave(el: Element) {
     left: `${wrapper.offsetLeft}px`,
     top: `${wrapper.offsetTop}px`,
   })
-  // power3.out is --ease-outCubic, the pop's leave curve
-  glideReset(0.2, 'power3.out', 0.15)
+  glideReset(0.15)
 }
 
 onBeforeUnmount(() => {
@@ -141,11 +146,30 @@ defineExpose({ el: nav })
     aria-label="Brief steps"
     class="sticky bottom-4 z-10 grid rounded-20 corner-shape-squircle bg-offblack-glass/50 text-grey outline outline-1 outline-white/15 backdrop-blur-sm shadow-2xl"
   >
+    <!-- The bar's own background fills as the brief goes on. Clipped in its own layer, not on the nav, so the
+         error above the bar on mobile isn't cut off. Slid rather than scaled, so its leading edge stays a hairline. -->
+    <div
+      v-if="isDraft"
+      class="pointer-events-none absolute inset-0 overflow-hidden rounded-20 corner-shape-squircle"
+      role="progressbar"
+      aria-label="Progress"
+      :aria-valuetext="brief.isSummary ? 'Review' : `${position} of ${brief.total}`"
+      :aria-valuenow="Math.min(position, brief.total)"
+      aria-valuemin="1"
+      :aria-valuemax="brief.total"
+    >
+      <div
+        class="size-full border-r bg-coral/12 transition-[translate,border-color] duration-500 ease-outQuart"
+        :class="progress > 0 && progress < 1 ? 'border-coral/40' : 'border-transparent'"
+        :style="{ translate: `${(progress - 1) * 100}%` }"
+      />
+    </div>
+
     <Transition name="brief-rise">
       <div
         v-if="confirmingClear"
         data-brief-confirm
-        class="flex items-center gap-2 p-2.5 pl-4 col-start-1 row-start-1 md:gap-5 md:pl-5"
+        class="relative flex items-center gap-2.5 p-3.5 pl-5 col-start-1 row-start-1 md:p-5 md:pl-6"
       >
         <p
           class="flex-1 text-14 font-medium whitespace-nowrap md:text-16"
@@ -159,52 +183,44 @@ defineExpose({ el: nav })
           <button
             ref="cancelButton"
             type="button"
-            class="h-11 rounded-full bg-black px-4 text-14 font-medium md:px-5 md:text-16 leading-none text-white transition-[background-color,scale] duration-200 ease-outCubic active:scale-96 only-hover:hover:bg-white/10"
+            class="rounded-full"
             @click="cancelClear()"
           >
-            Cancel
+            <UiButton
+              text="Cancel"
+              :icon="false"
+              theme="dark"
+              size="medium"
+            />
           </button>
         </div>
 
         <div class="flex">
           <button
             type="button"
-            class="h-11 rounded-full bg-coral px-4 text-14 font-medium md:px-5 md:text-16 leading-none text-black transition-[opacity,scale] duration-200 ease-outCubic active:scale-96 only-hover:hover:opacity-85"
+            class="rounded-full"
             @click="clear"
           >
-            Clear
+            <UiButton
+              text="Clear"
+              :icon="false"
+              theme="coral"
+              size="medium"
+            />
           </button>
         </div>
       </div>
 
       <div
         v-else
-        class="relative flex items-center gap-3 p-2.5 pl-4 col-start-1 row-start-1 md:gap-5 md:pl-2.5"
+        class="relative flex items-center gap-3 p-3.5 pl-5 col-start-1 row-start-1 md:gap-5 md:p-5"
       >
-        <div
+        <p
           v-if="isDraft"
-          class="flex flex-1 flex-col gap-2.5 md:w-60 md:flex-none md:pl-1"
+          class="flex-1 pl-1 text-14"
         >
-          <p class="text-14 leading-none trim-both">
-            {{ brief.isSummary ? 'Review' : `${position} of ${brief.total}` }}
-          </p>
-
-          <!-- A hairline along the bar's top edge on mobile, under the count on desktop -->
-          <div
-            class="relative h-0.5 overflow-hidden bg-putty max-md:absolute max-md:inset-x-4 max-md:top-0"
-            role="progressbar"
-            aria-label="Progress"
-            :aria-valuetext="brief.isSummary ? 'Review' : `${position} of ${brief.total}`"
-            :aria-valuenow="Math.min(position, brief.total)"
-            aria-valuemin="1"
-            :aria-valuemax="brief.total"
-          >
-            <div
-              class="absolute inset-y-0 left-0 w-full origin-left bg-coral transition-transform duration-500 ease-outQuart"
-              :style="{ transform: `scaleX(${progress})` }"
-            />
-          </div>
-        </div>
+          {{ brief.isSummary ? 'Review' : `${position} of ${brief.total}` }}
+        </p>
 
         <p
           v-else
@@ -224,7 +240,7 @@ defineExpose({ el: nav })
 
         <!-- In tab order Next comes first, then Previous, then Start again: Next is what's wanted nearly every
              time. Reversed back for display, so they still read left to right as Start again, Previous, Next. -->
-        <div class="flex flex-row-reverse items-center gap-2.5 md:ml-auto md:gap-5">
+        <div class="flex flex-row-reverse items-center gap-2.5 md:ml-auto">
           <button
             type="button"
             class="rounded-full"
@@ -265,8 +281,10 @@ defineExpose({ el: nav })
                   class="max-md:hidden"
                 />
 
-                <span class="flex size-11 items-center justify-center rounded-full bg-black md:hidden">
-                  <span class="flex size-7 items-center justify-center rounded-full bg-accent">
+                <span
+                  class="flex size-(--ui-button-medium-height) items-center justify-center rounded-full bg-black md:hidden"
+                >
+                  <span class="flex size-(--ui-button-medium-icon) items-center justify-center rounded-full bg-accent">
                     <IconPixelArrow class="w-[55%] -rotate-90" />
                   </span>
                 </span>
@@ -288,7 +306,7 @@ defineExpose({ el: nav })
                 ref="resetButton"
                 type="button"
                 aria-label="Start again"
-                class="group flex size-11 items-center justify-center rounded-full bg-black text-beige transition-[color,scale] duration-200 ease-outCubic active:scale-92 only-hover:hover:text-white"
+                class="group flex size-(--ui-button-medium-height) items-center justify-center rounded-full bg-black text-beige transition-[color,scale] duration-200 ease-outCubic active:scale-92 only-hover:hover:text-white"
                 :inert="clearing"
                 @click="askToClear"
               >
