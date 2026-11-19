@@ -235,11 +235,12 @@ const handleStyle = computed(() => {
   }
 })
 
-const fillStyle = computed(() => ({ transform: `scaleX(${width.value ? handleX.value / width.value : 0})` }))
+// The track runs between the first and last stops, so the fill is just how far along the stops the handle is
+const fillStyle = computed(() => ({ transform: `scaleX(${Math.min(Math.max(position.value / last.value, 0), 1)})` }))
 </script>
 
 <template>
-  <div class="flex flex-col gap-6">
+  <div class="@container flex flex-col gap-6">
     <p
       class="text-40 leading-none trim-both md:text-64"
       :class="{ 'text-beige': shown === -1 }"
@@ -270,12 +271,22 @@ const fillStyle = computed(() => ({ transform: `scaleX(${width.value ? handleX.v
         @keydown="onKeydown"
       />
 
-      <div class="absolute inset-x-0 top-1/2 h-0.5 -translate-y-1/2 bg-white/25">
+      <div class="absolute inset-x-3 top-1/2 h-0.5 -translate-y-1/2 bg-graphite">
         <div
           class="h-full origin-left bg-coral"
           :style="fillStyle"
         />
       </div>
+
+      <!-- A dot at each stop, so the scale reads as stepped even when only its ends are labelled -->
+      <span
+        v-for="(option, i) in options"
+        :key="option"
+        class="absolute top-1/2 size-1.5 -translate-1/2 rounded-full"
+        :class="i <= position ? 'bg-coral' : 'bg-graphite'"
+        :style="{ left: at(i) }"
+        aria-hidden="true"
+      />
 
       <div
         class="absolute top-1/2 left-0 size-6 rounded-full bg-coral outline-offset-6 outline-white/50 will-change-transform peer-focus-visible:outline-1 peer-focus-visible:outline-dashed"
@@ -283,6 +294,7 @@ const fillStyle = computed(() => ({ transform: `scaleX(${width.value ? handleX.v
       />
     </div>
 
+    <!-- On a narrow slider only the ends are labelled: the readout above names the value, and the dots show the stops -->
     <div
       class="relative h-5 text-14 leading-tight text-beige"
       aria-hidden="true"
@@ -291,7 +303,7 @@ const fillStyle = computed(() => ({ transform: `scaleX(${width.value ? handleX.v
         v-for="(option, i) in options"
         :key="option"
         class="absolute top-0 whitespace-nowrap"
-        :class="i === 0 ? 'left-0' : i === last ? 'right-0' : '-translate-x-1/2'"
+        :class="i === 0 ? 'left-0' : i === last ? 'right-0' : 'hidden -translate-x-1/2 @sm:block'"
         :style="i === 0 || i === last ? undefined : { left: at(i) }"
       >
         {{ option }}
