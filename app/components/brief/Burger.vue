@@ -16,19 +16,43 @@ const reducedMotion = usePreferredReducedMotion()
 // new burger replaces the last, so a fresh one arrives at the same lean.
 useMouseTilt(useTemplateRef('tilt'))
 
-// How long the empty plate waits for the next burger
+// How long the empty plate waits for the next burger: just past the end of funky-s, with sound on or off
 const NEXT_BURGER = 4000
 // Crumbs shaken loose per bite, and from the last one, which takes the most
 const CRUMBS = 9
 const LAST_CRUMBS = 16
 
-// The physics loads as the pointer comes over the burger, so it's ready by the first bite
+// A munch for each bite
+const munch = defineSample('/sounds/munch.opus')
+const funky = defineSample('/sounds/funky-s.opus')
+const pacman = defineSample('/sounds/pacman-beginning.opus')
+const { isAudioOn } = useAudio()
+
+// Loaded in the order they're needed, and sounds only once audio is on (so a later call still fetches them if it's
+// turned on in between). The physics and the munch are needed by the first bite, so they load as the pointer comes
+// over the burger. funky-s and the jingle aren't needed until the last bite, so they wait for the first: someone who
+// only hovers never fetches them.
 let physicsWarm = false
+let munchWarm = false
+let tunesWarm = false
 
 function warm() {
-  if (physicsWarm || reducedMotion.value === 'reduce') return
-  physicsWarm = true
-  crumbs.warm()
+  if (!physicsWarm && reducedMotion.value !== 'reduce') {
+    physicsWarm = true
+    crumbs.warm()
+  }
+
+  if (!munchWarm && isAudioOn.value) {
+    munchWarm = true
+    munch.load()
+  }
+}
+
+function warmTunes() {
+  if (tunesWarm || !isAudioOn.value) return
+  tunesWarm = true
+  funky.load()
+  pacman.load()
 }
 
 // A touch has no hover to get ahead of the first tap, so on touch screens the warm-up waits for the browser to be idle
@@ -49,6 +73,7 @@ function squash() {
 
 const announcement = ref('')
 let nextBurger: ReturnType<typeof setTimeout> | undefined
+let funkyStart: ReturnType<typeof setTimeout> | undefined
 // Holds a new burger small and see-through for a frame, so it has something to scale and fade in from
 const arriving = ref(false)
 
@@ -95,6 +120,8 @@ function onClick(event: MouseEvent) {
   const { removed, direction } = bite(at)
   if (!removed.length) return
 
+  munch.play()
+  warmTunes()
   squash()
   shake(removed, direction, isEmpty.value ? LAST_CRUMBS : CRUMBS)
 
@@ -105,10 +132,13 @@ function onClick(event: MouseEvent) {
 
   finished.value = true
   announcement.value = 'Struth! Fancy another...?'
+  funkyStart = setTimeout(() => funky.play(), 250) // once the munch has played
   nextBurger = setTimeout(serve, NEXT_BURGER)
 }
 
 function serve() {
+  funky.stop()
+  pacman.play()
   arriving.value = true
   reset()
   finished.value = false
@@ -119,7 +149,11 @@ function serve() {
 // The heading's last line changes with `finished`: crumbs resting on the old words settle on the new ones
 watch(finished, () => nextTick(crumbs.measure))
 
-onBeforeUnmount(() => clearTimeout(nextBurger))
+// Leaving mid-tune (Start over) cancels what's still to come; defineSample stops whatever's already playing
+onBeforeUnmount(() => {
+  clearTimeout(nextBurger)
+  clearTimeout(funkyStart)
+})
 </script>
 
 <template>
