@@ -144,7 +144,12 @@ const briefSteps: BriefStep[] = [
 // When each follow-up shows is in the shared schema; only its wording lives here
 const briefFollowUpCopy: Record<BriefFollowUpKey, Omit<BriefQuestion, 'key'>> = {
   servicesOther: { title: 'What else can we help with?', field: 'text' },
-  productCount: { title: 'Roughly how many products?', field: 'slider', options: briefOptions.productCount },
+  productCount: {
+    title: 'Roughly how many products?',
+    field: 'slider',
+    options: briefOptions.productCount,
+    initial: 'Under 10',
+  },
   objectivesOther: { title: 'What else can we help with?', field: 'text' },
   timingOther: { title: 'Let us know your ideal timing', field: 'text' },
   contentOther: { title: 'Clarify its current state', field: 'text' },
