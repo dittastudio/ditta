@@ -12,7 +12,6 @@ interface Props {
 
 const { options, descriptions = {}, variant = 'cards', multiple = false, shortcuts = false } = defineProps<Props>()
 const model = defineModel<string | string[] | undefined>()
-const emit = defineEmits<{ picked: [option: string] }>()
 
 // Title-only cards are short enough to sit two to a row even on a phone
 const hasDescriptions = computed(() => options.some((option) => descriptions[option]))
@@ -28,7 +27,6 @@ function toggle(option: string) {
   }
 
   model.value = option
-  emit('picked', option)
 }
 
 onKeyStroke((event) => {

@@ -19,7 +19,7 @@ const {
   shortcuts = false,
 } = defineProps<Props>()
 const model = defineModel<unknown>()
-const emit = defineEmits<{ picked: [option: string]; submit: [] }>()
+const emit = defineEmits<{ submit: [] }>()
 
 // Shows what Regle reports; never validates anything itself
 const errorId = useId()
@@ -64,7 +64,6 @@ const inputmode = { email: 'email', url: 'url' } as const
       :variant="question.field"
       :shortcuts="shortcuts"
       :multiple="question.multiple"
-      @picked="emit('picked', $event)"
     />
 
     <BriefSlider

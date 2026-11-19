@@ -32,7 +32,7 @@ Decided (18 Nov 2026), and written into both docs:
 **Goal:** find out whether the form itself works (length, wording, feel) before building any backend.
 
 - Client-only page at `/brief` (`ssr: false`, not prerendered, `noindex`, not linked anywhere).
-- All 13 screens come from one config, with follow-ups, auto-advance, validation, `[name]` personalisation, Summary with Edit, and "Back to summary".
+- All 13 screens come from one config, with follow-ups, validation, `[name]` personalisation, Summary with Edit, and "Back to summary".
 - Answers persist in localStorage, so a refresh resumes where you left off.
 - **Send brief** goes to a mocked "Check your inbox" screen, which links on to a mocked "Thank you". Nothing is sent.
 - Visual design is deliberately plain.
@@ -46,7 +46,7 @@ Decided (18 Nov 2026), and written into both docs:
 **Goal:** the prototype validates the way the real thing will (see "Validation — Regle + Zod" in `brief-builder.md` and "Forms & Validation" in `AGENTS.md`), so M2 designs the final field components and M3 reuses the rules.
 
 - `shared/schemas/brief.ts` holds the options, one Zod schema per screen (`briefStepSchemas`), the whole-brief `briefAnswersSchema`, and the follow-up rules (when each shows, required only while shown, dropped when hidden).
-- Each question screen binds its schema with `useRegleSchema`. Next and auto-advance call `r$.$validate()`, and errors show under the field they belong to, linked with `useId()` and `aria-describedby`.
+- Each question screen binds its schema with `useRegleSchema`. Next calls `r$.$validate()`, and errors show under the field they belong to, linked with `useId()` and `aria-describedby`.
 - Links accept "acme.com" and are stored as "https://acme.com".
 - The draft store is typed from the schema (`z.input`). Send brief checks the whole brief against `briefAnswersSchema`.
 - Still to add in M3: `briefDetailsSchema` (consent, honeypot) and the resend/confirm schemas, once those fields exist.

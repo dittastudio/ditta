@@ -53,7 +53,6 @@ The form is for prospective clients who often don't know exactly what they want 
 | **Primary button label**           | `Next` by default. `Skip` on an optional screen that hasn't been answered. `Review` on the email screen (12). `Send brief` on the summary (13). `Back to summary` when the client got there from an Edit link on the summary. |
 | **Required question not answered** | Next doesn't advance. The button shakes and a small message appears between the buttons: "Answer to continue".                                                                                                                |
 | **Invalid email**                  | Same, with the message "Enter a valid email".                                                                                                                                                                                 |
-| **Auto-advance**                   | On a single-select screen, picking an option moves to the next screen after ~380ms, **unless** the pick opens a follow-up. Multi-select screens never auto-advance.                                                           |
 | **Enter key**                      | In a text, URL or email field, Enter acts as the primary button.                                                                                                                                                              |
 | **Card letters**                   | Each option card shows a letter badge (A, B, C…) so keyboard shortcuts can be added later.                                                                                                                                    |
 | **Autosave**                       | Every answer is saved locally as it changes (Pinia + localStorage, per the technical doc).                                                                                                                                    |
@@ -85,13 +84,12 @@ Contact screens 9–12 were labelled a–d in the original plan. The client sees
 **What do you need help with?** · required
 _Hint:_ Select all that apply.
 
-|              |                                                   |
-| ------------ | ------------------------------------------------- |
-| Field        | Multi-select cards                                |
-| Options      | Web Design · Web Build · Existing project · Other |
-| Key / id     | `services` / `q1`                                 |
-| Answer       | Array of chosen options, at least 1               |
-| Auto-advance | No (multi-select)                                 |
+|          |                                                   |
+| -------- | ------------------------------------------------- |
+| Field    | Multi-select cards                                |
+| Options  | Web Design · Web Build · Existing project · Other |
+| Key / id | `services` / `q1`                                 |
+| Answer   | Array of chosen options, at least 1               |
 
 **Follow-up:** shown when `services` includes **Other**
 
@@ -140,12 +138,11 @@ _Hint:_ Pick what matters most.
 
 **When would you like your project ready?** · required
 
-|              |                                                                         |
-| ------------ | ----------------------------------------------------------------------- |
-| Field        | Single-select cards (big-number style, e.g. "3" with "months" under it) |
-| Options      | ASAP · 3 months · 6 months · Other                                      |
-| Key / id     | `timing` / `q4`                                                         |
-| Auto-advance | Yes, unless Other is picked                                             |
+|          |                                                                         |
+| -------- | ----------------------------------------------------------------------- |
+| Field    | Single-select cards (big-number style, e.g. "3" with "months" under it) |
+| Options  | ASAP · 3 months · 6 months · Other                                      |
+| Key / id | `timing` / `q4`                                                         |
 
 **Follow-up:** when `timing` = **Other**
 
@@ -194,12 +191,11 @@ Link-only for v1. File uploads (drop zone, one file or zip up to 10MB, R2 at Sub
 **At what stage is your content?** · required
 _Hint:_ Things like your about text, service descriptions and photos.
 
-|              |                                                   |
-| ------------ | ------------------------------------------------- |
-| Field        | Single-select cards                               |
-| Options      | Ready to go · Partially ready · Not ready · Other |
-| Key / id     | `contentStage` / `q7c`                            |
-| Auto-advance | Yes, unless Other is picked                       |
+|          |                                                   |
+| -------- | ------------------------------------------------- |
+| Field    | Single-select cards                               |
+| Options  | Ready to go · Partially ready · Not ready · Other |
+| Key / id | `contentStage` / `q7c`                            |
 
 **Follow-up:** when `contentStage` = **Other**
 
@@ -259,12 +255,11 @@ _Hint:_ Skip if you don't have one yet.
 
 **How did you find us?** · optional
 
-|              |                                                                                               |
-| ------------ | --------------------------------------------------------------------------------------------- |
-| Field        | Single-select chips                                                                           |
-| Options      | Google · Instagram · LinkedIn · ChatGPT · Claude · Referral · From a website you made · Other |
-| Key / id     | `source` / `q11`                                                                              |
-| Auto-advance | Yes, unless Other is picked                                                                   |
+|          |                                                                                               |
+| -------- | --------------------------------------------------------------------------------------------- |
+| Field    | Single-select chips                                                                           |
+| Options  | Google · Instagram · LinkedIn · ChatGPT · Claude · Referral · From a website you made · Other |
+| Key / id | `source` / `q11`                                                                              |
 
 **Follow-up:** when `source` = **Other**
 
@@ -333,7 +328,7 @@ The review screen. It lists **every visible question in order**, numbered, with 
 | Email               | One-line input                         | `string`                  | Format validated           |
 | URL                 | One-line input, `https://` placeholder | `string`                  |                            |
 | Links, add another  | URL rows + optional note               | `{ url, note? }[]`, max 3 | Paste splitting            |
-| Single-select cards | Grid of cards with letter badges       | `string`                  | Auto-advances              |
+| Single-select cards | Grid of cards with letter badges       | `string`                  | Next to continue           |
 | Multi-select cards  | Same, several can be on                | `string[]`                | Hint says "Pick any"       |
 | Single-select chips | Wrapping pill buttons                  | `string`                  | For short labels           |
 | Snapping slider     | One handle + labelled points           | `string` (label)          | Starts with nothing chosen |

@@ -248,7 +248,6 @@ const screenKey = computed(() => (isDraft.value ? `step-${brief.stepIndex}-${res
                   v-else-if="brief.step"
                   ref="question"
                   :step="brief.step"
-                  @advance="brief.next()"
                   @submit="primary"
                 />
               </div>

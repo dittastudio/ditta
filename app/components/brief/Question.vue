@@ -8,7 +8,7 @@ interface Props {
 }
 
 const { step } = defineProps<Props>()
-const emit = defineEmits<{ advance: []; submit: [] }>()
+const emit = defineEmits<{ submit: [] }>()
 
 const brief = useBriefStore()
 const frame = useBriefFrame()
@@ -41,20 +41,6 @@ async function validate() {
   const { valid } = await r$.$validate()
   return valid
 }
-
-// A single-select pick moves on by itself, unless it opens a follow-up that still needs answering
-let timer: ReturnType<typeof setTimeout> | undefined
-
-function onPicked() {
-  clearTimeout(timer)
-  if (followUps.value.length) return
-
-  timer = setTimeout(async () => {
-    if (await validate()) emit('advance')
-  }, 380)
-}
-
-onUnmounted(() => clearTimeout(timer))
 
 defineExpose({ validate })
 </script>
@@ -91,7 +77,6 @@ defineExpose({ validate })
       focus-on-mount
       shortcuts
       @update:model-value="setAnswer(step.key, $event)"
-      @picked="onPicked"
       @submit="emit('submit')"
     />
 
