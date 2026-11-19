@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { onClickOutside, onKeyStroke } from '@vueuse/core'
 import { gsap } from 'gsap'
-import IconPixelArrow from '@/assets/icons/pixel-arrow.svg'
+import { defineSound } from '@web-kits/audio'
 import IconReset from '@/assets/icons/reset.svg'
+import { error as errorSound, hover, pageExit, warning } from '@@/.web-kits/core'
 
 interface Props {
   // Why Next was blocked, shown above the bar on mobile and beside it on desktop
@@ -12,6 +13,22 @@ interface Props {
 const { error = null } = defineProps<Props>()
 // Set by the brief when Next is blocked; cleared here once the shake has played
 const shaking = defineModel<boolean>('shaking', { default: false })
+
+// Next being blocked is heard as well as seen
+const soundError = defineSound(errorSound)
+// Start again: the hover the bar's other buttons have, and a warning as it asks to be sure
+const soundHover = defineSound(hover)
+const soundWarning = defineSound(warning)
+// Back turns the page the other way from Skip's
+const soundPageExit = defineSound(pageExit)
+const { play, isAudioOn } = useAudio()
+// Clearing the brief boots it up afresh
+const soundStartup = defineSample('/sounds/winxpstartup.opus')
+watch(isAudioOn, (on) => on && soundStartup.load(), { immediate: true })
+
+watch(shaking, (now) => {
+  if (now) play(soundError)
+})
 // `cleared` fires once the draft has been wiped, for the brief to rebuild its first screen
 const emit = defineEmits<{ primary: []; cleared: [] }>()
 
@@ -37,6 +54,7 @@ const primaryLabel = computed(() => {
 })
 
 function back() {
+  play(soundPageExit)
   if (brief.status === 'sent') return brief.setStatus('draft')
   brief.back()
 }
@@ -51,6 +69,7 @@ const clearing = ref(false)
 const spinning = ref(false)
 
 async function askToClear() {
+  play(soundWarning)
   confirmingClear.value = true
   await nextTick()
   cancelButton.value?.focus()
@@ -72,6 +91,7 @@ function clear() {
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) clearing.value = false
   else requestAnimationFrame(() => requestAnimationFrame(() => (spinning.value = true)))
 
+  soundStartup.play()
   brief.reset()
   emit('cleared')
 }
@@ -137,7 +157,7 @@ onBeforeUnmount(() => {
 })
 
 // The brief measures the nav to frame fields above it and glides it when the screen above changes height
-defineExpose({ el: nav })
+defineExpose({ el: nav, primaryLabel })
 </script>
 
 <template>
@@ -158,10 +178,18 @@ defineExpose({ el: nav })
       aria-valuemin="1"
       :aria-valuemax="brief.total"
     >
+      <!-- On Review it fills right up, then fades away once it has: there's nothing left to fill. Coming back from
+           Review it's there again at once. -->
       <div
-        class="size-full border-r bg-coral/12 transition-[translate,border-color] duration-500 ease-outQuart"
-        :class="progress > 0 && progress < 1 ? 'border-coral/40' : 'border-transparent'"
-        :style="{ translate: `${(progress - 1) * 100}%` }"
+        class="size-full border-r bg-coral/12 transition-[translate,border-color,opacity] duration-500 ease-outQuart"
+        :class="[
+          progress > 0 && progress < 1 ? 'border-coral/40' : 'border-transparent',
+          { 'opacity-0': brief.isSummary },
+        ]"
+        :style="{
+          translate: `${(progress - 1) * 100}%`,
+          transitionDelay: brief.isSummary ? '0s, 0s, 500ms' : undefined,
+        }"
       />
     </div>
 
@@ -191,6 +219,7 @@ defineExpose({ el: nav })
               :icon="false"
               theme="dark"
               size="medium"
+              :sound="hover"
             />
           </button>
         </div>
@@ -206,6 +235,7 @@ defineExpose({ el: nav })
               :icon="false"
               theme="coral"
               size="medium"
+              :sound="hover"
             />
           </button>
         </div>
@@ -250,8 +280,10 @@ defineExpose({ el: nav })
           >
             <UiButton
               :text="primaryLabel"
-              theme="white"
+              theme="light"
+              arrow="right"
               size="medium"
+              :sound="hover"
             />
           </button>
 
@@ -271,23 +303,15 @@ defineExpose({ el: nav })
               <button
                 type="button"
                 class="rounded-full"
-                aria-label="Previous"
                 @click="back"
               >
                 <UiButton
-                  text="Previous"
+                  text="Back"
                   theme="dark"
+                  arrow="left"
                   size="medium"
-                  class="max-md:hidden"
+                  :sound="hover"
                 />
-
-                <span
-                  class="flex size-(--ui-button-medium-height) items-center justify-center rounded-full bg-black md:hidden"
-                >
-                  <span class="flex size-(--ui-button-medium-icon) items-center justify-center rounded-full bg-accent">
-                    <IconPixelArrow class="w-[55%] -rotate-90" />
-                  </span>
-                </span>
               </button>
             </div>
           </Transition>
@@ -308,6 +332,7 @@ defineExpose({ el: nav })
                 aria-label="Start again"
                 class="group flex size-(--ui-button-medium-height) items-center justify-center rounded-full bg-black text-beige transition-[color,scale] duration-200 ease-outCubic active:scale-92 only-hover:hover:text-white"
                 :inert="clearing"
+                @pointerenter="play(soundHover)"
                 @click="askToClear"
               >
                 <!-- Hover winds it back a little on a spring; clearing turns it all the way round -->

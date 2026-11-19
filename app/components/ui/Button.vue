@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Themes } from '@/types/app'
 import IconPixelArrow from '@/assets/icons/pixel-arrow.svg'
-import { defineSound } from '@web-kits/audio'
+import { defineSound, type SoundDefinition } from '@web-kits/audio'
 import { swoosh } from '@@/.web-kits/playful'
 
 interface Props {
@@ -9,11 +9,35 @@ interface Props {
   text?: string
   size?: 'large' | 'medium'
   icon?: boolean
+  /** Which way the arrow points. Pointing left, it comes before the text */
+  arrow?: 'up-right' | 'right' | 'left'
+  /** Played on hover. A swoosh unless given */
+  sound?: SoundDefinition
 }
 
-const { theme = 'light', text, size = 'large', icon = true } = defineProps<Props>()
+const { theme = 'light', text, size = 'large', icon = true, arrow = 'up-right', sound = swoosh } = defineProps<Props>()
 
-const soundSwoosh = defineSound(swoosh)
+const leading = computed(() => icon && arrow === 'left')
+
+// The side with the icon sits tighter, so the icon's circle has even space round it
+const padding = computed(() => {
+  if (size === 'large') {
+    if (!icon) return 'px-5 md:px-6'
+    return leading.value ? 'pl-2.5 md:pl-3.75 pr-5 md:pr-6' : 'pl-5 md:pl-6 pr-2.5 md:pr-3.75'
+  }
+
+  if (!icon) return 'px-4'
+  return leading.value ? 'pl-2 pr-4' : 'pl-4 pr-2'
+})
+
+// The arrow's rotation, and the direction it fires in on hover (x and y, each -1, 0 or 1)
+const arrows = {
+  'up-right': { class: 'rotate-45', x: 1, y: -1 },
+  right: { class: 'rotate-90', x: 1, y: 0 },
+  left: { class: '-rotate-90', x: -1, y: 0 },
+} as const
+
+const hoverSound = computed(() => defineSound(sound))
 const { play } = useAudio()
 
 const root = useTemplateRef('root')
@@ -48,12 +72,12 @@ onUnmounted(() => {
     ref="root"
     :style="{ '--scale-x': scaleX, '--scale-y': scaleY }"
     class="ui-button relative isolate select-none inline-flex items-center font-medium leading-none rounded-full"
-    @pointerenter="play(soundSwoosh)"
+    @pointerenter="play(hoverSound)"
     :class="[
       `ui-button--${size}`,
       { 'gap-[0.71em]': icon },
-      size === 'large' ? 'py-2.5 md:py-3.75 pl-5 md:pl-6' : 'py-2 pl-4',
-      size === 'large' ? (icon ? 'pr-2.5 md:pr-3.75' : 'pr-5 md:pr-6') : icon ? 'pr-2' : 'pr-4',
+      size === 'large' ? 'py-2.5 md:py-3.75' : 'py-2',
+      padding,
       theme ? themeTextClasses[theme as Themes] : '',
     ]"
   >
@@ -72,11 +96,13 @@ onUnmounted(() => {
     <!-- Without the icon it stays as a zero-width strut, so the button keeps the height it has with one -->
     <span
       class="ui-button__icon size-[1em] rounded-full aspect-square bg-accent flex items-center justify-center overflow-hidden"
-      :class="{ 'w-0 invisible': !icon }"
+      :class="{ 'w-0 invisible': !icon, 'order-first': leading }"
     >
       <IconPixelArrow
         v-if="icon"
-        class="ui-button__arrow w-[55%] rotate-45"
+        class="ui-button__arrow w-[55%]"
+        :class="arrows[arrow].class"
+        :style="{ '--fire-x': arrows[arrow].x, '--fire-y': arrows[arrow].y }"
       />
     </span>
   </span>
@@ -127,19 +153,19 @@ onUnmounted(() => {
     animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
   }
   12% {
-    translate: -30% 30%;
+    translate: calc(-30% * var(--fire-x)) calc(-30% * var(--fire-y));
     scale: 0.7 1.1;
     filter: blur(1px);
     animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   44% {
-    translate: 260% -260%;
+    translate: calc(260% * var(--fire-x)) calc(260% * var(--fire-y));
     scale: 1 1;
     filter: blur(1px);
     animation-timing-function: none;
   }
   45% {
-    translate: -260% 260%;
+    translate: calc(-260% * var(--fire-x)) calc(-260% * var(--fire-y));
     scale: 1 1;
     filter: blur(1px);
     animation-timing-function: linear(
