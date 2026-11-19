@@ -214,7 +214,7 @@ const fillStyle = computed(() => ({ transform: `scaleX(${width.value ? handleX.v
 
     <div
       ref="track"
-      class="relative -my-2 h-10 cursor-pointer touch-pan-y select-none"
+      class="relative -my-2 h-20 cursor-pointer touch-pan-y select-none"
       @pointerdown="onPointerDown"
       @pointermove="onPointerMove"
       @pointerup="release"

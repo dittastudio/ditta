@@ -7,3 +7,6 @@ export const getMediaQuery = (breakpoint: string): string => {
 
   return isMax ? `(max-width: ${value - 1}px)` : `(min-width: ${value}px)`
 }
+
+// Matches the only-touch variant in assets/css/utils.css
+export const isTouch = (): boolean => matchMedia('(hover: none)').matches

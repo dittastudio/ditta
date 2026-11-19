@@ -1,8 +1,13 @@
-import type { InjectionKey, ShallowRef } from 'vue'
+import type { InjectionKey } from 'vue'
 
 type Frame = (target: Element | null | undefined) => void
 
 const frameKey: InjectionKey<Frame> = Symbol('briefFrame')
+
+// enterkeyhint only means anything on a field that brings up the keyboard, and every brief text field sets it.
+// The cards (buttons) and the slider (a range input) don't.
+const opensKeyboard = (el: EventTarget | null | undefined) =>
+  el instanceof HTMLElement && el.hasAttribute('enterkeyhint')
 
 // The same curve as --ease-outCubic. Lenis hands control back as soon as the user scrolls themselves, and makes
 // programmatic scrolls instant under prefers-reduced-motion.
@@ -18,26 +23,29 @@ const COMFORT_MARGIN = 0.15
  *
  * Fields mark themselves with `data-brief-target`, inside a `data-brief-question` wrapper that holds their
  * `data-brief-heading`. Anything below Shell reaches `frame` through `useBriefFrame()`.
+ *
+ * `navTop` reports where the nav's top edge sits when pinned to the bottom of the viewport, which is where it ends up
+ * once a field has been scrolled into view.
  */
-export function useBriefScroll(nav: Readonly<ShallowRef<HTMLElement | null>>) {
+export function useBriefScroll(navTop: () => number | undefined) {
   const lenis = useLenis()
   const appStore = useAppStore()
 
-  function band() {
-    const viewport = window.visualViewport?.height ?? window.innerHeight
-    const style = nav.value ? getComputedStyle(nav.value) : null
-    // The nav is sticky over the content on mobile only; on desktop it sits in the flow
-    const covered = style?.position === 'sticky' ? nav.value!.offsetHeight + Number.parseFloat(style.bottom) : 0
-
-    return { top: appStore.getDockBottom, bottom: viewport - covered }
-  }
+  // The part of the screen a field can be seen in: below the dock, above the sticky nav
+  const band = () => ({
+    top: appStore.getDockBottom,
+    bottom: navTop() ?? window.innerHeight,
+  })
 
   // Breathing room left between the dock and a heading lined up beneath it
   const gap = () => Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--spacing')) * 6 || 0
 
   function scrollBy(delta: number) {
     if (Math.abs(delta) < 1) return
-    if (lenis.value) return lenis.value.scrollTo(lenis.value.animatedScroll + delta, SCROLL)
+    // From where the page really is, which every measurement here was taken against. Lenis's own record can lag:
+    // when a shorter step shrinks the page under a reader scrolled near the bottom, the browser clamps the scroll
+    // without Lenis hearing of it.
+    if (lenis.value) return lenis.value.scrollTo(lenis.value.actualScroll + delta, SCROLL)
 
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
     window.scrollBy({ top: delta, behavior: reduce ? 'instant' : 'smooth' })
@@ -45,6 +53,11 @@ export function useBriefScroll(nav: Readonly<ShallowRef<HTMLElement | null>>) {
 
   const frame: Frame = (target) => {
     if (!target) return
+
+    // A text field that has just taken focus on touch may be opening the keyboard, and WebKit scrolls it into view
+    // for that. Lenis would overwrite that scroll every frame of the glide, so the browser gets this one to itself.
+    const focused = document.activeElement
+    if (isTouch() && opensKeyboard(focused) && target.contains(focused)) return
 
     const { top, bottom } = band()
     const margin = (bottom - top) * COMFORT_MARGIN
@@ -90,7 +103,7 @@ export function useBriefScroll(nav: Readonly<ShallowRef<HTMLElement | null>>) {
     engaged = true
 
     // Tapping into a text field on touch opens the keyboard, and the OS scrolls for that itself
-    if (pointerType === 'touch' && (event.target as Element).matches('input, textarea')) return
+    if (pointerType === 'touch' && opensKeyboard(event.target)) return
 
     frame((event.currentTarget as Element).querySelector('[data-brief-target]'))
   }
