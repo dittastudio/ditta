@@ -264,9 +264,9 @@ const screenKey = computed(() => (isDraft.value ? `step-${brief.stepIndex}-${res
 </script>
 
 <template>
-  <!-- A white focus ring for keyboard users. Not on text fields, which turn olive, or on headings focused in code. -->
+  <!-- A faint dashed focus ring for keyboard users. Not on text fields, which turn olive, or on headings focused in code. -->
   <div
-    class="flex min-h-svh flex-col justify-center bg-black text-white [&_:focus-visible:not(input,[tabindex='-1'])]:outline-2 [&_:focus-visible:not(input,[tabindex='-1'])]:outline-offset-2 [&_:focus-visible:not(input,[tabindex='-1'])]:outline-white [&_[tabindex='-1']]:outline-none"
+    class="flex min-h-svh flex-col justify-center bg-black text-white [&_:focus-visible:not(input,[tabindex='-1'])]:outline-1 [&_:focus-visible:not(input,[tabindex='-1'])]:outline-dashed [&_:focus-visible:not(input,[tabindex='-1'])]:outline-offset-2 [&_:focus-visible:not(input,[tabindex='-1'])]:outline-white/50 [&_[tabindex='-1']]:outline-none"
   >
     <div
       class="wrapper pt-[calc(var(--dock-height)+--spacing(20))] pb-30 md:pt-[calc(var(--dock-height)+--spacing(40))] md:pb-60"
