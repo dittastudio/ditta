@@ -251,7 +251,7 @@ const fillStyle = computed(() => ({ transform: `scaleX(${width.value ? handleX.v
       </div>
 
       <div
-        class="absolute top-1/2 left-0 size-6 rounded-full bg-coral outline-offset-4 outline-white/50 will-change-transform peer-focus-visible:outline-1 peer-focus-visible:outline-dashed"
+        class="absolute top-1/2 left-0 size-6 rounded-full bg-coral outline-offset-6 outline-white/50 will-change-transform peer-focus-visible:outline-1 peer-focus-visible:outline-dashed"
         :style="handleStyle"
       />
     </div>
