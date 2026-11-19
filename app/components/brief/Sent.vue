@@ -7,6 +7,9 @@ const email = computed(() => brief.answers.email?.trim() ?? '')
 const firstName = computed(() => briefFirstName(brief.answers))
 // Parsed by the same schema the API will use: hidden follow-ups dropped, links normalised
 const payload = computed(() => JSON.stringify(briefAnswersSchema.safeParse(brief.answers).data ?? null, null, 2))
+
+// True while the burger has been eaten and the next one hasn't arrived
+const eaten = ref(false)
 </script>
 
 <template>
@@ -35,12 +38,30 @@ const payload = computed(() => JSON.stringify(briefAnswersSchema.safeParse(brief
 
   <section
     v-else
-    class="flex flex-col items-center gap-10 text-center md:gap-15"
+    class="flex flex-col items-center gap-10 text-center"
   >
-    <IconRobot class="w-40 md:w-56" />
+    <BriefBurger v-model:finished="eaten" />
 
     <h1 class="text-24 leading-tight text-balance trim-both md:text-28">
-      Thanks{{ firstName ? `, ${firstName}` : '' }}. Your brief is on its way.
+      Thanks{{ firstName ? `, ${firstName}` : '' }}. Your brief is on its way.<br />
+      <!-- Both lines share one grid cell and cross over in place. The hidden one is aria-hidden, so screen readers only
+           find the line that's showing. -->
+      <span class="inline-grid">
+        <span
+          class="col-start-1 row-start-1 transition-opacity duration-200 ease-outCubic motion-reduce:transition-none"
+          :class="{ 'opacity-0': eaten }"
+          :aria-hidden="eaten"
+        >
+          Have a burger on us!
+        </span>
+        <span
+          class="col-start-1 row-start-1 transition-opacity duration-200 ease-outCubic motion-reduce:transition-none"
+          :class="{ 'opacity-0': !eaten }"
+          :aria-hidden="!eaten"
+        >
+          Struth! Fancy another...?
+        </span>
+      </span>
     </h1>
 
     <p class="text-18 text-beige md:text-20">We'll reply within two working days to book a short call.</p>

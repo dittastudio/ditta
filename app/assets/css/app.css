@@ -234,6 +234,7 @@
   );
 
   --animate-bob: bob 3s ease-in-out infinite;
+  --animate-glow: glow 4s var(--ease-inOutSine) infinite alternate; /* a slow breath: 8s in and out */
   --animate-brick-in: brick-in 0.5s var(--ease-outCubic) both;
   --animate-brick-out: brick-in 0.3s var(--ease-outCubic) reverse both; /* BRICK_OUT_DURATION in useMario */
 }
@@ -288,6 +289,18 @@
   }
   90% {
     translate: calc(var(--shake-x) * -1) calc(var(--shake-y) * 1.2);
+  }
+}
+
+/* Swells and brightens, then settles. Opacity and scale only, so it stays on the compositor. */
+@keyframes glow {
+  from {
+    opacity: 0.5;
+    scale: 0.9;
+  }
+  to {
+    opacity: 1;
+    scale: 1.06;
   }
 }
 
