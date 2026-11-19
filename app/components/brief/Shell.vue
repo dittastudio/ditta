@@ -1,11 +1,5 @@
 <script lang="ts" setup>
-import {
-  onClickOutside,
-  onKeyStroke,
-  useEventListener,
-  usePreferredReducedMotion,
-  useResizeObserver,
-} from '@vueuse/core'
+import { onClickOutside, onKeyStroke, useEventListener, useResizeObserver } from '@vueuse/core'
 import { gsap } from 'gsap'
 import IconPixelArrow from '@/assets/icons/pixel-arrow.svg'
 import IconReset from '@/assets/icons/reset.svg'
@@ -46,15 +40,12 @@ const { frame, alignTop, frameFirstError, engagement, disengage } = useBriefScro
 // instead of jumping there. The layout moves at once; the nav is offset back to where it was on screen and eased
 // home. The resize lands after layout but before paint, so the jump is never drawn.
 // The content itself doesn't need to: it's fading in anyway.
-const reducedMotion = usePreferredReducedMotion()
-let glide: gsap.core.Tween | undefined
 // The content's last size and page position. The position is kept because a new height moves the content's top
 // too (the brief is centred on the screen), and by the time the resize is reported the old top is gone.
 let last: { width: number; height: number; top: number } | undefined
 
 function stopGliding() {
-  glide?.kill()
-  glide = undefined
+  if (nav.value) gsap.killTweensOf(nav.value)
   if (nav.value) gsap.set(nav.value, { clearProps: 'transform' })
 }
 
@@ -64,7 +55,7 @@ useResizeObserver(content, ([entry]) => {
   last = { width, height, top: contentTop() }
 
   // A new width is the window resizing, which should follow the window straight away
-  if (!previous || !nav.value || width !== previous.width || reducedMotion.value === 'reduce') {
+  if (!previous || !nav.value || width !== previous.width) {
     stopGliding()
     return
   }
@@ -73,19 +64,12 @@ useResizeObserver(content, ([entry]) => {
   const to = navTopFor(last.top, height)
   if (from === undefined || to === undefined) return
 
-  // Mid-glide, carry on from wherever it has got to on screen
-  const offset = from + Number(gsap.getProperty(nav.value, 'y')) - to
-  if (Math.abs(offset) < 1) return
-
-  // Short moves land with the step's own 250ms; longer ones take a little more, never outlasting the 600ms scroll
-  const duration = gsap.utils.clamp(0.25, 0.45, 0.2 + Math.abs(offset) / 1500)
-
-  glide = gsap.fromTo(
-    nav.value,
-    { y: offset },
+  glide(nav.value, 'y', from - to, {
+    // Short moves land with the step's own 250ms; longer ones take a little more, never outlasting the 600ms scroll
+    duration: (distance) => gsap.utils.clamp(0.25, 0.45, 0.2 + distance / 1500),
     // power3.out is --ease-outCubic, the step transition's curve, so both settle the same way
-    { y: 0, duration, ease: 'power3.out', overwrite: true, clearProps: 'transform' },
-  )
+    ease: 'power3.out',
+  })
 })
 
 // A window only getting taller or shorter re-centres the brief without resizing its content
@@ -93,7 +77,7 @@ useEventListener('resize', () => {
   if (last) last.top = contentTop()
 })
 
-onUnmounted(stopGliding)
+onBeforeUnmount(stopGliding)
 
 const isDraft = computed(() => brief.status === 'draft')
 const hasPrevious = computed(() => brief.status === 'sent' || (isDraft.value && brief.stepIndex > 0))
@@ -221,7 +205,6 @@ onUnmounted(() => clearTimeout(clearingTimer))
 // rather than jumping: measured just before the change, then eased back from where it was (FLIP). It moves with
 // the pop's own timing, so the two land together.
 let resetFrom: number | undefined
-let resetGlide: gsap.core.Tween | undefined
 
 function measureReset() {
   resetFrom = resetButton.value?.getBoundingClientRect().left
@@ -231,15 +214,8 @@ function glideReset(duration: number, ease: string) {
   const el = resetButton.value?.parentElement
   const from = resetFrom
   resetFrom = undefined
-  if (!el || from === undefined || reducedMotion.value === 'reduce') return
-
-  // The measured spot includes any glide still running, so carry on from wherever it has got to
-  const current = Number(gsap.getProperty(el, 'x'))
-  const offset = from - (el.getBoundingClientRect().left - current)
-  if (Math.abs(offset) < 1) return
-
-  resetGlide?.kill()
-  resetGlide = gsap.fromTo(el, { x: offset }, { x: 0, duration, ease, clearProps: 'transform' })
+  // Both measurements include any glide still running, which glide() then carries on from
+  if (el && from !== undefined) glide(el, 'x', from - el.getBoundingClientRect().left, { duration, ease })
 }
 
 // Single-argument hooks, so Vue still runs the pop's CSS transition and tracks when it ends
@@ -262,7 +238,9 @@ function onPreviousLeave(el: Element) {
   glideReset(0.2, 'power3.out')
 }
 
-onUnmounted(() => resetGlide?.kill())
+onBeforeUnmount(() => {
+  if (resetButton.value?.parentElement) gsap.killTweensOf(resetButton.value.parentElement)
+})
 
 function back() {
   if (brief.status === 'sent') return brief.setStatus('draft')
