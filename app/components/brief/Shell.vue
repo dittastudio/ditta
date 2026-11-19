@@ -471,8 +471,10 @@ const screenKey = computed(() => (isDraft.value ? `step-${brief.stepIndex}-${res
                   </button>
 
                   <!-- Not on the first step, where there's nowhere to go back to. Pops in on the second, as Start again does -->
+                  <!-- Coming in, it waits a beat so Start again moves aside first and it pops into the space left -->
                   <Transition
                     name="brief-pop"
+                    enter-active-class="brief-pop-enter-active delay-150 motion-reduce:delay-0"
                     @before-enter="measureReset"
                     @enter="onPreviousEnter"
                     @leave="onPreviousLeave"
