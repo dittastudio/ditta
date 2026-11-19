@@ -124,10 +124,13 @@ let pressed = false
 const dragging = ref(false)
 const band = ref(0)
 let startX = 0
+// Measured once when pressed, rather than on every move of a drag. Only its horizontal edges are read, which
+// scrolling the page up and down doesn't move.
+let trackRect: DOMRect | undefined
 
 // The handle's centre stops half its width (12px) in from each end of the track
 function positionAt(clientX: number) {
-  const rect = track.value!.getBoundingClientRect()
+  const rect = trackRect ?? track.value!.getBoundingClientRect()
   const ratio = (clientX - rect.left - 12) / (rect.width - 24)
   return Math.min(Math.max(ratio, 0), 1) * last.value
 }
@@ -137,6 +140,7 @@ function onPointerDown(event: PointerEvent) {
   track.value!.setPointerCapture(event.pointerId)
   pressed = true
   startX = event.clientX
+  trackRect = track.value!.getBoundingClientRect()
 }
 
 function onPointerMove(event: PointerEvent) {
@@ -167,6 +171,7 @@ function release(event: PointerEvent) {
   else if (event.type === 'pointerup') choose(Math.round(positionAt(event.clientX)))
 
   dragging.value = false
+  trackRect = undefined
   resume() // make sure the shape gets a frame to round out, whatever state the loop was left in
 }
 
