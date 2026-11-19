@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import type { BriefFigure } from '@/utils/brief'
+import { defineSound } from '@web-kits/audio'
+import { checkbox, radio } from '@@/.web-kits/core'
 
 interface Props {
   options: readonly string[]
@@ -18,6 +20,12 @@ const model = defineModel<string | string[] | undefined>()
 const name = useId()
 const type = computed(() => (multiple ? 'checkbox' : 'radio'))
 const role = computed(() => (multiple ? 'group' : 'radiogroup'))
+
+// Played when someone picks (or unpicks) an option, not when the answer is set from outside
+const soundCheckbox = defineSound(checkbox)
+const soundRadio = defineSound(radio)
+const { play } = useAudio()
+const playPick = () => play(multiple ? soundCheckbox : soundRadio)
 
 // A checkbox v-model needs an array to add to, or it binds a single true/false instead
 const selected = computed({
@@ -81,6 +89,7 @@ const focusRing =
         :name="name"
         :value="option"
         class="sr-only"
+        @change="playPick"
       />
 
       <template v-if="figures[option]">
@@ -126,6 +135,7 @@ const focusRing =
         :name="name"
         :value="option"
         class="sr-only"
+        @change="playPick"
       />
 
       <span class="block trim-both">{{ option }}</span>

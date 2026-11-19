@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import { useElementSize, usePreferredReducedMotion, useRafFn } from '@vueuse/core'
+import { defineSound } from '@web-kits/audio'
+import { spring as springSound } from '@@/.web-kits/core'
 
 // Attributes (aria-labelledby, aria-describedby) belong on the range input, not the wrapper
 defineOptions({ inheritAttrs: false })
@@ -92,8 +94,20 @@ function tick(dt: number) {
   stretch.value = shape.value
 }
 
+// A spring each time the handle snaps to a new band, by drag, tap or key. Not when the answer is set from outside.
+const soundSpring = defineSound(springSound)
+const { play } = useAudio()
+let landed = position.value
+
+function snap(index: number) {
+  if (index === landed) return
+  landed = index
+  play(soundSpring)
+}
+
 // Puts the handle straight at `index`, still and round
 function place(index: number) {
+  landed = index
   pause()
   moving = false
   pull = 0
@@ -118,6 +132,7 @@ function setPull(value: number) {
 }
 
 function choose(index: number) {
+  snap(index)
   model.value = options[index]
   setPull(0)
   moveTo(index)
@@ -161,6 +176,7 @@ function onPointerMove(event: PointerEvent) {
   const offset = raw - nearest
 
   band.value = nearest
+  snap(nearest)
   setPull(offset)
   moveTo(nearest + offset * RESISTANCE)
 }
@@ -182,6 +198,7 @@ function release(event: PointerEvent) {
 // Keyboard and screen readers go through the native input, one band at a time, with no animation
 function onInput(event: Event) {
   const index = Number((event.target as HTMLInputElement).value)
+  snap(index)
   place(index)
   model.value = options[index]
 }
@@ -191,6 +208,7 @@ function onInput(event: Event) {
 function onKeydown(event: KeyboardEvent) {
   if (chosen.value !== -1 || !['ArrowLeft', 'ArrowDown', 'Home', 'PageDown'].includes(event.key)) return
   event.preventDefault()
+  snap(0)
   place(0)
   model.value = options[0]
 }

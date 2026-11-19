@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import { useDocumentVisibility, usePreferredReducedMotion } from '@vueuse/core'
+import { defineSound } from '@web-kits/audio'
+import { tap, tick } from '@@/.web-kits/core'
 
 // Native attributes (type, placeholder, autocomplete, inputmode, aria-*) fall through to the <input>
 defineOptions({ inheritAttrs: false })
@@ -16,6 +18,24 @@ const model = defineModel<string>({ default: '' })
 const emit = defineEmits<{ submit: [] }>()
 
 const input = useTemplateRef('input')
+
+// A tick for every key typed and a tap for every one deleted, like a phone keyboard with its clicks on. Pastes,
+// drops and autocorrect swaps aren't keys, so they stay quiet.
+const soundTick = defineSound(tick)
+const soundTap = defineSound(tap)
+const { play } = useAudio()
+
+const keySounds: Partial<Record<string, typeof soundTick>> = {
+  insertText: soundTick,
+  insertCompositionText: soundTick,
+  deleteContentBackward: soundTap,
+  deleteContentForward: soundTap,
+}
+
+function onInput(event: Event) {
+  const sound = keySounds[(event as InputEvent).inputType]
+  if (sound) play(sound)
+}
 
 onMounted(() => {
   // On touch the browser scrolls the field into view itself (see useBriefScroll); elsewhere the brief frames it
@@ -54,6 +74,7 @@ watchEffect((onCleanup) => {
         rotates ? 'placeholder:text-transparent' : 'placeholder:text-white/40',
       ]"
       @keydown.enter.prevent="emit('submit')"
+      @input="onInput"
     />
 
     <!-- Stands in for the placeholder, which can't animate. Typing removes it at once, with no fade. -->

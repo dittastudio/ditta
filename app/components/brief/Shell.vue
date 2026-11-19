@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import { useEventListener, useResizeObserver } from '@vueuse/core'
 import { gsap } from 'gsap'
+import { defineSound } from '@web-kits/audio'
 import { briefAnswersSchema } from '#shared/schemas/brief'
+import { confetti, pageEnter, save } from '@@/.web-kits/core'
 
 const brief = useBriefStore()
 const root = useTemplateRef('root')
@@ -9,6 +11,14 @@ const content = useTemplateRef('content')
 const navComponent = useTemplateRef('nav')
 const nav = computed(() => navComponent.value?.el)
 const question = useTemplateRef('question')
+
+// Moving on is heard: a save for each Next, a page turning for a Skip, confetti for reaching the review
+const { play } = useAudio()
+const advanceSounds: Partial<Record<string, ReturnType<typeof defineSound>>> = {
+  Next: defineSound(save),
+  Skip: defineSound(pageEnter),
+  Review: defineSound(confetti),
+}
 
 // Where the nav's top sits when it's pinned to the bottom of the viewport. Layout only, so it holds mid-glide.
 function pinnedNavTop() {
@@ -129,6 +139,8 @@ async function primary() {
     return frameFirstError(root.value)
   }
 
+  const sound = advanceSounds[navComponent.value?.primaryLabel ?? '']
+  if (sound) play(sound)
   brief.next()
 }
 
