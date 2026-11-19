@@ -49,7 +49,6 @@ const confirmingClear = ref(false)
 // The nav's steps come back with a fresh button, so `spinning` starts the turn a frame after it mounts at rest.
 const clearing = ref(false)
 const spinning = ref(false)
-let clearingTimer: ReturnType<typeof setTimeout> | undefined
 
 async function askToClear() {
   confirmingClear.value = true
@@ -69,9 +68,9 @@ function clear() {
   confirmingClear.value = false
   clearing.value = true
   spinning.value = false
-  requestAnimationFrame(() => requestAnimationFrame(() => (spinning.value = true)))
-  clearTimeout(clearingTimer)
-  clearingTimer = setTimeout(() => (clearing.value = false), 750)
+  // Reduced motion holds the icon still, so there's no turn to wait for
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) clearing.value = false
+  else requestAnimationFrame(() => requestAnimationFrame(() => (spinning.value = true)))
 
   brief.reset()
   emit('cleared')
@@ -79,7 +78,10 @@ function clear() {
 
 onKeyStroke('Escape', () => cancelClear())
 onClickOutside(nav, () => cancelClear({ refocus: false }))
-onUnmounted(() => clearTimeout(clearingTimer))
+// The button goes once the turn has finished, or been cut short
+function onSpun(event: TransitionEvent) {
+  if (spinning.value && event.propertyName === 'rotate') clearing.value = false
+}
 
 watch(
   () => brief.answers,
@@ -297,6 +299,8 @@ defineExpose({ el: nav })
                       ? '-rotate-360 duration-700 ease-outQuart'
                       : 'duration-600 ease-spring-3 only-hover:group-hover:-rotate-45'
                   "
+                  @transitionend="onSpun"
+                  @transitioncancel="onSpun"
                 />
               </button>
             </div>
