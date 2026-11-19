@@ -101,6 +101,8 @@ const progress = computed(() => (brief.isSummary ? 1 : brief.stepIndex / brief.t
 
 const error = ref<string | null>(null)
 const shaking = ref(false)
+// Read out by screen readers only: what's wrong when Next is blocked
+const announcement = ref('')
 
 const primaryLabel = computed(() => {
   if (brief.status === 'sent') return 'Simulate confirm'
@@ -141,10 +143,29 @@ async function primary() {
   if (question.value && !(await question.value.validate())) {
     shake()
     await nextTick()
+    await flagFirstError()
     return frameFirstError(root.value)
   }
 
   brief.next()
+}
+
+// A blocked Next says why, and on a keyboard puts focus on the answer to fix. Not on touch: focusing a text field
+// there opens the keyboard, and the error is right under the field anyway. Cleared first, so the same message
+// twice in a row is still read out.
+async function flagFirstError() {
+  const invalid = root.value?.querySelector<HTMLElement>('[aria-invalid="true"]')
+  if (!invalid) return
+
+  const describedBy = invalid.getAttribute('aria-describedby')
+  announcement.value = ''
+  await nextTick()
+  announcement.value =
+    (describedBy && document.getElementById(describedBy)?.textContent?.trim()) || 'Answer to continue'
+
+  if (isTouch()) return
+  const control = invalid.matches('input, button') ? invalid : invalid.querySelector<HTMLElement>('input, button')
+  control?.focus({ preventScroll: true })
 }
 
 // Start again wipes the whole draft, so the nav turns into a "Clear everything?" confirm first. Cancel takes focus,
@@ -200,6 +221,18 @@ function back() {
   brief.back()
 }
 
+// Focus moves onto each new screen rather than staying on the button that got there, which would leave a screen
+// reader silent and send the next Tab out to the footer. A text field has already taken focus as it mounted;
+// otherwise the heading does, so the question is the first thing read out.
+function focusScreen(el: Element) {
+  if (el.contains(document.activeElement)) return
+  const heading = el.querySelector<HTMLElement>('h1')
+  if (!heading) return
+
+  heading.tabIndex = -1
+  heading.focus({ preventScroll: true })
+}
+
 // Each new screen centres its field once it has mounted, so it measures the real thing. Doesn't run on first render.
 // Centred even when already in view: a new step should land in the same place every time.
 function onEnter(el: Element) {
@@ -208,6 +241,8 @@ function onEnter(el: Element) {
   if (cleared) {
     el.querySelector<HTMLElement>('[data-brief-target] button')?.focus({ preventScroll: true })
     cleared = false
+  } else {
+    focusScreen(el)
   }
 
   const target = el.querySelector('[data-brief-target]')
@@ -219,6 +254,7 @@ watch(
   () => brief.answers,
   () => {
     error.value = null
+    announcement.value = ''
     cancelClear({ refocus: false })
   },
   { deep: true },
@@ -228,7 +264,10 @@ const screenKey = computed(() => (isDraft.value ? `step-${brief.stepIndex}-${res
 </script>
 
 <template>
-  <div class="flex min-h-svh flex-col justify-center bg-black text-white">
+  <!-- A white focus ring for keyboard users. Not on text fields, which turn olive, or on headings focused in code. -->
+  <div
+    class="flex min-h-svh flex-col justify-center bg-black text-white [&_:focus-visible:not(input,[tabindex='-1'])]:outline-2 [&_:focus-visible:not(input,[tabindex='-1'])]:outline-offset-2 [&_:focus-visible:not(input,[tabindex='-1'])]:outline-white [&_[tabindex='-1']]:outline-none"
+  >
     <div
       class="wrapper pt-[calc(var(--dock-height)+--spacing(20))] pb-30 md:pt-[calc(var(--dock-height)+--spacing(40))] md:pb-60"
     >
@@ -337,6 +376,8 @@ const screenKey = computed(() => (isDraft.value ? `step-${brief.stepIndex}-${res
                   <div
                     class="relative h-0.5 overflow-hidden bg-putty max-md:absolute max-md:inset-x-4 max-md:top-0"
                     role="progressbar"
+                    aria-label="Progress"
+                    :aria-valuetext="brief.isSummary ? 'Review' : `${position} of ${brief.total}`"
                     :aria-valuenow="Math.min(position, brief.total)"
                     aria-valuemin="1"
                     :aria-valuemax="brief.total"
@@ -359,7 +400,7 @@ const screenKey = computed(() => (isDraft.value ? `step-${brief.stepIndex}-${res
                 <p
                   v-if="error"
                   class="pl-1 text-14 text-coral max-md:absolute max-md:bottom-full max-md:left-0 max-md:mb-2 max-md:rounded-20 max-md:corner-shape-squircle max-md:bg-offblack-glass/50 max-md:outline max-md:outline-1 max-md:outline-white/15 max-md:backdrop-blur-sm max-md:px-4 max-md:py-2"
-                  aria-live="polite"
+                  role="alert"
                 >
                   {{ error }}
                 </p>
@@ -430,6 +471,13 @@ const screenKey = computed(() => (isDraft.value ? `step-${brief.stepIndex}-${res
               </div>
             </Transition>
           </nav>
+
+          <p
+            class="sr-only"
+            role="status"
+          >
+            {{ announcement }}
+          </p>
         </div>
       </div>
     </div>

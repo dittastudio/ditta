@@ -49,6 +49,7 @@ const rows = computed(() =>
 
         <button
           type="button"
+          :aria-label="`Edit: ${row.title}`"
           class="pokeable shrink-0 rounded-full bg-white/10 px-4 py-2.5 text-14 font-medium leading-none only-hover:hover:bg-white/20"
           @click="brief.goTo(row.stepIndex, true)"
         >
