@@ -8,7 +8,7 @@ const TOO_LONG = 'Keep it under 200 characters'
 export const briefOptions = {
   services: ['Web Design', 'Web Build', 'Existing project', 'Other'],
   objectives: [
-    'Showcase our work',
+    'Showcase work',
     'Improve SEO/GEO',
     'Increase enquiries',
     'Take bookings',
