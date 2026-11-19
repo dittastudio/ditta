@@ -1,16 +1,12 @@
 <script lang="ts" setup>
-import { onKeyStroke } from '@vueuse/core'
-
 interface Props {
   options: readonly string[]
   descriptions?: Partial<Record<string, string>>
   variant?: 'cards' | 'chips'
   multiple?: boolean
-  // Letter keys (A, B, C…) pick options. Only the screen's main question listens.
-  shortcuts?: boolean
 }
 
-const { options, descriptions = {}, variant = 'cards', multiple = false, shortcuts = false } = defineProps<Props>()
+const { options, descriptions = {}, variant = 'cards', multiple = false } = defineProps<Props>()
 const model = defineModel<string | string[] | undefined>()
 
 // Title-only cards are short enough to sit two to a row even on a phone
@@ -28,15 +24,6 @@ function toggle(option: string) {
 
   model.value = option
 }
-
-onKeyStroke((event) => {
-  if (!shortcuts || event.metaKey || event.ctrlKey || event.altKey) return
-  if ((event.target as HTMLElement | null)?.closest('input, textarea, select, [contenteditable]')) return
-
-  const index = event.key.toLowerCase().charCodeAt(0) - 97
-  const option = event.key.length === 1 ? options[index] : undefined
-  if (option) toggle(option)
-})
 </script>
 
 <template>

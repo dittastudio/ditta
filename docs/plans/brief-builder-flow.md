@@ -54,7 +54,6 @@ The form is for prospective clients who often don't know exactly what they want 
 | **Required question not answered** | Next doesn't advance. The button shakes and a small message appears between the buttons: "Answer to continue".                                                                                                                |
 | **Invalid email**                  | Same, with the message "Enter a valid email".                                                                                                                                                                                 |
 | **Enter key**                      | In a text, URL or email field, Enter acts as the primary button.                                                                                                                                                              |
-| **Card letters**                   | Each option card shows a letter badge (A, B, C…) so keyboard shortcuts can be added later.                                                                                                                                    |
 | **Autosave**                       | Every answer is saved locally as it changes (Pinia + localStorage, per the technical doc).                                                                                                                                    |
 
 ### Follow-up (conditional) questions
@@ -328,7 +327,7 @@ The review screen. It lists **every visible question in order**, numbered, with 
 | Email               | One-line input                         | `string`                  | Format validated           |
 | URL                 | One-line input, `https://` placeholder | `string`                  |                            |
 | Links, add another  | URL rows + optional note               | `{ url, note? }[]`, max 3 | Paste splitting            |
-| Single-select cards | Grid of cards with letter badges       | `string`                  | Next to continue           |
+| Single-select cards | Grid of cards                          | `string`                  | Next to continue           |
 | Multi-select cards  | Same, several can be on                | `string[]`                | Hint says "Pick any"       |
 | Single-select chips | Wrapping pill buttons                  | `string`                  | For short labels           |
 | Snapping slider     | One handle + labelled points           | `string` (label)          | Starts with nothing chosen |

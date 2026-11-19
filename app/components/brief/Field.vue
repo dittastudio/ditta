@@ -7,17 +7,9 @@ interface Props {
   errors?: string[]
   rowErrors?: string[][]
   focusOnMount?: boolean
-  shortcuts?: boolean
 }
 
-const {
-  question,
-  labelledby,
-  errors = [],
-  rowErrors = [],
-  focusOnMount = false,
-  shortcuts = false,
-} = defineProps<Props>()
+const { question, labelledby, errors = [], rowErrors = [], focusOnMount = false } = defineProps<Props>()
 const model = defineModel<unknown>()
 const emit = defineEmits<{ submit: [] }>()
 
@@ -62,7 +54,6 @@ const inputmode = { email: 'email', url: 'url' } as const
       :options="question.options ?? []"
       :descriptions="question.descriptions"
       :variant="question.field"
-      :shortcuts="shortcuts"
       :multiple="question.multiple"
     />
 

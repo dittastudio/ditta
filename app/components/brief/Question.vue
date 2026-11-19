@@ -75,7 +75,6 @@ defineExpose({ validate })
       :errors="errorsFor(step.key)"
       :row-errors="rowErrorsFor(step.key)"
       focus-on-mount
-      shortcuts
       @update:model-value="setAnswer(step.key, $event)"
       @submit="emit('submit')"
     />

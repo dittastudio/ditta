@@ -63,7 +63,7 @@ Built. The phone testing below is parked until later (19 Nov 2026) and doesn't b
 
 - Figma design for the screen layout, cards, chips, slider, links and summary, implemented with the `@theme` tokens.
 - Motion: screen slides, card selection, the shake. Respect `prefers-reduced-motion`.
-- Keyboard: letter shortcuts for cards (A, B, C…), focus management between screens, visible focus states.
+- Keyboard: focus management between screens, visible focus states.
 - Accessibility: grouped inputs labelled with fieldset/legend, live region for errors and step changes, screen-reader pass.
 - Big-number style for the timing cards. Rotating placeholder examples on screen 2.
 
