@@ -449,25 +449,30 @@ const screenKey = computed(() => (isDraft.value ? `step-${brief.stepIndex}-${res
                     name="brief-pop"
                     @after-leave="spinning = false"
                   >
-                    <button
+                    <!-- Wrapped so the pop can fade and blur it: the button's own transition is for hover and press -->
+                    <div
                       v-if="isDraft && (hasStarted || clearing)"
-                      ref="resetButton"
-                      type="button"
-                      aria-label="Start again"
-                      class="group flex size-11 items-center justify-center rounded-full bg-black text-beige transition-[color,scale] duration-200 ease-outCubic active:scale-92 only-hover:hover:text-white"
-                      :inert="clearing"
-                      @click="askToClear"
+                      class="flex"
                     >
-                      <!-- Hover winds it back a little on a spring; clearing turns it all the way round -->
-                      <IconReset
-                        class="size-4.5 transition-[rotate] motion-reduce:rotate-0!"
-                        :class="
-                          spinning
-                            ? '-rotate-360 duration-700 ease-outQuart'
-                            : 'duration-600 ease-spring-3 only-hover:group-hover:-rotate-45'
-                        "
-                      />
-                    </button>
+                      <button
+                        ref="resetButton"
+                        type="button"
+                        aria-label="Start again"
+                        class="group flex size-11 items-center justify-center rounded-full bg-black text-beige transition-[color,scale] duration-200 ease-outCubic active:scale-92 only-hover:hover:text-white"
+                        :inert="clearing"
+                        @click="askToClear"
+                      >
+                        <!-- Hover winds it back a little on a spring; clearing turns it all the way round -->
+                        <IconReset
+                          class="size-4.5 transition-[rotate] motion-reduce:rotate-0!"
+                          :class="
+                            spinning
+                              ? '-rotate-360 duration-700 ease-outQuart'
+                              : 'duration-600 ease-spring-3 only-hover:group-hover:-rotate-45'
+                          "
+                        />
+                      </button>
+                    </div>
                   </Transition>
                 </div>
               </div>
