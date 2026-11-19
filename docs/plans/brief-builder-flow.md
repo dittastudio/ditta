@@ -103,12 +103,12 @@ _Hint:_ Select all that apply.
 **In a few words, what does your business do?** · required
 _Hint:_ Give us your best elevator pitch 🛗
 
-|          |                                                                                     |
-| -------- | ----------------------------------------------------------------------------------- |
-| Field    | Single-line text, about 100 characters                                              |
-| Key / id | `business` / `q2`                                                                   |
-| Answer   | String, trimmed, not empty                                                          |
-| Notes    | The placeholder can rotate real-world examples, such as "A physio clinic in Ealing" |
+|          |                                                                                       |
+| -------- | ------------------------------------------------------------------------------------- |
+| Field    | Single-line text, about 100 characters                                                |
+| Key / id | `business` / `q2`                                                                     |
+| Answer   | String, trimmed, not empty                                                            |
+| Notes    | The placeholder rotates real-world examples once, such as "A physio clinic in Ealing" |
 
 ---
 

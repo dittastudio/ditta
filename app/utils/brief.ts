@@ -17,6 +17,8 @@ interface BriefQuestion {
   // A line under an option card's title, keyed by option
   descriptions?: Partial<Record<string, string>>
   placeholder?: string
+  // Shown in turn in place of `placeholder`, for a question that's easier to answer with a few ideas to go on
+  placeholders?: readonly string[]
   autocomplete?: string
 }
 
@@ -44,7 +46,13 @@ const briefSteps: BriefStep[] = [
     title: 'In a few words, what does your business do?',
     hint: 'Give us your best elevator pitch 🛗',
     field: 'text',
-    placeholder: 'A physio clinic in Ealing',
+    placeholders: [
+      'A physio clinic in Ealing',
+      'An architecture studio in Bristol',
+      'Handmade ceramics, sold online',
+      'A boutique hotel in the Cotswolds',
+      'Accounting software for small firms',
+    ],
   },
   {
     key: 'objectives',
