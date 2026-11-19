@@ -405,7 +405,45 @@ const screenKey = computed(() => (isDraft.value ? `step-${brief.stepIndex}-${res
                   {{ error }}
                 </p>
 
-                <div class="flex items-center gap-2.5 md:ml-auto md:gap-5">
+                <!-- In tab order Next comes first, then Previous, then Start again: Next is what's wanted nearly every
+                     time. Reversed back for display, so they still read left to right as Start again, Previous, Next. -->
+                <div class="flex flex-row-reverse items-center gap-2.5 md:ml-auto md:gap-5">
+                  <button
+                    type="button"
+                    class="rounded-full"
+                    :class="{ 'shake-once': shaking }"
+                    @click="primary"
+                    @animationend="shaking = false"
+                  >
+                    <UiButton
+                      :text="primaryLabel"
+                      theme="white"
+                      size="medium"
+                    />
+                  </button>
+
+                  <button
+                    v-if="brief.status !== 'confirmed'"
+                    type="button"
+                    class="rounded-full disabled:pointer-events-none disabled:opacity-30"
+                    aria-label="Previous"
+                    :disabled="isDraft && brief.stepIndex === 0"
+                    @click="back"
+                  >
+                    <UiButton
+                      text="Previous"
+                      theme="dark"
+                      size="medium"
+                      class="max-md:hidden"
+                    />
+
+                    <span class="flex size-11 items-center justify-center rounded-full bg-black md:hidden">
+                      <span class="flex size-7 items-center justify-center rounded-full bg-accent">
+                        <IconPixelArrow class="w-[55%] -rotate-90" />
+                      </span>
+                    </span>
+                  </button>
+
                   <!-- Stays while its icon spins after a clear, then goes: there's nothing left to clear -->
                   <Transition
                     name="brief-pop"
@@ -431,42 +469,6 @@ const screenKey = computed(() => (isDraft.value ? `step-${brief.stepIndex}-${res
                       />
                     </button>
                   </Transition>
-
-                  <button
-                    v-if="brief.status !== 'confirmed'"
-                    type="button"
-                    class="rounded-full disabled:pointer-events-none disabled:opacity-30"
-                    aria-label="Previous"
-                    :disabled="isDraft && brief.stepIndex === 0"
-                    @click="back"
-                  >
-                    <UiButton
-                      text="Previous"
-                      theme="dark"
-                      size="medium"
-                      class="max-md:hidden"
-                    />
-
-                    <span class="flex size-11 items-center justify-center rounded-full bg-black md:hidden">
-                      <span class="flex size-7 items-center justify-center rounded-full bg-accent">
-                        <IconPixelArrow class="w-[55%] -rotate-90" />
-                      </span>
-                    </span>
-                  </button>
-
-                  <button
-                    type="button"
-                    class="rounded-full"
-                    :class="{ 'shake-once': shaking }"
-                    @click="primary"
-                    @animationend="shaking = false"
-                  >
-                    <UiButton
-                      :text="primaryLabel"
-                      theme="white"
-                      size="medium"
-                    />
-                  </button>
                 </div>
               </div>
             </Transition>
