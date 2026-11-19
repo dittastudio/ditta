@@ -49,7 +49,7 @@ defineExpose({ validate })
   <section
     :aria-labelledby="titleId"
     data-brief-question
-    class="flex flex-col gap-6 md:gap-15"
+    class="flex flex-col gap-10 md:gap-15"
   >
     <div class="flex flex-col gap-5 md:gap-7.5">
       <h1
