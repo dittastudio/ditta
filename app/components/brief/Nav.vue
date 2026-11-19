@@ -140,7 +140,7 @@ defineExpose({ el: nav })
     aria-label="Brief steps"
     class="sticky bottom-4 z-10 grid rounded-20 corner-shape-squircle bg-offblack-glass/50 text-grey outline outline-1 outline-white/15 backdrop-blur-sm shadow-2xl"
   >
-    <Transition name="brief-nav">
+    <Transition name="brief-rise">
       <div
         v-if="confirmingClear"
         data-brief-confirm

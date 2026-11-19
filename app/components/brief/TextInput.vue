@@ -63,7 +63,11 @@ watchEffect((onCleanup) => {
       class="pointer-events-none absolute inset-0 grid items-center border border-transparent px-5 text-white/40"
       :class="small ? 'text-16' : 'text-20'"
     >
-      <Transition name="brief-placeholder">
+      <!-- The next example arrives a beat behind, so the two cross rather than blur into each other -->
+      <Transition
+        name="brief-rise"
+        enter-active-class="brief-rise-enter-active delay-60"
+      >
         <span
           :key="example"
           class="col-start-1 row-start-1 truncate"

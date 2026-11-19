@@ -17,30 +17,30 @@
     opacity: 0;
   }
 
-  /* The brief's nav swapping between its steps and the "Clear everything?" confirm. Both sit in the same grid
-     cell, so they crossfade in place without the nav changing size. Coming in, the content rises and comes into focus;
-     going out it barely moves, since attention has already moved on. */
-  .brief-nav-enter-active {
+  /* Two things swapping in one grid cell, so they cross in place without the box changing size: the brief's nav and
+     its "Clear everything?" confirm, and the examples in its rotating placeholder. Coming in, the content rises and
+     comes into focus; going out it barely moves, since attention has already moved on. */
+  .brief-rise-enter-active {
     transition:
       opacity 0.3s var(--ease-outQuart),
       translate 0.3s var(--ease-outQuart),
       filter 0.3s var(--ease-outQuart);
   }
 
-  .brief-nav-leave-active {
+  .brief-rise-leave-active {
     transition:
       opacity 0.18s var(--ease-outCubic),
       translate 0.18s var(--ease-outCubic),
       filter 0.18s var(--ease-outCubic);
   }
 
-  .brief-nav-enter-from {
+  .brief-rise-enter-from {
     opacity: 0;
     translate: 0 calc(var(--spacing) * 2);
     filter: blur(4px);
   }
 
-  .brief-nav-leave-to {
+  .brief-rise-leave-to {
     opacity: 0;
     translate: 0 calc(var(--spacing) * -1);
     filter: blur(2px);
@@ -48,21 +48,21 @@
 
   /* The confirm is rare and deliberate, so its question, then Cancel, then Clear arrive a beat apart. The wrapper's
      300ms covers the last one, so Vue doesn't drop the classes before it lands. */
-  [data-brief-confirm].brief-nav-enter-active > * {
+  [data-brief-confirm].brief-rise-enter-active > * {
     transition:
       translate 0.24s var(--ease-outQuart),
       filter 0.24s var(--ease-outQuart);
   }
 
-  [data-brief-confirm].brief-nav-enter-active > :nth-child(2) {
+  [data-brief-confirm].brief-rise-enter-active > :nth-child(2) {
     transition-delay: 30ms;
   }
 
-  [data-brief-confirm].brief-nav-enter-active > :nth-child(3) {
+  [data-brief-confirm].brief-rise-enter-active > :nth-child(3) {
     transition-delay: 60ms;
   }
 
-  [data-brief-confirm].brief-nav-enter-from > * {
+  [data-brief-confirm].brief-rise-enter-from > * {
     translate: 0 calc(var(--spacing) * 1.5);
     filter: blur(3px);
   }
@@ -96,9 +96,9 @@
 
   /* Reduced motion keeps the fades and drops the movement and blur */
   @media (prefers-reduced-motion: reduce) {
-    .brief-nav-enter-from,
-    .brief-nav-leave-to,
-    [data-brief-confirm].brief-nav-enter-from > *,
+    .brief-rise-enter-from,
+    .brief-rise-leave-to,
+    [data-brief-confirm].brief-rise-enter-from > *,
     .brief-pop-enter-from,
     .brief-pop-leave-to {
       translate: 0 0;
@@ -135,42 +135,6 @@
     .brief-back-enter-from,
     .brief-back-leave-to {
       translate: 0 0;
-    }
-  }
-
-  /* The brief's rotating placeholder. Both examples share one grid cell: the next comes into focus as the last one
-     drifts up and away, a beat behind so they cross rather than blur into each other. The exit is smaller and quicker,
-     since the eye has already moved on. */
-  .brief-placeholder-enter-active {
-    transition:
-      opacity 0.3s var(--ease-outQuart) 60ms,
-      translate 0.3s var(--ease-outQuart) 60ms,
-      filter 0.3s var(--ease-outQuart) 60ms;
-  }
-
-  .brief-placeholder-leave-active {
-    transition:
-      opacity 0.18s var(--ease-outCubic),
-      translate 0.18s var(--ease-outCubic),
-      filter 0.18s var(--ease-outCubic);
-  }
-
-  .brief-placeholder-enter-from {
-    opacity: 0;
-    translate: 0 calc(var(--spacing) * 2);
-    filter: blur(4px);
-  }
-
-  .brief-placeholder-leave-to {
-    opacity: 0;
-    translate: 0 calc(var(--spacing) * -1);
-    filter: blur(2px);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .brief-placeholder-enter-active,
-    .brief-placeholder-leave-active {
-      transition: none;
     }
   }
 }
