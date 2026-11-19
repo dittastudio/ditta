@@ -141,6 +141,7 @@ _Hint:_ Pick what matters most.
 | -------- | ----------------------------------------------------------------------- |
 | Field    | Single-select cards (big-number style, e.g. "3" with "months" under it) |
 | Options  | ASAP · 3 months · 6 months · Other                                      |
+| Display  | ASAP "right away" · 3 "months" · 6 "months" · Other "something else"    |
 | Key / id | `timing` / `q4`                                                         |
 
 **Follow-up:** when `timing` = **Other**

@@ -7,6 +7,11 @@ type BriefField = 'cards' | 'chips' | 'text' | 'email' | 'url' | 'links' | 'slid
 type BriefDraft = Partial<BriefAnswersInput>
 type BriefLinkRow = NonNullable<BriefAnswersInput['references']>[number]
 
+interface BriefFigure {
+  figure: string
+  unit: string
+}
+
 interface BriefQuestion {
   key: BriefFieldKey
   title: string
@@ -16,6 +21,8 @@ interface BriefQuestion {
   options?: readonly string[]
   // A line under an option card's title, keyed by option
   descriptions?: Partial<Record<string, string>>
+  // A big figure with its unit under it in place of an option card's title, keyed by option
+  figures?: Partial<Record<string, BriefFigure>>
   placeholder?: string
   // Shown in turn in place of `placeholder`, for a question that's easier to answer with a few ideas to go on
   placeholders?: readonly string[]
@@ -67,6 +74,12 @@ const briefSteps: BriefStep[] = [
     title: 'When would you like your project ready?',
     field: 'cards',
     options: briefOptions.timing,
+    figures: {
+      ASAP: { figure: 'ASAP', unit: 'right away' },
+      '3 months': { figure: '3', unit: 'months' },
+      '6 months': { figure: '6', unit: 'months' },
+      Other: { figure: 'Other', unit: 'something else' },
+    },
   },
   {
     key: 'references',
@@ -203,7 +216,7 @@ const suggestBriefEmail = (email: string): string | null => {
   return local && fix ? `${local}@${fix}` : null
 }
 
-export type { BriefDraft, BriefField, BriefLinkRow, BriefQuestion, BriefStep }
+export type { BriefDraft, BriefField, BriefFigure, BriefLinkRow, BriefQuestion, BriefStep }
 export {
   briefFirstName,
   briefSteps,
