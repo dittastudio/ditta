@@ -23,11 +23,13 @@ Decided (18 Nov 2026), and written into both docs:
 - **"Not sure" tips** on the summary: dropped for v1.
 - **Honeypot:** added in M3 with the endpoint.
 
-**Still open:** the real figures for the budget hint, "Most of our projects are between £X and £Y". The hint stays as a placeholder until then; it blocks M7 only.
+- **Budget hint:** "Most of our projects are between £10k and £20k." (settled 19 Nov 2026)
 
 ---
 
-## M1: Clickable prototype at `/brief`
+## M1: Clickable prototype at `/brief` (built; testing parked)
+
+Built. The phone testing below is parked until later (19 Nov 2026) and doesn't block M2 or M3.
 
 **Goal:** find out whether the form itself works (length, wording, feel) before building any backend.
 
@@ -130,7 +132,6 @@ No database and no email verification yet. This milestone tells us how much spam
 - "Start a brief" CTA from the site (Storyblok-managed, so it can be placed without a deploy). Remove `noindex`.
 - Plausible custom events for each step reached, Send brief and confirmed, so we can see where people drop off.
 - A privacy policy page at `/privacy-policy` (it doesn't exist yet; the consent line already links to it) covering brief data and how long it's kept.
-- Real figures in the budget hint, replacing "£X and £Y".
 - Team process: who answers a brief, and how they keep to "within two working days".
 
 **Done when:** it's live, linked from the site, and the funnel shows up in Plausible.

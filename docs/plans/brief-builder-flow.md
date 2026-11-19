@@ -208,7 +208,7 @@ _Hint:_ Things like your about text, service descriptions and photos.
 ### 8. Budget
 
 **What budget do you have available?** · required
-_Hint:_ Most of our projects are between £X and £Y. **← placeholder: fill in real figures**
+_Hint:_ Most of our projects are between £10k and £20k.
 
 |          |                                                      |
 | -------- | ---------------------------------------------------- |
@@ -340,6 +340,4 @@ Options marked "Not sure" or "No idea" (none at present) get a dashed border so 
 
 ## Things still to settle
 
-1. **Budget hint:** replace "£X and £Y" in screen 8's hint with real figures. The five bands are confirmed.
-
-Settled in M0 (see `brief-builder-milestones.md`): order of contact screens and summary, link-only screen 6, consent wording, plain numbering, the small-phone exception for screen 3, the repo as source of truth, the two-working-day promise, and no "not sure" tips on the summary for v1.
+Nothing at present. Settled in M0 (see `brief-builder-milestones.md`): order of contact screens and summary, link-only screen 6, consent wording, plain numbering, the small-phone exception for screen 3, the repo as source of truth, the two-working-day promise, the budget hint figures, and no "not sure" tips on the summary for v1.

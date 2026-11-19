@@ -84,7 +84,7 @@ const briefSteps: BriefStep[] = [
   {
     key: 'budget',
     title: 'What budget do you have available?',
-    hint: 'Most of our projects are between £X and £Y.',
+    hint: 'Most of our projects are between £10k and £20k.',
     field: 'slider',
     options: briefOptions.budget,
   },
