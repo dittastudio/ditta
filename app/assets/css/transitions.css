@@ -107,6 +107,33 @@
     }
   }
 
+  /* Parts of a brief screen that come and go as it's answered: follow-ups, link rows, a suggestion. Coming in they
+     rise a little into place; going, they only fade, and quickly, so the space they hold closes soon after. */
+  .brief-reveal-enter-active {
+    transition:
+      opacity 0.25s var(--ease-outQuart),
+      translate 0.25s var(--ease-outQuart);
+  }
+
+  .brief-reveal-leave-active {
+    transition: opacity 0.15s var(--ease-outCubic);
+  }
+
+  .brief-reveal-enter-from {
+    opacity: 0;
+    translate: 0 calc(var(--spacing) * 2);
+  }
+
+  .brief-reveal-leave-to {
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .brief-reveal-enter-from {
+      translate: 0 0;
+    }
+  }
+
   /* Brief builder screens: in from the right going forward, from the left going back. Next is pressed a dozen times
      a brief, so the old screen gets out of the way quickly and only drifts a little; the new one takes its time. */
   .brief-forward-enter-active,

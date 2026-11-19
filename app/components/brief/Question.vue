@@ -79,19 +79,21 @@ defineExpose({ validate })
       @submit="emit('submit')"
     />
 
-    <p
-      v-if="emailSuggestion"
-      class="-mt-2 text-16 text-beige md:-mt-9"
-    >
-      Did you mean
-      <button
-        type="button"
-        class="font-medium underline underline-offset-4"
-        @click="brief.setAnswer('email', emailSuggestion)"
+    <Transition name="brief-reveal">
+      <p
+        v-if="emailSuggestion"
+        class="-mt-2 text-16 text-beige md:-mt-9"
       >
-        {{ emailSuggestion }}</button
-      >?
-    </p>
+        Did you mean
+        <button
+          type="button"
+          class="font-medium underline underline-offset-4"
+          @click="brief.setAnswer('email', emailSuggestion)"
+        >
+          {{ emailSuggestion }}</button
+        >?
+      </p>
+    </Transition>
 
     <p
       v-if="step.field === 'email'"
@@ -107,7 +109,7 @@ defineExpose({ validate })
     </p>
 
     <TransitionGroup
-      name="fade"
+      name="brief-reveal"
       tag="div"
       class="flex flex-col gap-6 empty:hidden md:gap-15"
       @enter="(el: Element) => frame(el.querySelector('[data-brief-target]'))"
