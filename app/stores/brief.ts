@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import type { BriefFieldKey } from '#shared/schemas/brief'
 import type { BriefDraft } from '@/utils/brief'
+import { briefOptions } from '#shared/schemas/brief'
 
 export type BriefStatus = 'draft' | 'sent' | 'confirmed'
 
@@ -25,6 +26,23 @@ export const useBriefStore = defineStore(
     function setAnswer<K extends BriefFieldKey>(key: K, value: BriefDraft[K]) {
       if (value === undefined) delete answers.value[key]
       else answers.value[key] = value
+    }
+
+    // A choice saved before its option was reworded or removed. Kept, it would fail validation with no card to
+    // untick, and the client would be stuck on that step. Runs when a saved draft is loaded.
+    function dropStaleChoices() {
+      for (const [key, options] of Object.entries(briefOptions) as [keyof typeof briefOptions, readonly string[]][]) {
+        const value: unknown = answers.value[key]
+
+        if (Array.isArray(value)) {
+          const kept = value.filter((choice) => options.includes(choice))
+          if (kept.length === value.length) continue
+          if (kept.length) answers.value[key] = kept as never
+          else delete answers.value[key]
+        } else if (typeof value === 'string' && !options.includes(value)) {
+          delete answers.value[key]
+        }
+      }
     }
 
     function goTo(index: number, fromSummary = false) {
@@ -66,6 +84,7 @@ export const useBriefStore = defineStore(
       step,
       isSummary,
       setAnswer,
+      dropStaleChoices,
       goTo,
       next,
       back,
@@ -77,6 +96,7 @@ export const useBriefStore = defineStore(
     persist: {
       pick: ['answers', 'stepIndex', 'editingFromSummary', 'status'],
       storage: piniaPluginPersistedstate.localStorage(),
+      afterHydrate: ({ store }) => store.dropStaleChoices(),
     },
   },
 )
