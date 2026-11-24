@@ -13,8 +13,11 @@ const emit = defineEmits<{ submit: [] }>()
 const brief = useBriefStore()
 const frame = useBriefFrame()
 
-// This screen's schema: its question plus its follow-ups. Errors show once a field is dirty or after Next.
-const { r$ } = useRegleSchema(toRef(brief, 'answers'), briefStepSchemas[step.key])
+// This screen's schema: its question plus its follow-ups. A field isn't judged while it's first being typed into:
+// its errors show once it's been left with something in it (see Field), or after Next. From then on they follow
+// along as it changes.
+const { r$ } = useRegleSchema(toRef(brief, 'answers'), briefStepSchemas[step.key], { autoDirty: false })
+const touch = (key: BriefFieldKey) => r$.$fields[key]?.$touch()
 
 const titleId = useId()
 const title = computed(() => personaliseBrief(step.title, brief.answers))
@@ -77,6 +80,7 @@ defineExpose({ validate })
       focus-on-mount
       @update:model-value="setAnswer(step.key, $event)"
       @submit="emit('submit')"
+      @touch="touch(step.key)"
     />
 
     <Transition name="brief-reveal">
@@ -148,6 +152,7 @@ defineExpose({ validate })
           focus-on-mount
           @update:model-value="setAnswer(followUp.key, $event)"
           @submit="emit('submit')"
+          @touch="touch(followUp.key)"
         />
       </div>
     </TransitionGroup>

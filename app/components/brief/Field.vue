@@ -11,7 +11,8 @@ interface Props {
 
 const { question, labelledby, errors = [], rowErrors = [], focusOnMount = false } = defineProps<Props>()
 const model = defineModel<unknown>()
-const emit = defineEmits<{ submit: [] }>()
+// `touch` once a typed answer has been left, so its errors can start to show (see Question)
+const emit = defineEmits<{ submit: []; touch: [] }>()
 
 // Shows what Regle reports; never validates anything itself
 const errorId = useId()
@@ -40,12 +41,25 @@ const single = as<string | undefined>()
 const links = as<BriefLinkRow[] | undefined>()
 
 const inputmode = { email: 'email', url: 'url' } as const
+
+// Leaving a field you've typed in is when it's checked. Not an empty one, which would only be told off for being
+// empty, and not when the whole window loses focus, which isn't leaving the field.
+const typed = ['text', 'email', 'url', 'links'].includes(question.field)
+
+function onFocusout() {
+  if (typed && document.hasFocus() && hasBriefAnswer(model.value)) emit('touch')
+}
+
+// Coming back to a field that's already filled in leaves it be, rather than dropping the caret into an answer that's
+// done. Focus goes to the question instead, so Enter carries on. Decided as it mounts, not as it's typed into.
+const focusFirst = focusOnMount && !hasBriefAnswer(model.value)
 </script>
 
 <template>
   <div
     data-brief-target
     class="flex flex-col gap-3"
+    @focusout="onFocusout"
   >
     <BriefOptions
       v-if="question.field === 'cards' || question.field === 'chips'"
@@ -74,6 +88,7 @@ const inputmode = { email: 'email', url: 'url' } as const
       :placeholders="question.placeholders"
       :note-placeholder="question.notePlaceholder"
       :sharing-nudge="question.sharingNudge"
+      :focus-on-mount="focusFirst"
       @submit="emit('submit')"
     />
 
@@ -86,7 +101,7 @@ const inputmode = { email: 'email', url: 'url' } as const
       :placeholder="question.placeholders?.[0] ?? question.placeholder"
       :placeholders="question.placeholders"
       :autocomplete="question.autocomplete ?? 'off'"
-      :focus-on-mount="focusOnMount"
+      :focus-on-mount="focusFirst"
       @submit="emit('submit')"
     />
 

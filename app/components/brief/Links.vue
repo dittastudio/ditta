@@ -10,6 +10,8 @@ interface Props {
   notePlaceholder?: string
   // A reminder under links from hosts where files are private until shared
   sharingNudge?: boolean
+  // The first row takes focus as it mounts
+  focusOnMount?: boolean
 }
 
 const {
@@ -17,6 +19,7 @@ const {
   placeholders = ['acme.com'],
   notePlaceholder = 'What do you like about it? (optional)',
   sharingNudge = false,
+  focusOnMount = false,
 } = defineProps<Props>()
 const model = defineModel<BriefLinkRow[] | undefined>()
 const emit = defineEmits<{ submit: [] }>()
@@ -93,7 +96,7 @@ function onPaste(index: number, event: ClipboardEvent) {
             :aria-label="`Link ${index + 1}`"
             :aria-invalid="rowErrors[index]?.length ? true : undefined"
             :aria-describedby="rowErrors[index]?.length ? `${id}-${index}` : undefined"
-            :focus-on-mount="index === 0 || added"
+            :focus-on-mount="(index === 0 && focusOnMount) || added"
             @update:model-value="update(index, { url: $event })"
             @paste="onPaste(index, $event)"
             @submit="emit('submit')"

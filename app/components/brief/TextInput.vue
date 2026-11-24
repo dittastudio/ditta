@@ -86,7 +86,7 @@ watchEffect((onCleanup) => {
       v-model="model"
       :maxlength="$attrs.type === 'url' ? BRIEF_LINK_MAX : BRIEF_TEXT_MAX"
       enterkeyhint="next"
-      class="w-full scroll-mt-[calc(var(--dock-height)+--spacing(13.5))] rounded-10 border border-white/25 bg-white/10 px-5 text-white outline-none transition-colors duration-200 ease-outCubic focus:border-olive aria-invalid:border-coral"
+      class="peer w-full scroll-mt-[calc(var(--dock-height)+--spacing(13.5))] rounded-10 border border-white/25 bg-white/10 px-5 text-white outline-none transition-colors duration-200 ease-outCubic focus:border-olive aria-invalid:border-coral"
       :class="[
         small ? 'py-3 text-16' : 'py-4 text-16 md:text-20',
         rotates ? 'placeholder:text-transparent' : 'placeholder:text-white/40',
@@ -96,7 +96,9 @@ watchEffect((onCleanup) => {
       @input="onInput"
     />
 
-    <!-- mousedown is held back so the field keeps focus, and on touch the keyboard stays up -->
+    <!-- Only shown while the field has focus: an answer that's done doesn't need a way to wipe it. Hidden by
+         opacity rather than removed, so it fades both ways. mousedown is held back so the field keeps focus, and on
+         touch the keyboard stays up. -->
     <Transition
       enter-active-class="transition-opacity duration-200 ease-outCubic"
       leave-active-class="transition-opacity duration-200 ease-outCubic"
@@ -108,7 +110,7 @@ watchEffect((onCleanup) => {
         type="button"
         tabindex="-1"
         aria-label="Clear"
-        class="group absolute inset-y-0 right-0 flex touch-manipulation items-center pr-5 pl-3 text-white/60 transition-colors duration-200 ease-outCubic only-hover:hover:text-white"
+        class="group pointer-events-none absolute inset-y-0 right-0 flex touch-manipulation items-center pr-5 pl-3 text-white/60 opacity-0 transition-[color,opacity] duration-200 ease-outCubic peer-focus:pointer-events-auto peer-focus:opacity-100 only-hover:hover:text-white"
         @mousedown.prevent
         @click="clear"
       >

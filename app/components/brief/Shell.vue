@@ -189,7 +189,8 @@ function holdKeyboard() {
   if (!isTouch() || !brief.step || brief.editingFromSummary) return
 
   const nextStep = briefSteps[brief.stepIndex + 1]
-  if (!nextStep || !keyboardFields.has(nextStep.field)) return
+  // A field that's already filled in doesn't take focus (see Field), so there's no keyboard to hold open for it
+  if (!nextStep || !keyboardFields.has(nextStep.field) || hasBriefAnswer(brief.answers[nextStep.key])) return
   // The same check Next is about to make, but synchronous, so it can still count as part of the tap
   if (!briefStepSchemas[brief.step.key].safeParse(brief.answers).success) return
 
