@@ -6,7 +6,7 @@
 // it fades rather than animating a shadow mixed from currentcolor (which flickers). Layers share the legend's grid cell instead of being
 // positioned, since callers may position the key absolutely.
 // Hidden unless an ancestor has data-shortcuts: "on" shows it, "preview" shows it faintly (the brief's switch, see
-// Nav). display: none, so a hidden key takes no room in a chip; it fades both ways through @starting-style. Showing
+// Nav). display: none, so a hidden key takes no room in a chip; it animates both ways through @starting-style. Showing
 // lives on the outer <kbd> and pressing on the inner key, so the two never fight over opacity.
 // `shape="return"` draws the tall ISO return key, notched at the bottom left, as an SVG: no box can take that shape.
 
@@ -26,8 +26,11 @@ const lipMask = useId()
 
 const press =
   'transition-[translate,opacity] duration-100 ease-outCubic in-[label:active]:opacity-60 in-data-pressed:opacity-60 motion-safe:in-[label:active]:translate-y-px motion-safe:in-data-pressed:translate-y-px motion-reduce:transition-none'
+// Comes in like the nav's Start again button (brief-pop): from just under full size and out of focus. Leaves quicker
+// and smaller. The hidden state is where it leaves to, @starting-style where it enters from. Reduced motion keeps
+// the fade only.
 const visibility =
-  'hidden opacity-0 transition-[display,opacity] transition-discrete duration-200 ease-outCubic in-data-[shortcuts=on]:inline-flex in-data-[shortcuts=on]:opacity-100 in-data-[shortcuts=preview]:inline-flex in-data-[shortcuts=preview]:opacity-50 starting:opacity-0 motion-reduce:transition-none'
+  'hidden opacity-0 scale-95 blur-2xs transition-[display,opacity,scale,filter] transition-discrete duration-200 ease-outCubic in-data-shortcuts:inline-flex in-data-shortcuts:scale-100 in-data-shortcuts:blur-none in-data-shortcuts:duration-300 in-data-shortcuts:ease-outQuart in-data-[shortcuts=on]:opacity-100 in-data-[shortcuts=preview]:opacity-50 starting:in-data-shortcuts:opacity-0 starting:in-data-shortcuts:scale-90 starting:in-data-shortcuts:blur-xs motion-reduce:scale-100 motion-reduce:blur-none motion-reduce:starting:in-data-shortcuts:scale-100 motion-reduce:starting:in-data-shortcuts:blur-none'
 const lipFade =
   'transition-opacity duration-100 ease-outCubic in-[label:active]:opacity-0 in-data-pressed:opacity-0 motion-reduce:transition-none'
 </script>

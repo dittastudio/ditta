@@ -79,6 +79,9 @@
   --text-160: 10rem;
   --text-180: 11.25rem;
 
+  /* On top of Tailwind's blur scale (xs is 4px): the faint blur a small thing leaves with (see UiKbd) */
+  --blur-2xs: 2px;
+
   --radius-\*: initial;
   --radius-full: 9999px;
   --radius-0: 0px;
@@ -88,6 +91,8 @@
   --radius-20: 20px;
 
   /* The darker lip along the bottom of a MacBook-style keycap (see UiKbd), in the text's colour */
+  /* A switch's thumb (see UiSwitch), lifted just off its track */
+  --shadow-thumb: 0 1px 2px color-mix(in oklab, var(--color-black) 30%, transparent);
   --shadow-key: inset 0 -1.5px 0 color-mix(in oklab, currentcolor 30%, transparent);
 
   --ease-inQuad: cubic-bezier(0.55, 0.085, 0.68, 0.53);
