@@ -41,6 +41,14 @@ export const useAppStore = defineStore(
       dockHeight.value = value
     }
 
+    // Where the floating dock ends, measured from the top of the viewport: its inset plus its height
+    const dockBottom = ref(0)
+    const getDockBottom = computed(() => dockBottom.value)
+
+    function setDockBottom(value: number) {
+      dockBottom.value = value
+    }
+
     return {
       accent,
       getAccent,
@@ -55,6 +63,9 @@ export const useAppStore = defineStore(
       dockHeight,
       getDockHeight,
       setDockHeight,
+      dockBottom,
+      getDockBottom,
+      setDockBottom,
     }
   },
   {

@@ -14,6 +14,7 @@ export default defineNuxtConfig({
   modules: [
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',
+    '@regle/nuxt',
     '@nuxtjs/seo',
     [
       '@nuxtjs/plausible',
@@ -85,6 +86,14 @@ export default defineNuxtConfig({
     '/**': {
       prerender: !isSpa,
     },
+    // Per-visitor form state, nothing to prerender (docs/plans/brief-builder-milestones.md)
+    // noindex as a response header as well as a meta tag, since the page is client-only and crawlers that don't
+    // run JavaScript never see the tag. Remove this and the page's useSeoMeta robots at launch (M7).
+    '/brief': {
+      ssr: false,
+      prerender: false,
+      robots: false,
+    },
   },
   nitro: {
     cloudflare: {
@@ -130,10 +139,20 @@ export default defineNuxtConfig({
   css: ['~/assets/css/app.css'],
   devtools: { enabled: false },
   runtimeConfig: {
+    // The brief builder's submission (server/api/brief.post.ts). NUXT_RESEND_API_KEY and NUXT_TURNSTILE_SECRET_KEY
+    // are Worker secrets; the addresses are set in wrangler.jsonc. These defaults are Resend's test addresses.
+    resendApiKey: '',
+    turnstileSecretKey: '',
+    brief: {
+      from: 'ditta briefs <onboarding@resend.dev>',
+      to: 'delivered@resend.dev',
+    },
     // The Storyblok token lives in the module's `public.storyblok.accessToken`. On Cloudflare, runtime vars override
     // both at request time: NUXT_PUBLIC_STORYBLOK_ACCESS_TOKEN (the previews' secret) and NUXT_PUBLIC_STORYBLOK_VERSION.
     public: {
       STORYBLOK_VERSION: ciBranch ? (isSpa ? 'draft' : 'published') : process.env.NUXT_STORYBLOK_VERSION,
+      // Set in wrangler.jsonc; empty in `nuxt dev`, which falls back to Turnstile's test key
+      turnstileSiteKey: '',
     },
   },
   vite: {

@@ -8,6 +8,8 @@
   // The live site is served only at ditta.studio (a Custom Domain on this Worker, with www redirected by a zone rule),
   // so ditta.ditta.workers.dev is off rather than serving a second copy of it.
   "workers_dev": false,
+  // POST /api/brief: 3 briefs a minute per IP. Workers' rate limits only count over 10 or 60 seconds.
+  "ratelimits": [{ "name": "BRIEF_RATE_LIMIT", "namespace_id": "1001", "simple": { "limit": 3, "period": 60 } }],
   // Branch previews (<branch>-ditta.<subdomain>.workers.dev) stay on. `develop` is the Storyblok Visual Editor's
   // preview URL.
   "preview_urls": true,
@@ -15,6 +17,11 @@
   // NUXT_STORYBLOK_TOKEN build variable (the public token), so no runtime secret is needed.
   "vars": {
     "NUXT_PUBLIC_STORYBLOK_VERSION": "published",
+    // The brief builder's team email (server/api/brief.post.ts). Not secret, so kept here, where a deploy can't drop it.
+    "NUXT_BRIEF_FROM": "ditta briefs <briefs@ditta.studio>",
+    "NUXT_BRIEF_TO": "hello@ditta.studio",
+    // Turnstile's site key is public. Read at runtime, since /brief is rendered by the Worker, not prerendered.
+    "NUXT_PUBLIC_TURNSTILE_SITE_KEY": "0x4AAAAAAGQ0b2civA5o_kxC",
   },
   // Worker Previews (non-production branches): SPA, draft content + Visual Editor. Nothing is inherited from the top
   // level, so vars are repeated here. Set the preview token in the dashboard (Settings → Runtime variables and
@@ -22,6 +29,9 @@
   "previews": {
     "vars": {
       "NUXT_PUBLIC_STORYBLOK_VERSION": "draft",
+      "NUXT_BRIEF_FROM": "ditta briefs <briefs@ditta.studio>",
+      "NUXT_BRIEF_TO": "hello@ditta.studio",
+      "NUXT_PUBLIC_TURNSTILE_SITE_KEY": "0x4AAAAAAGQ0b2civA5o_kxC",
     },
   },
 }
