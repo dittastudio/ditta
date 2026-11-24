@@ -221,6 +221,8 @@ async function primary() {
   brief.next()
 }
 
+useBriefKeys(root, primary)
+
 // A blocked Next says why, and on a keyboard puts focus on the answer to fix. Not on touch: focusing a text field
 // there opens the keyboard, and the error is right under the field anyway. Cleared first, so the same message
 // twice in a row is still read out.

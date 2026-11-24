@@ -54,10 +54,16 @@ const primaryLabel = computed(() => {
   return 'Next'
 })
 
+// Enter moves on from any question (see useBriefKeys), so the bar says so to anyone with a keyboard. Not on the
+// review, where sending takes a deliberate press.
+const enterAdvances = computed(() => isDraft.value && !brief.isSummary)
+
+// Back goes through the browser's history, so the browser's own Back does the same (see useBriefHistory)
+const briefHistory = useBriefHistory(() => play(soundPageExit))
+
 function back() {
   play(soundPageExit)
-  if (brief.status === 'sent') return brief.setStatus('draft')
-  brief.back()
+  briefHistory.back()
 }
 
 // Start again wipes the whole draft, so the nav turns into a "Clear everything?" confirm first. Cancel takes focus,
@@ -248,6 +254,12 @@ defineExpose({ el: nav, primaryLabel })
           class="absolute bottom-3.5 left-3.5 font-mono text-11 leading-none text-grey/60 tabular-nums md:bottom-5 md:left-5"
         >
           {{ brief.isSummary ? 'Review' : `${position} of ${brief.total}` }}
+          <span
+            v-if="enterAdvances"
+            class="max-md:hidden only-touch:hidden"
+            aria-hidden="true"
+            >· Enter ↵</span
+          >
         </p>
 
         <p
@@ -273,6 +285,7 @@ defineExpose({ el: nav, primaryLabel })
             type="button"
             class="rounded-full"
             :class="{ 'shake-once': shaking }"
+            :aria-keyshortcuts="enterAdvances ? 'Enter' : undefined"
             @click="emit('primary')"
             @animationend="shaking = false"
           >

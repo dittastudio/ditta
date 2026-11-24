@@ -64,6 +64,9 @@ function onKeydown(event: KeyboardEvent) {
   inputs[to]?.focus()
 }
 
+// 1–9 pick the first nine options (see useBriefKeys). Each shows its key, but only where there's likely a keyboard.
+const shortcut = (index: number) => (index < 9 ? String(index + 1) : undefined)
+
 // The input is hidden, so the label shows its focus. Shell's own ring skips inputs.
 const focusRing =
   'has-focus-visible:outline-1 has-focus-visible:outline-dashed has-focus-visible:outline-offset-4 has-focus-visible:outline-white/50'
@@ -75,12 +78,13 @@ const focusRing =
     :role="role"
     class="grid gap-(--app-gutter-inner)"
     :class="hasDescriptions ? 'sm:grid-cols-2' : 'grid-cols-2'"
+    data-brief-options
     @keydown="onKeydown"
   >
     <label
-      v-for="option in options"
+      v-for="(option, index) in options"
       :key="option"
-      class="edge-light edge-glow flex cursor-pointer touch-manipulation flex-col items-start gap-4 rounded-10 border border-white/25 bg-offblack text-left select-none transition-[border-color,background-color] duration-500 ease-outQuart [--el-fade:500ms] [--el-fade-ease:var(--ease-outQuart)] only-hover:hover:not-has-checked:border-white/50 has-checked:border-olive has-checked:bg-olive-dark has-checked:[--eg-color:var(--color-olive)] has-checked:[--el-color:var(--color-olive-light)] md:gap-5"
+      class="edge-light edge-glow relative flex cursor-pointer touch-manipulation flex-col items-start gap-4 rounded-10 border border-white/25 bg-offblack text-left select-none transition-[border-color,background-color] duration-500 ease-outQuart [--el-fade:500ms] [--el-fade-ease:var(--ease-outQuart)] only-hover:hover:not-has-checked:border-white/50 has-checked:border-olive has-checked:bg-olive-dark has-checked:[--eg-color:var(--color-olive)] has-checked:[--el-color:var(--color-olive-light)] md:gap-5"
       :class="[hasDescriptions ? 'p-5 md:p-7.5' : 'p-4 md:p-6', focusRing]"
     >
       <input
@@ -88,9 +92,17 @@ const focusRing =
         :type="type"
         :name="name"
         :value="option"
+        :aria-keyshortcuts="shortcut(index)"
         class="sr-only"
         @change="playPick"
       />
+
+      <kbd
+        v-if="shortcut(index)"
+        class="absolute top-3 right-3 font-mono text-12 leading-none opacity-40 only-touch:hidden md:top-4 md:right-4"
+        aria-hidden="true"
+        >{{ shortcut(index) }}</kbd
+      >
 
       <template v-if="figures[option]">
         <span class="text-28 font-medium leading-none trim-both 2xs:text-40 md:text-64">{{
@@ -121,10 +133,11 @@ const focusRing =
     v-else
     :role="role"
     class="flex flex-wrap gap-(--app-gutter-inner)"
+    data-brief-options
     @keydown="onKeydown"
   >
     <label
-      v-for="option in options"
+      v-for="(option, index) in options"
       :key="option"
       class="relative cursor-pointer touch-manipulation rounded-full bg-white/10 px-5 py-3 text-16 font-medium leading-none text-white select-none transition-colors duration-200 ease-outCubic only-hover:hover:not-has-checked:bg-white/20 has-checked:bg-white has-checked:text-black"
       :class="focusRing"
@@ -134,11 +147,19 @@ const focusRing =
         :type="type"
         :name="name"
         :value="option"
+        :aria-keyshortcuts="shortcut(index)"
         class="sr-only"
         @change="playPick"
       />
 
-      <span class="block trim-both">{{ option }}</span>
+      <span class="block trim-both"
+        ><kbd
+          v-if="shortcut(index)"
+          class="mr-2 font-mono text-12 opacity-40 only-touch:hidden"
+          aria-hidden="true"
+          >{{ shortcut(index) }}</kbd
+        >{{ option }}</span
+      >
     </label>
   </div>
 </template>
