@@ -73,7 +73,7 @@ Done (19 Nov 2026). Letter shortcuts were dropped. Measured at 320 × 568, every
 
 ---
 
-## M3: Simple submission
+## M3: Simple submission ✅
 
 **Goal:** real leads arrive with the smallest backend that's safe to run.
 
@@ -96,6 +96,8 @@ Built (24 Nov 2026), waiting on accounts:
 **To launch:** `ditta.studio` is verified in Resend (EU), and a sending-only key has delivered a test brief locally (24 Nov 2026). The addresses and Turnstile's public site key are in `wrangler.jsonc` (read at runtime: `/brief` isn't prerendered, so a build variable wouldn't reach it). `NUXT_RESEND_API_KEY` and `NUXT_TURNSTILE_SECRET_KEY` are Worker secrets, on Previews Base too.
 
 **Done when:** a brief submitted from production arrives in the team inbox, and the spam checks reject a scripted submission.
+
+Done (24 Nov 2026). A real brief from ditta.studio reached hello@. Scripted posts to production: a fake Turnstile token gets 403, a filled honeypot gets the quiet fake success, and invalid answers get 400. The rate limit is loose: Cloudflare counts per data centre and syncs late, so a burst of 30 saw only five 429s. Treat it as a brake; Turnstile is the gate.
 
 ---
 
