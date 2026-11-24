@@ -151,8 +151,6 @@ export default defineNuxtConfig({
         '@storyblok/vue',
         '@tiptap/core',
         '@unhead/schema-org/vue',
-        '@vue/devtools-core',
-        '@vue/devtools-kit',
         '@vueuse/core',
         '@web-kits/audio',
         'gsap',
