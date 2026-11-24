@@ -24,6 +24,7 @@ const dockBgClasses: Record<DockThemes, string> = {
   light: 'bg-grey/50 outline outline-1 outline-black/5',
   white: 'bg-grey/50 outline outline-1 outline-black/5',
   pink: 'bg-pink/50 outline outline-1 outline-black/5',
+  coral: 'bg-coral/50 outline outline-1 outline-black/5',
   beige: 'bg-beige/50 outline outline-1 outline-black/5',
   mood: 'bg-mood/50 outline outline-1 outline-black/5',
   olive: 'bg-olive/50 outline outline-1 outline-black/5',
@@ -39,6 +40,7 @@ const dockTextClasses: Record<DockThemes, string> = {
   light: 'text-black',
   white: 'text-black',
   pink: 'text-black',
+  coral: 'text-black',
   beige: 'text-black',
   mood: 'text-black',
   olive: 'text-black',
@@ -116,6 +118,7 @@ const onScroll = () => {
 onMounted(async () => {
   if (dock.value) {
     appStore.setDockHeight(dock.value.clientHeight)
+    appStore.setDockBottom(dock.value.getBoundingClientRect().bottom)
   }
 
   lastScrollY = window.scrollY

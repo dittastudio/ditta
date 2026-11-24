@@ -155,7 +155,7 @@ onUnmounted(() => {
                 class="footer__robot relative lg:left-[-2.5%] h-36 md:h-50 aspect-336/278 rotate-(--tilt)"
                 :class="shakeClass"
               >
-                <div class="relative animate-bob">
+                <div class="relative motion-safe:animate-bob">
                   <IconRobot
                     class="w-full h-full"
                     :in-rage="inRage"

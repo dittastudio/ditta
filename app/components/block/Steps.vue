@@ -182,7 +182,7 @@ const onArrowClick = () => {
               <div :class="marioPhase === 'raging' ? 'shake-3' : arrowShakeClass">
                 <IconPixelArrow
                   class="w-full data-rage:[&_[fill='#24F456']]:fill-rage-light data-rage:[&_[fill='#00E640']]:fill-rage data-rage:[&_[fill='#00C340']]:fill-rage-dark"
-                  :class="{ 'animate-bob rotate-(--tilt)': !isArrowLocked }"
+                  :class="{ 'motion-safe:animate-bob rotate-(--tilt)': !isArrowLocked }"
                   :data-rage="isArrowLocked || undefined"
                 />
               </div>

@@ -7,6 +7,8 @@ const settings = await useStory<Block<'settings'>>('/settings')
 
 const route = useRoute()
 const router = useRouter()
+// The brief builder has its own heading, so it goes without the tagline
+const isBrief = computed(() => route.path.startsWith('/brief'))
 const appStore = useAppStore()
 
 // Vue renders the Dock and Tagline before the page's async setup resolves, so the page can't set this in time
@@ -69,7 +71,7 @@ router.afterEach(() => {
       mode="out-in"
     >
       <AppTagline
-        v-if="settings.content.tagline && !route.path.startsWith('/blog')"
+        v-if="settings.content.tagline && !route.path.startsWith('/blog') && !isBrief"
         :text="settings.content.tagline"
         :as="route.path === '/' ? 'h1' : 'p'"
         class="absolute top-0 left-0 z-2 pt-25"

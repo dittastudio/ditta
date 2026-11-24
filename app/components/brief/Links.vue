@@ -1,0 +1,152 @@
+<script lang="ts" setup>
+import type { BriefLinkRow } from '#shared/utils/brief'
+
+const MAX = 3
+
+interface Props {
+  rowErrors?: string[][]
+  // Examples for the link field, shown in turn while it's empty. The first is the native placeholder.
+  placeholders?: readonly string[]
+  notePlaceholder?: string
+  // A reminder under links from hosts where files are private until shared
+  sharingNudge?: boolean
+}
+
+const {
+  rowErrors = [],
+  placeholders = ['acme.com'],
+  notePlaceholder = 'What do you like about it? (optional)',
+  sharingNudge = false,
+} = defineProps<Props>()
+const model = defineModel<BriefLinkRow[] | undefined>()
+const emit = defineEmits<{ submit: [] }>()
+
+const id = useId()
+const list = useTemplateRef('list')
+const frame = useBriefFrame()
+
+// A row added by hand takes focus and comes into view; the rows already there on load leave focus to the first
+const added = ref(false)
+
+// Always at least one row to type into
+const rows = computed<BriefLinkRow[]>(() => (model.value?.length ? model.value : [{ url: '', note: '' }]))
+const canAdd = computed(() => rows.value.length < MAX && !!rows.value.at(-1)?.url?.trim())
+
+function update(index: number, patch: Partial<BriefLinkRow>) {
+  model.value = rows.value.map((row, i) => (i === index ? { ...row, ...patch } : row))
+}
+
+async function add() {
+  added.value = true
+  model.value = [...rows.value, { url: '', note: '' }]
+
+  await nextTick()
+  frame([...(list.value?.querySelectorAll('[data-brief-row]') ?? [])].at(-1))
+}
+
+// Ends a leave as it starts, so Vue drops the row this frame instead of waiting for a transition
+const removeAtOnce = (_el: Element, done: () => void) => done()
+
+function remove(index: number) {
+  model.value = rows.value.filter((_, i) => i !== index)
+}
+
+// Pasting several links at once fills a row each. They take the place of the row pasted into, alongside the other
+// rows with links in them, and stop at MAX rather than pushing any of those out.
+function onPaste(index: number, event: ClipboardEvent) {
+  const urls = (event.clipboardData?.getData('text') ?? '').split(/[\s,]+/).filter((part) => part.includes('.'))
+  if (urls.length < 2) return
+
+  event.preventDefault()
+  const filled = (row: BriefLinkRow) => !!row.url?.trim()
+  const before = rows.value.slice(0, index).filter(filled)
+  const after = rows.value.slice(index + 1).filter(filled)
+  const pasted = urls.slice(0, MAX - before.length - after.length).map((url) => ({ url, note: '' }))
+  model.value = [...before, ...pasted, ...after]
+}
+</script>
+
+<template>
+  <div
+    ref="list"
+    class="flex flex-col gap-3"
+  >
+    <!-- New rows rise in. Removed ones go at once: rows are keyed by position, so a middle row fading out would
+         show its old link while the row taking its place already shows the next one. -->
+    <TransitionGroup
+      name="brief-reveal"
+      @leave="removeAtOnce"
+    >
+      <div
+        v-for="(row, index) in rows"
+        :key="index"
+        data-brief-row
+        class="flex flex-col gap-1.5"
+      >
+        <div class="flex items-center gap-2">
+          <BriefTextInput
+            :model-value="row.url ?? ''"
+            type="url"
+            inputmode="url"
+            :placeholder="placeholders[0]"
+            :placeholders="placeholders"
+            :aria-label="`Link ${index + 1}`"
+            :aria-invalid="rowErrors[index]?.length ? true : undefined"
+            :aria-describedby="rowErrors[index]?.length ? `${id}-${index}` : undefined"
+            :focus-on-mount="index === 0 || added"
+            @update:model-value="update(index, { url: $event })"
+            @paste="onPaste(index, $event)"
+            @submit="emit('submit')"
+          />
+
+          <button
+            v-if="rows.length > 1"
+            type="button"
+            class="shrink-0 px-2 text-28 leading-none opacity-50 only-hover:hover:opacity-100"
+            :aria-label="`Remove link ${index + 1}`"
+            @click="remove(index)"
+          >
+            ×
+          </button>
+        </div>
+
+        <BriefFieldError
+          :id="`${id}-${index}`"
+          :errors="rowErrors[index]"
+        />
+
+        <Transition name="brief-reveal">
+          <p
+            v-if="sharingNudge && isPrivateByDefault(row.url ?? '')"
+            class="text-14 opacity-60 md:text-16"
+          >
+            Check it's shared so anyone with the link can view.
+          </p>
+        </Transition>
+
+        <Transition name="brief-reveal">
+          <BriefTextInput
+            v-if="row.url?.trim()"
+            :model-value="row.note ?? ''"
+            :placeholder="notePlaceholder"
+            :aria-label="`Note for link ${index + 1}`"
+            small
+            @update:model-value="update(index, { note: $event })"
+            @submit="emit('submit')"
+          />
+        </Transition>
+      </div>
+    </TransitionGroup>
+
+    <Transition name="brief-reveal">
+      <button
+        v-if="canAdd"
+        type="button"
+        class="self-start text-16 text-beige underline underline-offset-4 only-hover:hover:text-white"
+        @click="add"
+      >
+        + Add another link
+      </button>
+    </Transition>
+  </div>
+</template>

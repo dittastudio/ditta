@@ -19,6 +19,7 @@ This plan covers the **flow**: the screens, the states a brief moves through, th
 
 - **Database:** Cloudflare D1
 - **Email:** Resend
+- **Validation:** Regle + Zod, with one shared set of Zod schemas used by both the form and the API routes (see [Validation](#validation--regle--zod-one-schema-for-both-sides))
 - **Deliverable:** when a brief is confirmed, it's summarised into a **branded PDF** and attached to both the internal email to ditta and the client's copy.
 
 ---
@@ -26,8 +27,8 @@ This plan covers the **flow**: the screens, the states a brief moves through, th
 ## Core principle: nothing touches the server until they submit
 
 - The brief is filled in entirely in the browser. Answers live in a persisted Pinia store (localStorage), so a refresh or coming back later on the same browser resumes where they left off.
-- The **last step** asks for name and email (and consent).
-- Pressing **Submit** is the first moment a DB record is created and an email is sent.
+- The **last question screens** ask for name and email (with a consent line), then a **Summary** shows everything.
+- Pressing **Send brief** on the Summary (the Submit) is the first moment a DB record is created and an email is sent.
 - The brief only counts as **received** once they click the link in that email.
 
 ## Happy path
@@ -36,14 +37,15 @@ This plan covers the **flow**: the screens, the states a brief moves through, th
 [CTA "Start a brief"] → /brief
         │
         ▼
-[Steps 1…N: the brief]          answers saved locally only (Pinia + localStorage)
+[Steps 1…8: the brief]          answers saved locally only (Pinia + localStorage)
         │
         ▼
-[Review]                         summary of all answers, "Edit" per section
+[Steps 9…12: name, website,      consent line on the email step
+ source, email]
         │
         ▼
-[Final step: name + email + consent]
-        │  Submit
+[Summary]                        every answer, "Edit" per question, email visible
+        │  Send brief (Submit)
         ▼
 POST /api/brief  ──►  create record (status: pending), store answers,
                       generate token, send "Confirm your brief" email
@@ -119,12 +121,12 @@ If they go **back** to edit answers while pending, the next Submit updates the s
 
 ## Screens
 
-1. **Brief steps**: one topic per step, progress indicator, Back/Next, local autosave.
-2. **Review**: grouped summary with edit links.
-3. **Your details**: name, email (with a light "did you mean gmail.com?" check), consent, Submit. Honeypot field here.
+1. **Brief steps**: one topic per step, progress indicator, Back/Next, local autosave. Screen 6 takes up to 3 links; file uploads are M6.
+2. **Your details** (steps 9–12): name, website, source and email (with a light "did you mean gmail.com?" check and a consent line linking to the privacy policy). Honeypot field on the email step.
+3. **Summary**: every answer with Edit links, then **Send brief**, which is the Submit. Putting it after the details means the email is on screen to check before anything is sent.
 4. **Check your inbox**: shows the address, "Not received your email?" panel, auto-advances on confirm.
 5. **Confirm landing** (`/brief/confirm`): a short summary and a **Confirm & send** button. A button rather than auto-confirm on GET, because email link scanners (Outlook Safe Links and similar) pre-fetch URLs and would otherwise "confirm" on the person's behalf.
-6. **Thank you**: what happens next and expected response time.
+6. **Thank you**: what happens next, and the promise to reply within two working days.
 7. **Expired / already-confirmed** landing states.
 
 The step list comes from one config (or Storyblok), so the questions can change without touching the flow.
@@ -166,13 +168,40 @@ Bind D1 in `wrangler.toml`/Nitro config and access it through Nitro's `useDataba
 - `GET /confirm?token=`: validate and return a summary for the landing page (no side effects)
 - `POST /confirm`: mark confirmed, clear the token, generate the PDF, then send both emails with it attached (see below)
 
+### Validation — Regle + Zod, one schema for both sides
+
+All validation in the brief builder is done with **Zod** schemas, run on the client by **Regle** and on the server by the API routes. The same schema files are used by both, so the browser and the Worker can never disagree about what a valid brief is.
+
+- **Where:** `shared/schemas/brief.ts`, imported as `#shared/schemas/brief` from both `app/` and `server/`.
+- **What it holds:**
+  - one schema per step (e.g. `briefStepSchemas[stepId]`), so each step validates on its own before Next
+  - `briefAnswersSchema`: all steps combined, used by Review and stored as the `answers` JSON
+  - `briefDetailsSchema`: name, email, consent (and the honeypot field, which must be empty)
+  - `briefSubmitSchema`: answers + details, the body of `POST /api/brief`
+  - `briefResendSchema`: optional corrected email, the body of `POST /:id/resend`
+  - `briefConfirmSchema`: the token, for `GET`/`POST /confirm`
+- **Client:** each step binds its schema with `useRegleSchema(state, schema)` (`@regle/schemas`, via the `@regle/nuxt` module). Next and Submit call `r$.$validate()`, and field errors come from `r$`. The Pinia draft store is typed with `z.infer<typeof briefAnswersSchema>`.
+- **Server:** every `/api/brief/*` route parses its body or query with the matching schema (`readValidatedBody(event, briefSubmitSchema.parse)`) before touching D1 or Resend. Invalid input returns a 400 with Zod's field errors and sends no email. The values passed to the email templates and the PDF are the **parsed** values, never the raw body.
+- **Not in the schema:** server-only checks stay in the routes: rate limits, token hash/expiry, draft-cookie ownership, minimum time-on-form, Turnstile.
+- If the step list moves to Storyblok, the step schemas still have to exist in code (or be built from the Storyblok config by a shared function), so the server can validate without trusting the client.
+
+Dependencies to add: `zod`, `@regle/core`, `@regle/schemas`, `@regle/nuxt`.
+
+### Form components
+
+The brief's inputs (text, textarea, choice chips, radio/checkbox groups, selects) are built as small, reusable components that follow the **Forms & Validation → Form components** rules in `AGENTS.md`:
+
+- They're styled only with the existing `@theme` tokens, and reuse `app/components/ui/` (`Button`, `Chip`, `Step`) wherever possible.
+- They use `defineModel()` for two-way binding, destructured props with defaults, and `useId()` for label and error wiring, so there's no `modelValue`/emit boilerplate.
+- They only display Regle's state. Each step page owns `useRegleSchema`, and the fields render what `r$` gives them.
+
 ### Rendering
 
 `/brief/**` is per-user, so exclude it from prerender and render it client-side, e.g. `routeRules: { '/brief/**': { ssr: false, prerender: false } }`. `/api/brief/*` runs on the Worker like the existing `server/api` routes.
 
 ### Email — Resend
 
-- Use the `resend` SDK, which works in Workers via `fetch`. Put the API key in private `runtimeConfig` (`NUXT_RESEND_API_KEY`), never `public`.
+- Call Resend's REST API with `$fetch` (no SDK needed for a single endpoint). Put the API key in private `runtimeConfig` (`NUXT_RESEND_API_KEY`), never `public`.
 - Verify the sending domain (`ditta.studio`) in Resend with SPF, DKIM and DMARC, so the magic link reaches the inbox and doesn't land in spam. That matters more here than usual, because the whole flow depends on that email arriving.
 - Send from something like `briefs@ditta.studio`. Set `reply_to` on the internal email to the client's address, so the team can reply directly.
 - Build the templates with Resend's React Email, or plain HTML strings, kept in `server/emails/`.
@@ -217,11 +246,11 @@ No reminder emails are sent. Emails 2 and 3 can go in one `resend.batch.send` ca
 
 ## Security & abuse
 
-- Honeypot and a minimum time-on-form before `POST /`. Add Cloudflare Turnstile at the details step if spam appears.
+- Honeypot and a minimum time-on-form before `POST /`. Add Cloudflare Turnstile on the email step if spam appears.
 - Rate limit create and resend per IP and per brief/email, so the form can't be used to send email to arbitrary addresses.
 - Tokens: 32+ random bytes, hashed, single-use, expiring. The old token dies on resend.
 - Cookies: httpOnly, Secure, SameSite=Lax.
-- GDPR: consent at the details step, privacy link, auto-delete unconfirmed records, and a retention policy for confirmed ones.
+- GDPR: a consent line and privacy link on the email step (no checkbox), auto-delete unconfirmed records, and a retention policy for confirmed ones.
 
 ---
 
