@@ -158,7 +158,7 @@ onBeforeUnmount(() => {
 
 <template>
   <!-- Set further apart than the text below it: the bob carries the burger 30px down towards the heading -->
-  <div class="relative isolate grid place-items-center animate-bob mb-10 md:mb-15">
+  <div class="relative isolate grid place-items-center motion-safe:animate-bob mb-10 md:mb-15">
     <!-- A soft light breathing behind the burger, dimming as it's eaten. Held still for reduced motion. -->
     <div
       class="pointer-events-none absolute -inset-15 -z-10 transition-opacity duration-700 ease-outCubic md:-inset-20"

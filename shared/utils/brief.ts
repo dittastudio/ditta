@@ -142,7 +142,7 @@ const briefSteps: BriefStep[] = [
   {
     key: 'email',
     title: "And finally, what's your email?",
-    hint: "We'll send you a copy of your brief.",
+    hint: 'So we can reply about your project.',
     field: 'email',
     autocomplete: 'email',
   },

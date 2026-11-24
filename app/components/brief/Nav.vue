@@ -296,7 +296,9 @@ defineExpose({ el: nav, primaryLabel })
           >
             <div
               v-if="hasPrevious"
-              class="flex"
+              class="flex transition-opacity duration-200 ease-outCubic"
+              :class="{ 'opacity-40': brief.sending }"
+              :inert="brief.sending"
             >
               <button
                 type="button"
@@ -322,7 +324,9 @@ defineExpose({ el: nav, primaryLabel })
             <!-- Wrapped so the pop can fade and blur it: the button's own transition is for hover and press -->
             <div
               v-if="isDraft && (hasStarted || clearing)"
-              class="flex"
+              class="flex transition-opacity duration-200 ease-outCubic"
+              :class="{ 'opacity-40': brief.sending }"
+              :inert="brief.sending"
             >
               <button
                 ref="resetButton"

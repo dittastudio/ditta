@@ -2,8 +2,13 @@
 // See "Validation — Regle + Zod" in docs/plans/brief-builder.md.
 import { z } from 'zod'
 
+// The inputs cap typing at the same lengths. Links get far more room: share and signed links run long, and one cut
+// short still looks valid but leads nowhere.
+export const BRIEF_TEXT_MAX = 200
+export const BRIEF_LINK_MAX = 2048
+
 const REQUIRED = 'Answer to continue'
-const TOO_LONG = 'Keep it under 200 characters'
+const TOO_LONG = `Keep it under ${BRIEF_TEXT_MAX} characters`
 
 export const briefOptions = {
   services: ['Web Design', 'Web Build', 'Existing project', 'Other'],
@@ -24,13 +29,14 @@ export const briefOptions = {
   source: ['Google', 'Instagram', 'LinkedIn', 'ChatGPT', 'Claude', 'Referral', 'From a website you made', 'Other'],
 } as const
 
-const text = z.string({ error: REQUIRED }).trim().min(1, REQUIRED).max(200, TOO_LONG)
-const optionalText = z.string().trim().max(200, TOO_LONG).optional()
+const text = z.string({ error: REQUIRED }).trim().min(1, REQUIRED).max(BRIEF_TEXT_MAX, TOO_LONG)
+const optionalText = z.string().trim().max(BRIEF_TEXT_MAX, TOO_LONG).optional()
 
 // "acme.com" is accepted and stored as "https://acme.com". An empty field is fine; optional is optional.
 const optionalLink = z
   .string()
   .trim()
+  .max(BRIEF_LINK_MAX, 'That link is too long')
   .transform((value) => (value && !/^https?:\/\//i.test(value) ? `https://${value}` : value))
   .pipe(
     z.union([z.literal(''), z.url({ protocol: /^https?$/, hostname: z.regexes.domain, error: 'Enter a valid link' })]),

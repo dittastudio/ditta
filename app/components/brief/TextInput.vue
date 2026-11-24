@@ -3,6 +3,7 @@ import { useDocumentVisibility, usePreferredReducedMotion } from '@vueuse/core'
 import { defineSound } from '@web-kits/audio'
 import { tap, tick } from '@@/.web-kits/core'
 import IconClose from '@/assets/icons/close.svg'
+import { BRIEF_LINK_MAX, BRIEF_TEXT_MAX } from '#shared/schemas/brief'
 
 // Native attributes (type, placeholder, autocomplete, inputmode, aria-*) fall through to the <input>
 defineOptions({ inheritAttrs: false })
@@ -45,6 +46,14 @@ function clear() {
   input.value?.focus({ preventScroll: true })
 }
 
+// Enter also confirms a word being composed (Chinese, Japanese and the like), which mustn't count as Next. Safari ends
+// the composition before its keydown, so its keyCode of 229 is the only sign.
+function onEnter(event: KeyboardEvent) {
+  if (event.isComposing || event.keyCode === 229) return
+  event.preventDefault()
+  emit('submit')
+}
+
 onMounted(() => {
   // The browser only scrolls for a focus that opens the keyboard (on touch, with no field holding it open already, as
   // Shell does across a Next). Every other time the brief frames the field itself (see useBriefScroll).
@@ -75,7 +84,7 @@ watchEffect((onCleanup) => {
       ref="input"
       v-bind="$attrs"
       v-model="model"
-      maxlength="200"
+      :maxlength="$attrs.type === 'url' ? BRIEF_LINK_MAX : BRIEF_TEXT_MAX"
       enterkeyhint="next"
       class="w-full scroll-mt-[calc(var(--dock-height)+--spacing(13.5))] rounded-10 border border-white/25 bg-white/10 px-5 text-white outline-none transition-colors duration-200 ease-outCubic focus:border-olive aria-invalid:border-coral"
       :class="[
@@ -83,7 +92,7 @@ watchEffect((onCleanup) => {
         rotates ? 'placeholder:text-transparent' : 'placeholder:text-white/40',
         model ? 'pr-14' : '',
       ]"
-      @keydown.enter.prevent="emit('submit')"
+      @keydown.enter="onEnter"
       @input="onInput"
     />
 

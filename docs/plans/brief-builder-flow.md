@@ -278,7 +278,7 @@ _Hint:_ Skip if you don't have one yet.
 ### 12. Email
 
 **And finally, what's your email?** · required
-_Hint:_ We'll send you a copy of your brief.
+_Hint:_ So we can reply about your project. (Until M4 sends the client a copy; then: "We'll send you a copy of your brief.")
 
 |                |                                                   |
 | -------------- | ------------------------------------------------- |
