@@ -51,14 +51,18 @@ function remove(index: number) {
   model.value = rows.value.filter((_, i) => i !== index)
 }
 
-// Pasting several links at once fills a row each, up to MAX
+// Pasting several links at once fills a row each. They take the place of the row pasted into, alongside the other
+// rows with links in them, and stop at MAX rather than pushing any of those out.
 function onPaste(index: number, event: ClipboardEvent) {
   const urls = (event.clipboardData?.getData('text') ?? '').split(/[\s,]+/).filter((part) => part.includes('.'))
   if (urls.length < 2) return
 
   event.preventDefault()
-  const pasted = urls.map((url) => ({ url, note: '' }))
-  model.value = [...rows.value.slice(0, index), ...pasted].slice(0, MAX)
+  const filled = (row: BriefLinkRow) => !!row.url?.trim()
+  const before = rows.value.slice(0, index).filter(filled)
+  const after = rows.value.slice(index + 1).filter(filled)
+  const pasted = urls.slice(0, MAX - before.length - after.length).map((url) => ({ url, note: '' }))
+  model.value = [...before, ...pasted, ...after]
 }
 </script>
 

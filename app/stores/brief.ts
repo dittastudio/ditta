@@ -64,7 +64,9 @@ export const useBriefStore = defineStore(
       else delete answers.value.files
     }
 
+    // A send clears the answers once it lands, so nothing can change under it while it's in flight
     function goTo(index: number, fromSummary = false) {
+      if (sending.value) return
       direction.value = index >= stepIndex.value ? 1 : -1
       stepIndex.value = Math.min(Math.max(index, 0), summaryIndex)
       editingFromSummary.value = fromSummary
@@ -97,6 +99,7 @@ export const useBriefStore = defineStore(
     }
 
     function reset() {
+      if (sending.value) return
       answers.value = {}
       startedAt.value = null
       sentName.value = ''

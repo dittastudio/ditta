@@ -165,7 +165,7 @@ onUnmounted(() => {
           >
             <IconComputer
               ref="computer"
-              class="tappable animate-bob rotate-(--tilt) w-full text-accent cursor-pointer"
+              class="tappable motion-safe:animate-bob rotate-(--tilt) w-full text-accent cursor-pointer"
               :class="{ pokeable: !inRage }"
               :in-rage="inRage"
               :screen-src="rageScreen"
