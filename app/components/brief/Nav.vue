@@ -36,6 +36,7 @@ const brief = useBriefStore()
 const nav = useTemplateRef('nav')
 const resetButton = useTemplateRef('resetButton')
 const cancelButton = useTemplateRef('cancelButton')
+const fill = useTemplateRef('fill')
 
 const isDraft = computed(() => brief.status === 'draft')
 const hasPrevious = computed(() => brief.status === 'sent' || (isDraft.value && brief.stepIndex > 0))
@@ -92,6 +93,8 @@ function clear() {
   else requestAnimationFrame(() => requestAnimationFrame(() => (spinning.value = true)))
 
   soundStartup.play()
+  // Drains alongside the icon's turn, so the reset's drop to 0 doesn't cut it short
+  fill.value?.drain()
   brief.reset()
   emit('cleared')
 }
@@ -168,8 +171,8 @@ defineExpose({ el: nav, primaryLabel })
     data-crumb-surface="box"
     class="sticky bottom-4 z-10 grid rounded-20 corner-shape-squircle bg-offblack-glass/50 text-grey outline outline-1 outline-white/15 backdrop-blur-sm shadow-2xl"
   >
-    <!-- The bar's own background fills as the brief goes on. Clipped in its own layer, not on the nav, so the
-         error above the bar on mobile isn't cut off. Slid rather than scaled, so its leading edge stays a hairline. -->
+    <!-- The bar's own background floods with pixels as the brief goes on. Clipped in its own layer, not on the nav,
+         so the error above the bar on mobile isn't cut off. -->
     <div
       v-if="isDraft"
       class="pointer-events-none absolute inset-0 overflow-hidden rounded-20 corner-shape-squircle"
@@ -180,18 +183,10 @@ defineExpose({ el: nav, primaryLabel })
       aria-valuemin="1"
       :aria-valuemax="brief.total"
     >
-      <!-- On Review it fills right up, then fades away once it has: there's nothing left to fill. Coming back from
-           Review it's there again at once. -->
-      <div
-        class="size-full border-r bg-coral/12 transition-[translate,border-color,opacity] duration-500 ease-outQuart"
-        :class="[
-          progress > 0 && progress < 1 ? 'border-coral/40' : 'border-transparent',
-          { 'opacity-0': brief.isSummary },
-        ]"
-        :style="{
-          translate: `${(progress - 1) * 100}%`,
-          transitionDelay: brief.isSummary ? '0s, 0s, 500ms' : undefined,
-        }"
+      <BriefPixelFill
+        ref="fill"
+        :progress="progress"
+        :review="brief.isSummary"
       />
     </div>
 
@@ -247,9 +242,10 @@ defineExpose({ el: nav, primaryLabel })
         v-else
         class="relative flex items-center gap-3 p-3.5 pl-5 col-start-1 row-start-1 md:gap-5 md:p-5"
       >
+        <!-- Tucked into the bar's bottom left corner, out of the buttons' way: the pixel fill already shows progress -->
         <p
           v-if="isDraft"
-          class="flex-1 pl-1 text-14"
+          class="absolute bottom-3.5 left-3.5 font-mono text-11 leading-none text-grey/60 tabular-nums md:bottom-5 md:left-5"
         >
           {{ brief.isSummary ? 'Review' : `${position} of ${brief.total}` }}
         </p>
@@ -272,7 +268,7 @@ defineExpose({ el: nav, primaryLabel })
 
         <!-- In tab order Next comes first, then Previous, then Start again: Next is what's wanted nearly every
              time. Reversed back for display, so they still read left to right as Start again, Previous, Next. -->
-        <div class="flex flex-row-reverse items-center gap-2.5 md:ml-auto">
+        <div class="ml-auto flex flex-row-reverse items-center gap-2.5">
           <button
             type="button"
             class="rounded-full"
