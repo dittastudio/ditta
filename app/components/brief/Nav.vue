@@ -46,7 +46,7 @@ const progress = computed(() => (brief.isSummary ? 1 : brief.stepIndex / brief.t
 const primaryLabel = computed(() => {
   if (brief.status === 'sent') return 'Simulate confirm'
   if (brief.status === 'confirmed') return 'Start over'
-  if (brief.isSummary) return 'Send brief'
+  if (brief.isSummary) return brief.sending ? 'Sending…' : 'Send brief'
   if (brief.editingFromSummary) return 'Back to summary'
   if (brief.step?.field === 'email') return 'Review'
   if (brief.step && !isBriefStepRequired(brief.step) && !hasBriefAnswer(brief.answers[brief.step.key])) return 'Skip'

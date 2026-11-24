@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import type { BriefFieldKey } from '#shared/schemas/brief'
-import type { BriefDraft } from '@/utils/brief'
+import type { BriefDraft } from '#shared/utils/brief'
 import { briefOptions } from '#shared/schemas/brief'
 
 export type BriefStatus = 'draft' | 'sent' | 'confirmed'
@@ -16,6 +16,14 @@ export const useBriefStore = defineStore(
     const status = ref<BriefStatus>('draft')
     // Which way the last move went, for the slide direction. Not persisted.
     const direction = ref<1 | -1>(1)
+    // When the first answer was given, so the server can turn away a brief filled in faster than a person could
+    const startedAt = ref<number | null>(null)
+    // Kept for the thank-you screen, since the answers are cleared once the brief has gone
+    const sentName = ref('')
+    // Not persisted: a send in flight, the Turnstile token for it, and the honeypot
+    const sending = ref(false)
+    const turnstileToken = ref('')
+    const honeypot = ref('')
 
     const summaryIndex = briefSteps.length
     // The summary isn't counted: "1 of 12" covers the questions
@@ -24,6 +32,7 @@ export const useBriefStore = defineStore(
     const isSummary = computed(() => stepIndex.value === summaryIndex)
 
     function setAnswer<K extends BriefFieldKey>(key: K, value: BriefDraft[K]) {
+      startedAt.value ??= Date.now()
       if (value === undefined) delete answers.value[key]
       else answers.value[key] = value
     }
@@ -73,8 +82,24 @@ export const useBriefStore = defineStore(
       status.value = value
     }
 
+    // The brief has reached the team: the answers go, so a refresh can't send it twice
+    function markSent() {
+      sentName.value = briefFirstName(answers.value)
+      answers.value = {}
+      startedAt.value = null
+      honeypot.value = ''
+      turnstileToken.value = ''
+      editingFromSummary.value = false
+      stepIndex.value = 0
+      setStatus('confirmed')
+    }
+
     function reset() {
       answers.value = {}
+      startedAt.value = null
+      sentName.value = ''
+      honeypot.value = ''
+      turnstileToken.value = ''
       stepIndex.value = 0
       editingFromSummary.value = false
       status.value = 'draft'
@@ -87,6 +112,11 @@ export const useBriefStore = defineStore(
       editingFromSummary,
       status,
       direction,
+      startedAt,
+      sentName,
+      sending,
+      turnstileToken,
+      honeypot,
       summaryIndex,
       total,
       step,
@@ -98,12 +128,13 @@ export const useBriefStore = defineStore(
       next,
       back,
       setStatus,
+      markSent,
       reset,
     }
   },
   {
     persist: {
-      pick: ['answers', 'stepIndex', 'editingFromSummary', 'status'],
+      pick: ['answers', 'stepIndex', 'editingFromSummary', 'status', 'startedAt', 'sentName'],
       storage: piniaPluginPersistedstate.localStorage(),
       afterHydrate: ({ store }) => {
         store.upgradeSavedAnswers()

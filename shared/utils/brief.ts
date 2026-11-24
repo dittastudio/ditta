@@ -1,5 +1,5 @@
-// Brief builder copy and display helpers. Validation lives in #shared/schemas/brief; the copy follows
-// docs/plans/brief-builder-flow.md.
+// Brief builder copy and display helpers, shared so the server writes the team email from the same questions.
+// Validation lives in #shared/schemas/brief; the copy follows docs/plans/brief-builder-flow.md.
 import type { BriefAnswersInput, BriefFieldKey, BriefFollowUpKey, BriefStepKey } from '#shared/schemas/brief'
 import { briefFollowUps, briefOptions, hasValue, isBriefFieldRequired, isFollowUpShown } from '#shared/schemas/brief'
 

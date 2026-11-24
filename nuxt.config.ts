@@ -136,10 +136,21 @@ export default defineNuxtConfig({
   css: ['~/assets/css/app.css'],
   devtools: { enabled: false },
   runtimeConfig: {
+    // The brief builder's submission (server/api/brief.post.ts). Set as Worker secrets: NUXT_RESEND_API_KEY,
+    // NUXT_TURNSTILE_SECRET_KEY, and NUXT_BRIEF_FROM / NUXT_BRIEF_TO once ditta.studio is verified in Resend.
+    // Until then the addresses are Resend's test ones.
+    resendApiKey: '',
+    turnstileSecretKey: '',
+    brief: {
+      from: 'ditta briefs <onboarding@resend.dev>',
+      to: 'delivered@resend.dev',
+    },
     // The Storyblok token lives in the module's `public.storyblok.accessToken`. On Cloudflare, runtime vars override
     // both at request time: NUXT_PUBLIC_STORYBLOK_ACCESS_TOKEN (the previews' secret) and NUXT_PUBLIC_STORYBLOK_VERSION.
     public: {
       STORYBLOK_VERSION: ciBranch ? (isSpa ? 'draft' : 'published') : process.env.NUXT_STORYBLOK_VERSION,
+      // Public, so it's also a build variable: /brief's page is built with it
+      turnstileSiteKey: '',
     },
   },
   vite: {

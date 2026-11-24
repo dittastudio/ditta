@@ -4,7 +4,8 @@ import { briefAnswersSchema } from '#shared/schemas/brief'
 const brief = useBriefStore()
 
 const email = computed(() => brief.answers.email?.trim() ?? '')
-const firstName = computed(() => briefFirstName(brief.answers))
+// The answers are cleared once sent, so the name was kept aside
+const firstName = computed(() => brief.sentName || briefFirstName(brief.answers))
 // Parsed by the same schema the API will use: hidden follow-ups dropped, links normalised
 const payload = computed(() => JSON.stringify(briefAnswersSchema.safeParse(brief.answers).data ?? null, null, 2))
 

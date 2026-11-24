@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { BriefFieldKey } from '#shared/schemas/brief'
-import type { BriefStep } from '@/utils/brief'
+import type { BriefStep } from '#shared/utils/brief'
 import { briefStepSchemas } from '#shared/schemas/brief'
 
 interface Props {
@@ -94,6 +94,18 @@ defineExpose({ validate })
         >?
       </p>
     </Transition>
+
+    <!-- Honeypot: off screen and out of the tab order, so only a bot fills it in. Its name isn't one autofill knows. -->
+    <input
+      v-if="step.field === 'email'"
+      v-model="brief.honeypot"
+      type="text"
+      name="fax_number_confirm"
+      autocomplete="off"
+      tabindex="-1"
+      aria-hidden="true"
+      class="pointer-events-none fixed -left-full size-px opacity-0"
+    />
 
     <p
       v-if="step.field === 'email'"

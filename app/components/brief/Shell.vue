@@ -2,7 +2,8 @@
 import { useEventListener, useResizeObserver } from '@vueuse/core'
 import { gsap } from 'gsap'
 import { defineSound } from '@web-kits/audio'
-import type { BriefField } from '@/utils/brief'
+import type { BriefField } from '#shared/utils/brief'
+import type { BriefSubmitInput } from '#shared/schemas/brief'
 import { briefAnswersSchema, briefStepSchemas } from '#shared/schemas/brief'
 import { confetti, pageEnter, save } from '@@/.web-kits/core'
 
@@ -117,18 +118,48 @@ function shake() {
 }
 
 // The whole brief is checked against the same schema the server will use. If anything slipped through, go to it.
-function send() {
+async function send() {
+  if (brief.sending) return
+
   const result = briefAnswersSchema.safeParse(brief.answers)
-  if (result.success) return brief.setStatus('sent')
+  if (!result.success) {
+    const keys = result.error.issues.map((issue) => issue.path[0])
+    const index = briefSteps.findIndex(
+      (step) => keys.includes(step.key) || visibleFollowUps(step, brief.answers).some((f) => keys.includes(f.key)),
+    )
 
-  const keys = result.error.issues.map((issue) => issue.path[0])
-  const index = briefSteps.findIndex(
-    (step) => keys.includes(step.key) || visibleFollowUps(step, brief.answers).some((f) => keys.includes(f.key)),
-  )
+    error.value = 'One answer needs another look'
+    shake()
+    if (index >= 0) brief.goTo(index, true)
+    return
+  }
 
-  error.value = 'One answer needs another look'
-  shake()
-  if (index >= 0) brief.goTo(index, true)
+  // Managed Turnstile usually has its token before anyone reaches Send. If it's still deciding, say so.
+  if (!brief.turnstileToken) {
+    error.value = 'Still checking you’re not a robot. Try again in a moment.'
+    return shake()
+  }
+
+  brief.sending = true
+  try {
+    await $fetch('/api/brief', {
+      method: 'POST',
+      body: {
+        answers: brief.answers,
+        elapsed: brief.startedAt ? Date.now() - brief.startedAt : 0,
+        honeypot: brief.honeypot || undefined,
+        turnstileToken: brief.turnstileToken,
+      } satisfies BriefSubmitInput,
+    })
+    brief.markSent()
+  } catch (failure) {
+    // The token's been used either way, so the widget fetches another for the retry
+    brief.turnstileToken = ''
+    error.value = (failure as { statusMessage?: string }).statusMessage || 'Your brief didn’t send. Try again.'
+    shake()
+  } finally {
+    brief.sending = false
+  }
 }
 
 // iOS only opens the keyboard for a focus made inside the tap itself, and the next step's field focuses as it mounts,

@@ -1,4 +1,4 @@
-// The brief builder's validation, shared by the form (Regle) and, from M3, the API routes.
+// The brief builder's validation, shared by the form (Regle) and the API route (server/api/brief.post.ts).
 // See "Validation — Regle + Zod" in docs/plans/brief-builder.md.
 import { z } from 'zod'
 
@@ -169,3 +169,15 @@ export const briefAnswersSchema = z
 
 export type BriefAnswersInput = z.input<typeof briefAnswersSchema>
 export type BriefAnswers = z.output<typeof briefAnswersSchema>
+
+// The body of POST /api/brief. The spam checks on `elapsed`, `honeypot` and `turnstileToken` are the route's.
+export const briefSubmitSchema = z.object({
+  answers: briefAnswersSchema,
+  // Milliseconds from the first answer to Send brief
+  elapsed: z.number().int().nonnegative(),
+  // A field people never see, so anything in it was typed by a bot
+  honeypot: z.string().max(200).optional(),
+  turnstileToken: z.string().max(2048),
+})
+
+export type BriefSubmitInput = z.input<typeof briefSubmitSchema>

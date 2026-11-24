@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { BriefFigure } from '@/utils/brief'
+import type { BriefFigure } from '#shared/utils/brief'
 import { defineSound } from '@web-kits/audio'
 import { checkbox, radio } from '@@/.web-kits/core'
 

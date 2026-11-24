@@ -85,6 +85,16 @@ Done (19 Nov 2026). Letter shortcuts were dropped. Measured at 320 × 568, every
 
 No database and no email verification yet. This milestone tells us how much spam and how many fake addresses actually come in. If there are few, M4 can wait.
 
+Built (24 Nov 2026), waiting on accounts:
+
+- `server/api/brief.post.ts` parses `briefSubmitSchema` (answers, `elapsed`, honeypot, Turnstile token). Order: rate limit, parse, honeypot and 20-second minimum (a quiet fake success), Turnstile, then Resend.
+- Rate limit: the Workers `BRIEF_RATE_LIMIT` binding in `wrangler.jsonc`, 3 a minute per IP (Workers only count over 10 or 60 seconds). Absent in `nuxt dev` and on previews, where it's skipped.
+- Resend through its REST API with `$fetch`, not the SDK: one call doesn't need the dependency. Template in `server/emails/brief.ts`, written from the same question copy (`shared/utils/brief.ts`).
+- Turnstile in managed, interaction-only mode on the summary. `nuxt dev` falls back to Cloudflare's always-pass test keys; built sites refuse to send without real ones.
+- After a send the answers are cleared and the thank-you screen shows. The mocked Check your inbox screen is unreachable until M4.
+
+**To launch:** verify `ditta.studio` in Resend; create the Turnstile widget; set `NUXT_RESEND_API_KEY`, `NUXT_TURNSTILE_SECRET_KEY`, `NUXT_BRIEF_FROM` (`ditta briefs <briefs@ditta.studio>`) and `NUXT_BRIEF_TO` (`hello@ditta.studio`) as Worker secrets, and `NUXT_PUBLIC_TURNSTILE_SITE_KEY` as a build variable too.
+
 **Done when:** a brief submitted from production arrives in the team inbox, and the spam checks reject a scripted submission.
 
 ---

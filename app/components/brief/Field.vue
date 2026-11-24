@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { BriefLinkRow, BriefQuestion } from '@/utils/brief'
+import type { BriefLinkRow, BriefQuestion } from '#shared/utils/brief'
 
 interface Props {
   question: BriefQuestion

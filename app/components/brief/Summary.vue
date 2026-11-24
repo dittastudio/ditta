@@ -57,5 +57,7 @@ const rows = computed(() =>
         </button>
       </li>
     </ol>
+
+    <BriefTurnstile v-model="brief.turnstileToken" />
   </section>
 </template>

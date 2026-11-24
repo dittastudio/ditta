@@ -201,7 +201,7 @@ The brief's inputs (text, textarea, choice chips, radio/checkbox groups, selects
 
 ### Email — Resend
 
-- Use the `resend` SDK, which works in Workers via `fetch`. Put the API key in private `runtimeConfig` (`NUXT_RESEND_API_KEY`), never `public`.
+- Call Resend's REST API with `$fetch` (no SDK needed for a single endpoint). Put the API key in private `runtimeConfig` (`NUXT_RESEND_API_KEY`), never `public`.
 - Verify the sending domain (`ditta.studio`) in Resend with SPF, DKIM and DMARC, so the magic link reaches the inbox and doesn't land in spam. That matters more here than usual, because the whole flow depends on that email arriving.
 - Send from something like `briefs@ditta.studio`. Set `reply_to` on the internal email to the client's address, so the team can reply directly.
 - Build the templates with Resend's React Email, or plain HTML strings, kept in `server/emails/`.

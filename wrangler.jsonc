@@ -8,6 +8,8 @@
   // The live site is served only at ditta.studio (a Custom Domain on this Worker, with www redirected by a zone rule),
   // so ditta.ditta.workers.dev is off rather than serving a second copy of it.
   "workers_dev": false,
+  // POST /api/brief: 3 briefs a minute per IP. Workers' rate limits only count over 10 or 60 seconds.
+  "ratelimits": [{ "name": "BRIEF_RATE_LIMIT", "namespace_id": "1001", "simple": { "limit": 3, "period": 60 } }],
   // Branch previews (<branch>-ditta.<subdomain>.workers.dev) stay on. `develop` is the Storyblok Visual Editor's
   // preview URL.
   "preview_urls": true,

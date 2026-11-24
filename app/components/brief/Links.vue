@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { BriefLinkRow } from '@/utils/brief'
+import type { BriefLinkRow } from '#shared/utils/brief'
 
 const MAX = 3
 
