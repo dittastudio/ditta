@@ -93,7 +93,7 @@ Built (24 Nov 2026), waiting on accounts:
 - Turnstile in managed, interaction-only mode on the summary. `nuxt dev` falls back to Cloudflare's always-pass test keys; built sites refuse to send without real ones.
 - After a send the answers are cleared and the thank-you screen shows. The mocked Check your inbox screen is unreachable until M4.
 
-**To launch:** `ditta.studio` is verified in Resend (EU), and a sending-only key has delivered a test brief locally (24 Nov 2026). The addresses are in `wrangler.jsonc`. Still to do: create the Turnstile widget; set `NUXT_RESEND_API_KEY` and `NUXT_TURNSTILE_SECRET_KEY` as Worker secrets, and `NUXT_PUBLIC_TURNSTILE_SITE_KEY` as a build variable.
+**To launch:** `ditta.studio` is verified in Resend (EU), and a sending-only key has delivered a test brief locally (24 Nov 2026). The addresses and Turnstile's public site key are in `wrangler.jsonc` (read at runtime: `/brief` isn't prerendered, so a build variable wouldn't reach it). `NUXT_RESEND_API_KEY` and `NUXT_TURNSTILE_SECRET_KEY` are Worker secrets, on Previews Base too.
 
 **Done when:** a brief submitted from production arrives in the team inbox, and the spam checks reject a scripted submission.
 

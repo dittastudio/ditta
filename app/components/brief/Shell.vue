@@ -117,6 +117,8 @@ function shake() {
   requestAnimationFrame(() => (shaking.value = true))
 }
 
+const turnstileReady = !!useRuntimeConfig().public.turnstileSiteKey || import.meta.dev
+
 // The whole brief is checked against the same schema the server will use. If anything slipped through, go to it.
 async function send() {
   if (brief.sending) return
@@ -132,6 +134,12 @@ async function send() {
     shake()
     if (index >= 0) brief.goTo(index, true)
     return
+  }
+
+  // Without a site key there's no widget, so no token is ever coming
+  if (!turnstileReady) {
+    error.value = 'The brief isn’t set up to send yet'
+    return shake()
   }
 
   // Managed Turnstile usually has its token before anyone reaches Send. If it's still deciding, say so.

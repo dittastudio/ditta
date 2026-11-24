@@ -151,7 +151,7 @@ export default defineNuxtConfig({
     // both at request time: NUXT_PUBLIC_STORYBLOK_ACCESS_TOKEN (the previews' secret) and NUXT_PUBLIC_STORYBLOK_VERSION.
     public: {
       STORYBLOK_VERSION: ciBranch ? (isSpa ? 'draft' : 'published') : process.env.NUXT_STORYBLOK_VERSION,
-      // Public, so it's also a build variable: /brief's page is built with it
+      // Set in wrangler.jsonc; empty in `nuxt dev`, which falls back to Turnstile's test key
       turnstileSiteKey: '',
     },
   },
