@@ -169,7 +169,9 @@ async function send() {
   } catch (failure) {
     // The token's been used either way, so the widget fetches another for the retry
     brief.turnstileToken = ''
-    error.value = (failure as { statusMessage?: string }).statusMessage || 'Your brief didn’t send. Try again.'
+    // The reason is read from the response body: over HTTP/2 there's no status text for statusMessage to come from
+    const { data } = failure as { data?: { statusMessage?: string } }
+    error.value = data?.statusMessage || 'Your brief didn’t send. Try again.'
     shake()
   } finally {
     brief.sending = false
