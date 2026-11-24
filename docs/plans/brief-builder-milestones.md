@@ -13,7 +13,7 @@ Each milestone should leave the site deployable. The builder stays unlinked and 
 Decided (18 Nov 2026), and written into both docs:
 
 - **Order:** the contact screens (9–12) come **before** the Summary, and **Send brief** on the Summary is the Submit.
-- **Uploads:** screen 6 is **link-only** for v1. File uploads move to M6.
+- **Uploads:** screen 6 takes **links only** for v1 (up to 3, like screen 5, with a sharing reminder for Drive, Dropbox, Figma and the like). File uploads move to M6. (Links revised 24 Nov 2026.)
 - **Budget bands:** Under £5k · £5k–£10k · £10k–£20k · £20k–£40k · £40k+ stay. The slider **starts with nothing chosen** and needs a drag, tap or arrow key before Next works.
 - **Consent:** a line on screen 12, no checkbox: "We'll only use this to reply about your project. See our privacy policy." The `/privacy-policy` page doesn't exist yet (see M7).
 - **Numbering:** plain "9 of 12", no a–d lettering.
@@ -116,14 +116,42 @@ No database and no email verification yet. This milestone tells us how much spam
 
 ---
 
-## M6: File uploads (if still wanted)
+## M6: File uploads
 
-**Goal:** clients can attach designs or brand guidelines on screen 6.
+**Goal:** clients can attach designs or brand guidelines on screen 6, alongside the links. Settled 24 Nov 2026.
 
-- Upload to R2 at Submit through a presigned or Worker-proxied upload. Validate type and the 10MB limit on the server.
-- Link the file in the team email and the PDF. Delete unconfirmed uploads together with their `pending` record.
+**UI**
 
-**Done when:** a 10MB zip goes through end to end, and an oversized file is rejected with a clear message.
+- A dashed drop zone under the link rows: the inputs' border colour and radius, "Drop files here or browse" with the limits underneath. On touch it reads "Choose files" (no drag and drop there).
+- It turns olive, like a selected card, while files are dragged over the page.
+- A row per file under the zone: name, size, progress, and a remove (×) button.
+- Skip until there's a link or a file. The summary lists the file names after the links.
+
+**Limits**
+
+- Up to 5 files, 25MB each. PDF, images (PNG, JPG, WebP, SVG, GIF), Word, Excel, PowerPoint, Keynote, Pages, ZIP.
+- Design-tool files (`.fig`, `.psd`, `.ai`) are refused, with copy suggesting a zip or a link.
+- Checked in the browser for instant feedback, and again on the server.
+
+**Upload**
+
+- Each file uploads as soon as it's dropped, straight to R2 with a presigned URL from a Worker route, never through the Worker.
+- Files sit under an upload id kept in localStorage with the answers, so a refresh keeps them. Submit attaches them to the brief.
+- Uploads not attached to a confirmed brief are deleted after 14 days, with the `pending` records.
+
+**Security and abuse**
+
+- Presigned URLs only for an upload id under its limits, rate-limited per IP (e.g. 20 an hour), behind the M3 honeypot.
+- When an upload finishes, the server reads the file's first bytes and deletes it if its real type doesn't match.
+- Always served with `Content-Disposition: attachment`, never inline, so an SVG or HTML file can't run on the site.
+- No virus scanning: R2 has none, and only the team opens the files.
+
+**Delivery and retention**
+
+- The team email and the PDF list each file as a signed, non-expiring link to a Worker route that streams it from R2. Never email attachments.
+- Files from confirmed briefs are kept 12 months, then deleted. The privacy policy (M7) says so.
+
+**Done when:** five 25MB files go through end to end and survive a refresh mid-brief; an oversized or wrong-type file is refused with a clear message; a renamed `.html` posing as a PDF is deleted after upload.
 
 ---
 

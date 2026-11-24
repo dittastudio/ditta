@@ -5,9 +5,19 @@ const MAX = 3
 
 interface Props {
   rowErrors?: string[][]
+  // Examples for the link field, shown in turn while it's empty. The first is the native placeholder.
+  placeholders?: readonly string[]
+  notePlaceholder?: string
+  // A reminder under links from hosts where files are private until shared
+  sharingNudge?: boolean
 }
 
-const { rowErrors = [] } = defineProps<Props>()
+const {
+  rowErrors = [],
+  placeholders = ['acme.com'],
+  notePlaceholder = 'What do you like about it? (optional)',
+  sharingNudge = false,
+} = defineProps<Props>()
 const model = defineModel<BriefLinkRow[] | undefined>()
 const emit = defineEmits<{ submit: [] }>()
 
@@ -74,7 +84,8 @@ function onPaste(index: number, event: ClipboardEvent) {
             :model-value="row.url ?? ''"
             type="url"
             inputmode="url"
-            placeholder="acme.com"
+            :placeholder="placeholders[0]"
+            :placeholders="placeholders"
             :aria-label="`Link ${index + 1}`"
             :aria-invalid="rowErrors[index]?.length ? true : undefined"
             :aria-describedby="rowErrors[index]?.length ? `${id}-${index}` : undefined"
@@ -101,10 +112,19 @@ function onPaste(index: number, event: ClipboardEvent) {
         />
 
         <Transition name="brief-reveal">
+          <p
+            v-if="sharingNudge && isPrivateByDefault(row.url ?? '')"
+            class="text-14 opacity-60 md:text-16"
+          >
+            Check it's shared so anyone with the link can view.
+          </p>
+        </Transition>
+
+        <Transition name="brief-reveal">
           <BriefTextInput
             v-if="row.url?.trim()"
             :model-value="row.note ?? ''"
-            placeholder="What do you like about it? (optional)"
+            :placeholder="notePlaceholder"
             :aria-label="`Note for link ${index + 1}`"
             small
             @update:model-value="update(index, { note: $event })"

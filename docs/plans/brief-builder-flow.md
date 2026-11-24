@@ -171,18 +171,26 @@ Behaviour:
 
 ---
 
-### 6. Files or link
+### 6. Files or links
 
 **Is there anything you'd like to share?** · optional
-_Hint:_ Designs, brand guidelines or a working brief.
+_Hint:_ Designs, brand guidelines, a brief — anything that helps.
 
-|          |                                                                       |
-| -------- | --------------------------------------------------------------------- |
-| Field    | URL, placeholder "Paste a Figma or design link"                       |
-| Key / id | `files` / `q7`                                                        |
-| Answer   | `string`, a link or empty. "acme.com" is stored as "https://acme.com" |
+|          |                                  |
+| -------- | -------------------------------- |
+| Field    | Links, add another (as screen 5) |
+| Key / id | `files` / `q7`                   |
+| Answer   | Up to 3 items: `{ url, note? }`  |
 
-Link-only for v1. File uploads (drop zone, one file or zip up to 10MB, R2 at Submit) are M6 in `brief-builder-milestones.md`.
+Behaviour:
+
+- Same rows as screen 5. The link field's placeholder cycles once through `figma.com/design/…`, `drive.google.com/…`, `docs.google.com/…`, `dropbox.com/…` and rests on "Paste a link", which is also what screen readers hear.
+- The note field reads "What is this? (optional)".
+- Under a link from Google Drive or Docs, Dropbox, OneDrive/SharePoint or Figma: "Check it's shared so anyone with the link can view."
+- A draft saved when `files` was a single link string loads as one row.
+- Button reads **Skip** until at least one URL is entered.
+
+File uploads (a drop zone under the links) are M6 in `brief-builder-milestones.md`.
 
 ---
 
@@ -311,7 +319,6 @@ The review screen. It lists **every visible question in order**, numbered, with 
   - multi-select: comma-separated
   - slider: the band label
   - links: "url (note)", comma-separated
-  - files: the link
 - **Edit** jumps to that screen. Its primary button becomes **Back to summary**, and picking a single-select option returns to the summary automatically.
 - This screen may scroll.
 - Primary button: **Send brief**. This is the **Submit** in the technical doc: it creates the pending record and sends the "Confirm & send your brief" email. The flow then goes to **Check your inbox** and the rest of the technical doc's screens.
@@ -340,4 +347,4 @@ Options marked "Not sure" or "No idea" (none at present) get a dashed border so 
 
 ## Things still to settle
 
-Nothing at present. Settled in M0 (see `brief-builder-milestones.md`): order of contact screens and summary, link-only screen 6, consent wording, plain numbering, the small-phone exception for screen 3, the repo as source of truth, the two-working-day promise, the budget hint figures, and no "not sure" tips on the summary for v1.
+Nothing at present. Settled in M0 (see `brief-builder-milestones.md`): order of contact screens and summary, screen 6 as links (uploads in M6), consent wording, plain numbering, the small-phone exception for screen 3, the repo as source of truth, the two-working-day promise, the budget hint figures, and no "not sure" tips on the summary for v1.

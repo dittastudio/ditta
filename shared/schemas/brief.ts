@@ -37,6 +37,14 @@ const optionalLink = z
   )
   .optional()
 
+// Up to `max` link rows, each with an optional note. Rows left without a link are dropped.
+const linkRows = (max: number) =>
+  z
+    .array(z.object({ url: optionalLink, note: optionalText }))
+    .max(max, `Up to ${max} links`)
+    .optional()
+    .transform((rows) => rows?.filter((row) => row.url))
+
 const pickOne = <T extends readonly [string, ...string[]]>(options: T) => z.enum(options, { error: REQUIRED })
 const pickSome = <T extends readonly [string, ...string[]]>(options: T) =>
   z.array(z.enum(options), { error: REQUIRED }).min(1, REQUIRED)
@@ -51,12 +59,8 @@ const briefFields = {
   objectivesOther: optionalText,
   timing: pickOne(briefOptions.timing),
   timingOther: optionalText,
-  references: z
-    .array(z.object({ url: optionalLink, note: optionalText }))
-    .max(3, 'Up to 3 links')
-    .optional()
-    .transform((rows) => rows?.filter((row) => row.url)),
-  files: optionalLink,
+  references: linkRows(3),
+  files: linkRows(3),
   contentStage: pickOne(briefOptions.contentStage),
   contentOther: optionalText,
   budget: pickOne(briefOptions.budget),

@@ -29,6 +29,10 @@ interface BriefQuestion {
   // Shown in turn in place of `placeholder`, for a question that's easier to answer with a few ideas to go on
   placeholders?: readonly string[]
   autocomplete?: string
+  // Link rows: the note field's placeholder
+  notePlaceholder?: string
+  // Link rows: a reminder under links from hosts that are private until shared
+  sharingNudge?: boolean
 }
 
 interface BriefStep extends BriefQuestion {
@@ -90,12 +94,15 @@ const briefSteps: BriefStep[] = [
     field: 'links',
   },
   {
-    // Link-only for v1: uploads are M6 (docs/plans/brief-builder-milestones.md)
+    // Links only for now: uploads are M6 (docs/plans/brief-builder-milestones.md)
     key: 'files',
     title: "Is there anything you'd like to share?",
-    hint: 'Designs, brand guidelines or a working brief.',
-    field: 'url',
-    placeholder: 'Paste a Figma or design link',
+    hint: 'Designs, brand guidelines, a brief — anything that helps.',
+    field: 'links',
+    // Rests on the first, which is also what screen readers hear
+    placeholders: ['Paste a link', 'figma.com/design/…', 'drive.google.com/…', 'docs.google.com/…', 'dropbox.com/…'],
+    notePlaceholder: 'What is this? (optional)',
+    sharingNudge: true,
   },
   {
     key: 'contentStage',
@@ -196,6 +203,29 @@ const formatBriefAnswer = (value: unknown): string | null => {
   return String(value)
 }
 
+// Hosts where a pasted link is often private until its owner shares it
+const briefPrivateHosts = [
+  'drive.google.com',
+  'docs.google.com',
+  'dropbox.com',
+  'onedrive.live.com',
+  '1drv.ms',
+  'sharepoint.com',
+  'figma.com',
+]
+
+const isPrivateByDefault = (url: string) => {
+  const value = url.trim()
+  if (!value) return false
+
+  try {
+    const { hostname } = new URL(/^https?:\/\//i.test(value) ? value : `https://${value}`)
+    return briefPrivateHosts.some((host) => hostname === host || hostname.endsWith(`.${host}`))
+  } catch {
+    return false
+  }
+}
+
 // A light "did you mean" for the commonest email domain typos
 const briefEmailDomains: Record<string, string> = {
   'gmial.com': 'gmail.com',
@@ -228,6 +258,7 @@ export {
   formatBriefAnswer,
   hasBriefAnswer,
   isBriefStepRequired,
+  isPrivateByDefault,
   personaliseBrief,
   suggestBriefEmail,
   visibleFollowUps,

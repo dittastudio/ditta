@@ -71,6 +71,9 @@ const inputmode = { email: 'email', url: 'url' } as const
       v-model="links"
       v-bind="a11y"
       :row-errors="rowErrors"
+      :placeholders="question.placeholders"
+      :note-placeholder="question.notePlaceholder"
+      :sharing-nudge="question.sharingNudge"
       @submit="emit('submit')"
     />
 

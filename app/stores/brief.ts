@@ -45,6 +45,14 @@ export const useBriefStore = defineStore(
       }
     }
 
+    // `files` was a single link before it became link rows. Runs when a saved draft is loaded.
+    function upgradeSavedAnswers() {
+      const files: unknown = answers.value.files
+      if (typeof files !== 'string') return
+      if (files.trim()) answers.value.files = [{ url: files, note: '' }]
+      else delete answers.value.files
+    }
+
     function goTo(index: number, fromSummary = false) {
       direction.value = index >= stepIndex.value ? 1 : -1
       stepIndex.value = Math.min(Math.max(index, 0), summaryIndex)
@@ -85,6 +93,7 @@ export const useBriefStore = defineStore(
       isSummary,
       setAnswer,
       dropStaleChoices,
+      upgradeSavedAnswers,
       goTo,
       next,
       back,
@@ -96,7 +105,10 @@ export const useBriefStore = defineStore(
     persist: {
       pick: ['answers', 'stepIndex', 'editingFromSummary', 'status'],
       storage: piniaPluginPersistedstate.localStorage(),
-      afterHydrate: ({ store }) => store.dropStaleChoices(),
+      afterHydrate: ({ store }) => {
+        store.upgradeSavedAnswers()
+        store.dropStaleChoices()
+      },
     },
   },
 )
