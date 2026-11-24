@@ -134,7 +134,7 @@ defineExpose({ validate })
         v-for="followUp in followUps"
         :key="followUp.key"
         data-brief-question
-        class="flex flex-col gap-4 md:gap-5"
+        class="flex flex-col gap-4 md:gap-7.5"
       >
         <p
           :id="`${titleId}-${followUp.key}`"
