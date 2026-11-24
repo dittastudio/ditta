@@ -6,6 +6,11 @@ import { briefFollowUps, briefOptions, hasValue, isBriefFieldRequired, isFollowU
 type BriefField = 'cards' | 'chips' | 'text' | 'email' | 'url' | 'links' | 'slider'
 type BriefDraft = Partial<BriefAnswersInput>
 type BriefLinkRow = NonNullable<BriefAnswersInput['references']>[number]
+// What's wrong with each part of a link row, for the fields to show
+interface BriefLinkRowErrors {
+  url: string[]
+  note: string[]
+}
 
 interface BriefQuestion {
   key: BriefFieldKey
@@ -244,7 +249,7 @@ const suggestBriefEmail = (email: string): string | null => {
   return local && fix ? `${local}@${fix}` : null
 }
 
-export type { BriefDraft, BriefField, BriefLinkRow, BriefQuestion, BriefStep }
+export type { BriefDraft, BriefField, BriefLinkRow, BriefLinkRowErrors, BriefQuestion, BriefStep }
 export {
   briefFirstName,
   briefSteps,

@@ -28,9 +28,10 @@ const COMFORT_MARGIN = 0.15
  * `data-brief-heading`. Anything below Shell reaches `frame` through `useBriefFrame()`.
  *
  * `navTop` reports where the nav's top edge sits when pinned to the bottom of the viewport, which is where it ends up
- * once a field has been scrolled into view.
+ * once a field has been scrolled into view. `end` is the brief's outer box: it's never scrolled up past the bottom of
+ * the screen, so the pinned nav stays pinned and the footer only comes into view when the reader scrolls to it.
  */
-export function useBriefScroll(navTop: () => number | undefined) {
+export function useBriefScroll(navTop: () => number | undefined, end: () => Element | null | undefined) {
   const lenis = useLenis()
   const appStore = useAppStore()
   const reducedMotion = usePreferredReducedMotion()
@@ -48,6 +49,10 @@ export function useBriefScroll(navTop: () => number | undefined) {
   const gap = () => Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--spacing')) * 6 || 0
 
   function scrollBy(delta: number, instant = false) {
+    // Never leaves the brief's end above the bottom of the screen, pulling it back down if a taller step left it
+    // there. Not while the keyboard is up: then the field may need lifting above it, wherever the brief ends.
+    const box = end()
+    if (box && !isKeyboardOpen()) delta = Math.min(delta, box.getBoundingClientRect().bottom - window.innerHeight)
     if (Math.abs(delta) < 1) return
     // From where the page really is, which every measurement here was taken against. Lenis's own record can lag:
     // when a shorter step shrinks the page under a reader scrolled near the bottom, the browser clamps the scroll

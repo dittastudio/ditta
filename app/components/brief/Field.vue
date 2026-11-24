@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import type { BriefLinkRow, BriefQuestion } from '#shared/utils/brief'
+import type { BriefLinkRow, BriefLinkRowErrors, BriefQuestion } from '#shared/utils/brief'
 
 interface Props {
   question: BriefQuestion
   labelledby: string
   errors?: string[]
-  rowErrors?: string[][]
+  rowErrors?: BriefLinkRowErrors[]
   focusOnMount?: boolean
 }
 
@@ -75,6 +75,7 @@ const focusFirst = focusOnMount && !hasBriefAnswer(model.value)
       v-else-if="question.field === 'slider'"
       v-model="single"
       v-bind="a11y"
+      :name="question.key"
       :options="question.options ?? []"
       :initial="question.initial"
     />
@@ -95,6 +96,7 @@ const focusFirst = focusOnMount && !hasBriefAnswer(model.value)
       v-else
       v-model="text"
       v-bind="a11y"
+      :name="question.key"
       :type="question.field === 'email' || question.field === 'url' ? question.field : 'text'"
       :inputmode="question.field === 'email' || question.field === 'url' ? inputmode[question.field] : undefined"
       :placeholder="question.placeholders?.[0] ?? question.placeholder"

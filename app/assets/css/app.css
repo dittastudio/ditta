@@ -12,6 +12,8 @@
   --color-white: oklch(100% 0 0);
   --color-black: oklch(0% 0 0);
   --color-blue: blue;
+  /* Reads as a field's white/25 border over its white/10 fill on black, without stacking where two fields join */
+  --color-ash: oklch(44.18% 0 0);
   --color-beige: oklch(0.8643 0.0104 32.52);
   --color-charcoal: oklch(29.72% 0 0);
   --color-coral: oklch(73.99% 0.137 20.91);

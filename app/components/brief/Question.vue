@@ -27,14 +27,19 @@ const emailSuggestion = computed(() =>
   step.field === 'email' && brief.answers.email ? suggestBriefEmail(brief.answers.email) : null,
 )
 
-type ErrorNode = string[] | { $self?: string[]; $each?: ({ url?: ErrorNode } | undefined)[] } | undefined
+type ErrorNode =
+  | string[]
+  | { $self?: string[]; $each?: ({ url?: ErrorNode; note?: ErrorNode } | undefined)[] }
+  | undefined
 
 const errorTree = computed(() => r$.$errors as Partial<Record<BriefFieldKey, ErrorNode>>)
 const ownErrors = (node: ErrorNode): string[] => (Array.isArray(node) ? node : (node?.$self ?? []))
 const errorsFor = (key: BriefFieldKey) => ownErrors(errorTree.value[key])
 const rowErrorsFor = (key: BriefFieldKey) => {
   const node = errorTree.value[key]
-  return Array.isArray(node) ? [] : (node?.$each?.map((row) => ownErrors(row?.url)) ?? [])
+  return Array.isArray(node)
+    ? []
+    : (node?.$each?.map((row) => ({ url: ownErrors(row?.url), note: ownErrors(row?.note) })) ?? [])
 }
 
 const answer = (key: BriefFieldKey) => brief.answers[key]

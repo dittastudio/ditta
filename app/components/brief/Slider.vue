@@ -5,6 +5,8 @@ import { spring as springSound } from '@@/.web-kits/core'
 
 // Attributes (aria-labelledby, aria-describedby) belong on the range input, not the wrapper
 defineOptions({ inheritAttrs: false })
+// Every field needs a name for autofill. The caller's (a question's key) wins, since $attrs is bound after it.
+const fallbackName = useId()
 
 interface Props {
   options: readonly string[]
@@ -259,6 +261,7 @@ const fillStyle = computed(() => ({ transform: `scaleX(${Math.min(Math.max(posit
       @lostpointercapture="release"
     >
       <input
+        :name="fallbackName"
         v-bind="$attrs"
         :value="Math.max(chosen, 0)"
         type="range"

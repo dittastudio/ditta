@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import type { BriefLinkRow } from '#shared/utils/brief'
+import type { BriefLinkRow, BriefLinkRowErrors } from '#shared/utils/brief'
 
 const MAX = 3
 
 interface Props {
-  rowErrors?: string[][]
+  rowErrors?: BriefLinkRowErrors[]
   // Examples for the link field, shown in turn while it's empty. The first is the native placeholder.
   placeholders?: readonly string[]
   notePlaceholder?: string
@@ -24,7 +24,6 @@ const {
 const model = defineModel<BriefLinkRow[] | undefined>()
 const emit = defineEmits<{ submit: [] }>()
 
-const id = useId()
 const list = useTemplateRef('list')
 const frame = useBriefFrame()
 
@@ -80,65 +79,26 @@ function onPaste(index: number, event: ClipboardEvent) {
       name="brief-reveal"
       @leave="removeAtOnce"
     >
-      <div
+      <BriefLinkInput
         v-for="(row, index) in rows"
         :key="index"
+        :url="row.url ?? ''"
+        :note="row.note ?? ''"
         data-brief-row
-        class="flex flex-col gap-1.5"
-      >
-        <div class="flex items-center gap-2">
-          <BriefTextInput
-            :model-value="row.url ?? ''"
-            type="url"
-            inputmode="url"
-            :placeholder="placeholders[0]"
-            :placeholders="placeholders"
-            :aria-label="`Link ${index + 1}`"
-            :aria-invalid="rowErrors[index]?.length ? true : undefined"
-            :aria-describedby="rowErrors[index]?.length ? `${id}-${index}` : undefined"
-            :focus-on-mount="(index === 0 && focusOnMount) || added"
-            @update:model-value="update(index, { url: $event })"
-            @paste="onPaste(index, $event)"
-            @submit="emit('submit')"
-          />
-
-          <button
-            v-if="rows.length > 1"
-            type="button"
-            class="shrink-0 px-2 text-28 leading-none opacity-50 only-hover:hover:opacity-100"
-            :aria-label="`Remove link ${index + 1}`"
-            @click="remove(index)"
-          >
-            ×
-          </button>
-        </div>
-
-        <BriefFieldError
-          :id="`${id}-${index}`"
-          :errors="rowErrors[index]"
-        />
-
-        <Transition name="brief-reveal">
-          <p
-            v-if="sharingNudge && isPrivateByDefault(row.url ?? '')"
-            class="text-14 opacity-60 md:text-16"
-          >
-            Check it's shared so anyone with the link can view.
-          </p>
-        </Transition>
-
-        <Transition name="brief-reveal">
-          <BriefTextInput
-            v-if="row.url?.trim()"
-            :model-value="row.note ?? ''"
-            :placeholder="notePlaceholder"
-            :aria-label="`Note for link ${index + 1}`"
-            small
-            @update:model-value="update(index, { note: $event })"
-            @submit="emit('submit')"
-          />
-        </Transition>
-      </div>
+        :index="index"
+        :url-errors="rowErrors[index]?.url"
+        :note-errors="rowErrors[index]?.note"
+        :placeholders="placeholders"
+        :note-placeholder="notePlaceholder"
+        :sharing-nudge="sharingNudge"
+        :focus-on-mount="(index === 0 && focusOnMount) || added"
+        :removable="rows.length > 1"
+        @update:url="update(index, { url: $event })"
+        @update:note="update(index, { note: $event })"
+        @paste="onPaste(index, $event)"
+        @remove="remove(index)"
+        @submit="emit('submit')"
+      />
     </TransitionGroup>
 
     <Transition name="brief-reveal">

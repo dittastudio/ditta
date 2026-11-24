@@ -73,7 +73,7 @@ const focusRing =
   <div
     v-if="variant === 'cards'"
     :role="role"
-    class="grid gap-(--app-gutter-inner)"
+    class="grid auto-rows-fr gap-(--app-gutter-inner)"
     :class="hasDescriptions ? 'sm:grid-cols-2' : 'grid-cols-2'"
     data-brief-options
     @keydown="onKeydown"

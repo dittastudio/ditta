@@ -162,8 +162,8 @@ onBeforeUnmount(() => {
   if (resetButton.value?.parentElement) gsap.killTweensOf(resetButton.value.parentElement)
 })
 
-// The brief measures the nav to frame fields above it and glides it when the screen above changes height
-defineExpose({ el: nav, primaryLabel })
+// The brief plays the sound that matches the label Next has
+defineExpose({ primaryLabel })
 </script>
 
 <template>
@@ -172,7 +172,7 @@ defineExpose({ el: nav, primaryLabel })
     ref="nav"
     aria-label="Brief steps"
     data-crumb-surface="box"
-    class="sticky bottom-4 z-10 grid rounded-20 corner-shape-squircle bg-offblack-glass/50 text-grey outline outline-1 outline-white/15 backdrop-blur-sm shadow-2xl"
+    class="grid rounded-20 corner-shape-squircle bg-offblack-glass/50 text-grey outline outline-1 outline-white/15 backdrop-blur-sm shadow-2xl"
   >
     <!-- A plain progress track across the top of the bar, above the buttons. Its own row, so the step's buttons and
          the clear confirm still swap in the row below it. -->

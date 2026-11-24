@@ -46,6 +46,8 @@ const activeColumns = computed(() => {
       class="peer fixed right-5 bottom-5 size-12 cursor-pointer appearance-none rounded-full bg-white/50 shadow-lg backdrop-blur-md transition-colors duration-200 hover:bg-white/80 checked:bg-white"
       :style="{ zIndex: zIndex + 1 }"
       type="checkbox"
+      name="dev_guide"
+      aria-label="Show layout guide"
     />
 
     <div

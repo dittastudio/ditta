@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { useEventListener, useResizeObserver } from '@vueuse/core'
-import { gsap } from 'gsap'
 import { defineSound } from '@web-kits/audio'
 import type { BriefField } from '#shared/utils/brief'
 import type { BriefSubmitInput } from '#shared/schemas/brief'
@@ -9,9 +7,8 @@ import { confetti, pageEnter, save } from '@@/.web-kits/core'
 
 const brief = useBriefStore()
 const root = useTemplateRef('root')
-const content = useTemplateRef('content')
-const navComponent = useTemplateRef('nav')
-const nav = computed(() => navComponent.value?.el)
+const nav = useTemplateRef('nav')
+const navBar = useTemplateRef('navBar')
 const question = useTemplateRef('question')
 
 // Moving on is heard: a save for each Next, a page turning for a Skip, confetti for reaching the review
@@ -22,88 +19,15 @@ const advanceSounds: Partial<Record<string, ReturnType<typeof defineSound>>> = {
   Review: defineSound(confetti),
 }
 
-// Where the nav's top sits when it's pinned to the bottom of the viewport. Layout only, so it holds mid-glide.
+// Where the nav's top sits when it's pinned to the bottom of the viewport. Fields are framed against this rather than
+// wherever the nav is now: scrolled down to the footer, the nav has moved up with the end of the brief, but once a
+// field has been scrolled into view it's pinned again.
 function pinnedNavTop() {
-  if (!nav.value) return
-  return window.innerHeight - Number.parseFloat(getComputedStyle(nav.value).bottom) - nav.value.offsetHeight
+  if (!navBar.value) return
+  return window.innerHeight - Number.parseFloat(getComputedStyle(navBar.value).bottom) - navBar.value.offsetHeight
 }
 
-// The content's top in page coordinates, so it survives scrolling
-const contentTop = () => (content.value ? content.value.getBoundingClientRect().top + window.scrollY : 0)
-
-// Where the nav's top sits on screen for a screen at a given page position and height: just under it, or pinned,
-// whichever is higher. Worked out from the content, since the nav itself may be mid-glide.
-function navTopFor(top: number, height: number, scroll = window.scrollY) {
-  const pinned = pinnedNavTop()
-  if (!content.value || pinned === undefined) return
-
-  const gap = Number.parseFloat(getComputedStyle(content.value.parentElement!).rowGap) || 0
-  return Math.min(top + height + gap - scroll, pinned)
-}
-
-// Fields are framed against the pinned nav, not wherever it sits now: scrolled down past a short step, the nav
-// is high up the screen, but by the time the brief has scrolled the field into view it's pinned to the bottom.
-const { frame, alignTop, frameFirstError, engagement, disengage } = useBriefScroll(pinnedNavTop)
-
-// When the screen above it changes height (a new step, a follow-up, an error), the nav glides to its new place
-// instead of jumping there. The layout moves at once; the nav is offset back to where it was on screen and eased
-// home. The resize lands after layout but before paint, so the jump is never drawn.
-// The content itself doesn't need to: it's fading in anyway.
-// The content's last size and page position. The position is kept because a new height moves the content's top
-// too (the brief is centred on the screen), and by the time the resize is reported the old top is gone.
-let last: { width: number; height: number; top: number } | undefined
-// A new step jumps the scroll as it mounts, before its resize is reported. The nav was last drawn against the scroll
-// from before that jump, so that's where its glide starts from. Taken as the old step starts to leave, while the page
-// is still as it was drawn: once it's gone, scroll anchoring and a text field focusing as it mounts can both move the
-// scroll before the enter hook runs.
-let scrollBeforeSwap: number | undefined
-const onBeforeLeave = () => (scrollBeforeSwap = window.scrollY)
-
-const onAfterEnter = () => {
-  scrollBeforeSwap = undefined
-  releaseKeyboard()
-}
-
-function stopGliding() {
-  if (nav.value) gsap.killTweensOf(nav.value)
-  if (nav.value) gsap.set(nav.value, { clearProps: 'transform' })
-}
-
-useResizeObserver(content, ([entry]) => {
-  const { width, height } = entry!.contentRect
-  const previous = last
-  last = { width, height, top: contentTop() }
-  const scroll = scrollBeforeSwap
-  scrollBeforeSwap = undefined
-
-  // A new width is the window resizing, which should follow the window straight away
-  if (!previous || !nav.value || width !== previous.width) {
-    stopGliding()
-    return
-  }
-
-  const from = navTopFor(previous.top, previous.height, scroll)
-  const to = navTopFor(last.top, height)
-  if (from === undefined || to === undefined) return
-
-  glide(nav.value, 'y', from - to, {
-    // Short moves land with the step's own 250ms; longer ones take a little more, never outlasting the 600ms scroll
-    duration: (distance) => gsap.utils.clamp(0.25, 0.45, 0.2 + distance / 1500),
-    // power3.out is --ease-outCubic, the step transition's curve, so both settle the same way
-    ease: 'power3.out',
-  })
-})
-
-// The content can move without resizing, which the observer never hears of: a window only getting taller or shorter
-// re-centres it, and on first load it's measured before everything around it has settled. So its position is taken
-// again on resize and at the start of every press or key, just before anything done to the brief can resize it.
-const refreshTop = () => {
-  if (last) last.top = contentTop()
-}
-
-useEventListener('resize', refreshTop)
-
-onBeforeUnmount(stopGliding)
+const { frame, alignTop, frameFirstError, engagement, disengage } = useBriefScroll(pinnedNavTop, () => root.value)
 
 const isDraft = computed(() => brief.status === 'draft')
 
@@ -217,7 +141,7 @@ async function primary() {
     return frameFirstError(root.value)
   }
 
-  const sound = advanceSounds[navComponent.value?.primaryLabel ?? '']
+  const sound = advanceSounds[nav.value?.primaryLabel ?? '']
   if (sound) play(sound)
   brief.next()
 }
@@ -299,91 +223,92 @@ const screenKey = computed(() => (isDraft.value ? `step-${brief.stepIndex}-${res
 </script>
 
 <template>
-  <!-- A faint dashed focus ring for keyboard users. Not on text fields, which turn olive, or on headings focused in code. -->
+  <!-- A faint dashed focus ring for keyboard users. Not on text fields, which turn olive, or on headings focused in code.
+       The nav is in here too, so the brief's keys (see useBriefKeys) still work with focus on its buttons. -->
   <div
-    class="flex min-h-svh flex-col justify-center bg-black text-white [&_:focus-visible:not(input,[tabindex='-1'])]:outline-1 [&_:focus-visible:not(input,[tabindex='-1'])]:outline-dashed [&_:focus-visible:not(input,[tabindex='-1'])]:outline-offset-4 [&_:focus-visible:not(input,[tabindex='-1'])]:outline-white/50 [&_[tabindex='-1']]:outline-none"
-    @pointerdown.capture="refreshTop"
-    @keydown.capture="refreshTop"
+    ref="root"
+    class="flex min-h-svh flex-col bg-black text-white [&_:focus-visible:not(input,[tabindex='-1'])]:outline-1 [&_:focus-visible:not(input,[tabindex='-1'])]:outline-dashed [&_:focus-visible:not(input,[tabindex='-1'])]:outline-offset-4 [&_:focus-visible:not(input,[tabindex='-1'])]:outline-white/50 [&_[tabindex='-1']]:outline-none"
   >
     <div
-      class="wrapper pt-[calc(var(--dock-height)+--spacing(20))] pb-30 md:pt-[calc(var(--dock-height)+--spacing(40))] md:pb-60"
+      class="wrapper flex flex-1 flex-col justify-center pt-[calc(var(--dock-height)+--spacing(20))] pb-10 md:pt-[calc(var(--dock-height)+--spacing(40))] md:pb-15"
     >
-      <div
-        ref="root"
-        class="mx-auto w-full max-w-174"
-      >
-        <!-- Only as tall as the step, so the nav sits right under it. Still sticky for steps taller than the screen -->
-        <div class="flex w-full flex-col gap-10 md:gap-15">
-          <div ref="content">
-            <Transition
-              :name="brief.direction === 1 ? 'brief-forward' : 'brief-back'"
-              mode="out-in"
-              @before-leave="onBeforeLeave"
-              @enter="onEnter"
-              @after-enter="onAfterEnter"
-            >
-              <div
-                :key="screenKey"
-                class="flex w-full flex-col gap-8 md:gap-25"
-                @pointerdown="engagement.onPointerdown"
-                @click="engagement.onClick"
-                @focusin="!cleared && engagement.onFocusin($event)"
-              >
-                <!-- The brief's title only bookends it: on the first step and on review -->
-                <h1
-                  v-if="isDraft && brief.isSummary"
-                  class="self-center text-40 leading-tight trim-both md:text-64"
-                >
-                  Review your brief
-                </h1>
-
-                <p
-                  v-else-if="isDraft && brief.stepIndex === 0"
-                  class="self-center text-40 leading-tight trim-both md:text-64"
-                >
-                  Create your brief
-                </p>
-
-                <BriefSent v-if="!isDraft" />
-
-                <BriefSummary v-else-if="brief.isSummary" />
-
-                <BriefQuestion
-                  v-else-if="brief.step"
-                  ref="question"
-                  :step="brief.step"
-                  @submit="primary"
-                />
-              </div>
-            </Transition>
-          </div>
-
-          <BriefNav
-            ref="nav"
-            v-model:shaking="shaking"
-            :error="error"
-            @primary="primary"
-            @cleared="onCleared"
-          />
-
-          <!-- Holds the keyboard open between steps on touch (see holdKeyboard). 16px text so iOS doesn't zoom to it. -->
-          <input
-            ref="keyboardProxy"
-            type="text"
-            enterkeyhint="next"
-            class="pointer-events-none fixed top-0 left-0 size-px text-16 opacity-0"
-            tabindex="-1"
-            aria-hidden="true"
-          />
-
-          <p
-            class="sr-only"
-            role="status"
+      <div class="mx-auto w-full max-w-174">
+        <Transition
+          :name="brief.direction === 1 ? 'brief-forward' : 'brief-back'"
+          mode="out-in"
+          @enter="onEnter"
+          @after-enter="releaseKeyboard"
+        >
+          <div
+            :key="screenKey"
+            class="flex w-full flex-col gap-8 md:gap-25"
+            @pointerdown="engagement.onPointerdown"
+            @click="engagement.onClick"
+            @focusin="!cleared && engagement.onFocusin($event)"
           >
-            {{ announcement }}
-          </p>
-        </div>
+            <!-- The brief's title only bookends it: on the first step and on review -->
+            <h1
+              v-if="isDraft && brief.isSummary"
+              class="self-center text-40 leading-tight trim-both md:text-64"
+            >
+              Review your brief
+            </h1>
+
+            <p
+              v-else-if="isDraft && brief.stepIndex === 0"
+              class="self-center text-40 leading-tight trim-both md:text-64"
+            >
+              Create your brief
+            </p>
+
+            <BriefSent v-if="!isDraft" />
+
+            <BriefSummary v-else-if="brief.isSummary" />
+
+            <BriefQuestion
+              v-else-if="brief.step"
+              ref="question"
+              :step="brief.step"
+              @submit="primary"
+            />
+          </div>
+        </Transition>
+
+        <!-- Holds the keyboard open between steps on touch (see holdKeyboard). 16px text so iOS doesn't zoom to it. -->
+        <input
+          ref="keyboardProxy"
+          name="keyboard_proxy"
+          type="text"
+          autocomplete="off"
+          enterkeyhint="next"
+          class="pointer-events-none fixed top-0 left-0 size-px text-16 opacity-0"
+          tabindex="-1"
+          aria-hidden="true"
+        />
+
+        <p
+          class="sr-only"
+          role="status"
+        >
+          {{ announcement }}
+        </p>
       </div>
+    </div>
+
+    <!-- Pinned to the bottom of the screen, apart from the steps above it, as far from it as the Dock is from the top. Last in the brief, so it rides up with the
+         brief's end rather than covering the footer. -->
+    <div
+      ref="navBar"
+      class="wrapper pointer-events-none sticky bottom-7.5 z-10 mb-7.5"
+    >
+      <BriefNav
+        ref="nav"
+        v-model:shaking="shaking"
+        class="pointer-events-auto mx-auto max-w-174"
+        :error="error"
+        @primary="primary"
+        @cleared="onCleared"
+      />
     </div>
   </div>
 </template>
