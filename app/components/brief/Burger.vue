@@ -97,8 +97,8 @@ function shake(removed: { x: number; y: number; color: string }[], direction: { 
         size,
         angle,
         color: cell.color,
-        vx: (out.x * 2.5 + (Math.random() - 0.5) * 2) * (size / 5),
-        vy: (Math.min(out.y, 0) * 2 - 1.5 - Math.random() * 2) * (size / 5),
+        vx: (out.x * 3.5 + (Math.random() - 0.5) * 3) * (size / 5),
+        vy: (Math.min(out.y, 0) * 3 - 2.5 - Math.random() * 2.5) * (size / 5),
       }
     }),
   )

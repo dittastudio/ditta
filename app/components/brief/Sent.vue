@@ -19,7 +19,7 @@ const eaten = ref(false)
   >
     <h1 class="text-24 leading-tight text-balance trim-both md:text-28">Check your inbox to finish</h1>
 
-    <p class="text-18 text-beige md:text-20">
+    <p class="text-18 opacity-60 md:text-20">
       We've sent a link to <strong class="font-medium text-white">{{ email }}</strong>. Click it to send your brief to
       us.
     </p>
@@ -40,16 +40,9 @@ const eaten = ref(false)
     v-else
     class="flex flex-col items-center gap-10 text-center"
   >
-    <BriefBurger v-model:finished="eaten" />
-
-    <!-- Crumbs from the burger land on the heading and paragraph, line by line -->
-    <h1
-      class="text-24 leading-tight text-balance trim-both md:text-28"
-      data-crumb-surface="text"
-    >
-      Thanks{{ firstName ? `, ${firstName}` : '' }}. Your brief is on its way.<br />
-      <!-- Both lines share one grid cell and cross over in place. The hidden one is aria-hidden, so screen readers and
-           the crumbs only find the line that's showing. -->
+    <!-- Both lines share one grid cell and cross over in place. The hidden one is aria-hidden, so screen readers only
+         find the line that's showing. -->
+    <p class="text-24 leading-tight text-balance trim-both md:text-28">
       <span class="inline-grid">
         <span
           class="col-start-1 row-start-1 transition-opacity duration-200 ease-outCubic motion-reduce:transition-none"
@@ -66,10 +59,20 @@ const eaten = ref(false)
           Struth! Fancy another...?
         </span>
       </span>
+    </p>
+
+    <BriefBurger v-model:finished="eaten" />
+
+    <!-- Crumbs from the burger land on the heading and paragraph, line by line -->
+    <h1
+      class="text-24 leading-tight text-balance trim-both md:text-28"
+      data-crumb-surface="text"
+    >
+      Thanks{{ firstName ? `, ${firstName}` : '' }}. Your brief is on its way.
     </h1>
 
     <p
-      class="text-18 text-beige md:text-20"
+      class="text-18 opacity-60 md:text-20"
       data-crumb-surface="text"
     >
       We'll reply within two working days to book a short call.

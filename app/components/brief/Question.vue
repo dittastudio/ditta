@@ -62,7 +62,7 @@ defineExpose({ validate })
 
       <p
         v-if="step.hint"
-        class="text-16 text-beige text-pretty trim-both md:text-20"
+        class="text-16 opacity-60 text-pretty trim-both md:text-20"
       >
         {{ step.hint }}
       </p>
@@ -82,7 +82,7 @@ defineExpose({ validate })
     <Transition name="brief-reveal">
       <p
         v-if="emailSuggestion"
-        class="-mt-2 text-16 text-beige md:-mt-9"
+        class="-mt-2 text-16 opacity-60 md:-mt-9"
       >
         Did you mean
         <button
@@ -97,7 +97,7 @@ defineExpose({ validate })
 
     <p
       v-if="step.field === 'email'"
-      class="-mt-2 text-16 text-beige md:-mt-9"
+      class="-mt-2 text-16 opacity-60 md:-mt-9"
     >
       We'll only use this to reply about your project. See our
       <NuxtLink
