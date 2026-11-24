@@ -90,6 +90,8 @@ function settle(target: number | boolean) {
 }
 
 function cancel() {
+  // A cell caught mid-flash would otherwise stay bright, since a new flood counts it as lit: land it where it was heading
+  for (const event of events) if (event.to !== FLASH && cells[event.cell] === FLASH) cells[event.cell] = event.to
   events = []
   clearTimeout(finaleTimer)
 }
