@@ -132,15 +132,25 @@ onUnmounted(() => {
   transform: translateZ(0);
   transition: scale 0.8s var(--ease-spring-3);
 
-  .ui-button:hover & {
+  /* Hover only where it can, so a tap on a phone doesn't leave it stuck grown. A press grows it everywhere. */
+  @media (hover: hover) {
+    .ui-button:hover & {
+      transition: scale 0.4s var(--ease-out);
+      scale: var(--scale-x) var(--scale-y);
+    }
+  }
+
+  .ui-button:active & {
     transition: scale 0.4s var(--ease-out);
     scale: var(--scale-x) var(--scale-y);
   }
 }
 
 .ui-button__arrow {
-  .ui-button:hover & {
-    animation: arrow-fire 0.8s both;
+  @media (hover: hover) {
+    .ui-button:hover & {
+      animation: arrow-fire 0.8s both;
+    }
   }
 }
 
