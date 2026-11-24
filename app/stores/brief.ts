@@ -26,11 +26,6 @@ export const useBriefStore = defineStore(
     // Turnstile reported an error (a hostname it isn't set up for, a blocked script), so no token is coming
     const turnstileFailed = ref(false)
     const honeypot = ref('')
-    // Whether the keyboard shortcut keys show (see UiKbd and the nav's switch). A preference rather than part of the
-    // draft, so Start again leaves it. The preview, while the switch is hovered or focused, isn't persisted.
-    const showShortcuts = ref(false)
-    const previewShortcuts = ref(false)
-    const shortcuts = computed(() => (showShortcuts.value ? 'on' : previewShortcuts.value ? 'preview' : undefined))
 
     const summaryIndex = briefSteps.length
     // The summary isn't counted: "1 of 12" covers the questions
@@ -128,9 +123,6 @@ export const useBriefStore = defineStore(
       turnstileToken,
       turnstileFailed,
       honeypot,
-      showShortcuts,
-      previewShortcuts,
-      shortcuts,
       summaryIndex,
       total,
       step,
@@ -148,7 +140,7 @@ export const useBriefStore = defineStore(
   },
   {
     persist: {
-      pick: ['answers', 'stepIndex', 'editingFromSummary', 'status', 'startedAt', 'sentName', 'showShortcuts'],
+      pick: ['answers', 'stepIndex', 'editingFromSummary', 'status', 'startedAt', 'sentName'],
       storage: piniaPluginPersistedstate.localStorage(),
       afterHydrate: ({ store }) => {
         store.upgradeSavedAnswers()

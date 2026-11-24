@@ -311,7 +311,6 @@ const screenKey = computed(() => (isDraft.value ? `step-${brief.stepIndex}-${res
       <div
         ref="root"
         class="mx-auto w-full max-w-174"
-        :data-shortcuts="brief.shortcuts"
       >
         <!-- Only as tall as the step, so the nav sits right under it. Still sticky for steps taller than the screen -->
         <div class="flex w-full flex-col gap-10 md:gap-15">

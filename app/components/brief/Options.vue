@@ -64,8 +64,7 @@ function onKeydown(event: KeyboardEvent) {
   inputs[to]?.focus()
 }
 
-// 1–9 pick the first nine options (see useBriefKeys). Each shows its key, but only where there's likely a keyboard.
-// The label is what useBriefKeys marks data-pressed, so its key presses down with the real one.
+// 1–9 pick the first nine options (see useBriefKeys), announced through aria-keyshortcuts
 const shortcut = (index: number) => (index < 9 ? String(index + 1) : undefined)
 
 // The input is hidden, so the label shows its focus. Shell's own ring skips inputs.
@@ -97,12 +96,6 @@ const focusRing =
         class="sr-only"
         @change="playPick"
       />
-
-      <UiKbd
-        v-if="shortcut(index)"
-        class="absolute top-3 right-3 only-touch:hidden md:top-4 md:right-4"
-        >{{ shortcut(index) }}</UiKbd
-      >
 
       <template v-if="figures[option]">
         <span class="text-28 font-medium leading-none trim-both 2xs:text-40 md:text-64">{{
@@ -152,13 +145,7 @@ const focusRing =
         @change="playPick"
       />
 
-      <span class="flex items-center gap-2"
-        ><UiKbd
-          v-if="shortcut(index)"
-          class="-my-1 only-touch:hidden"
-          >{{ shortcut(index) }}</UiKbd
-        ><span class="trim-both">{{ option }}</span></span
-      >
+      <span class="trim-both">{{ option }}</span>
     </label>
   </div>
 </template>

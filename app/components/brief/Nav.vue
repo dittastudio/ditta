@@ -2,7 +2,6 @@
 import { onClickOutside, onKeyStroke } from '@vueuse/core'
 import { gsap } from 'gsap'
 import { defineSound } from '@web-kits/audio'
-import IconKeyboard from '@/assets/icons/keyboard.svg'
 import IconReset from '@/assets/icons/reset.svg'
 import { error as errorSound, hover, pageExit, warning } from '@@/.web-kits/core'
 
@@ -55,21 +54,9 @@ const primaryLabel = computed(() => {
   return 'Next'
 })
 
-// Enter moves on from any question (see useBriefKeys), so the bar says so to anyone with a keyboard. Not on the
+// Enter moves on from any question (see useBriefKeys), announced to assistive tech on the primary button. Not on the
 // review, where sending takes a deliberate press.
 const enterAdvances = computed(() => isDraft.value && !brief.isSummary)
-
-// Hovering the shortcuts switch, or reaching it with Tab, shows the keys faintly (see UiKbd). A click to focus doesn't
-// count: the pointer is already previewing. Cleared when the switch goes, so a preview can't outlive it.
-function previewShortcuts(on: boolean) {
-  brief.previewShortcuts = on
-}
-
-function onSwitchFocus(event: FocusEvent) {
-  if ((event.target as HTMLElement).matches(':focus-visible')) previewShortcuts(true)
-}
-
-watch(enterAdvances, (advances) => advances || previewShortcuts(false))
 
 // Back goes through the browser's history, so the browser's own Back does the same (see useBriefHistory)
 const briefHistory = useBriefHistory(() => play(soundPageExit))
@@ -261,49 +248,14 @@ defineExpose({ el: nav, primaryLabel })
         v-else
         class="relative flex items-center gap-3 p-3.5 pl-5 col-start-1 row-start-1 md:gap-5 md:p-5"
       >
-        <!-- Tucked into the bar's left edge, out of the buttons' way: the count at the top, the shortcuts switch at the
-             bottom. The pixel fill already shows progress. -->
+        <!-- Tucked into the bar's left edge, out of the buttons' way. The pixel fill already shows progress. -->
         <div
           v-if="isDraft"
-          class="absolute inset-y-3.5 left-3.5 flex flex-col items-start justify-between max-md:justify-center md:inset-y-4 md:left-5"
+          class="absolute inset-y-3.5 left-3.5 flex items-center md:inset-y-4 md:left-5"
         >
-          <p class="flex items-start gap-1.5 font-mono text-11 leading-none text-grey/60 tabular-nums">
+          <p class="font-mono text-11 leading-none text-grey/60 tabular-nums">
             {{ brief.isSummary ? 'Review' : `${position} of ${brief.total}` }}
-            <!-- Hidden with the keys, so the count stands alone when shortcuts are off. Top-aligned, so the count doesn't
-                 move when the taller key appears: the key hangs down beside the switch. Hides on the key's timing
-                 (see UiKbd), or it would take the key with it before the key's exit could play. -->
-            <span
-              v-if="enterAdvances"
-              class="hidden items-start gap-1.5 opacity-0 transition-[display,opacity] transition-discrete duration-200 ease-outCubic max-md:hidden only-touch:hidden in-data-shortcuts:flex in-data-shortcuts:opacity-100 in-data-shortcuts:duration-300 in-data-shortcuts:ease-outQuart starting:in-data-shortcuts:opacity-0"
-              aria-hidden="true"
-              data-brief-enter-key
-              >·
-              <UiKbd
-                shape="return"
-                class="text-grey"
-                >↵</UiKbd
-              ></span
-            >
           </p>
-          <!-- Shows the shortcut keys, previewing them while hovered or focused from the keyboard. Only where there's
-               likely a keyboard to use them with. -->
-          <div
-            v-if="enterAdvances"
-            class="flex items-center gap-1.5 text-grey/60 max-md:hidden only-touch:hidden"
-          >
-            <IconKeyboard
-              class="size-4"
-              aria-hidden="true"
-            />
-            <UiSwitch
-              v-model="brief.showShortcuts"
-              aria-label="Show keyboard shortcuts"
-              @pointerenter="previewShortcuts(true)"
-              @pointerleave="previewShortcuts(false)"
-              @focus="onSwitchFocus"
-              @blur="previewShortcuts(false)"
-            />
-          </div>
         </div>
 
         <p

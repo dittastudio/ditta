@@ -13,5 +13,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <BriefShell />
+  <div>
+    <BriefShell />
+  </div>
 </template>
