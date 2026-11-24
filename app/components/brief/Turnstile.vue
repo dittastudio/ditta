@@ -30,6 +30,8 @@ const TEST_SITE_KEY = '1x00000000000000000000AA'
 const SCRIPT_SRC = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit'
 
 const token = defineModel<string>({ default: '' })
+// Set when Turnstile errors, for Send to say so rather than wait
+const failed = defineModel<boolean>('failed', { default: false })
 
 const el = useTemplateRef('el')
 const config = useRuntimeConfig()
@@ -58,16 +60,26 @@ function loadTurnstile() {
 onMounted(async () => {
   if (!siteKey || !el.value) return
   const turnstile = await loadTurnstile().catch(() => undefined)
-  if (!turnstile || !el.value) return
+  if (!turnstile) {
+    failed.value = true
+    return
+  }
+  if (!el.value) return
 
   widgetId = turnstile.render(el.value, {
     sitekey: siteKey,
     theme: 'dark',
     size: 'flexible',
     appearance: 'interaction-only',
-    callback: (value) => (token.value = value),
+    callback: (value) => {
+      token.value = value
+      failed.value = false
+    },
     'expired-callback': () => (token.value = ''),
-    'error-callback': () => (token.value = ''),
+    'error-callback': () => {
+      token.value = ''
+      failed.value = true
+    },
   })
 })
 

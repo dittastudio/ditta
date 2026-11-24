@@ -58,6 +58,9 @@ const rows = computed(() =>
       </li>
     </ol>
 
-    <BriefTurnstile v-model="brief.turnstileToken" />
+    <BriefTurnstile
+      v-model="brief.turnstileToken"
+      v-model:failed="brief.turnstileFailed"
+    />
   </section>
 </template>

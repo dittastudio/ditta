@@ -23,6 +23,8 @@ export const useBriefStore = defineStore(
     // Not persisted: a send in flight, the Turnstile token for it, and the honeypot
     const sending = ref(false)
     const turnstileToken = ref('')
+    // Turnstile reported an error (a hostname it isn't set up for, a blocked script), so no token is coming
+    const turnstileFailed = ref(false)
     const honeypot = ref('')
 
     const summaryIndex = briefSteps.length
@@ -116,6 +118,7 @@ export const useBriefStore = defineStore(
       sentName,
       sending,
       turnstileToken,
+      turnstileFailed,
       honeypot,
       summaryIndex,
       total,

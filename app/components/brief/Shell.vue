@@ -142,6 +142,11 @@ async function send() {
     return shake()
   }
 
+  if (!brief.turnstileToken && brief.turnstileFailed) {
+    error.value = 'We couldn’t check you’re not a robot. Reload the page and try again.'
+    return shake()
+  }
+
   // Managed Turnstile usually has its token before anyone reaches Send. If it's still deciding, say so.
   if (!brief.turnstileToken) {
     error.value = 'Still checking you’re not a robot. Try again in a moment.'
