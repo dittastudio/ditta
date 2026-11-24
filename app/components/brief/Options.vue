@@ -70,7 +70,7 @@ const focusRing =
 </script>
 
 <template>
-  <UiEdgeLight
+  <div
     v-if="variant === 'cards'"
     :role="role"
     class="grid gap-(--app-gutter-inner)"
@@ -81,7 +81,7 @@ const focusRing =
     <label
       v-for="(option, index) in options"
       :key="option"
-      class="edge-light edge-glow relative flex cursor-pointer touch-manipulation flex-col items-start gap-4 rounded-10 border border-white/25 bg-offblack text-left select-none transition-[border-color,background-color] duration-500 ease-outQuart [--el-fade:500ms] [--el-fade-ease:var(--ease-outQuart)] only-hover:hover:not-has-checked:border-white/50 has-checked:border-olive has-checked:bg-olive-dark has-checked:[--eg-color:var(--color-olive)] has-checked:[--el-color:var(--color-olive-light)] md:gap-5"
+      class="relative flex cursor-pointer touch-manipulation flex-col items-start gap-4 rounded-10 border border-white/25 bg-offblack text-left select-none transition-[border-color,background-color,color] duration-500 ease-outQuart only-hover:hover:not-has-checked:border-white/50 has-checked:border-olive has-checked:bg-olive has-checked:text-black md:gap-5"
       :class="[hasDescriptions ? 'p-5 md:p-7.5' : 'p-4 md:p-6', focusRing]"
     >
       <input
@@ -107,7 +107,7 @@ const focusRing =
         {{ descriptions[option] }}
       </span>
     </label>
-  </UiEdgeLight>
+  </div>
 
   <div
     v-else

@@ -138,7 +138,7 @@
      new one grows up into place; going back it reverses, the old screen lifting toward you and the new one settling
      down from just over full size. Scaled from the top, so a step taller than the screen doesn't drift from its
      heading. Next is pressed a dozen times a brief, so the old screen gets out of the way quickly; the new one takes
-     its time. The pixel fill in the brief's nav reads these too, to flood in time with the new screen. */
+     its time. */
   :root {
     --brief-step-out: 150ms;
     --brief-step-in: 250ms;

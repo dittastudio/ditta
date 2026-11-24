@@ -36,7 +36,6 @@ const brief = useBriefStore()
 const nav = useTemplateRef('nav')
 const resetButton = useTemplateRef('resetButton')
 const cancelButton = useTemplateRef('cancelButton')
-const fill = useTemplateRef('fill')
 
 const isDraft = computed(() => brief.status === 'draft')
 const hasPrevious = computed(() => brief.status === 'sent' || (isDraft.value && brief.stepIndex > 0))
@@ -99,8 +98,6 @@ function clear() {
   else requestAnimationFrame(() => requestAnimationFrame(() => (spinning.value = true)))
 
   soundStartup.play()
-  // Drains alongside the icon's turn, so the reset's drop to 0 doesn't cut it short
-  fill.value?.drain()
   brief.reset()
   emit('cleared')
 }
@@ -177,30 +174,33 @@ defineExpose({ el: nav, primaryLabel })
     data-crumb-surface="box"
     class="sticky bottom-4 z-10 grid rounded-20 corner-shape-squircle bg-offblack-glass/50 text-grey outline outline-1 outline-white/15 backdrop-blur-sm shadow-2xl"
   >
-    <!-- The bar's own background floods with pixels as the brief goes on. Clipped in its own layer, not on the nav,
-         so the error above the bar on mobile isn't cut off. -->
+    <!-- A plain progress track across the top of the bar, above the buttons. Its own row, so the step's buttons and
+         the clear confirm still swap in the row below it. -->
     <div
       v-if="isDraft"
-      class="pointer-events-none absolute inset-0 overflow-hidden rounded-20 corner-shape-squircle"
-      role="progressbar"
-      aria-label="Progress"
-      :aria-valuetext="brief.isSummary ? 'Review' : `${position} of ${brief.total}`"
-      :aria-valuenow="Math.min(position, brief.total)"
-      aria-valuemin="1"
-      :aria-valuemax="brief.total"
+      class="px-5 pt-4 md:pt-5"
     >
-      <BriefPixelFill
-        ref="fill"
-        :progress="progress"
-        :review="brief.isSummary"
-      />
+      <div
+        class="h-1 overflow-hidden rounded-full bg-white/10"
+        role="progressbar"
+        aria-label="Progress"
+        :aria-valuetext="brief.isSummary ? 'Review' : `${position} of ${brief.total}`"
+        :aria-valuenow="Math.min(position, brief.total)"
+        aria-valuemin="1"
+        :aria-valuemax="brief.total"
+      >
+        <div
+          class="h-full origin-left rounded-full bg-accent transition-[scale] duration-500 ease-outCubic motion-reduce:transition-none"
+          :style="{ scale: `${progress} 1` }"
+        />
+      </div>
     </div>
 
     <Transition name="brief-rise">
       <div
         v-if="confirmingClear"
         data-brief-confirm
-        class="relative flex items-center gap-2.5 p-3.5 pl-5 col-start-1 row-start-1 md:p-5 md:pl-6"
+        class="relative flex items-center gap-2.5 p-3.5 pl-5 col-start-1 row-start-2 md:p-5 md:pl-6"
       >
         <p
           class="flex-1 text-14 font-medium whitespace-nowrap md:text-16"
@@ -246,9 +246,9 @@ defineExpose({ el: nav, primaryLabel })
 
       <div
         v-else
-        class="relative flex items-center gap-3 p-3.5 pl-5 col-start-1 row-start-1 md:gap-5 md:p-5"
+        class="relative flex items-center gap-3 p-3.5 pl-5 col-start-1 row-start-2 md:gap-5 md:p-5"
       >
-        <!-- Tucked into the bar's left edge, out of the buttons' way. The pixel fill already shows progress. -->
+        <!-- Tucked into the bar's left edge, out of the buttons' way. The track above already shows progress. -->
         <div
           v-if="isDraft"
           class="absolute inset-y-3.5 left-3.5 flex items-center md:inset-y-4 md:left-5"
