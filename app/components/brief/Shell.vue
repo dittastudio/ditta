@@ -145,7 +145,8 @@ async function send() {
     await $fetch('/api/brief', {
       method: 'POST',
       body: {
-        answers: brief.answers,
+        // The parsed answers: follow-ups that aren't shown are dropped, and links have their https:// added
+        answers: result.data,
         elapsed: brief.startedAt ? Date.now() - brief.startedAt : 0,
         honeypot: brief.honeypot || undefined,
         turnstileToken: brief.turnstileToken,
