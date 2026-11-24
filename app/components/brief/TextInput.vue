@@ -2,6 +2,7 @@
 import { useDocumentVisibility, usePreferredReducedMotion } from '@vueuse/core'
 import { defineSound } from '@web-kits/audio'
 import { tap, tick } from '@@/.web-kits/core'
+import IconClose from '@/assets/icons/close.svg'
 
 // Native attributes (type, placeholder, autocomplete, inputmode, aria-*) fall through to the <input>
 defineOptions({ inheritAttrs: false })
@@ -35,6 +36,13 @@ const keySounds: Partial<Record<string, typeof soundTick>> = {
 function onInput(event: Event) {
   const sound = keySounds[(event as InputEvent).inputType]
   if (sound) play(sound)
+}
+
+// Empties the field and hands focus straight back, so the next answer can be typed without reaching for the field
+function clear() {
+  model.value = ''
+  play(soundTap)
+  input.value?.focus({ preventScroll: true })
 }
 
 onMounted(() => {
@@ -73,10 +81,35 @@ watchEffect((onCleanup) => {
       :class="[
         small ? 'py-3 text-16' : 'py-4 text-16 md:text-20',
         rotates ? 'placeholder:text-transparent' : 'placeholder:text-white/40',
+        model ? 'pr-14' : '',
       ]"
       @keydown.enter.prevent="emit('submit')"
       @input="onInput"
     />
+
+    <!-- mousedown is held back so the field keeps focus, and on touch the keyboard stays up -->
+    <Transition
+      enter-active-class="transition-opacity duration-200 ease-outCubic"
+      leave-active-class="transition-opacity duration-200 ease-outCubic"
+      enter-from-class="opacity-0"
+      leave-to-class="opacity-0"
+    >
+      <button
+        v-if="model"
+        type="button"
+        tabindex="-1"
+        aria-label="Clear"
+        class="group absolute inset-y-0 right-0 flex touch-manipulation items-center pr-5 pl-3 text-white/60 transition-colors duration-200 ease-outCubic only-hover:hover:text-white"
+        @mousedown.prevent
+        @click="clear"
+      >
+        <span
+          class="grid size-6 place-items-center rounded-full bg-white/15 transition-colors duration-200 ease-outCubic only-hover:group-hover:bg-white/25"
+        >
+          <IconClose class="size-3.5" />
+        </span>
+      </button>
+    </Transition>
 
     <!-- Stands in for the placeholder, which can't animate. Typing removes it at once, with no fade. -->
     <div
