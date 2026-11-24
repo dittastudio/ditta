@@ -87,9 +87,12 @@ export default defineNuxtConfig({
       prerender: !isSpa,
     },
     // Per-visitor form state, nothing to prerender (docs/plans/brief-builder-milestones.md)
+    // noindex as a response header as well as a meta tag, since the page is client-only and crawlers that don't
+    // run JavaScript never see the tag. Remove this and the page's useSeoMeta robots at launch (M7).
     '/brief': {
       ssr: false,
       prerender: false,
+      robots: false,
     },
   },
   nitro: {
