@@ -2,7 +2,8 @@
 import { useEventListener, useResizeObserver } from '@vueuse/core'
 import { gsap } from 'gsap'
 import { defineSound } from '@web-kits/audio'
-import { briefAnswersSchema } from '#shared/schemas/brief'
+import type { BriefField } from '@/utils/brief'
+import { briefAnswersSchema, briefStepSchemas } from '#shared/schemas/brief'
 import { confetti, pageEnter, save } from '@@/.web-kits/core'
 
 const brief = useBriefStore()
@@ -57,7 +58,10 @@ let last: { width: number; height: number; top: number } | undefined
 let scrollBeforeSwap: number | undefined
 const onBeforeLeave = () => (scrollBeforeSwap = window.scrollY)
 
-const onAfterEnter = () => (scrollBeforeSwap = undefined)
+const onAfterEnter = () => {
+  scrollBeforeSwap = undefined
+  releaseKeyboard()
+}
 
 function stopGliding() {
   if (nav.value) gsap.killTweensOf(nav.value)
@@ -127,12 +131,38 @@ function send() {
   if (index >= 0) brief.goTo(index, true)
 }
 
+// iOS only opens the keyboard for a focus made inside the tap itself, and the next step's field focuses as it mounts,
+// after the old step has gone. So on touch, a Next headed for a text field focuses this stand-in during the tap,
+// which brings the keyboard up, and the new field takes focus from it as it mounts. Moving focus between fields keeps
+// the keyboard open.
+const keyboardProxy = useTemplateRef('keyboardProxy')
+const keyboardFields = new Set<BriefField>(['text', 'email', 'url', 'links'])
+
+function holdKeyboard() {
+  if (!isTouch() || !brief.step || brief.editingFromSummary) return
+
+  const nextStep = briefSteps[brief.stepIndex + 1]
+  if (!nextStep || !keyboardFields.has(nextStep.field)) return
+  // The same check Next is about to make, but synchronous, so it can still count as part of the tap
+  if (!briefStepSchemas[brief.step.key].safeParse(brief.answers).success) return
+
+  keyboardProxy.value?.focus({ preventScroll: true })
+}
+
+// Should the new field not have taken over, the keyboard closes rather than typing into nothing
+function releaseKeyboard() {
+  if (keyboardProxy.value && document.activeElement === keyboardProxy.value) keyboardProxy.value.blur()
+}
+
 async function primary() {
   if (brief.status === 'sent') return brief.setStatus('confirmed')
   if (brief.status === 'confirmed') return brief.reset()
   if (brief.isSummary) return send()
 
+  holdKeyboard()
+
   if (question.value && !(await question.value.validate())) {
+    releaseKeyboard()
     shake()
     await nextTick()
     await flagFirstError()
@@ -284,6 +314,16 @@ const screenKey = computed(() => (isDraft.value ? `step-${brief.stepIndex}-${res
             :error="error"
             @primary="primary"
             @cleared="onCleared"
+          />
+
+          <!-- Holds the keyboard open between steps on touch (see holdKeyboard). 16px text so iOS doesn't zoom to it. -->
+          <input
+            ref="keyboardProxy"
+            type="text"
+            enterkeyhint="next"
+            class="pointer-events-none fixed top-0 left-0 size-px text-16 opacity-0"
+            tabindex="-1"
+            aria-hidden="true"
           />
 
           <p

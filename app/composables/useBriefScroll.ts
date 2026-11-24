@@ -12,11 +12,6 @@ type Frame = (target: Element | null | undefined, options?: FrameOptions) => voi
 
 const frameKey: InjectionKey<Frame> = Symbol('briefFrame')
 
-// enterkeyhint only means anything on a field that brings up the keyboard, and every brief text field sets it.
-// The cards (buttons) and the slider (a range input) don't.
-const opensKeyboard = (el: EventTarget | null | undefined) =>
-  el instanceof HTMLElement && el.hasAttribute('enterkeyhint')
-
 // The same curve as --ease-outCubic. Lenis hands control back as soon as the user scrolls themselves, and makes
 // programmatic scrolls instant under prefers-reduced-motion.
 const SCROLL = { duration: 0.6, easing: (t: number) => 1 - (1 - t) ** 3 }
@@ -40,11 +35,14 @@ export function useBriefScroll(navTop: () => number | undefined) {
   const appStore = useAppStore()
   const reducedMotion = usePreferredReducedMotion()
 
-  // The part of the screen a field can be seen in: below the dock, above the sticky nav
-  const band = () => ({
-    top: appStore.getDockBottom,
-    bottom: navTop() ?? window.innerHeight,
-  })
+  // The part of the screen a field can be seen in: below the dock, above the sticky nav, and within the visual
+  // viewport, which ends at the keyboard when it's up (the nav is behind it then)
+  const band = () => {
+    const visible = window.visualViewport
+    const top = Math.max(appStore.getDockBottom, visible?.offsetTop ?? 0)
+    const bottom = Math.min(navTop() ?? window.innerHeight, visible ? visible.offsetTop + visible.height : Infinity)
+    return { top, bottom }
+  }
 
   // Breathing room left between the dock and a heading lined up beneath it
   const gap = () => Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--spacing')) * 6 || 0
@@ -62,10 +60,21 @@ export function useBriefScroll(navTop: () => number | undefined) {
   const frame: Frame = (target, { centre: always = false, instant = false } = {}) => {
     if (!target) return
 
-    // A text field that has just taken focus on touch may be opening the keyboard, and WebKit scrolls it into view
-    // for that. Lenis would overwrite that scroll every frame of the glide, so the browser gets this one to itself.
-    const focused = document.activeElement
-    if (isTouch() && opensKeyboard(focused) && target.contains(focused)) return
+    // While the keyboard is opening for a focused field, WebKit scrolls that field into view, and a Lenis glide would
+    // fight it, so the browser has this one to itself. A new step's instant jump has nothing to fight (its field
+    // focused without scrolling, see TextInput), so it's made now and again once the keyboard is up and the band has
+    // shrunk to it.
+    const keyboardOpening = isTouch() && opensKeyboard(document.activeElement) && !isKeyboardOpen()
+    if (keyboardOpening && !instant && target.contains(document.activeElement)) return
+    if (keyboardOpening && instant) {
+      window.visualViewport?.addEventListener(
+        'resize',
+        () => {
+          if (isKeyboardOpen() && target.isConnected) frame(target, { centre: true, instant: true })
+        },
+        { signal: AbortSignal.timeout(800) },
+      )
+    }
 
     const { top, bottom } = band()
     const margin = (bottom - top) * COMFORT_MARGIN

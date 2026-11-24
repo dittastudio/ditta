@@ -38,8 +38,9 @@ function onInput(event: Event) {
 }
 
 onMounted(() => {
-  // On touch the browser scrolls the field into view itself (see useBriefScroll); elsewhere the brief frames it
-  if (focusOnMount) input.value?.focus({ preventScroll: !isTouch() })
+  // The browser only scrolls for a focus that opens the keyboard (on touch, with no field holding it open already, as
+  // Shell does across a Next). Every other time the brief frames the field itself (see useBriefScroll).
+  if (focusOnMount) input.value?.focus({ preventScroll: !isTouch() || opensKeyboard(document.activeElement) })
 })
 
 // The examples go round once and come to rest on the first, rather than looping for as long as the field is empty.
