@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
   // Per IP, through the Workers rate limit binding in wrangler.jsonc. Absent in `nuxt dev` and on branch previews.
   const limiter = (event.context.cloudflare?.env as { BRIEF_RATE_LIMIT?: RateLimiter } | undefined)?.BRIEF_RATE_LIMIT
   if (limiter && !(await limiter.limit({ key: ip })).success) {
-    throw createError({ statusCode: 429, statusMessage: 'Too many briefs at once. Try again in a minute.' })
+    throw createError({ statusCode: 429, message: 'Too many briefs at once. Try again in a minute.' })
   }
 
   const body = await readValidatedBody(event, (value) => briefSubmitSchema.parse(value))
@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
   if (body.honeypot || body.elapsed < MIN_ELAPSED_MS) return { ok: true }
 
   const secret = config.turnstileSecretKey || (import.meta.dev ? TURNSTILE_TEST_SECRET : '')
-  if (!secret) throw createError({ statusCode: 500, statusMessage: 'The brief isn’t set up to send yet' })
+  if (!secret) throw createError({ statusCode: 500, message: 'The brief isn’t set up to send yet' })
 
   const turnstile = await $fetch<TurnstileResult>('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
     method: 'POST',
@@ -41,13 +41,13 @@ export default defineEventHandler(async (event) => {
   }).catch(() => null)
 
   if (!turnstile?.success) {
-    throw createError({ statusCode: 403, statusMessage: 'We couldn’t check you’re not a robot. Try again.' })
+    throw createError({ statusCode: 403, message: 'We couldn’t check you’re not a robot. Try again.' })
   }
 
   const email = briefEmail(body.answers)
 
   if (!config.resendApiKey) {
-    if (!import.meta.dev) throw createError({ statusCode: 500, statusMessage: 'The brief isn’t set up to send yet' })
+    if (!import.meta.dev) throw createError({ statusCode: 500, message: 'The brief isn’t set up to send yet' })
     console.info(`[brief] No NUXT_RESEND_API_KEY, so not sent:\n${email.subject}\n\n${email.text}`)
     return { ok: true }
   }
@@ -67,7 +67,7 @@ export default defineEventHandler(async (event) => {
     })
   } catch (error) {
     console.error('[brief] Resend failed', error instanceof FetchError ? error.data : error)
-    throw createError({ statusCode: 502, statusMessage: 'Your brief didn’t send. Try again.' })
+    throw createError({ statusCode: 502, message: 'Your brief didn’t send. Try again.' })
   }
 
   return { ok: true }
