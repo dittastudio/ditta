@@ -1,4 +1,3 @@
-import { $fetch, FetchError } from 'ofetch'
 import { briefSubmitSchema } from '#shared/schemas/brief'
 import { briefEmail } from '../emails/brief'
 
@@ -66,7 +65,7 @@ export default defineEventHandler(async (event) => {
       },
     })
   } catch (error) {
-    console.error('[brief] Resend failed', error instanceof FetchError ? error.data : error)
+    console.error('[brief] Resend failed', (error as { data?: unknown }).data ?? error)
     throw createError({ statusCode: 502, message: 'Your brief didn’t send. Try again.' })
   }
 
