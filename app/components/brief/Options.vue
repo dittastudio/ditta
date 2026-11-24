@@ -64,9 +64,18 @@ function onKeydown(event: KeyboardEvent) {
 // 1–9 pick the first nine options (see useBriefKeys), announced through aria-keyshortcuts
 const shortcut = (index: number) => (index < 9 ? String(index + 1) : undefined)
 
-// The input is hidden, so the label shows its focus. Shell's own ring skips inputs.
-const focusRing =
-  'has-focus-visible:outline-1 has-focus-visible:outline-dashed has-focus-visible:outline-offset-4 has-focus-visible:outline-white/50'
+// The same rule as a text field's outline (see TextInput): green once picked, coral while the question still needs
+// an answer, otherwise faint, turning white on hover and while focused from the keyboard. The input is hidden, so the
+// label shows it. A picked option is green whether focused or not, so it also keeps a dashed ring while focused:
+// moving between ticked boxes, that's the only sign of where focus is.
+const attrs = useAttrs()
+const outline = computed(() => [
+  'border border-ash has-checked:border-olive has-checked:bg-olive has-checked:text-black',
+  attrs['aria-invalid']
+    ? 'not-has-checked:border-coral'
+    : 'only-hover:hover:not-has-checked:border-white not-has-checked:has-focus-visible:border-white',
+  'has-checked:has-focus-visible:outline-1 has-checked:has-focus-visible:outline-dashed has-checked:has-focus-visible:outline-offset-4 has-checked:has-focus-visible:outline-white/50',
+])
 </script>
 
 <template>
@@ -81,8 +90,8 @@ const focusRing =
     <label
       v-for="(option, index) in options"
       :key="option"
-      class="relative flex cursor-pointer touch-manipulation flex-col items-start gap-4 rounded-10 border border-white/25 bg-offblack text-left select-none transition-[border-color,background-color,color] duration-500 ease-outQuart only-hover:hover:not-has-checked:border-white/50 has-checked:border-olive has-checked:bg-olive has-checked:text-black md:gap-5"
-      :class="[hasDescriptions ? 'p-5 md:p-7.5' : 'p-4 md:p-6', focusRing]"
+      class="relative flex cursor-pointer touch-manipulation flex-col items-start gap-4 rounded-10 text-left select-none transition-[border-color,background-color,color] duration-500 ease-outQuart md:gap-5"
+      :class="[hasDescriptions ? 'p-5 md:p-7.5' : 'p-4 md:p-6', outline]"
     >
       <input
         v-model="selected"
@@ -119,8 +128,8 @@ const focusRing =
     <label
       v-for="(option, index) in options"
       :key="option"
-      class="relative cursor-pointer touch-manipulation rounded-full bg-white/10 px-5 py-3 text-16 font-medium leading-none text-white select-none transition-colors duration-200 ease-outCubic only-hover:hover:not-has-checked:bg-white/20 has-checked:bg-white has-checked:text-black"
-      :class="focusRing"
+      class="relative cursor-pointer touch-manipulation rounded-full px-5 py-3 text-16 font-medium leading-none text-white select-none transition-colors duration-200 ease-outCubic"
+      :class="outline"
     >
       <input
         v-model="selected"

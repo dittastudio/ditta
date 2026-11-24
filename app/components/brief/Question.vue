@@ -104,7 +104,6 @@ defineExpose({ validate })
       </p>
     </Transition>
 
-    <!-- Honeypot: off screen and out of the tab order, so only a bot fills it in. Its name isn't one autofill knows. -->
     <input
       v-if="step.field === 'email'"
       v-model="brief.honeypot"

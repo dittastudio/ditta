@@ -37,8 +37,10 @@ const urlErrorId = useId()
 const noteErrorId = useId()
 const hasNote = computed(() => !!url.value.trim())
 
-// The field on top while focused or invalid, so its whole border shows over the line the two share
-const layer = 'relative grid focus-within:z-2 has-aria-invalid:z-1'
+// Where the two share a line, it takes the colour of the field that matters most: the one being typed in, then one
+// with an error, then one filled in (see TextInput's outline)
+const layer =
+  'relative grid has-[input:not(:placeholder-shown)]:z-1 has-aria-invalid:z-2 only-hover:hover:z-2 focus-within:z-3'
 </script>
 
 <template>

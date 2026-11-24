@@ -26,6 +26,15 @@ const emit = defineEmits<{ submit: [] }>()
 const slots = defineSlots<{ end?: () => unknown }>()
 
 const input = useTemplateRef('input')
+const attrs = useAttrs()
+
+// The outline says how the answer stands: coral with an error, green once it's filled in and nothing's wrong with
+// it, otherwise faint, turning white on hover and while it's being typed into
+const outline = computed(() => {
+  if (attrs['aria-invalid']) return 'border-coral'
+  if (model.value.trim()) return 'border-olive'
+  return 'border-ash only-hover:hover:border-white focus:border-white'
+})
 
 // A tick for every key typed and a tap for every one deleted, like a phone keyboard with its clicks on. Pastes,
 // drops and autocorrect swaps aren't keys, so they stay quiet.
@@ -78,6 +87,8 @@ watchEffect((onCleanup) => {
 </script>
 
 <template>
+  <!-- No fill, only the outline. Chrome paints its own fill on autofilled fields that background-color can't undo,
+       so an inset shadow in the page's black covers it. -->
   <div class="relative grid w-full min-w-0">
     <input
       ref="input"
@@ -86,9 +97,10 @@ watchEffect((onCleanup) => {
       v-model="model"
       :maxlength="$attrs.type === 'url' ? BRIEF_LINK_MAX : BRIEF_TEXT_MAX"
       enterkeyhint="next"
-      class="w-full scroll-mt-[calc(var(--dock-height)+--spacing(13.5))] border border-ash bg-white/10 px-5 text-white outline-none transition-colors duration-200 ease-outCubic focus:border-olive aria-invalid:border-coral"
+      class="w-full scroll-mt-[calc(var(--dock-height)+--spacing(13.5))] border px-5 text-white outline-none autofill:shadow-[inset_0_0_0_100vmax_var(--color-black)] autofill:[-webkit-text-fill-color:var(--color-white)] transition-colors duration-200 ease-outCubic"
       :class="[
         corners,
+        outline,
         small ? 'py-3 text-16' : 'py-4 text-16 md:text-20',
         rotates ? 'placeholder:text-transparent' : 'placeholder:text-white/40',
         slots.end ? 'pr-14' : '',

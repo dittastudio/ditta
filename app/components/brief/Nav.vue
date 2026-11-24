@@ -167,21 +167,22 @@ defineExpose({ primaryLabel })
 </script>
 
 <template>
-  <!-- Crumbs from the thanks screen's burger can land on top of the bar -->
+  <!-- The same glass, outline and corners as the Dock, so the two bars read as a pair. Crumbs from the thanks
+       screen's burger can land on top of it. -->
   <nav
     ref="nav"
     aria-label="Brief steps"
     data-crumb-surface="box"
-    class="grid rounded-20 corner-shape-squircle bg-offblack-glass/50 text-grey outline outline-1 outline-white/15 backdrop-blur-sm shadow-2xl"
+    class="relative rounded-20 corner-shape-squircle bg-black/50 text-grey outline outline-1 outline-white/15 backdrop-blur-sm shadow-2xl"
   >
-    <!-- A plain progress track across the top of the bar, above the buttons. Its own row, so the step's buttons and
-         the clear confirm still swap in the row below it. -->
+    <!-- Progress is a hairline along the bar's top edge, full width. Clipped in its own layer, not on the nav, so the
+         error above the bar on mobile isn't cut off. -->
     <div
       v-if="isDraft"
-      class="px-5 pt-4 md:pt-5"
+      class="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit] corner-shape-inherit"
     >
       <div
-        class="h-1 overflow-hidden rounded-full bg-white/10"
+        class="absolute inset-x-0 top-0 h-0.5 bg-white/10"
         role="progressbar"
         aria-label="Progress"
         :aria-valuetext="brief.isSummary ? 'Review' : `${position} of ${brief.total}`"
@@ -190,178 +191,179 @@ defineExpose({ primaryLabel })
         :aria-valuemax="brief.total"
       >
         <div
-          class="h-full origin-left rounded-full bg-accent transition-[scale] duration-500 ease-outCubic motion-reduce:transition-none"
+          class="h-full origin-left bg-accent transition-[scale] duration-500 ease-outCubic motion-reduce:transition-none"
           :style="{ scale: `${progress} 1` }"
         />
       </div>
     </div>
 
-    <Transition name="brief-rise">
-      <div
-        v-if="confirmingClear"
-        data-brief-confirm
-        class="relative flex items-center gap-2.5 p-3.5 pl-5 col-start-1 row-start-2 md:p-5 md:pl-6"
-      >
-        <p
-          class="flex-1 text-14 font-medium whitespace-nowrap md:text-16"
-          role="status"
-        >
-          Clear everything?
-        </p>
-
-        <!-- Wrapped so the stagger can move it: the button's own transition is for hover and press -->
-        <div class="flex">
-          <button
-            ref="cancelButton"
-            type="button"
-            class="rounded-full"
-            @click="cancelClear()"
-          >
-            <UiButton
-              text="Cancel"
-              :icon="false"
-              theme="dark"
-              size="medium"
-              :sound="hover"
-            />
-          </button>
-        </div>
-
-        <div class="flex">
-          <button
-            type="button"
-            class="rounded-full"
-            @click="clear"
-          >
-            <UiButton
-              text="Clear"
-              :icon="false"
-              theme="coral"
-              size="medium"
-              :sound="hover"
-            />
-          </button>
-        </div>
-      </div>
-
-      <div
-        v-else
-        class="relative flex items-center gap-3 p-3.5 pl-5 col-start-1 row-start-2 md:gap-5 md:p-5"
-      >
-        <!-- Tucked into the bar's left edge, out of the buttons' way. The track above already shows progress. -->
+    <!-- The step's controls and the clear confirm swap in the same cell -->
+    <div class="grid">
+      <Transition name="brief-rise">
         <div
-          v-if="isDraft"
-          class="absolute inset-y-3.5 left-3.5 flex items-center md:inset-y-4 md:left-5"
+          v-if="confirmingClear"
+          data-brief-confirm
+          class="flex items-center gap-2 p-2 col-start-1 row-start-1"
         >
-          <p class="font-mono text-11 leading-none text-grey/60 tabular-nums">
-            {{ brief.isSummary ? 'Review' : `${position} of ${brief.total}` }}
+          <p
+            class="flex-1 pl-3 text-14 font-medium whitespace-nowrap md:text-16"
+            role="status"
+          >
+            Clear everything?
           </p>
+
+          <!-- Wrapped so the stagger can move it: the button's own transition is for hover and press -->
+          <div class="flex">
+            <button
+              ref="cancelButton"
+              type="button"
+              class="rounded-full"
+              @click="cancelClear()"
+            >
+              <UiButton
+                text="Cancel"
+                :icon="false"
+                theme="dark"
+                size="medium"
+                :sound="hover"
+              />
+            </button>
+          </div>
+
+          <div class="flex">
+            <button
+              type="button"
+              class="rounded-full"
+              @click="clear"
+            >
+              <UiButton
+                text="Clear"
+                :icon="false"
+                theme="coral"
+                size="medium"
+                :sound="hover"
+              />
+            </button>
+          </div>
         </div>
 
-        <p
+        <div
           v-else
-          class="flex-1 pl-1 text-14"
+          class="flex items-center gap-2 p-2 col-start-1 row-start-1"
         >
-          {{ brief.status === 'sent' ? 'Prototype' : 'Brief sent' }}
-        </p>
-
-        <!-- Sits just above the bar on mobile, so it never pushes the buttons apart -->
-        <p
-          v-if="error"
-          class="pl-1 text-14 text-coral max-md:absolute max-md:bottom-full max-md:left-0 max-md:mb-2 max-md:rounded-20 max-md:corner-shape-squircle max-md:bg-offblack-glass/50 max-md:outline max-md:outline-1 max-md:outline-white/15 max-md:backdrop-blur-sm max-md:px-4 max-md:py-2"
-          role="alert"
-        >
-          {{ error }}
-        </p>
-
-        <!-- In tab order Next comes first, then Previous, then Start again: Next is what's wanted nearly every
-             time. Reversed back for display, so they still read left to right as Start again, Previous, Next. -->
-        <div class="ml-auto flex flex-row-reverse items-center gap-2.5">
-          <button
-            type="button"
-            class="rounded-full"
-            :class="{ 'shake-once': shaking }"
-            :aria-keyshortcuts="enterAdvances ? 'Enter' : undefined"
-            @click="emit('primary')"
-            @animationend="shaking = false"
+          <p
+            v-if="isDraft"
+            class="shrink-0 pl-3 text-14 leading-none tabular-nums"
           >
-            <UiButton
-              :text="primaryLabel"
-              theme="light"
-              :icon="false"
-              size="medium"
-              :sound="hover"
-            />
-          </button>
+            <template v-if="brief.isSummary">Review</template>
+            <template v-else> {{ position }}<span class="text-grey/40"> / {{ brief.total }}</span> </template>
+          </p>
 
-          <!-- Not on the first step, where there's nowhere to go back to. Pops in on the second, as Start again does -->
-          <!-- Coming in, it waits a beat so Start again moves aside first and it pops into the space left -->
-          <Transition
-            name="brief-pop"
-            enter-active-class="brief-pop-enter-active delay-150 motion-reduce:delay-0"
-            @before-enter="measureReset"
-            @enter="onPreviousEnter"
-            @leave="onPreviousLeave"
+          <p
+            v-else
+            class="shrink-0 pl-3 text-14"
           >
-            <div
-              v-if="hasPrevious"
-              class="flex transition-opacity duration-200 ease-outCubic"
-              :class="{ 'opacity-40': brief.sending }"
-              :inert="brief.sending"
+            {{ brief.status === 'sent' ? 'Prototype' : 'Brief sent' }}
+          </p>
+
+          <!-- Beside the count on desktop. On mobile it sits just above the bar, so it never pushes the buttons apart. -->
+          <p
+            v-if="error"
+            class="min-w-0 truncate pl-2 text-14 text-coral max-md:absolute max-md:bottom-full max-md:left-0 max-md:mb-2 max-md:max-w-full max-md:whitespace-normal max-md:rounded-20 max-md:corner-shape-squircle max-md:bg-black/50 max-md:outline max-md:outline-1 max-md:outline-white/15 max-md:backdrop-blur-sm max-md:px-4 max-md:py-2"
+            role="alert"
+          >
+            {{ error }}
+          </p>
+
+          <!-- In tab order Next comes first, then Previous, then Start again: Next is what's wanted nearly every
+               time. Reversed back for display, so they still read left to right as Start again, Previous, Next. -->
+          <div class="ml-auto flex flex-row-reverse items-center gap-2">
+            <button
+              type="button"
+              class="rounded-full"
+              :class="{ 'shake-once': shaking }"
+              :aria-keyshortcuts="enterAdvances ? 'Enter' : undefined"
+              @click="emit('primary')"
+              @animationend="shaking = false"
             >
-              <button
-                type="button"
-                class="rounded-full"
-                @click="back"
-              >
-                <UiButton
-                  text="Back"
-                  theme="dark"
-                  :icon="false"
-                  size="medium"
-                  :sound="hover"
-                />
-              </button>
-            </div>
-          </Transition>
+              <UiButton
+                :text="primaryLabel"
+                theme="light"
+                :icon="false"
+                size="medium"
+                :sound="hover"
+              />
+            </button>
 
-          <!-- Stays while its icon spins after a clear, then goes: there's nothing left to clear -->
-          <Transition
-            name="brief-pop"
-            @after-leave="spinning = false"
-          >
-            <!-- Wrapped so the pop can fade and blur it: the button's own transition is for hover and press -->
-            <div
-              v-if="isDraft && (hasStarted || clearing)"
-              class="flex transition-opacity duration-200 ease-outCubic"
-              :class="{ 'opacity-40': brief.sending }"
-              :inert="brief.sending"
+            <!-- Not on the first step, where there's nowhere to go back to. Pops in on the second, as Start again does -->
+            <!-- Coming in, it waits a beat so Start again moves aside first and it pops into the space left -->
+            <Transition
+              name="brief-pop"
+              enter-active-class="brief-pop-enter-active delay-150 motion-reduce:delay-0"
+              @before-enter="measureReset"
+              @enter="onPreviousEnter"
+              @leave="onPreviousLeave"
             >
-              <button
-                ref="resetButton"
-                type="button"
-                aria-label="Start again"
-                class="group flex size-(--ui-button-medium-height) items-center justify-center rounded-full bg-black text-beige transition-[color,scale] duration-200 ease-outCubic active:scale-92 only-hover:hover:text-white"
-                :inert="clearing"
-                @pointerenter="play(soundHover)"
-                @click="askToClear"
+              <div
+                v-if="hasPrevious"
+                class="flex transition-opacity duration-200 ease-outCubic"
+                :class="{ 'opacity-40': brief.sending }"
+                :inert="brief.sending"
               >
-                <!-- Hover winds it back a little on a spring; clearing turns it all the way round -->
-                <IconReset
-                  class="size-4.5 transition-[rotate] motion-reduce:rotate-0!"
-                  :class="
-                    spinning
-                      ? '-rotate-360 duration-700 ease-outQuart'
-                      : 'duration-600 ease-spring-3 only-hover:group-hover:-rotate-45'
-                  "
-                  @transitionend="onSpun"
-                  @transitioncancel="onSpun"
-                />
-              </button>
-            </div>
-          </Transition>
+                <button
+                  type="button"
+                  class="rounded-full"
+                  @click="back"
+                >
+                  <UiButton
+                    text="Back"
+                    theme="dark"
+                    :icon="false"
+                    size="medium"
+                    :sound="hover"
+                  />
+                </button>
+              </div>
+            </Transition>
+
+            <!-- Stays while its icon spins after a clear, then goes: there's nothing left to clear -->
+            <Transition
+              name="brief-pop"
+              @after-leave="spinning = false"
+            >
+              <!-- Wrapped so the pop can fade and blur it: the button's own transition is for hover and press -->
+              <div
+                v-if="isDraft && (hasStarted || clearing)"
+                class="flex transition-opacity duration-200 ease-outCubic"
+                :class="{ 'opacity-40': brief.sending }"
+                :inert="brief.sending"
+              >
+                <button
+                  ref="resetButton"
+                  type="button"
+                  aria-label="Start again"
+                  class="group flex size-(--ui-button-medium-height) items-center justify-center rounded-full bg-black text-beige transition-[color,scale] duration-200 ease-outCubic active:scale-92 only-hover:hover:text-white"
+                  :inert="clearing"
+                  @pointerenter="play(soundHover)"
+                  @click="askToClear"
+                >
+                  <!-- Hover winds it back a little on a spring; clearing turns it all the way round -->
+                  <IconReset
+                    class="size-4.5 transition-[rotate] motion-reduce:rotate-0!"
+                    :class="
+                      spinning
+                        ? '-rotate-360 duration-700 ease-outQuart'
+                        : 'duration-600 ease-spring-3 only-hover:group-hover:-rotate-45'
+                    "
+                    @transitionend="onSpun"
+                    @transitioncancel="onSpun"
+                  />
+                </button>
+              </div>
+            </Transition>
+          </div>
         </div>
-      </div>
-    </Transition>
+      </Transition>
+    </div>
   </nav>
 </template>
