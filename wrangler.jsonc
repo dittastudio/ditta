@@ -17,6 +17,9 @@
   // NUXT_STORYBLOK_TOKEN build variable (the public token), so no runtime secret is needed.
   "vars": {
     "NUXT_PUBLIC_STORYBLOK_VERSION": "published",
+    // The brief builder's team email (server/api/brief.post.ts). Not secret, so kept here, where a deploy can't drop it.
+    "NUXT_BRIEF_FROM": "ditta briefs <briefs@ditta.studio>",
+    "NUXT_BRIEF_TO": "hello@ditta.studio",
   },
   // Worker Previews (non-production branches): SPA, draft content + Visual Editor. Nothing is inherited from the top
   // level, so vars are repeated here. Set the preview token in the dashboard (Settings → Runtime variables and
@@ -24,6 +27,8 @@
   "previews": {
     "vars": {
       "NUXT_PUBLIC_STORYBLOK_VERSION": "draft",
+      "NUXT_BRIEF_FROM": "ditta briefs <briefs@ditta.studio>",
+      "NUXT_BRIEF_TO": "hello@ditta.studio",
     },
   },
 }

@@ -136,9 +136,8 @@ export default defineNuxtConfig({
   css: ['~/assets/css/app.css'],
   devtools: { enabled: false },
   runtimeConfig: {
-    // The brief builder's submission (server/api/brief.post.ts). Set as Worker secrets: NUXT_RESEND_API_KEY,
-    // NUXT_TURNSTILE_SECRET_KEY, and NUXT_BRIEF_FROM / NUXT_BRIEF_TO once ditta.studio is verified in Resend.
-    // Until then the addresses are Resend's test ones.
+    // The brief builder's submission (server/api/brief.post.ts). NUXT_RESEND_API_KEY and NUXT_TURNSTILE_SECRET_KEY
+    // are Worker secrets; the addresses are set in wrangler.jsonc. These defaults are Resend's test addresses.
     resendApiKey: '',
     turnstileSecretKey: '',
     brief: {
