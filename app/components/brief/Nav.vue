@@ -58,6 +58,18 @@ const primaryLabel = computed(() => {
 // review, where sending takes a deliberate press.
 const enterAdvances = computed(() => isDraft.value && !brief.isSummary)
 
+// Hovering the shortcuts switch, or reaching it with Tab, shows the keys faintly (see UiKbd). A click to focus doesn't
+// count: the pointer is already previewing. Cleared when the switch goes, so a preview can't outlive it.
+function previewShortcuts(on: boolean) {
+  brief.previewShortcuts = on
+}
+
+function onSwitchFocus(event: FocusEvent) {
+  if ((event.target as HTMLElement).matches(':focus-visible')) previewShortcuts(true)
+}
+
+watch(enterAdvances, (advances) => advances || previewShortcuts(false))
+
 // Back goes through the browser's history, so the browser's own Back does the same (see useBriefHistory)
 const briefHistory = useBriefHistory(() => play(soundPageExit))
 
@@ -249,24 +261,40 @@ defineExpose({ el: nav, primaryLabel })
         class="relative flex items-center gap-3 p-3.5 pl-5 col-start-1 row-start-1 md:gap-5 md:p-5"
       >
         <!-- Tucked into the bar's left edge, centred, out of the buttons' way: the pixel fill already shows progress -->
-        <p
+        <div
           v-if="isDraft"
-          class="absolute inset-y-0 left-3.5 flex items-center gap-1.5 font-mono text-11 leading-none text-grey/60 tabular-nums md:left-5"
+          class="absolute inset-y-0 left-3.5 flex items-center gap-3 md:left-5"
         >
-          {{ brief.isSummary ? 'Review' : `${position} of ${brief.total}` }}
-          <span
+          <!-- Shows the shortcut keys, previewing them while hovered or focused from the keyboard. Only where there's
+               likely a keyboard to use them with. -->
+          <UiSwitch
             v-if="enterAdvances"
-            class="flex items-center gap-1.5 max-md:hidden only-touch:hidden"
-            aria-hidden="true"
-            data-brief-enter-key
-            >·
-            <UiKbd
-              shape="return"
-              class="text-grey"
-              >↵</UiKbd
-            ></span
-          >
-        </p>
+            v-model="brief.showShortcuts"
+            aria-label="Show keyboard shortcuts"
+            class="max-md:hidden only-touch:hidden"
+            @pointerenter="previewShortcuts(true)"
+            @pointerleave="previewShortcuts(false)"
+            @focus="onSwitchFocus"
+            @blur="previewShortcuts(false)"
+          />
+
+          <p class="flex items-center gap-1.5 font-mono text-11 leading-none text-grey/60 tabular-nums">
+            {{ brief.isSummary ? 'Review' : `${position} of ${brief.total}` }}
+            <!-- Hidden with the keys, so the count stands alone when shortcuts are off -->
+            <span
+              v-if="enterAdvances"
+              class="hidden items-center gap-1.5 max-md:hidden only-touch:hidden in-data-shortcuts:flex"
+              aria-hidden="true"
+              data-brief-enter-key
+              >·
+              <UiKbd
+                shape="return"
+                class="text-grey"
+                >↵</UiKbd
+              ></span
+            >
+          </p>
+        </div>
 
         <p
           v-else
