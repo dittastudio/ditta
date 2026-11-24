@@ -248,17 +248,23 @@ defineExpose({ el: nav, primaryLabel })
         v-else
         class="relative flex items-center gap-3 p-3.5 pl-5 col-start-1 row-start-1 md:gap-5 md:p-5"
       >
-        <!-- Tucked into the bar's bottom left corner, out of the buttons' way: the pixel fill already shows progress -->
+        <!-- Tucked into the bar's left edge, centred, out of the buttons' way: the pixel fill already shows progress -->
         <p
           v-if="isDraft"
-          class="absolute bottom-3.5 left-3.5 font-mono text-11 leading-none text-grey/60 tabular-nums md:bottom-5 md:left-5"
+          class="absolute inset-y-0 left-3.5 flex items-center gap-1.5 font-mono text-11 leading-none text-grey/60 tabular-nums md:left-5"
         >
           {{ brief.isSummary ? 'Review' : `${position} of ${brief.total}` }}
           <span
             v-if="enterAdvances"
-            class="max-md:hidden only-touch:hidden"
+            class="flex items-center gap-1.5 max-md:hidden only-touch:hidden"
             aria-hidden="true"
-            >· Enter ↵</span
+            data-brief-enter-key
+            >·
+            <UiKbd
+              shape="return"
+              class="text-grey"
+              >↵</UiKbd
+            ></span
           >
         </p>
 
