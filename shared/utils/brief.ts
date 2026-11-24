@@ -50,7 +50,7 @@ const briefSteps: BriefStep[] = [
   {
     key: 'business',
     title: 'In a few words, what does your business do?',
-    hint: 'Give us your best elevator pitch 🛗',
+    hint: 'Give us your best elevator pitch.',
     field: 'text',
     placeholders: [
       'A physio clinic in Ealing',
