@@ -288,7 +288,7 @@ defineExpose({ el: nav, primaryLabel })
             <UiButton
               :text="primaryLabel"
               theme="light"
-              arrow="right"
+              :icon="false"
               size="medium"
               :sound="hover"
             />
@@ -317,7 +317,7 @@ defineExpose({ el: nav, primaryLabel })
                 <UiButton
                   text="Back"
                   theme="dark"
-                  arrow="left"
+                  :icon="false"
                   size="medium"
                   :sound="hover"
                 />

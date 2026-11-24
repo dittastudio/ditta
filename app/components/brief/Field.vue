@@ -67,7 +67,6 @@ const focusFirst = focusOnMount && !hasBriefAnswer(model.value)
       v-bind="a11y"
       :options="question.options ?? []"
       :descriptions="question.descriptions"
-      :figures="question.figures"
       :variant="question.field"
       :multiple="question.multiple"
     />

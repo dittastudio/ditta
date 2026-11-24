@@ -1,18 +1,15 @@
 <script lang="ts" setup>
-import type { BriefFigure } from '#shared/utils/brief'
 import { defineSound } from '@web-kits/audio'
 import { checkbox, radio } from '@@/.web-kits/core'
 
 interface Props {
   options: readonly string[]
   descriptions?: Partial<Record<string, string>>
-  // Shows an option as a big figure with its unit underneath, keyed by option
-  figures?: Partial<Record<string, BriefFigure>>
   variant?: 'cards' | 'chips'
   multiple?: boolean
 }
 
-const { options, descriptions = {}, figures = {}, variant = 'cards', multiple = false } = defineProps<Props>()
+const { options, descriptions = {}, variant = 'cards', multiple = false } = defineProps<Props>()
 const model = defineModel<string | string[] | undefined>()
 
 // Native radios and checkboxes under the cards: they bring the semantics, Space to pick, and arrows between radios.
@@ -97,17 +94,7 @@ const focusRing =
         @change="playPick"
       />
 
-      <template v-if="figures[option]">
-        <span class="text-28 font-medium leading-none trim-both 2xs:text-40 md:text-64">{{
-          figures[option].figure
-        }}</span>
-        <span class="-mt-1 text-14 leading-none opacity-60 trim-both md:-mt-1 md:text-16">{{
-          figures[option].unit
-        }}</span>
-      </template>
-
       <span
-        v-else
         class="font-medium leading-tight trim-both md:text-20"
         :class="hasDescriptions ? 'text-18' : 'text-16'"
         >{{ option }}</span
