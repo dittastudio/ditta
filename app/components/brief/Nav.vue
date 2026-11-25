@@ -18,7 +18,7 @@ const shaking = defineModel<boolean>('shaking', { default: false })
 
 // Next being blocked is heard as well as seen
 const soundError = defineSound(errorSound)
-// Start again warns as it asks to be sure (each button's hover sound is BriefNavButton's)
+// Start again warns as it asks to be sure (each button's hover sound is UiNavButton's)
 const soundWarning = defineSound(warning)
 // Settings open out of their button and fold back into it with ✕
 const soundDrawerOpen = defineSound(drawerOpen)
@@ -299,21 +299,21 @@ defineExpose({ primaryLabel, back })
 
             <!-- Wrapped so the stagger can move it: the button's own transition is for hover and press -->
             <div class="flex">
-              <BriefNavButton
+              <UiNavButton
                 ref="cancelButton"
                 @click="closePanel()"
               >
                 Cancel
-              </BriefNavButton>
+              </UiNavButton>
             </div>
 
             <div class="flex">
-              <BriefNavButton
+              <UiNavButton
                 variant="danger"
                 @click="clear"
               >
                 Clear
-              </BriefNavButton>
+              </UiNavButton>
             </div>
           </div>
 
@@ -332,16 +332,17 @@ defineExpose({ primaryLabel, back })
               class="flex items-center gap-2"
             >
               <BriefSettingShortcuts />
+              <ActionAudioToggle highlight />
             </div>
 
             <div class="flex">
-              <BriefNavButton
+              <UiNavButton
                 square
                 aria-label="Close settings"
                 @click="closeSettingsFromButton"
               >
                 <IconClose class="size-4" />
-              </BriefNavButton>
+              </UiNavButton>
             </div>
           </div>
 
@@ -379,7 +380,7 @@ defineExpose({ primaryLabel, back })
               data-brief-nav-part
               class="ml-auto flex flex-row-reverse items-center gap-2"
             >
-              <BriefNavButton
+              <UiNavButton
                 variant="primary"
                 :class="{ 'shake-once': shaking }"
                 :aria-keyshortcuts="enterAdvances ? 'Enter' : undefined"
@@ -392,7 +393,7 @@ defineExpose({ primaryLabel, back })
                   ref="enterKey"
                   data-brief-enter-key
                 />
-              </BriefNavButton>
+              </UiNavButton>
 
               <!-- Not on the first step, where there's nowhere to go back to. Pops in on the second, as Start again does -->
               <Transition v-bind="popLate">
@@ -400,7 +401,7 @@ defineExpose({ primaryLabel, back })
                   v-if="hasPrevious"
                   v-bind="whileSending"
                 >
-                  <BriefNavButton
+                  <UiNavButton
                     :aria-keyshortcuts="enterAdvances ? 'Shift+Enter' : undefined"
                     @click="back"
                   >
@@ -411,7 +412,7 @@ defineExpose({ primaryLabel, back })
                       shift
                       data-brief-back-key
                     />
-                  </BriefNavButton>
+                  </UiNavButton>
                 </div>
               </Transition>
 
@@ -425,11 +426,10 @@ defineExpose({ primaryLabel, back })
                   v-if="brief.inProgress && (hasStarted || clearing)"
                   v-bind="whileSending"
                 >
-                  <BriefNavButton
+                  <UiNavButton
                     ref="resetButton"
                     square
                     aria-label="Start again"
-                    class="group"
                     :inert="clearing"
                     @click="askToClear"
                   >
@@ -439,12 +439,12 @@ defineExpose({ primaryLabel, back })
                       :class="
                         spinning
                           ? '-rotate-360 duration-700 ease-outQuart'
-                          : 'duration-600 ease-spring-3 only-hover:group-hover:-rotate-45'
+                          : 'duration-600 ease-spring-3 only-hover:group-hover/button:-rotate-45'
                       "
                       @transitionend="onSpun"
                       @transitioncancel="onSpun"
                     />
-                  </BriefNavButton>
+                  </UiNavButton>
                 </div>
               </Transition>
 
@@ -456,18 +456,17 @@ defineExpose({ primaryLabel, back })
                   v-bind="whileSending"
                   class="max-md:hidden only-touch:hidden"
                 >
-                  <BriefNavButton
+                  <UiNavButton
                     ref="settingsButton"
                     square
                     aria-label="Settings"
-                    class="group"
                     @click="openSettings"
                   >
                     <!-- Hover turns it a tooth on a spring, which lands it looking just as it started -->
                     <IconSettings
-                      class="size-4.5 transition-[rotate] duration-600 ease-spring-3 only-hover:group-hover:rotate-45 motion-reduce:rotate-0!"
+                      class="size-4.5 transition-[rotate] duration-600 ease-spring-3 only-hover:group-hover/button:rotate-45 motion-reduce:rotate-0!"
                     />
-                  </BriefNavButton>
+                  </UiNavButton>
                 </div>
               </Transition>
             </div>

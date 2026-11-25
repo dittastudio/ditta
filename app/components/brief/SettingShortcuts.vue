@@ -31,11 +31,10 @@ onBeforeUnmount(() => preview(false))
 
 <!-- One of the nav's icon buttons, which plays their hover sound -->
 <template>
-  <BriefNavButton
+  <UiNavButton
     square
-    role="switch"
     :variant="brief.settings.shortcuts ? 'accent' : 'secondary'"
-    :aria-checked="brief.settings.shortcuts"
+    :pressed="brief.settings.shortcuts"
     aria-label="Keyboard shortcuts"
     @click="toggle"
     @pointerenter="preview(true)"
@@ -47,5 +46,5 @@ onBeforeUnmount(() => preview(false))
       class="size-4.5"
       aria-hidden="true"
     />
-  </BriefNavButton>
+  </UiNavButton>
 </template>

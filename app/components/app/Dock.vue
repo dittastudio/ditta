@@ -5,7 +5,6 @@ import type { Themes } from '@/types/app'
 import IconLogo from '@/assets/icons/ditta.svg'
 import { defineSound } from '@web-kits/audio'
 import { expand, collapse, hover } from '@@/.web-kits/playful'
-import { hover as hoverCore } from '@@/.web-kits/core'
 
 interface Props {
   items?: Block<'element_link'>[] | null
@@ -54,7 +53,6 @@ const dockTextClasses: Record<DockThemes, string> = {
 const soundExpand = defineSound(expand)
 const soundCollapse = defineSound(collapse)
 const soundHover = defineSound(hover)
-const soundHoverButton = defineSound(hoverCore)
 const { play } = useAudio()
 
 const appStore = useAppStore()
@@ -197,10 +195,17 @@ defineExpose({
                 <span class="sr-only">ditta</span>
               </NuxtLink>
 
-              <div class="flex justify-end p-1">
-                <ActionAudioToggle @pointerenter="play(soundHoverButton)" />
+              <!-- Its buttons tint on hover by as much as reads on the Dock's background -->
+              <div
+                class="flex justify-end gap-1 p-1"
+                :style="{ '--nav-button-tint': isDark || navigation ? '15%' : '5%' }"
+              >
+                <ActionAudioToggle
+                  size="compact"
+                  variant="plain"
+                />
 
-                <ActionNavigationToggle @pointerenter="play(soundHoverButton)" />
+                <ActionNavigationToggle />
               </div>
             </div>
 
