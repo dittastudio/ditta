@@ -81,7 +81,7 @@ onKeyStroke('Escape', () => {
   if (navigation.value) close()
 })
 
-const delay = 420 // 300ms + 100ms delay and 20ms buffer
+const delay = 270 // the colours' 100ms delay + 150ms, and a 20ms buffer
 
 watch(navigation, (isOpen) => {
   if (isOpen) {
@@ -141,14 +141,14 @@ defineExpose({
   <header class="fixed top-0 left-0 z-50 size-full pointer-events-none">
     <div class="wrapper pt-7.5">
       <div
-        class="w-full max-w-90 mx-auto rounded-20 corner-shape-squircle transition-[backdrop-filter,scale] duration-300 ease-out"
+        class="w-full max-w-90 mx-auto rounded-20 corner-shape-squircle transition-[backdrop-filter,scale] duration-quick ease-outCubic"
         :class="{
           'backdrop-blur-none scale-95': isHidden || !isReady,
           'backdrop-blur-sm scale-100': !isHidden && isReady,
         }"
       >
         <div
-          class="relative rounded-[inherit] corner-shape-inherit transition-opacity duration-300 ease-out before:absolute before:inset-0 before:rounded-[inherit] before:corner-shape-inherit before:shadow-2xl before:pointer-events-none before:transition-opacity before:duration-1000 before:ease-out"
+          class="relative rounded-[inherit] corner-shape-inherit transition-opacity duration-quick ease-outCubic before:absolute before:inset-0 before:rounded-[inherit] before:corner-shape-inherit before:shadow-2xl before:pointer-events-none before:transition-opacity before:duration-400 before:ease-outCubic"
           :class="{
             'opacity-0': isHidden || !isReady,
             'opacity-100': !isHidden && isReady,
@@ -158,7 +158,7 @@ defineExpose({
         >
           <div
             ref="dock"
-            class="w-full relative overflow-visible rounded-[inherit] corner-shape-inherit transition-colors duration-150 ease-out"
+            class="w-full relative overflow-visible rounded-[inherit] corner-shape-inherit transition-colors duration-hover ease-outCubic"
             :class="dockTextStyles"
           >
             <div
@@ -167,8 +167,8 @@ defineExpose({
                 dockBgStyles,
                 navigation ? 'inset-[-10px_-10px_0px_-10px]' : 'inset-0',
                 {
-                  'duration-[300ms,150ms,150ms] ease-out': !isClosing,
-                  'duration-[300ms,150ms,150ms] delay-[0ms,100ms,100ms] ease-out': isClosing,
+                  'duration-[250ms,150ms,150ms] ease-outCubic': !isClosing,
+                  'duration-[250ms,150ms,150ms] delay-[0ms,100ms,100ms] ease-outCubic': isClosing,
                 },
               ]"
             />
@@ -206,7 +206,11 @@ defineExpose({
 
             <UiExpandable
               :is-open="navigation"
-              transition-classes="duration-500 ease-spring-1"
+              :transition-classes="
+                navigation
+                  ? 'duration-450 ease-spring-1 motion-reduce:duration-0'
+                  : 'duration-quick ease-outCubic motion-reduce:duration-0'
+              "
               :class="{
                 'pointer-events-auto': isInteractive,
               }"
@@ -214,8 +218,8 @@ defineExpose({
               <div
                 class="dock__inner relative transition-opacity text-grey"
                 :class="{
-                  'opacity-0 duration-100 ease-out': !navigation,
-                  'opacity-100 duration-500 ease-out delay-150': navigation,
+                  'opacity-0 duration-100 ease-outCubic': !navigation,
+                  'opacity-100 duration-quick ease-outCubic delay-100': navigation,
                 }"
               >
                 <div
@@ -233,7 +237,7 @@ defineExpose({
                         <StoryblokLink
                           :item="item.link"
                           prefetch-on="interaction"
-                          class="block w-full transition-colors duration-300 ease-outCubic focus:outline-0"
+                          class="block w-full transition-colors duration-hover ease-outCubic focus:outline-0"
                           @pointerenter="play(soundHover)"
                         >
                           {{ item.text }}

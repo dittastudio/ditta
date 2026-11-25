@@ -875,7 +875,7 @@ onUnmounted(() => {
     <div
       ref="smileyEl"
       :class="[{ 'opacity-0': !smileyReady }, isDraggingSmiley ? 'cursor-grabbing' : 'cursor-grab']"
-      class="absolute top-0 left-0 w-20 md:w-40 touch-none select-none [-webkit-touch-callout:none] will-change-transform transition-opacity duration-500 ease-outCubic"
+      class="absolute top-0 left-0 w-20 md:w-40 touch-none select-none [-webkit-touch-callout:none] will-change-transform transition-opacity duration-fade ease-outCubic"
       @mousedown.prevent
       @contextmenu.prevent
       @pointerdown="onSmileyPointerDown"

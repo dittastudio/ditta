@@ -186,7 +186,7 @@ onUnmounted(() => {
         v-for="service in services"
         :key="service.id"
         ref="chipRef"
-        class="absolute top-0 left-0 rounded-full touch-pinch-zoom **:touch-pinch-zoom will-change-transform transition-opacity duration-500"
+        class="absolute top-0 left-0 rounded-full touch-pinch-zoom **:touch-pinch-zoom will-change-transform transition-opacity duration-fade ease-outCubic"
         :class="[ready ? 'opacity-100' : 'opacity-0', { 'touch-pan-y **:touch-pan-y': pageScrolling }]"
       >
         <UiChip

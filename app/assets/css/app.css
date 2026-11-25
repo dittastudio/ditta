@@ -91,6 +91,14 @@
   /* The darker lip along the bottom of a MacBook-style keycap (see UiKbd), in the text's colour */
   --shadow-key: inset 0 -1.5px 0 color-mix(in oklab, currentcolor 30%, transparent);
 
+  /* Durations, as duration-hover etc. Quick to react, gentle to settle: hover feedback is near instant, things that
+     close or show again are quick, a panel opening and a decorative fade take a little longer. Choreographed and
+     playful motion (the brief's steps, springs, the toys) keeps its own timings. */
+  --transition-duration-hover: 150ms;
+  --transition-duration-quick: 250ms;
+  --transition-duration-fade: 300ms;
+  --transition-duration-panel: 350ms;
+
   --ease-inQuad: cubic-bezier(0.55, 0.085, 0.68, 0.53);
   --ease-outQuad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
   --ease-inOutQuad: cubic-bezier(0.455, 0.03, 0.515, 0.955);

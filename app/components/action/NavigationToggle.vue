@@ -17,7 +17,7 @@ const toggle = () => {
     @click="toggle"
   >
     <span
-      class="flex items-center justify-center w-12 h-full rounded-[16px] corner-shape-squircle transition-colors duration-200 ease-out"
+      class="flex items-center justify-center w-12 h-full rounded-[16px] corner-shape-squircle transition-colors duration-hover ease-outCubic"
       :class="{
         'group-hover:bg-current/15': isDark || navigation,
         'group-hover:bg-current/5': !isDark,

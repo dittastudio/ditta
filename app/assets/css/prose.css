@@ -41,7 +41,7 @@
     text-decoration-thickness: 1px;
     text-underline-offset: 0.2em;
     text-decoration-color: --alpha(currentColor / 50%);
-    transition: opacity 0.2s var(--ease-out);
+    transition: opacity var(--transition-duration-hover) var(--ease-outCubic);
   }
 
   & :where(a:hover) {

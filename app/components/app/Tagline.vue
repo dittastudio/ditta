@@ -25,12 +25,12 @@ const taglineClass = computed(() => ({
 
 <template>
   <div
-    class="pointer-events-none w-full transition-[opacity,scale] duration-500 ease-out"
+    class="pointer-events-none w-full transition-[opacity,scale] duration-400 ease-outCubic"
     :class="taglineClass"
   >
     <component
       :is="as"
-      class="wrapper text-center text-16 md:text-navigation transition-colors duration-500 ease-outCubic"
+      class="wrapper text-center text-16 md:text-navigation transition-colors duration-fade ease-outCubic"
     >
       <span class="pointer-events-auto">
         {{ text }}

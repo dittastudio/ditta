@@ -46,7 +46,7 @@
 
 /* The little give in anything made to be poked: up a touch on hover, down a touch when pressed. */
 @utility pokeable {
-  transition: scale 150ms var(--ease-out);
+  transition: scale var(--transition-duration-hover) var(--ease-outCubic);
 
   @variant hover {
     scale: 1.02;

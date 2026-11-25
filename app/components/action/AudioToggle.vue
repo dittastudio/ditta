@@ -16,7 +16,7 @@ const isDark = computed(() => theme.value === 'dark')
     @click="toggle"
   >
     <span
-      class="flex items-center justify-center w-12 h-full rounded-[16px] corner-shape-squircle transition-[background-color] duration-200 ease-out"
+      class="flex items-center justify-center w-12 h-full rounded-[16px] corner-shape-squircle transition-[background-color] duration-hover ease-outCubic"
       :class="{
         'group-hover:bg-current/15': isDark || navigation,
         'group-hover:bg-current/5': !isDark,
@@ -60,7 +60,7 @@ const isDark = computed(() => theme.value === 'dark')
 
 .audio-toggle__waves {
   opacity: 0;
-  transition: opacity 0.15s var(--ease-out);
+  transition: opacity 0.15s var(--ease-outCubic);
 
   .audio-toggle.is-active & {
     opacity: 1;
@@ -83,7 +83,7 @@ const isDark = computed(() => theme.value === 'dark')
 
 .audio-toggle__cross {
   opacity: 1;
-  transition: opacity 0.15s var(--ease-out) 0.15s;
+  transition: opacity 0.15s var(--ease-outCubic) 0.15s;
 
   .audio-toggle.is-active & {
     opacity: 0;

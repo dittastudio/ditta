@@ -148,7 +148,7 @@ const playVideo = async () => {
 
 .mux-video__button {
   opacity: 0.8;
-  transition: opacity 0.5s var(--ease-out);
+  transition: opacity var(--transition-duration-hover) var(--ease-outCubic);
 
   &::before {
     --tint: var(--color-black);
@@ -170,13 +170,13 @@ const playVideo = async () => {
 }
 
 .mux-video__button-inner {
-  transition: translate 0.5s var(--ease-out);
+  transition: translate 0.4s var(--ease-outCubic);
   translate: 0 0 0;
   backface-visibility: hidden;
 
   .mux-video__button:hover & {
     translate: calc(var(--x) * 1px) calc(var(--y) * 1px) 0;
-    transition: translate 0.2s var(--ease-out);
+    transition: translate 0.2s var(--ease-outCubic);
   }
 }
 
