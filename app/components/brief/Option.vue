@@ -99,7 +99,7 @@ onMounted(() => pixels.init(checked.value))
     <!-- The border is its own layer under the fill, so the fill covers it cell by cell. Coral while the question still
          needs an answer, otherwise faint, turning white on hover and while focused from the keyboard. -->
     <span
-      class="pointer-events-none absolute inset-0 rounded-[inherit] border transition-colors duration-200 ease-outCubic"
+      class="pointer-events-none absolute inset-0 rounded-[inherit] border transition-colors duration-hover ease-outCubic"
       :class="
         invalid && !checked
           ? 'border-coral'

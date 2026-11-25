@@ -163,10 +163,10 @@ const items = () => [...(group.value?.children ?? [])].filter((el): el is HTMLEl
 
 function glideItem(el: HTMLElement, offset: number, delay = 0) {
   glide(el, 'x', offset, {
-    duration: 0.7,
-    // elastic is a damped sine, the shape of a spring: a 0.9 period overshoots by about 7% and settles with barely a
-    // dip, much like --ease-spring-2
-    ease: 'elastic.out(1, 0.9)',
+    duration: 0.5,
+    // elastic is a damped sine, the shape of a spring: a 1.1 period overshoots by about 4% and settles with no
+    // visible dip, a gentle nudge rather than a wobble
+    ease: 'elastic.out(1, 1.1)',
     delay,
   })
 }
@@ -199,7 +199,7 @@ function onPopLeave(el: Element) {
 // transition and tracks when it ends. Previous and Start again wait a beat coming in, so what's to their left moves
 // aside first and they pop into the space left.
 const pop = { name: 'brief-pop', onBeforeEnter: measureRow, onEnter: () => glideRow(), onLeave: onPopLeave }
-const popLate = { ...pop, enterActiveClass: 'brief-pop-enter-active delay-150 motion-reduce:delay-0' }
+const popLate = { ...pop, enterActiveClass: 'brief-pop-enter-active delay-100 motion-reduce:delay-0' }
 // The row's buttons dim and can't be pressed while the brief is sending
 const whileSending = computed(() => ({
   class: ['flex transition-opacity duration-200 ease-outCubic', { 'opacity-40': brief.sending }],
@@ -276,7 +276,7 @@ defineExpose({ primaryLabel, back })
           :aria-valuemax="brief.total"
         >
           <div
-            class="h-full origin-left bg-accent transition-[scale] duration-500 ease-outCubic motion-reduce:transition-none"
+            class="h-full origin-left bg-accent transition-[scale] duration-400 ease-outCubic motion-reduce:transition-none"
             :style="{ scale: `${progress} 1` }"
           />
         </div>

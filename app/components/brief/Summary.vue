@@ -50,7 +50,7 @@ const rows = computed(() =>
         <button
           type="button"
           :aria-label="`Edit: ${row.title}`"
-          class="pokeable shrink-0 rounded-full bg-white/10 px-4 py-2.5 text-14 font-medium leading-none transition-opacity duration-200 ease-outCubic disabled:opacity-40 only-hover:hover:bg-white/20"
+          class="pokeable shrink-0 rounded-full bg-white/10 px-4 py-2.5 text-14 font-medium leading-none transition-opacity duration-hover ease-outCubic disabled:opacity-40 only-hover:hover:bg-white/20"
           :disabled="brief.sending"
           @click="brief.goTo(row.stepIndex, true)"
         >

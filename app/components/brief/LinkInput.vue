@@ -67,12 +67,12 @@ const layer =
           >
             <button
               type="button"
-              class="group flex h-full touch-manipulation items-center pr-5 pl-3 text-white/60 transition-colors duration-200 ease-outCubic only-hover:hover:text-white"
+              class="group flex h-full touch-manipulation items-center pr-5 pl-3 text-white/60 transition-colors duration-hover ease-outCubic only-hover:hover:text-white"
               :aria-label="`Remove link ${index + 1}`"
               @click="emit('remove')"
             >
               <span
-                class="grid size-6 place-items-center rounded-full bg-white/15 transition-colors duration-200 ease-outCubic only-hover:group-hover:bg-white/25"
+                class="grid size-6 place-items-center rounded-full bg-white/15 transition-colors duration-hover ease-outCubic only-hover:group-hover:bg-white/25"
               >
                 <IconClose
                   class="size-3.5"

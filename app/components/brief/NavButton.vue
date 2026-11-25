@@ -27,7 +27,7 @@ const { play } = useAudio()
 <template>
   <button
     type="button"
-    class="flex h-(--brief-nav-button) shrink-0 items-center justify-center rounded-16 corner-shape-squircle text-14 font-medium whitespace-nowrap transition-[background-color,color,scale] duration-200 ease-outCubic active:scale-96 md:text-16"
+    class="flex h-(--brief-nav-button) shrink-0 items-center justify-center rounded-16 corner-shape-squircle text-14 font-medium whitespace-nowrap transition-[background-color,color,scale] duration-hover ease-outCubic active:scale-96 md:text-16"
     :class="[variants[variant], square ? 'w-(--brief-nav-button)' : 'px-4']"
     @pointerenter="play(soundHover)"
   >

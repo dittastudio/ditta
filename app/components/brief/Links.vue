@@ -137,7 +137,7 @@ function onPaste(index: number, event: ClipboardEvent) {
           <div class="pt-5">
             <button
               type="button"
-              class="text-subheading font-regular opacity-60 transition-opacity duration-200 ease-outCubic only-hover:hover:opacity-100"
+              class="text-subheading font-regular opacity-60 transition-opacity duration-hover ease-outCubic only-hover:hover:opacity-100"
               @click="add"
             >
               + Add another link

@@ -316,7 +316,7 @@ const screenKey = computed(() => (isDraft.value ? `step-${brief.stepIndex}-${res
               <button
                 ref="startButton"
                 type="button"
-                class="self-center flex items-center h-(--brief-nav-button) rounded-20 corner-shape-squircle bg-white/15 px-14 text-14 font-medium md:text-16 text-white transition-[background-color] duration-200 ease-outCubic only-hover:hover:bg-white/25"
+                class="self-center flex items-center h-(--brief-nav-button) rounded-20 corner-shape-squircle bg-white/15 px-14 text-14 font-medium md:text-16 text-white transition-[background-color] duration-hover ease-outCubic only-hover:hover:bg-white/25"
                 :class="{ invisible: morphing }"
                 aria-keyshortcuts="Enter"
                 @pointerenter="play(soundStartHover)"
