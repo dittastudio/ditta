@@ -4,6 +4,25 @@ import type { ShallowRef } from 'vue'
 // Fields where Shift+Enter is a new line, so it isn't Back
 const isMultiline = (el: HTMLElement) => el.isContentEditable || el instanceof HTMLTextAreaElement
 
+const isRange = (el: HTMLElement): el is HTMLInputElement => el instanceof HTMLInputElement && el.type === 'range'
+
+// Focus on nothing that takes keys: the page, or a heading or section focused in code (tabindex -1, see Shell)
+const isUnfocused = (el: HTMLElement) =>
+  el === document.body ||
+  (el.getAttribute('tabindex') === '-1' && !el.matches('input, textarea, select, button, a, summary'))
+
+// Moves a slider a band as its own arrow key would. Its keydown goes first, so the slider leans towards the key (and
+// lets go on the real keyup, which reaches it now it has focus) and can handle the key itself (one with nothing chosen
+// picks its first band on Left); otherwise it steps, and says so as a native step would.
+function nudge(slider: HTMLInputElement, key: 'ArrowLeft' | 'ArrowRight') {
+  if (!slider.dispatchEvent(new KeyboardEvent('keydown', { key, cancelable: true }))) return
+
+  const before = slider.value
+  if (key === 'ArrowRight') slider.stepUp()
+  else slider.stepDown()
+  if (slider.value !== before) slider.dispatchEvent(new Event('input', { bubbles: true }))
+}
+
 // Fields that take typing, where Enter and the number keys belong to the field
 const isTyping = (el: HTMLElement) =>
   el.isContentEditable ||
@@ -18,6 +37,10 @@ const isTyping = (el: HTMLElement) =>
 //   from one that takes new lines.
 // - 1–9 pick (or tick) the matching card or chip, and focus it, so Space and the arrows carry on from there. The group
 //   with focus wins; otherwise the screen's first, the question's own rather than a follow-up's.
+// - Left and Right move a slider a band, and focus it, so Home, End and the arrows carry on natively. Only with focus
+//   on nothing in particular (the page, or a heading focused in code): anything focused that has arrows of its own,
+//   a card group, keeps them. The slider with focus moves itself; otherwise it's the screen's first. Not Up and Down,
+//   which keep scrolling the page. Their keycaps press either way.
 // The keys are announced through aria-keyshortcuts on what they trigger, and shown as keycaps (UiKbd) when the
 // shortcuts setting is on. While a key it handled is held, what shows that key (the option's label, or the Nav's
 // [data-brief-enter-key] and [data-brief-back-key]) is marked data-pressed, so its UiKbd presses down too. Released on
@@ -68,6 +91,23 @@ export function useBriefKeys(
     }
 
     if (isTyping(target)) return
+
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+      const slider = isRange(target)
+        ? target
+        : isUnfocused(target)
+          ? root.value.querySelector<HTMLInputElement>('[data-brief-slider] input[type="range"]')
+          : null
+      if (!slider) return
+
+      press(event.code, slider.closest('[data-brief-slider]')?.querySelector(`[data-brief-key="${event.key}"]`))
+      // A focused slider moves itself
+      if (slider === target) return
+
+      event.preventDefault()
+      slider.focus({ preventScroll: true })
+      return nudge(slider, event.key)
+    }
 
     if (event.key === 'Enter') {
       if (target.closest('a, button, summary')) return
