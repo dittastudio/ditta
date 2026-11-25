@@ -3,7 +3,10 @@ import type { BriefFieldKey } from '#shared/schemas/brief'
 import type { BriefDraft } from '#shared/utils/brief'
 import { briefOptions } from '#shared/schemas/brief'
 
-export type BriefStatus = 'draft' | 'sent' | 'confirmed'
+// `intro` is the title and Start button before the first question
+export type BriefStatus = 'intro' | 'draft' | 'sent' | 'confirmed'
+
+const briefSettingDefaults = { shortcuts: true }
 
 // The in-progress brief. Lives only in this browser (localStorage) until it's sent.
 export const useBriefStore = defineStore(
@@ -13,10 +16,12 @@ export const useBriefStore = defineStore(
     const answers = ref<BriefDraft>({})
     const stepIndex = ref(0)
     const editingFromSummary = ref(false)
-    const status = ref<BriefStatus>('draft')
+    const status = ref<BriefStatus>('intro')
+    // Still being filled in: the intro counts, as the first step's way in
+    const inProgress = computed(() => status.value === 'draft' || status.value === 'intro')
     // Which way the last move went, for the slide direction. Not persisted.
     const direction = ref<1 | -1>(1)
-    // When the first answer was given, so the server can turn away a brief filled in faster than a person could
+    // When Start was pressed (or, for a draft from before the intro, the first answer given), so the server can turn away a brief filled in faster than a person could
     const startedAt = ref<number | null>(null)
     // Kept for the thank-you screen, since the answers are cleared once the brief has gone
     const sentName = ref('')
@@ -26,6 +31,13 @@ export const useBriefStore = defineStore(
     // Turnstile reported an error (a hostname it isn't set up for, a blocked script), so no token is coming
     const turnstileFailed = ref(false)
     const honeypot = ref('')
+    // Preferences from the nav's settings, rather than part of the draft, so Start again leaves them. Each setting has
+    // its own control in the settings row (see BriefSettingShortcuts).
+    // - shortcuts: whether the keyboard shortcut keys show (see UiKbd). Never on touch, whatever it's set to.
+    const settings = ref({ ...briefSettingDefaults })
+    // While the shortcuts setting is hovered or focused, the keys show faintly. Not persisted.
+    const previewShortcuts = ref(false)
+    const shortcuts = computed(() => (settings.value.shortcuts ? 'on' : previewShortcuts.value ? 'preview' : undefined))
 
     const summaryIndex = briefSteps.length
     // The summary isn't counted: "1 of 12" covers the questions
@@ -81,6 +93,21 @@ export const useBriefStore = defineStore(
       else goTo(stepIndex.value - 1)
     }
 
+    // Start, from the intro: on to the first question
+    function start() {
+      startedAt.value ??= Date.now()
+      direction.value = 1
+      status.value = 'draft'
+    }
+
+    // Back to the intro. Whatever's been answered stays, and Start picks up from the first question again.
+    function showIntro() {
+      direction.value = -1
+      stepIndex.value = 0
+      editingFromSummary.value = false
+      status.value = 'intro'
+    }
+
     function setStatus(value: BriefStatus) {
       direction.value = 1
       status.value = value
@@ -98,6 +125,7 @@ export const useBriefStore = defineStore(
       setStatus('confirmed')
     }
 
+    // Start again, and Start over once a brief has gone: a new brief, from the intro
     function reset() {
       if (sending.value) return
       answers.value = {}
@@ -107,7 +135,7 @@ export const useBriefStore = defineStore(
       turnstileToken.value = ''
       stepIndex.value = 0
       editingFromSummary.value = false
-      status.value = 'draft'
+      status.value = 'intro'
       direction.value = -1
     }
 
@@ -116,6 +144,7 @@ export const useBriefStore = defineStore(
       stepIndex,
       editingFromSummary,
       status,
+      inProgress,
       direction,
       startedAt,
       sentName,
@@ -123,6 +152,9 @@ export const useBriefStore = defineStore(
       turnstileToken,
       turnstileFailed,
       honeypot,
+      settings,
+      previewShortcuts,
+      shortcuts,
       summaryIndex,
       total,
       step,
@@ -133,6 +165,8 @@ export const useBriefStore = defineStore(
       goTo,
       next,
       back,
+      start,
+      showIntro,
       setStatus,
       markSent,
       reset,
@@ -140,9 +174,11 @@ export const useBriefStore = defineStore(
   },
   {
     persist: {
-      pick: ['answers', 'stepIndex', 'editingFromSummary', 'status', 'startedAt', 'sentName'],
+      pick: ['answers', 'stepIndex', 'editingFromSummary', 'status', 'startedAt', 'sentName', 'settings'],
       storage: piniaPluginPersistedstate.localStorage(),
       afterHydrate: ({ store }) => {
+        // A setting added since these were saved takes its default
+        store.settings = { ...briefSettingDefaults, ...store.settings }
         store.upgradeSavedAnswers()
         store.dropStaleChoices()
       },

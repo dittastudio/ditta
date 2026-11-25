@@ -44,7 +44,7 @@ const layer =
 </script>
 
 <template>
-  <div class="flex flex-col gap-1.5">
+  <div class="flex flex-col gap-(--brief-error-gap) [--brief-error-gap:--spacing(1.5)]">
     <div class="flex flex-col">
       <div :class="layer">
         <BriefTextInput
@@ -84,29 +84,28 @@ const layer =
         </BriefTextInput>
       </div>
 
-      <!-- Fades in without brief-reveal's rise, which would open a gap between the two while it played. Pulled up a
-           pixel so the two share one border line. -->
-      <Transition
-        enter-active-class="transition-opacity duration-250 ease-outQuart"
-        leave-active-class="transition-opacity duration-150 ease-outCubic"
-        enter-from-class="opacity-0"
-        leave-to-class="opacity-0"
-      >
+      <!-- Opens its own height and comes into focus as it does, so what's under it eases rather than jumps (see
+           brief-open). Not clipped while it opens, which would wipe it in. The link's corners ease square and back
+           alongside it (see TextInput's transition). Pulled up a pixel so the two share one border line. -->
+      <Transition name="brief-open">
         <div
           v-if="hasNote"
-          class="-mt-px"
-          :class="layer"
+          class="-mt-px grid"
         >
-          <BriefTextInput
-            v-model="note"
-            join="bottom"
-            :placeholder="notePlaceholder"
-            :aria-label="`Note for link ${index + 1}`"
-            :aria-invalid="noteErrors.length ? true : undefined"
-            :aria-describedby="noteErrors.length ? noteErrorId : undefined"
-            small
-            @submit="emit('submit')"
-          />
+          <div class="min-h-0">
+            <div :class="layer">
+              <BriefTextInput
+                v-model="note"
+                join="bottom"
+                :placeholder="notePlaceholder"
+                :aria-label="`Note for link ${index + 1}`"
+                :aria-invalid="noteErrors.length ? true : undefined"
+                :aria-describedby="noteErrors.length ? noteErrorId : undefined"
+                small
+                @submit="emit('submit')"
+              />
+            </div>
+          </div>
         </div>
       </Transition>
     </div>

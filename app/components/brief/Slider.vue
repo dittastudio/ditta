@@ -276,7 +276,7 @@ const fillStyle = computed(() => ({ transform: `scaleX(${Math.min(Math.max(posit
 
       <div class="absolute inset-x-3 top-1/2 h-0.5 -translate-y-1/2 bg-graphite">
         <div
-          class="h-full origin-left bg-accent"
+          class="h-full origin-left bg-olive"
           :style="fillStyle"
         />
       </div>
@@ -286,13 +286,13 @@ const fillStyle = computed(() => ({ transform: `scaleX(${Math.min(Math.max(posit
         v-for="(option, i) in options"
         :key="option"
         class="absolute top-1/2 size-1.5 -translate-1/2 rounded-full"
-        :class="i <= position ? 'bg-accent' : 'bg-graphite'"
+        :class="i <= position ? 'bg-olive' : 'bg-graphite'"
         :style="{ left: at(i) }"
         aria-hidden="true"
       />
 
       <div
-        class="absolute top-1/2 left-0 size-6 rounded-full bg-accent outline-offset-6 outline-white/50 will-change-transform peer-focus-visible:outline-1 peer-focus-visible:outline-dashed"
+        class="absolute top-1/2 left-0 size-6 rounded-full bg-olive outline-offset-6 outline-white/50 will-change-transform peer-focus-visible:outline-1 peer-focus-visible:outline-dashed"
         :style="handleStyle"
       />
     </div>

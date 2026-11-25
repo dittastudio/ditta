@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { BriefLinkRow, BriefLinkRowErrors, BriefQuestion } from '#shared/utils/brief'
+import { briefLinkLimits } from '#shared/schemas/brief'
 
 interface Props {
   question: BriefQuestion
@@ -58,7 +59,7 @@ const focusFirst = focusOnMount && !hasBriefAnswer(model.value)
 <template>
   <div
     data-brief-target
-    class="flex flex-col gap-3"
+    class="flex flex-col gap-(--brief-error-gap) [--brief-error-gap:--spacing(3)]"
     @focusout="onFocusout"
   >
     <BriefOptions
@@ -88,6 +89,7 @@ const focusFirst = focusOnMount && !hasBriefAnswer(model.value)
       :placeholders="question.placeholders"
       :note-placeholder="question.notePlaceholder"
       :sharing-nudge="question.sharingNudge"
+      :max="briefLinkLimits[question.key as keyof typeof briefLinkLimits]"
       :focus-on-mount="focusFirst"
       @submit="emit('submit')"
     />

@@ -50,7 +50,7 @@ const appStore = useAppStore()
             />
 
             <span
-              class="block size-5 rounded-full outline-2 outline-offset-2 transition-colors duration-300 ease-outCubic"
+              class="block size-5 rounded-full outline-2 outline-offset-2 transition-colors duration-200 ease-outCubic"
               :class="[
                 bgClass[option.value],
                 appStore.accent === option.value ? outlineClass[option.value] : 'outline-transparent',

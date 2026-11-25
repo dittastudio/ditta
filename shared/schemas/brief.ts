@@ -43,6 +43,9 @@ const optionalLink = z
   )
   .optional()
 
+// How many link rows each links field takes, for the schema to enforce and the field to stop adding at
+export const briefLinkLimits = { references: 5, files: 3 } as const
+
 // Up to `max` link rows, each with an optional note. Rows left without a link are dropped.
 const linkRows = (max: number) =>
   z
@@ -65,8 +68,8 @@ const briefFields = {
   objectivesOther: optionalText,
   timing: pickOne(briefOptions.timing),
   timingOther: optionalText,
-  references: linkRows(3),
-  files: linkRows(3),
+  references: linkRows(briefLinkLimits.references),
+  files: linkRows(briefLinkLimits.files),
   contentStage: pickOne(briefOptions.contentStage),
   contentOther: optionalText,
   budget: pickOne(briefOptions.budget),

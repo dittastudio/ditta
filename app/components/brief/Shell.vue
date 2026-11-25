@@ -3,13 +3,22 @@ import { defineSound } from '@web-kits/audio'
 import type { BriefField } from '#shared/utils/brief'
 import type { BriefSubmitInput } from '#shared/schemas/brief'
 import { briefAnswersSchema, briefStepSchemas } from '#shared/schemas/brief'
-import { confetti, pageEnter, save } from '@@/.web-kits/core'
+import { confetti, drawerOpen, hover, pageEnter, save } from '@@/.web-kits/core'
 
 const brief = useBriefStore()
+// Before anything renders, so the brief opens where the URL says: /brief is the intro, ?step=3 the third question
+followBriefUrl(useRoute().query.step)
+
 const root = useTemplateRef('root')
 const nav = useTemplateRef('nav')
 const navBar = useTemplateRef('navBar')
 const question = useTemplateRef('question')
+const startButton = useTemplateRef('startButton')
+
+const isIntro = computed(() => brief.status === 'intro')
+// Start is heard as the nav's buttons are on hover, and opens like a drawer as it sends the bar down to become the nav
+const soundStartHover = defineSound(hover)
+const soundStart = defineSound(drawerOpen)
 
 // Moving on is heard: a save for each Next, a page turning for a Skip, confetti for reaching the review
 const { play } = useAudio()
@@ -21,13 +30,47 @@ const advanceSounds: Partial<Record<string, ReturnType<typeof defineSound>>> = {
 
 // Where the nav's top sits when it's pinned to the bottom of the viewport. Fields are framed against this rather than
 // wherever the nav is now: scrolled down to the footer, the nav has moved up with the end of the brief, but once a
-// field has been scrolled into view it's pinned again.
+// field has been framed it's pinned again (see useBriefScroll).
 function pinnedNavTop() {
   if (!navBar.value) return
   return window.innerHeight - Number.parseFloat(getComputedStyle(navBar.value).bottom) - navBar.value.offsetHeight
 }
 
-const { frame, alignTop, frameFirstError, engagement, disengage } = useBriefScroll(pinnedNavTop, () => root.value)
+// Start grows into the nav, and the nav shrinks back into Start (see useBriefMorph)
+const morph = useBriefMorph(
+  () => nav.value?.$el as HTMLElement | undefined,
+  () => navBar.value,
+  pinnedNavTop,
+)
+const { morphing } = morph
+
+// Set going back to the intro: the nav shrinks into Start once the intro has mounted and Start can be measured
+let shrinkPending = false
+
+watch(
+  () => brief.status,
+  async (to, from) => {
+    if (from === 'intro' && to === 'draft') {
+      // Measured before the intro starts to leave. Start is hidden at once: the nav takes its place in this frame.
+      const button = startButton.value
+      if (!button) return
+      const rect = button.getBoundingClientRect()
+      button.style.visibility = 'hidden'
+      morph.begin()
+      await nextTick()
+      morph.grow(rect, radiusOf(button))
+    } else if (to === 'intro') {
+      shrinkPending = true
+      void morph.fade()
+    }
+  },
+  { flush: 'pre' },
+)
+
+// A step that grows or shrinks glides to its new centre rather than jumping there
+const glide = useBriefGlide()
+
+const { frame, alignTop, frameFirstError, engagement } = useBriefScroll(pinnedNavTop, () => root.value, glide)
 
 const isDraft = computed(() => brief.status === 'draft')
 
@@ -127,8 +170,16 @@ function releaseKeyboard() {
 }
 
 async function primary() {
+  if (brief.status === 'intro') {
+    play(soundStart)
+    return brief.start()
+  }
   if (brief.status === 'sent') return brief.setStatus('confirmed')
-  if (brief.status === 'confirmed') return brief.reset()
+  // Start over is a new brief, so it goes back to the intro
+  if (brief.status === 'confirmed') {
+    await morph.fade()
+    return brief.reset()
+  }
   if (brief.isSummary) return send()
 
   holdKeyboard()
@@ -146,7 +197,7 @@ async function primary() {
   brief.next()
 }
 
-useBriefKeys(root, primary)
+useBriefKeys(root, { primary, back: () => nav.value?.back() })
 
 // A blocked Next says why, and on a keyboard puts focus on the answer to fix. Not on touch: focusing a text field
 // there opens the keyboard, and the error is right under the field anyway. Cleared first, so the same message
@@ -169,14 +220,13 @@ async function flagFirstError() {
 // Bumped on restart so the first screen is rebuilt clean, even when restarting from it, rather than flagging the
 // answers that just disappeared as missing
 const restarts = ref(0)
-// Set by a clear, so focusing the first screen's first card isn't taken for a first touch
+// Set by a clear until the intro has come in, so focus moving as the nav goes isn't taken for an answer
 let cleared = false
 
 function onCleared() {
   error.value = null
   cleared = true
   restarts.value++
-  disengage()
 }
 
 // Focus moves onto each new screen rather than staying on the button that got there, which would leave a screen
@@ -196,18 +246,17 @@ function focusScreen(el: Element) {
 // gliding: the old screen has gone and the new one hasn't faded in yet, so there's nothing on it to see move. A glide
 // would only show the page under it, and the footer coming up past a step shorter than the one it replaced.
 function onEnter(el: Element) {
-  // After a clear, the first card takes focus in place of the confirm that just went. It does so while `cleared` is
-  // still set, so that focus isn't taken for a first touch, and the centring below does the scrolling.
-  if (cleared) {
-    el.querySelector<HTMLElement>('[data-brief-target] input')?.focus({ preventScroll: true })
-    cleared = false
-  } else {
-    focusScreen(el)
-  }
+  // A clear lands on the intro, whose heading takes focus in place of the confirm that just went
+  focusScreen(el)
+  cleared = false
 
   const target = el.querySelector('[data-brief-target]')
   if (target) frame(target, { centre: true, instant: true })
   else alignTop(el)
+
+  // Measured after the scroll above, and where Start will be once the intro has finished coming in
+  if (shrinkPending && startButton.value) morph.shrink(settledRect(startButton.value, el), radiusOf(startButton.value))
+  shrinkPending = false
 }
 
 watch(
@@ -219,19 +268,23 @@ watch(
   { deep: true },
 )
 
+// The intro and the thanks screens are keyed by their status
 const screenKey = computed(() => (isDraft.value ? `step-${brief.stepIndex}-${restarts.value}` : brief.status))
 </script>
 
 <template>
   <!-- A faint dashed focus ring for keyboard users. Not on text fields, which turn olive, or on headings focused in code.
-       The nav is in here too, so the brief's keys (see useBriefKeys) still work with focus on its buttons. -->
+       The nav is in here too, so the brief's keys (see useBriefKeys) still work with focus on its buttons.
+       No scroll anchoring: when a step grows, the browser would scroll to hold a card in place while the glide (see
+       useBriefGlide) holds it too, and the step would jump by the difference. -->
+
   <div
     ref="root"
-    class="flex min-h-svh flex-col bg-black text-white [&_:focus-visible:not(input,[tabindex='-1'])]:outline-1 [&_:focus-visible:not(input,[tabindex='-1'])]:outline-dashed [&_:focus-visible:not(input,[tabindex='-1'])]:outline-offset-4 [&_:focus-visible:not(input,[tabindex='-1'])]:outline-white/50 [&_[tabindex='-1']]:outline-none"
+    :data-shortcuts="brief.shortcuts"
+    class="flex min-h-svh flex-col [overflow-anchor:none] bg-black text-white [&_:focus-visible:not(input,[tabindex='-1'])]:outline-1 [&_:focus-visible:not(input,[tabindex='-1'])]:outline-dashed [&_:focus-visible:not(input,[tabindex='-1'])]:outline-offset-4 [&_:focus-visible:not(input,[tabindex='-1'])]:outline-white/50 [&_[tabindex='-1']]:outline-none"
   >
-    <div
-      class="wrapper flex flex-1 flex-col justify-center pt-[calc(var(--dock-height)+--spacing(20))] pb-10 md:pt-[calc(var(--dock-height)+--spacing(40))] md:pb-15"
-    >
+    <!-- The same space above the steps as below them: the nav's inset from the bottom of the screen plus its height -->
+    <div class="wrapper flex flex-1 flex-col justify-center py-(--brief-nav-space)">
       <div class="mx-auto w-full max-w-174">
         <Transition
           :name="brief.direction === 1 ? 'brief-forward' : 'brief-back'"
@@ -241,36 +294,58 @@ const screenKey = computed(() => (isDraft.value ? `step-${brief.stepIndex}-${res
         >
           <div
             :key="screenKey"
-            class="flex w-full flex-col gap-8 md:gap-25"
+            :ref="glide.observe"
+            class="flex w-full flex-col gap-8"
+            :class="isIntro ? 'md:gap-10' : 'md:gap-25'"
             @pointerdown="engagement.onPointerdown"
             @click="engagement.onClick"
             @focusin="!cleared && engagement.onFocusin($event)"
           >
-            <!-- The brief's title only bookends it: on the first step and on review -->
-            <h1
-              v-if="isDraft && brief.isSummary"
-              class="self-center text-40 leading-tight trim-both md:text-64"
-            >
-              Review your brief
-            </h1>
+            <!-- The brief's title only bookends it: on the intro and on review. Start looks like Next and is its size;
+                 the nav grows out of it and fades from its look into its own glass (see useBriefMorph). Hidden while the
+                 nav is shrinking back into it. -->
+            <template v-if="isIntro">
+              <div class="flex flex-col items-center gap-6 text-center md:gap-10">
+                <h1 class="text-40 leading-tight trim-both md:text-64">Create your brief</h1>
+                <p class="max-w-120 text-16 leading-snug text-pretty opacity-60 md:text-20">
+                  A few quick questions about you and your project.<br />
+                  Only takes a few minutes.
+                </p>
+              </div>
 
-            <p
-              v-else-if="isDraft && brief.stepIndex === 0"
-              class="self-center text-40 leading-tight trim-both md:text-64"
-            >
-              Create your brief
-            </p>
+              <button
+                ref="startButton"
+                type="button"
+                class="self-center flex items-center h-(--brief-nav-button) rounded-20 corner-shape-squircle bg-white/15 px-14 text-14 font-medium md:text-16 text-white transition-[background-color] duration-200 ease-outCubic only-hover:hover:bg-white/25"
+                :class="{ invisible: morphing }"
+                aria-keyshortcuts="Enter"
+                @pointerenter="play(soundStartHover)"
+                @click="primary"
+              >
+                Start
+                <BriefKeyHint data-brief-enter-key />
+              </button>
+            </template>
 
-            <BriefSent v-if="!isDraft" />
+            <template v-else>
+              <h1
+                v-if="isDraft && brief.isSummary"
+                class="self-center text-40 leading-tight trim-both md:text-64"
+              >
+                Review your brief
+              </h1>
 
-            <BriefSummary v-else-if="brief.isSummary" />
+              <BriefSent v-if="!isDraft" />
 
-            <BriefQuestion
-              v-else-if="brief.step"
-              ref="question"
-              :step="brief.step"
-              @submit="primary"
-            />
+              <BriefSummary v-else-if="brief.isSummary" />
+
+              <BriefQuestion
+                v-else-if="brief.step"
+                ref="question"
+                :step="brief.step"
+                @submit="primary"
+              />
+            </template>
           </div>
         </Transition>
 
@@ -295,11 +370,16 @@ const screenKey = computed(() => (isDraft.value ? `step-${brief.stepIndex}-${res
       </div>
     </div>
 
-    <!-- Pinned to the bottom of the screen, apart from the steps above it, as far from it as the Dock is from the top. Last in the brief, so it rides up with the
-         brief's end rather than covering the footer. -->
+    <!-- Pinned to the bottom of the screen, as far from it as the Dock is from the top. Pulled up by its own height so
+         it sits in the steps' bottom padding rather than adding to it. Last in the brief, so it rides up with the
+         brief's end rather than covering the footer: whenever any of the brief is on screen, so is the nav. Not there
+         at all on the intro, where it's still Start, except while growing out of it or shrinking back. Its height is
+         fixed, so the bar taking Start's size as it morphs doesn't move the brief above it. -->
     <div
       ref="navBar"
-      class="wrapper pointer-events-none sticky bottom-7.5 z-10 mb-7.5"
+      class="wrapper pointer-events-none sticky bottom-(--brief-nav-inset) z-10 -mt-(--brief-nav-height) mb-(--brief-nav-inset) h-(--brief-nav-height)"
+      :class="{ invisible: isIntro && !morphing }"
+      :inert="isIntro"
     >
       <BriefNav
         ref="nav"

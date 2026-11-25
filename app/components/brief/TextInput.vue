@@ -55,7 +55,8 @@ function onInput(event: Event) {
 }
 
 // Enter also confirms a word being composed (Chinese, Japanese and the like), which mustn't count as Next. Safari ends
-// the composition before its keydown, so its keyCode of 229 is the only sign.
+// the composition before its keydown, so its keyCode of 229 is the only sign. Only a bare Enter: Shift+Enter is Back,
+// which the brief handles (see useBriefKeys).
 function onEnter(event: KeyboardEvent) {
   if (event.isComposing || event.keyCode === 229) return
   event.preventDefault()
@@ -97,7 +98,7 @@ watchEffect((onCleanup) => {
       v-model="model"
       :maxlength="$attrs.type === 'url' ? BRIEF_LINK_MAX : BRIEF_TEXT_MAX"
       enterkeyhint="next"
-      class="w-full scroll-mt-[calc(var(--dock-height)+--spacing(13.5))] border px-5 text-white outline-none autofill:shadow-[inset_0_0_0_100vmax_var(--color-black)] autofill:[-webkit-text-fill-color:var(--color-white)] transition-colors duration-200 ease-outCubic"
+      class="w-full scroll-mt-[calc(var(--dock-height)+--spacing(13.5))] border px-5 text-white outline-none autofill:shadow-[inset_0_0_0_100vmax_var(--color-black)] autofill:[-webkit-text-fill-color:var(--color-white)] transition-[color,background-color,border-color,border-radius] duration-200 ease-outCubic"
       :class="[
         corners,
         outline,
@@ -105,7 +106,7 @@ watchEffect((onCleanup) => {
         rotates ? 'placeholder:text-transparent' : 'placeholder:text-white/40',
         slots.end ? 'pr-14' : '',
       ]"
-      @keydown.enter="onEnter"
+      @keydown.enter.exact="onEnter"
       @input="onInput"
     />
 

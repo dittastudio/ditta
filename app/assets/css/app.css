@@ -25,6 +25,7 @@
   --color-offblack: oklch(22.21% 0 0);
   --color-offblack-glass: oklch(33.28% 0 0); /* reads as offblack at 50% over black */
   --color-olive: oklch(0.7442 0.0554 154.96);
+  --color-olive-pale: oklch(0.8848 0.0249 154.96); /* olive 45% into white: a picked option's pixels flash it */
   --color-pink: oklch(0.8221 0.1207 348.4);
   --color-putty: oklch(90.72% 0.0017 67.8);
   --color-red: oklch(64.645% 0.12902 21.246);
@@ -81,7 +82,14 @@
   --radius-4: 4px;
   --radius-5: 5px;
   --radius-10: 10px;
+  --radius-16: 16px;
   --radius-20: 20px;
+
+  /* On top of Tailwind's blur scale (xs is 4px): the faint blur a small thing leaves with (see UiKbd) */
+  --blur-2xs: 2px;
+
+  /* The darker lip along the bottom of a MacBook-style keycap (see UiKbd), in the text's colour */
+  --shadow-key: inset 0 -1.5px 0 color-mix(in oklab, currentcolor 30%, transparent);
 
   --ease-inQuad: cubic-bezier(0.55, 0.085, 0.68, 0.53);
   --ease-outQuad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -333,5 +341,12 @@
     /* The medium UiButton's icon, and the height its padding puts round it. Icon-only buttons beside one match it */
     --ui-button-medium-icon: utopia.clamp(24, 30);
     --ui-button-medium-height: calc(var(--ui-button-medium-icon) + --spacing(4));
+    /* The brief's nav, the same size on every screen: how far it's pinned up from the bottom of the screen, its
+       buttons, its height (a button plus its p-2), and inset and height together, which the brief keeps clear above
+       and below its steps. */
+    --brief-nav-inset: --spacing(7.5);
+    --brief-nav-button: --spacing(11);
+    --brief-nav-height: calc(var(--brief-nav-button) + --spacing(4));
+    --brief-nav-space: calc(var(--brief-nav-inset) + var(--brief-nav-height));
   }
 }

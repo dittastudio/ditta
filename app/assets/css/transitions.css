@@ -46,23 +46,24 @@
     filter: blur(2px);
   }
 
-  /* The confirm is rare and deliberate, so its question, then Cancel, then Clear arrive a beat apart. The wrapper's
-     300ms covers the last one, so Vue doesn't drop the classes before it lands. */
-  [data-brief-confirm].brief-rise-enter-active > * {
+  /* The nav's panels (the clear confirm, settings) are rare and deliberate, so their label, their controls and their
+     last button arrive a beat apart. The wrapper's 300ms covers the last one, so Vue doesn't drop the classes before
+     it lands. */
+  [data-brief-panel].brief-rise-enter-active > * {
     transition:
       translate 0.24s var(--ease-outQuart),
       filter 0.24s var(--ease-outQuart);
   }
 
-  [data-brief-confirm].brief-rise-enter-active > :nth-child(2) {
+  [data-brief-panel].brief-rise-enter-active > :nth-child(2) {
     transition-delay: 30ms;
   }
 
-  [data-brief-confirm].brief-rise-enter-active > :nth-child(3) {
+  [data-brief-panel].brief-rise-enter-active > :nth-child(3) {
     transition-delay: 60ms;
   }
 
-  [data-brief-confirm].brief-rise-enter-from > * {
+  [data-brief-panel].brief-rise-enter-from > * {
     translate: 0 calc(var(--spacing) * 1.5);
     filter: blur(3px);
   }
@@ -98,11 +99,66 @@
   @media (prefers-reduced-motion: reduce) {
     .brief-rise-enter-from,
     .brief-rise-leave-to,
-    [data-brief-confirm].brief-rise-enter-from > *,
+    [data-brief-panel].brief-rise-enter-from > *,
     .brief-pop-enter-from,
     .brief-pop-leave-to {
       translate: 0 0;
       scale: 1;
+      filter: none;
+    }
+  }
+
+  /* Something that opens its own space under a field: an error, a link's note. The space opens so what's under it
+     eases down rather than being bumped, and the content comes into focus as a whole once the space is mostly there,
+     rather than being wiped in by a clip. Going, it fades first and the space closes behind it, quickly, so typing
+     doesn't wait on it. No rise: a note is joined to the link above, and moving would open a gap between them. The
+     wrapper (the grid) carries the height, its child the fade; the wrapper's timing covers the child's, so Vue doesn't
+     drop the classes early. The height takes as long as a glide would, and useBriefGlide stands aside while it runs. */
+  .brief-open-enter-active {
+    transition: grid-template-rows 0.3s var(--ease-outQuart);
+  }
+
+  .brief-open-enter-active > * {
+    transition:
+      opacity 0.24s var(--ease-outQuart) 0.06s,
+      filter 0.24s var(--ease-outQuart) 0.06s;
+  }
+
+  .brief-open-leave-active {
+    transition: grid-template-rows 0.2s var(--ease-outCubic) 0.06s;
+  }
+
+  .brief-open-leave-active > * {
+    transition:
+      opacity 0.12s var(--ease-outCubic),
+      filter 0.12s var(--ease-outCubic);
+  }
+
+  .brief-open-enter-to,
+  .brief-open-leave-from {
+    grid-template-rows: 1fr;
+  }
+
+  .brief-open-enter-from,
+  .brief-open-leave-to {
+    grid-template-rows: 0fr;
+  }
+
+  .brief-open-enter-from > *,
+  .brief-open-leave-to > * {
+    opacity: 0;
+    filter: blur(4px);
+  }
+
+  /* Only the fade: the space opens at once and closes once the fade is done */
+  @media (prefers-reduced-motion: reduce) {
+    .brief-open-enter-from,
+    .brief-open-leave-to {
+      grid-template-rows: 1fr;
+    }
+
+    .brief-open-enter-from > *,
+    .brief-open-leave-to > * {
       filter: none;
     }
   }

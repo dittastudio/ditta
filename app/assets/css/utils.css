@@ -2,6 +2,10 @@
 
 @custom-variant only-touch (@media (hover: none));
 
+/* A UiKbd's key is down: a held shortcut (data-pressed, see useBriefKeys), the label or button it's in pressed with the
+   mouse, or an option it's on picked, like a key latched on */
+@custom-variant key-down (&:where(label:active *, button:active *, [data-pressed] *, label:has(input:checked) *));
+
 /* Escalating shake levels, used by useRageClicks */
 @utility shake-1 {
   --shake-x: 1px;

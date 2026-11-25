@@ -23,6 +23,24 @@ const titleId = useId()
 const title = computed(() => personaliseBrief(step.title, brief.answers))
 const followUps = computed(() => visibleFollowUps(step, brief.answers))
 
+// A follow-up going would hold its space while it fades, and the step would only glide closed after it had, by which
+// time the scroll framing the answer that closed it has set off on its own (see useBriefScroll). Lifted out of the
+// list where it stands, it fades in place while the step glides closed at once, alongside that scroll. The last one
+// to go takes the whole list with it, or the list (hidden only once it's empty) would hold its place in the question,
+// gap and all, until the fade was done. Single-argument hooks, so Vue still runs the fade's CSS transition.
+const followUpList = useTemplateRef('followUpList')
+
+function onFollowUpLeave(el: Element) {
+  const list = followUpList.value?.$el as HTMLElement | undefined
+  liftInPlace(list && !followUps.value.length ? list : (el as HTMLElement))
+}
+
+// Back in the question for the next follow-up to arrive
+function onFollowUpBeforeEnter() {
+  const list = followUpList.value?.$el as HTMLElement | undefined
+  if (list) liftInPlace(list, false)
+}
+
 const emailSuggestion = computed(() =>
   step.field === 'email' && brief.answers.email ? suggestBriefEmail(brief.answers.email) : null,
 )
@@ -57,7 +75,7 @@ defineExpose({ validate })
   <section
     :aria-labelledby="titleId"
     data-brief-question
-    class="flex flex-col gap-10 md:gap-15"
+    class="relative flex flex-col gap-10 md:gap-15"
   >
     <div class="flex flex-col gap-5 md:gap-7.5">
       <h1
@@ -129,10 +147,13 @@ defineExpose({ validate })
     </p>
 
     <TransitionGroup
+      ref="followUpList"
       name="brief-reveal"
       tag="div"
-      class="flex flex-col gap-6 empty:hidden md:gap-15"
+      class="relative flex flex-col gap-6 empty:hidden md:gap-15"
+      @before-enter="onFollowUpBeforeEnter"
       @enter="(el: Element) => frame(el.querySelector('[data-brief-target]'))"
+      @leave="onFollowUpLeave"
     >
       <div
         v-for="followUp in followUps"

@@ -16,7 +16,7 @@ const isDark = computed(() => theme.value === 'dark')
     @click="toggle"
   >
     <span
-      class="flex items-center justify-center w-12 h-full rounded-[16px] corner-shape-squircle transition-[background-color] duration-300 ease-out"
+      class="flex items-center justify-center w-12 h-full rounded-[16px] corner-shape-squircle transition-[background-color] duration-200 ease-out"
       :class="{
         'group-hover:bg-current/15': isDark || navigation,
         'group-hover:bg-current/5': !isDark,
