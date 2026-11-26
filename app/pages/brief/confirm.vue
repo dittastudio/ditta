@@ -63,6 +63,8 @@ async function confirm() {
       body: { token: token.value },
     })
     justConfirmed.value = state.state === 'confirmed'
+    // The funnel's last step (the rest is in useBriefTracking)
+    if (justConfirmed.value) useTrackEvent('Brief: Confirmed')
     settle(state)
   } catch (failure) {
     error.value = messageOf(failure, 'That didn’t send. Try again.')

@@ -45,8 +45,8 @@ async function advance(page: Page, label: string) {
 }
 
 // Every step through the real form, up to the review. Optional steps are skipped.
-export async function fillBrief(page: Page, { email, name }: { email: string; name: string }) {
-  await page.goto('/brief')
+export async function fillBrief(page: Page, { email, name }: { email: string; name: string }, origin = '') {
+  await page.goto(`${origin}/brief`)
   await page.getByRole('button', { name: 'Start' }).click()
   await expect(page).toHaveURL(/step=1/)
 

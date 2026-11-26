@@ -8,6 +8,7 @@ import IconReturn from '@/assets/icons/return.svg'
 
 // The brief's answers and progress, opened at the step in the URL
 const brief = useBriefStore()
+useBriefTracking()
 followBriefUrl(useRoute().query.step)
 
 // Which screen is showing, keyed so each step (and each restart) mounts fresh
