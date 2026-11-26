@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-// Prototype of the brief builder (M1 in docs/plans/brief-builder-milestones.md). Client-only and not linked anywhere.
+// The brief builder (docs/plans/brief-builder.md). Client-only: see routeRules in nuxt.config.ts.
 useSeoMeta({
   title: 'Start a brief',
-  robots: 'noindex, nofollow',
+  description: 'Tell us about your project in a few quick questions, and we’ll reply within two working days.',
 })
 
 const appStore = useAppStore()
