@@ -21,9 +21,14 @@ export const toBase64 = (bytes: Uint8Array) => {
 
 async function assets() {
   const font = await useStorage('assets:fonts').getItemRaw<Uint8Array>('SaansVF.woff2')
-  const logo = await useStorage('assets:icons').getItem<string>('ditta.svg')
+  // Raw, then decoded: in dev the SVG comes back as text, but on the Worker as bytes, which String() would print as
+  // a list of numbers
+  const logo = await useStorage('assets:icons').getItemRaw<Uint8Array | string>('ditta.svg')
   if (!font || !logo) throw new Error('Brief PDF assets missing')
-  return { font: toBase64(new Uint8Array(font)), logo: String(logo) }
+  return {
+    font: toBase64(new Uint8Array(font)),
+    logo: typeof logo === 'string' ? logo : new TextDecoder().decode(logo),
+  }
 }
 
 const answerHtml = (row: BriefEmailRow) => {
