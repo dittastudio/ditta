@@ -94,8 +94,5 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div
-    ref="el"
-    class="empty:hidden"
-  />
+  <div ref="el" />
 </template>

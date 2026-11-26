@@ -190,8 +190,7 @@ function onEnter(el: Element) {
           <div
             :key="screenKey"
             :ref="glide.observe"
-            class="flex w-full flex-col gap-8"
-            :class="isIntro ? 'md:gap-10' : 'md:gap-25'"
+            class="flex w-full flex-col gap-8 md:gap-12"
           >
             <template v-if="isIntro">
               <div class="flex flex-col items-center gap-6 text-center md:gap-10">
