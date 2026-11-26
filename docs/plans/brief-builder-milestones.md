@@ -88,7 +88,7 @@ No database and no email verification yet. This milestone tells us how much spam
 Built (24 Nov 2026), waiting on accounts:
 
 - `server/api/brief.post.ts` parses `briefSubmitSchema` (answers, `elapsed`, honeypot, Turnstile token). Order: rate limit, parse, honeypot and 20-second minimum (a quiet fake success), Turnstile, then Resend.
-- Rate limit: the Workers `BRIEF_RATE_LIMIT` binding in `wrangler.jsonc`, 3 a minute per IP (Workers only count over 10 or 60 seconds). Absent in `nuxt dev` and on previews, where it's skipped.
+- Rate limit: the Workers `BRIEF_RATE_LIMIT` binding in `wrangler.jsonc`, 3 a minute per IP (Workers only count over 10 or 60 seconds). Absent on previews, where it's skipped. Since M4 runs `nuxt dev` on the `cloudflare-dev` preset, dev has it too.
 - Resend through its REST API with `$fetch`, not the SDK: one call doesn't need the dependency. Template in `server/emails/brief.ts`, written from the same question copy (`shared/utils/brief.ts`).
 - Turnstile in managed, interaction-only mode on the summary. `nuxt dev` falls back to Cloudflare's always-pass test keys; built sites refuse to send without real ones.
 - After a send the answers are cleared and the thank-you screen shows. The mocked Check your inbox screen is unreachable until M4.
@@ -121,6 +121,16 @@ Built (26 Nov 2026), not yet tried on a deploy:
 - Tokens: 32 random bytes, stored as SHA-256, 72 hours. The draft cookie `brief_owner` is httpOnly, scoped to `/api/brief`, and stored hashed. A confirmed brief keeps its token hash so a second click can say when it arrived.
 - On confirm, the team email and the client's copy go in one Resend batch. If that fails the brief still counts, and the hourly sweep (`server/tasks/brief/sweep.ts`, cron in `wrangler.jsonc`) retries. The sweep also deletes briefs left pending for 14 days after their last send.
 - Screens: Check your inbox (`BriefInbox`, polls every 4 seconds and on focus; the nav's main button is Resend, which counts down the 20 seconds between sends, dimmed), `/brief/confirm` (send, already received, expired, new link sent, invalid), and the thanks (`BriefThanks`). The answers stay in the browser until the brief is confirmed, so Back from Check your inbox edits and re-sends the same brief.
+
+Tried locally (26 Nov 2026), with Resend's test address and the team email pointed at it:
+
+- Typo recovery: one row however many sends, and only the newest link works. Confirming flips the waiting tab to Thank you.
+- Links: opening one changes nothing until its button is pressed. Already confirmed, replaced and expired links each get their page, and an expired one sends a new link that retires it.
+- Resend failing at confirm (a broken key): the brief still counts, and the sweep (`/_nitro/tasks/brief:sweep` in dev) sends it once, and only once.
+- Spam checks: a filled honeypot and a brief sent too fast get the quiet fake success with nothing stored. Invalid answers get 400, and a fourth post in a minute gets 429.
+- Resend limits: 20 seconds apart, 10 sends at most, also when edited and sent again. At the cap the client goes back to the review, and Send starts a new brief.
+
+Still to do: the same on a branch preview, a real confirm from a second device, and the prerender build.
 
 ---
 
