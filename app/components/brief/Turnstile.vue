@@ -104,5 +104,6 @@ onBeforeUnmount(() => {
   <div
     ref="el"
     data-brief-turnstile
+    :data-passed="token ? '' : undefined"
   />
 </template>

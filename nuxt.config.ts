@@ -11,6 +11,8 @@ const isSpa = ciBranch ? ciBranch !== 'main' : process.env.NUXT_PRERENDER === 'f
 const isProduction = ciBranch === 'main'
 
 export default defineNuxtConfig({
+  // The e2e tests run their own dev server (playwright.config.ts), beside `npm run dev`, which locks .nuxt
+  buildDir: process.env.NUXT_E2E ? '.nuxt-e2e' : undefined,
   modules: [
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',

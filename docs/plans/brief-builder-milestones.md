@@ -161,6 +161,18 @@ Done (26 Nov 2026). On the `brief-builder` preview, a confirmed brief arrived wi
 
 ---
 
+## Tests
+
+End-to-end tests (Playwright) cover the flow M4 was checked by hand against: `npm run test:e2e` (`test:e2e:ui` to watch them). Local only for now.
+
+- They start their own `nuxt dev` on port 3100, beside `npm run dev` (its own build dir, `.nuxt-e2e`), applying D1 migrations first. Config in `playwright.config.ts`, tests in `tests/e2e/`.
+- Nothing leaves the machine: no Resend key, so emails land in the dev outbox (`/_dev/outbox?to=`), where the tests read the confirm link. No Browser Run token, so no PDF.
+- Turnstile's script is swapped for a stand-in giving Cloudflare's dummy token (the real one hangs in Playwright's browser); the server still checks it against the always-pass test secret. Each test has its own email and `cf-connecting-ip`, so the rate limit counts them apart, and its sends add 25 seconds to `elapsed` to clear the too-fast check.
+- Covered: confirm through to Thank you in the waiting tab, with the team email and the client's copy; opening a link changes nothing; typo recovery (the old link stops working, one brief); the Resend countdown; a link opened again after confirming; validation; the too-fast quiet success; the rate limit.
+- Not covered, so still checked on the preview: real delivery, the PDF, the real Turnstile, and expired links (72 hours).
+
+---
+
 ## M7: Launch
 
 **Goal:** the builder is the main way new enquiries come in.
