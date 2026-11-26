@@ -43,7 +43,7 @@ const eaten = ref(false)
   >
     <!-- Both lines share one grid cell and cross over in place. The hidden one is aria-hidden, so screen readers only
          find the line that's showing. -->
-    <p class="text-24 leading-tight text-balance trim-both md:text-28">
+    <p class="mb-5 text-24 leading-tight text-balance trim-both md:mb-8 md:text-28">
       <span class="inline-grid">
         <span
           class="col-start-1 row-start-1 transition-opacity duration-200 ease-outCubic motion-reduce:transition-none"
