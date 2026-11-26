@@ -195,7 +195,6 @@ defineExpose({
                 <span class="sr-only">ditta</span>
               </NuxtLink>
 
-              <!-- Its buttons tint on hover by as much as reads on the Dock's background -->
               <div
                 class="flex justify-end gap-1 p-1"
                 :style="{ '--nav-button-tint': isDark || navigation ? '15%' : '5%' }"

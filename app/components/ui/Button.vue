@@ -93,7 +93,6 @@ onUnmounted(() => {
       {{ text }}
     </span>
 
-    <!-- Without the icon it stays as a zero-width strut, so the button keeps the height it has with one -->
     <span
       class="ui-button__icon size-[1em] rounded-full aspect-square bg-accent flex items-center justify-center overflow-hidden"
       :class="{ 'w-0 invisible': !icon, 'order-first': leading }"

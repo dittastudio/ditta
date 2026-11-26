@@ -181,7 +181,6 @@ onUnmounted(() => {
       ref="container"
       class="absolute inset-0 z-0 select-none touch-pan-y touch-pinch-zoom"
     >
-      <!-- iOS ignores touch-action unless it's on the very element touched, hence **: -->
       <li
         v-for="service in services"
         :key="service.id"

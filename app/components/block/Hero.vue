@@ -889,7 +889,6 @@ onUnmounted(() => {
         :class="isDraggingSmiley ? 'motion-safe:scale-108 duration-250 ease-outBack' : 'duration-200 ease-outCubic'"
         class="w-full h-auto will-change-transform transition-[scale]"
       >
-        <!-- Static classes only: a reactive :class here would wipe the imperatively added is-dropped -->
         <div
           ref="smileyFaceEl"
           class="text-black"
