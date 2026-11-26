@@ -47,14 +47,14 @@ The form is for prospective clients who often don't know exactly what they want 
 
 ## Navigation and validation rules
 
-| Rule                               | Behaviour                                                                                                                                                                                                                     |
-| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Back**                           | Hidden on screen 1. From screen 2 it blurs and scales in.                                                                                                                                                                     |
-| **Primary button label**           | `Next` by default. `Skip` on an optional screen that hasn't been answered. `Review` on the email screen (12). `Send brief` on the summary (13). `Back to summary` when the client got there from an Edit link on the summary. |
-| **Required question not answered** | Next doesn't advance. The button shakes and a small message appears between the buttons: "Answer to continue".                                                                                                                |
-| **Invalid email**                  | Same, with the message "Enter a valid email".                                                                                                                                                                                 |
-| **Enter key**                      | In a text, URL or email field, Enter acts as the primary button.                                                                                                                                                              |
-| **Autosave**                       | Every answer is saved locally as it changes (Pinia + localStorage, per the technical doc).                                                                                                                                    |
+| Rule                               | Behaviour                                                                                                                                                                                                            |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Back**                           | Hidden on screen 1. From screen 2 it blurs and scales in.                                                                                                                                                            |
+| **Primary button label**           | `Next` by default. `Skip` on an optional screen that hasn't been answered. `Review` on the email screen (12). `Send brief` on the summary (13). `Review` when the client got there from an Edit link on the summary. |
+| **Required question not answered** | Next doesn't advance. The button shakes and a small message appears between the buttons: "Answer to continue".                                                                                                       |
+| **Invalid email**                  | Same, with the message "Enter a valid email".                                                                                                                                                                        |
+| **Enter key**                      | In a text, URL or email field, Enter acts as the primary button.                                                                                                                                                     |
+| **Autosave**                       | Every answer is saved locally as it changes (Pinia + localStorage, per the technical doc).                                                                                                                           |
 
 ### Follow-up (conditional) questions
 
@@ -319,7 +319,7 @@ The review screen. It lists **every visible question in order**, numbered, with 
   - multi-select: comma-separated
   - slider: the band label
   - links: "url (note)", comma-separated
-- **Edit** jumps to that screen. Its primary button becomes **Back to summary**, and picking a single-select option returns to the summary automatically.
+- **Edit** jumps to that screen. Its primary button becomes **Review**, and picking a single-select option returns to the summary automatically.
 - This screen may scroll.
 - Primary button: **Send brief**. This is the **Submit** in the technical doc: it creates the pending record and sends the "Confirm & send your brief" email. The flow then goes to **Check your inbox** and the rest of the technical doc's screens.
 

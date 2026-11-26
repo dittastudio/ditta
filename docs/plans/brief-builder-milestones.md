@@ -34,7 +34,7 @@ Built. The phone testing below is parked until later (19 Nov 2026) and doesn't b
 **Goal:** find out whether the form itself works (length, wording, feel) before building any backend.
 
 - Client-only page at `/brief` (`ssr: false`, not prerendered, `noindex`, not linked anywhere).
-- All 13 screens come from one config, with follow-ups, validation, `[name]` personalisation, Summary with Edit, and "Back to summary".
+- All 13 screens come from one config, with follow-ups, validation, `[name]` personalisation, Summary with Edit, and a "Review" button back to it.
 - Answers persist in localStorage, so a refresh resumes where you left off.
 - **Send brief** goes to a mocked "Check your inbox" screen, which links on to a mocked "Thank you". Nothing is sent.
 - Visual design is deliberately plain.

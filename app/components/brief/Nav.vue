@@ -46,7 +46,7 @@ const hasPrevious = computed(() => brief.status === 'sent' || (brief.inProgress 
 const position = computed(() => brief.stepIndex + 1)
 const progress = computed(() => (brief.isSummary ? 1 : brief.stepIndex / brief.total))
 
-const advanceLabels = { summary: 'Back to summary', review: 'Review', skip: 'Skip', next: 'Next' }
+const advanceLabels = { summary: 'Review', review: 'Review', skip: 'Skip', next: 'Next' }
 
 // Check your inbox's Resend counts down the wait between sends, and can't be pressed until it's done. So does the
 // review's Send, back from Check your inbox to edit a brief that's just gone (the server holds both to the same wait).
