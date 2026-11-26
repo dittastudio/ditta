@@ -115,7 +115,7 @@ _Hint:_ Give us your best elevator pitch 🛗
 ### 3. Main job
 
 **What are the main objectives for this work?** · required
-_Hint:_ Pick what matters most.
+_Hint:_ Tick every one that fits.
 
 |          |                                                                                                                                                                                                            |
 | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -197,7 +197,7 @@ File uploads (a drop zone under the links) are M6 in `brief-builder-milestones.m
 ### 7. Content
 
 **At what stage is your content?** · required
-_Hint:_ Things like your about text, service descriptions and photos.
+_Hint:_ Things like product details, your about text, service descriptions and imagery.
 
 |          |                                                   |
 | -------- | ------------------------------------------------- |
