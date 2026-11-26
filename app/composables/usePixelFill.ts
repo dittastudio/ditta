@@ -6,8 +6,6 @@ interface PixelFillLayers {
   root: Readonly<ShallowRef<HTMLElement | null>>
   // The accent
   fill: Readonly<ShallowRef<HTMLElement | null>>
-  // Each cell's flash on its way to the accent, over everything
-  flash: Readonly<ShallowRef<HTMLElement | null>>
   // The white text, shown wherever the fill isn't
   content: Readonly<ShallowRef<HTMLElement | null>>
   // A black copy of the text, shown wherever it is
@@ -21,24 +19,21 @@ interface Point {
 
 // A picked option fills with accent pixels spreading out from where it was tapped. The option is a grid of cells, each
 // lit at its distance from that point, plus optional noise so the front is ragged, plus a little chance, on an
-// ease-outCubic front. A cell can flash pale before settling, and switches in whole steps, never fading. The text turns
-// black cell by cell: a black copy of it shows through the lit cells, the white through the rest. Unpicking dissolves
+// ease-outCubic front. A cell switches in whole steps, never fading. The text turns black cell by cell: a black copy of it shows through the lit cells, the white through the rest. Unpicking dissolves
 // the cells at random, quicker than the fill. Tuned in the Pixel Pick playground.
 const CELL = 8 // CSS px
 const RAGGED = 0 // cells deep the front is jagged
 const SCATTER = 0.25 // share of a cell's timing that's random rather than distance
 const FILL_MS = 750
-const FLASH_MS = 0 // how long a cell flashes pale on its way to the accent; 0 for none
-const EMPTY_RATIO = 0.5 // unpicking runs this share of the fill, without the flash
+const EMPTY_RATIO = 0.5 // unpicking runs this share of the fill
 
 const OFF = 0
-const FLASH = 1
-const ON = 2
+const ON = 1
 
 // When a front moving on ease-outCubic reaches `along` of the way
 const outCubicAt = (along: number) => 1 - Math.cbrt(1 - along)
 
-export default function usePixelFill({ root, fill, flash, content, ink }: PixelFillLayers) {
+export default function usePixelFill({ root, fill, content, ink }: PixelFillLayers) {
   const reducedMotion = useAtMedia('(prefers-reduced-motion: reduce)')
 
   let width = 0
@@ -46,16 +41,15 @@ export default function usePixelFill({ root, fill, flash, content, ink }: PixelF
   let cols = 0
   let rows = 0
   let on = false
-  // Each cell goes from `from` to `to`, flashing between t0 and t1
+  // Each cell goes from `from` to `to` at `at`
   let from = new Uint8Array(0)
   let to = new Uint8Array(0)
-  let t0 = new Float64Array(0)
-  let t1 = new Float64Array(0)
+  let at = new Float64Array(0)
   let states = new Uint8Array(0)
   let endAt = 0
   let frame = 0
 
-  const stateAt = (i: number, now: number) => (now < t0[i]! ? from[i]! : now < t1[i]! ? FLASH : to[i]!)
+  const stateAt = (i: number, now: number) => (now < at[i]! ? from[i]! : to[i]!)
 
   function build(w: number, h: number) {
     width = w
@@ -65,8 +59,7 @@ export default function usePixelFill({ root, fill, flash, content, ink }: PixelF
     const n = cols * rows
     from = new Uint8Array(n)
     to = new Uint8Array(n)
-    t0 = new Float64Array(n)
-    t1 = new Float64Array(n)
+    at = new Float64Array(n)
     states = new Uint8Array(n)
     settle()
   }
@@ -77,8 +70,7 @@ export default function usePixelFill({ root, fill, flash, content, ink }: PixelF
     frame = 0
     from.fill(on ? ON : OFF)
     to.fill(on ? ON : OFF)
-    t0.fill(0)
-    t1.fill(0)
+    at.fill(0)
     endAt = 0
     render(performance.now())
   }
@@ -89,7 +81,6 @@ export default function usePixelFill({ root, fill, flash, content, ink }: PixelF
     const now = performance.now()
     const filling = target === ON
     const duration = filling ? FILL_MS : FILL_MS * EMPTY_RATIO
-    const flashMs = filling ? FLASH_MS : 0
     const reach = point
       ? Math.max(
           Math.hypot(point.x, point.y),
@@ -104,11 +95,10 @@ export default function usePixelFill({ root, fill, flash, content, ink }: PixelF
     let lo = Infinity
     let hi = -Infinity
     for (let i = 0; i < from.length; i++) {
-      const state = stateAt(i, now)
-      const heading = state === FLASH ? to[i]! : state
+      const heading = stateAt(i, now)
       from[i] = heading
       to[i] = target
-      t0[i] = t1[i] = 0
+      at[i] = 0
       if (heading === target) continue
 
       let a = Math.random()
@@ -125,10 +115,8 @@ export default function usePixelFill({ root, fill, flash, content, ink }: PixelF
 
     const span = hi - lo || 1
     changed.forEach((i, k) => {
-      const at = now + (outCubicAt((along[k]! - lo) / span) * (1 - SCATTER) + Math.random() * SCATTER) * duration
-      t0[i] = at
-      t1[i] = at + flashMs
-      endAt = Math.max(endAt, t1[i]!)
+      at[i] = now + (outCubicAt((along[k]! - lo) / span) * (1 - SCATTER) + Math.random() * SCATTER) * duration
+      endAt = Math.max(endAt, at[i]!)
     })
 
     if (!frame) frame = requestAnimationFrame(tick)
@@ -159,7 +147,7 @@ export default function usePixelFill({ root, fill, flash, content, ink }: PixelF
   }
 
   function render(now: number) {
-    if (!fill.value || !flash.value || !content.value || !ink.value) return
+    if (!fill.value || !content.value || !ink.value) return
     // The classes that show a picked option before mount are overruled from here on
     content.value.style.visibility = 'visible'
 
@@ -171,16 +159,13 @@ export default function usePixelFill({ root, fill, flash, content, ink }: PixelF
       content.value.style.clipPath = 'none'
       content.value.style.color = on ? 'var(--color-black)' : ''
       ink.value.style.visibility = 'hidden'
-      flash.value.style.visibility = 'hidden'
       return
     }
 
     let lit = 0
-    let flashing = 0
     for (let i = 0; i < states.length; i++) {
       states[i] = stateAt(i, now)
       if (states[i] === ON) lit++
-      else if (states[i] === FLASH) flashing++
     }
     const none = lit === 0
     const all = lit === states.length
@@ -199,9 +184,6 @@ export default function usePixelFill({ root, fill, flash, content, ink }: PixelF
       : litPath
         ? `path(evenodd, 'M0 0H${width}V${height}H0z${litPath}')`
         : 'none'
-
-    flash.value.style.visibility = flashing ? 'visible' : 'hidden'
-    flash.value.style.clipPath = flashing ? `path('${path(FLASH)}')` : 'none'
   }
 
   function set(value: boolean, point?: Point) {

@@ -34,11 +34,6 @@
   --color-rage-dark: oklch(51.5% 0.211 29.23);
 
   --color-accent: var(--color-pink);
-  --color-accent-pale: color-mix(
-    in oklch,
-    var(--color-accent) 55%,
-    var(--color-white)
-  ); /* accent 45% into white: a picked option's pixels flash it */
 
   /* Breakpoints — keep in sync with app/utils/breakpoints.ts */
   --breakpoint-\*: initial;

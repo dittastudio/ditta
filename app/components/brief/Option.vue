@@ -21,13 +21,12 @@ defineSlots<{ default(): unknown }>()
 
 const root = useTemplateRef('root')
 const fill = useTemplateRef('fill')
-const flash = useTemplateRef('flash')
 const content = useTemplateRef('content')
 const ink = useTemplateRef('ink')
 
 const checked = computed(() => (Array.isArray(model.value) ? model.value.includes(value) : model.value === value))
 
-const pixels = usePixelFill({ root, fill, flash, content, ink })
+const pixels = usePixelFill({ root, fill, content, ink })
 
 // Where the option was pressed, so the fill spreads from there. A pick from the keyboard has none, and fills from the
 // centre.
@@ -122,21 +121,15 @@ onMounted(() => pixels.init(checked.value))
       <slot />
     </span>
 
-    <!-- The picked copy, black on the fill. Icons can follow it: --icon-ring outlines what would vanish into the fill
-         (a dot in the accent) in the same black, and --icon-solid turns a full-colour logo black with it -->
+    <!-- The picked copy, black on the fill. Icons can follow it: --icon-solid turns a full-colour logo, or the Your
+         work dot, black with it -->
     <span
       ref="ink"
       aria-hidden="true"
-      class="pointer-events-none invisible absolute inset-0 z-2 text-black [--icon-ring:currentcolor] [--icon-solid:currentcolor] group-has-checked/option:visible"
+      class="pointer-events-none invisible absolute inset-0 z-2 text-black [--icon-solid:currentcolor] group-has-checked/option:visible"
       :class="contentClass"
     >
       <slot />
     </span>
-
-    <span
-      ref="flash"
-      aria-hidden="true"
-      class="pointer-events-none invisible absolute inset-0 z-3 bg-accent-pale"
-    />
   </label>
 </template>
