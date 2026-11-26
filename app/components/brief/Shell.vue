@@ -54,6 +54,11 @@ watch(
   { deep: true },
 )
 
+// And when the screen changes, so one screen's message doesn't follow a send onto the next. Straight away, rather than
+// before the next render, so a message given with the move (back to the review from Check your inbox) is kept: set
+// it after the move.
+watch(screenKey, () => (error.value = null), { flush: 'sync' })
+
 // Puts focus on the first answer that needs fixing, so its error is read out
 async function focusFirstError() {
   await nextTick()
@@ -84,8 +89,8 @@ async function send() {
     const index = briefSteps.findIndex(
       (step) => keys.includes(step.key) || visibleFollowUps(step, brief.answers).some((f) => keys.includes(f.key)),
     )
-    fail('One answer needs another look')
     if (index >= 0) brief.goTo(index, true)
+    fail('One answer needs another look')
     return
   }
 
