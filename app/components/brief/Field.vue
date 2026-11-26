@@ -63,12 +63,11 @@ const focusFirst = focusOnMount && !hasBriefAnswer(model.value)
     @focusout="onFocusout"
   >
     <BriefOptions
-      v-if="question.field === 'cards' || question.field === 'chips'"
+      v-if="question.field === 'cards'"
       v-model="options"
       v-bind="a11y"
       :options="question.options ?? []"
       :descriptions="question.descriptions"
-      :variant="question.field"
       :multiple="question.multiple"
     />
 

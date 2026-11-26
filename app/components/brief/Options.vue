@@ -5,11 +5,10 @@ import { checkbox, radio } from '@@/.web-kits/core'
 interface Props {
   options: readonly string[]
   descriptions?: Partial<Record<string, string>>
-  variant?: 'cards' | 'chips'
   multiple?: boolean
 }
 
-const { options, descriptions = {}, variant = 'cards', multiple = false } = defineProps<Props>()
+const { options, descriptions = {}, multiple = false } = defineProps<Props>()
 const model = defineModel<string | string[] | undefined>()
 
 // Native radios and checkboxes under the cards: they bring the semantics, Space to pick, and arrows between radios.
@@ -69,7 +68,6 @@ const shortcut = (index: number) => (index < 9 ? String(index + 1) : undefined)
 
 <template>
   <div
-    v-if="variant === 'cards'"
     :role="role"
     class="grid auto-rows-fr gap-(--app-gutter-inner)"
     :class="hasDescriptions ? 'sm:grid-cols-2' : 'grid-cols-2'"
@@ -110,36 +108,6 @@ const shortcut = (index: number) => (index < 9 ? String(index + 1) : undefined)
       >
         {{ descriptions[option] }}
       </span>
-    </BriefOption>
-  </div>
-
-  <div
-    v-else
-    :role="role"
-    class="flex flex-wrap gap-(--app-gutter-inner)"
-    data-brief-options
-    @keydown="onKeydown"
-  >
-    <BriefOption
-      v-for="(option, index) in options"
-      :key="option"
-      v-model="selected"
-      :type="type"
-      :name="name"
-      :value="option"
-      :shortcut="shortcut(index)"
-      :invalid="!!$attrs['aria-invalid']"
-      class="rounded-full"
-      content-class="block px-5 py-3 text-16 font-medium leading-none"
-      @pick="playPick"
-    >
-      <span class="flex items-center gap-2"
-        ><UiKbd
-          v-if="shortcut(index)"
-          class="-my-1"
-          >{{ shortcut(index) }}</UiKbd
-        ><span class="trim-both">{{ option }}</span></span
-      >
     </BriefOption>
   </div>
 </template>

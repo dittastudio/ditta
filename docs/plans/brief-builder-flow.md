@@ -13,7 +13,7 @@ Source of truth for the wording: the repo. Questions, hints and options live in 
 The form is for prospective clients who often don't know exactly what they want yet. It has to help them work it out without feeling like a survey.
 
 1. **One question per screen.** A follow-up question can appear underneath its parent on the same screen. Follow-ups don't count as a second question.
-2. **Tap rather than type.** Use cards, chips and sliders wherever there's a known set of answers. Only use text fields for things only the client can know (their business, name, email, links).
+2. **Tap rather than type.** Use cards and sliders wherever there's a known set of answers. Only use text fields for things only the client can know (their business, name, email, links).
 3. **Single-line by default.** Text answers are single-line inputs. A textarea is allowed where an answer genuinely needs more room, but none of the current questions use one.
 4. **Every screen fits a small phone (320 × 568) without scrolling before a follow-up opens.** The exceptions are screen 1 (its cards keep their descriptions, so they stack one per row) and screen 3 (eight cards), plus the summary. Once a follow-up opens or a link row is added, the screen may scroll: the brief keeps the active field and the nav in view.
 5. **Email comes last.** Nothing is sent to the server until the client presses **Send brief** on the summary (see the technical doc).
@@ -265,7 +265,7 @@ _Hint:_ Skip if you don't have one yet.
 
 |          |                                                                                               |
 | -------- | --------------------------------------------------------------------------------------------- |
-| Field    | Single-select chips                                                                           |
+| Field    | Single-select cards                                                                           |
 | Options  | Google · Instagram · LinkedIn · ChatGPT · Claude · Referral · From a website you made · Other |
 | Key / id | `source` / `q11`                                                                              |
 
@@ -337,7 +337,6 @@ The review screen. It lists **every visible question in order**, numbered, with 
 | Links, add another  | URL rows + optional note               | `{ url, note? }[]`, max 3 | Paste splitting            |
 | Single-select cards | Grid of cards                          | `string`                  | Next to continue           |
 | Multi-select cards  | Same, several can be on                | `string[]`                | Hint says "Pick any"       |
-| Single-select chips | Wrapping pill buttons                  | `string`                  | For short labels           |
 | Snapping slider     | One handle + labelled points           | `string` (label)          | Starts with nothing chosen |
 | Info                | No input                               | n/a                       | Used for the summary       |
 

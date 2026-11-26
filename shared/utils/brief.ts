@@ -3,7 +3,7 @@
 import type { BriefAnswersInput, BriefFieldKey, BriefFollowUpKey, BriefStepKey } from '#shared/schemas/brief'
 import { briefFollowUps, briefOptions, hasValue, isBriefFieldRequired, isFollowUpShown } from '#shared/schemas/brief'
 
-type BriefField = 'cards' | 'chips' | 'text' | 'email' | 'url' | 'links' | 'slider'
+type BriefField = 'cards' | 'text' | 'email' | 'url' | 'links' | 'slider'
 type BriefDraft = Partial<BriefAnswersInput>
 type BriefLinkRow = NonNullable<BriefAnswersInput['references']>[number]
 // What's wrong with each part of a link row, for the fields to show
@@ -134,7 +134,7 @@ const briefSteps: BriefStep[] = [
   {
     key: 'source',
     title: 'How did you find us?',
-    field: 'chips',
+    field: 'cards',
     options: briefOptions.source,
   },
   {
