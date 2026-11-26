@@ -48,7 +48,7 @@ const progress = computed(() => (brief.isSummary ? 1 : brief.stepIndex / brief.t
 const advanceLabels = { summary: 'Back to summary', review: 'Review', skip: 'Skip', next: 'Next' }
 
 const primaryLabel = computed(() => {
-  if (brief.status === 'sent') return 'Simulate confirm'
+  if (brief.status === 'sent') return brief.sending ? 'Sending…' : 'Resend'
   if (brief.status === 'confirmed') return 'Start over'
   if (brief.isSummary) return brief.sending ? 'Sending…' : 'Send'
   return advanceLabels[brief.advance]
@@ -359,7 +359,7 @@ defineExpose({ primaryLabel, back })
               data-brief-nav-part
               class="shrink-0 pl-3 text-14"
             >
-              {{ brief.status === 'sent' ? 'Prototype' : 'Brief sent' }}
+              {{ brief.status === 'sent' ? 'Check your inbox' : 'Brief sent' }}
             </p>
 
             <!-- Beside the count on desktop. On mobile it sits just above the bar, so it never pushes the buttons apart. -->

@@ -1,4 +1,5 @@
-// The team's email for a new brief: every answer in the summary's order, as HTML with a plain-text twin
+// The brief builder's emails, as HTML with a plain-text twin: the link that confirms a brief, the team's copy of a
+// confirmed brief, and the client's.
 import type { BriefAnswers } from '#shared/schemas/brief'
 import type { BriefLinkRow } from '#shared/utils/brief'
 
@@ -42,35 +43,82 @@ function answerHtml(row: BriefEmailRow) {
   return escapeHtml(row.answer)
 }
 
-export function briefEmail(answers: BriefAnswers) {
-  const rows = rowsFor(answers)
-  const subject = `New brief: ${answers.name}, ${answers.business}`
-
-  const text = [
-    subject,
-    '',
-    ...rows.flatMap((row) => [row.title, row.answer ?? 'Skipped', '']),
-    `Reply to this email to answer ${briefFirstName(answers) || 'them'} directly.`,
-  ].join('\n')
-
-  // Email clients want tables and inline styles. Colours are plain hex here: the site's tokens don't reach an inbox.
-  const html = `<!doctype html>
+// Email clients want tables and inline styles. Colours are plain hex here: the site's tokens don't reach an inbox.
+// `rows` is already HTML: table rows, each a cell.
+const layout = (rows: string) => `<!doctype html>
 <html>
   <body style="margin:0;padding:24px;background:#f7f7f7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#000">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;margin:0 auto;background:#fff;border-radius:10px">
-      <tr><td style="padding:32px 32px 8px;font-size:22px;line-height:1.3">${escapeHtml(subject)}</td></tr>
-      ${rows
-        .map(
-          (row) => `<tr><td style="padding:16px 32px;border-top:1px solid #eee">
-        <div style="font-size:13px;line-height:1.4;color:#666">${escapeHtml(row.title)}</div>
-        <div style="padding-top:6px;font-size:16px;line-height:1.5">${answerHtml(row)}</div>
-      </td></tr>`,
-        )
-        .join('\n      ')}
-      <tr><td style="padding:24px 32px 32px;border-top:1px solid #eee;font-size:13px;color:#666">Reply to this email to answer ${escapeHtml(briefFirstName(answers) || 'them')} directly.</td></tr>
+      ${rows}
     </table>
   </body>
 </html>`
 
-  return { subject, html, text }
+const headingRow = (text: string) =>
+  `<tr><td style="padding:32px 32px 8px;font-size:22px;line-height:1.3">${escapeHtml(text)}</td></tr>`
+
+const paragraphRow = (html: string) =>
+  `<tr><td style="padding:8px 32px;font-size:16px;line-height:1.5">${html}</td></tr>`
+
+const footerRow = (text: string) =>
+  `<tr><td style="padding:24px 32px 32px;border-top:1px solid #eee;font-size:13px;color:#666">${escapeHtml(text)}</td></tr>`
+
+const answerRows = (rows: BriefEmailRow[]) =>
+  rows
+    .map(
+      (row) => `<tr><td style="padding:16px 32px;border-top:1px solid #eee">
+        <div style="font-size:13px;line-height:1.4;color:#666">${escapeHtml(row.title)}</div>
+        <div style="padding-top:6px;font-size:16px;line-height:1.5">${answerHtml(row)}</div>
+      </td></tr>`,
+    )
+    .join('\n      ')
+
+const answerText = (rows: BriefEmailRow[]) => rows.flatMap((row) => [row.title, row.answer ?? 'Skipped', ''])
+
+// To the team, from a confirmed brief: every answer in the summary's order, and a reply goes to the client
+export function briefTeamEmail(answers: BriefAnswers) {
+  const rows = rowsFor(answers)
+  const subject = `New brief: ${answers.name}, ${answers.business}`
+  const footer = `Reply to this email to answer ${briefFirstName(answers) || 'them'} directly.`
+
+  return {
+    subject,
+    text: [subject, '', ...answerText(rows), footer].join('\n'),
+    html: layout(`${headingRow(subject)}\n      ${answerRows(rows)}\n      ${footerRow(footer)}`),
+  }
+}
+
+// To the client, once they've confirmed: their answers, for their records
+export function briefCopyEmail(answers: BriefAnswers) {
+  const rows = rowsFor(answers)
+  const name = briefFirstName(answers)
+  const subject = 'We’ve got your brief'
+  const intro = `Thanks${name ? `, ${name}` : ''}. Your brief has reached us, and we’ll reply within two working days to book a short call. Here’s a copy of what you sent.`
+  const footer = 'ditta · hello@ditta.studio'
+
+  return {
+    subject,
+    text: [subject, '', intro, '', ...answerText(rows), footer].join('\n'),
+    html: layout(
+      `${headingRow(subject)}\n      ${paragraphRow(escapeHtml(intro))}\n      ${answerRows(rows)}\n      ${footerRow(footer)}`,
+    ),
+  }
+}
+
+// To the client, when they send: the link that confirms the brief is theirs and sends it to the team
+export function briefConfirmEmail(answers: Pick<BriefAnswers, 'name'>, link: string) {
+  const name = briefFirstName(answers)
+  const subject = 'Confirm and send your brief to ditta'
+  const intro = `Hi${name ? ` ${name}` : ''}, click below to send us your brief. It only reaches us once you do.`
+  const after = 'The link works for 72 hours. If you didn’t fill in a brief on ditta.studio, ignore this email.'
+
+  const button = `<a href="${escapeHtml(link)}" style="display:inline-block;padding:14px 24px;border-radius:999px;background:#000;color:#fff;font-weight:500;text-decoration:none">Confirm and send</a>`
+
+  return {
+    subject,
+    text: [intro, '', `Confirm and send: ${link}`, '', after].join('\n'),
+    html: layout(
+      `${headingRow(subject)}\n      ${paragraphRow(escapeHtml(intro))}\n      <tr><td style="padding:16px 32px 24px">${button}</td></tr>\n      ${footerRow(after)}`,
+    ),
+  }
 }

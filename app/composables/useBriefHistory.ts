@@ -93,7 +93,7 @@ export function useBriefHistory(onBack: () => void) {
 
   brief.$onAction(({ name, after }) => {
     // A reset while sending does nothing, so there's nothing to collapse
-    if ((name === 'reset' && !brief.sending) || name === 'markSent') after(collapse)
+    if ((name === 'reset' && !brief.sending) || name === 'markPending' || name === 'markConfirmed') after(collapse)
   })
 
   useEventListener(window, 'popstate', () => {

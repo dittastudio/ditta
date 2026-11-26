@@ -89,6 +89,11 @@ export default defineNuxtConfig({
     // Per-visitor form state, nothing to prerender (docs/plans/brief-builder-milestones.md)
     // noindex as a response header as well as a meta tag, since the page is client-only and crawlers that don't
     // run JavaScript never see the tag. Remove this and the page's useSeoMeta robots at launch (M7).
+    '/brief/**': {
+      ssr: false,
+      prerender: false,
+      robots: false,
+    },
     '/brief': {
       ssr: false,
       prerender: false,
@@ -102,6 +107,11 @@ export default defineNuxtConfig({
     },
     experimental: {
       wasm: true, // ...for Cloudflare Workers
+      tasks: true,
+    },
+    // Cron triggers on the Worker (server/tasks). Each cron also has to be in wrangler.jsonc's triggers.
+    scheduledTasks: {
+      '0 * * * *': ['brief:sweep'],
     },
     prerender: {
       crawlLinks: !isSpa,
@@ -133,6 +143,13 @@ export default defineNuxtConfig({
           (path) => !notPrefetched.some((name) => path.endsWith(name)),
         )
       }
+    },
+  },
+  // `nuxt dev` runs with wrangler's local bindings from wrangler.jsonc: the briefs' D1 (`.wrangler/state`) and the rate
+  // limit. Apply migrations to it with `npx wrangler d1 migrations apply ditta-briefs --local`.
+  $development: {
+    nitro: {
+      preset: 'cloudflare-dev',
     },
   },
   ssr: !isSpa,

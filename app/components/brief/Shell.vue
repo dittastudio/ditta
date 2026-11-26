@@ -95,16 +95,17 @@ async function send() {
 
   brief.sending = true
   try {
-    await $fetch('/api/brief', {
+    const sent = await $fetch('/api/brief', {
       method: 'POST',
       body: {
+        id: brief.briefId ?? undefined,
         answers: result.data,
         elapsed: brief.startedAt ? Date.now() - brief.startedAt : 0,
         honeypot: brief.honeypot || undefined,
         turnstileToken: brief.turnstileToken,
       } satisfies BriefSubmitInput,
     })
-    brief.markSent()
+    brief.markPending(sent.id, sent.email)
   } catch (failure) {
     brief.turnstileToken = ''
     const { data } = failure as { data?: { message?: string } }
@@ -114,15 +115,16 @@ async function send() {
   }
 }
 
-// The main button (Start, Next, Send, Start over), also on Enter
+// The main button (Start, Next, Send, Resend, Start over), also on Enter
 const question = useTemplateRef('question')
+const inbox = useTemplateRef('inbox')
 
 async function primary() {
   if (brief.status === 'intro') {
     play(soundStart)
     return brief.start()
   }
-  if (brief.status === 'sent') return brief.setStatus('confirmed')
+  if (brief.status === 'sent') return inbox.value?.resend()
   if (brief.status === 'confirmed') {
     await morph.fade()
     return brief.reset()
@@ -225,7 +227,16 @@ function onEnter(el: Element) {
                 Review your brief
               </h1>
 
-              <BriefSent v-if="!isDraft" />
+              <BriefInbox
+                v-if="brief.status === 'sent'"
+                ref="inbox"
+                @error="fail"
+              />
+
+              <BriefThanks
+                v-else-if="!isDraft"
+                :name="brief.sentName"
+              />
 
               <BriefSummary v-else-if="brief.isSummary" />
 

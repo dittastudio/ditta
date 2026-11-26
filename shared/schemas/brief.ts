@@ -81,6 +81,7 @@ const briefFields = {
     .string({ error: REQUIRED })
     .trim()
     .min(1, REQUIRED)
+    .max(BRIEF_TEXT_MAX, TOO_LONG)
     .pipe(z.email({ error: 'Enter a valid email' })),
 }
 
@@ -181,6 +182,8 @@ export type BriefAnswers = z.output<typeof briefAnswersSchema>
 
 // The body of POST /api/brief. The spam checks on `elapsed`, `honeypot` and `turnstileToken` are the route's.
 export const briefSubmitSchema = z.object({
+  // A brief this browser already sent and hasn't confirmed, sent again after an edit. Updated rather than duplicated.
+  id: z.uuid().optional(),
   answers: briefAnswersSchema,
   // Milliseconds from the first answer to Send brief
   elapsed: z.number().int().nonnegative(),
@@ -190,3 +193,19 @@ export const briefSubmitSchema = z.object({
 })
 
 export type BriefSubmitInput = z.input<typeof briefSubmitSchema>
+
+// The body of POST /api/brief/:id/resend, from "Not received your email?": the address, perhaps with a typo fixed
+export const briefResendSchema = z.object({ email: briefFields.email })
+
+export type BriefResendInput = z.input<typeof briefResendSchema>
+
+// The email link's token, for the confirm page's GET and POST, and for asking for a fresh link once it's expired
+export const briefTokenSchema = z.object({ token: z.string().min(1).max(100) })
+
+// What an email link leads to, for the confirm page. A link replaced by a resend, or for a brief that's been deleted,
+// is invalid; nothing more is said about it.
+export type BriefLinkState =
+  | { state: 'invalid' }
+  | { state: 'expired' }
+  | { state: 'pending'; id: string; name: string; email: string; business: string }
+  | { state: 'confirmed'; id: string; name: string; confirmedAt: number }

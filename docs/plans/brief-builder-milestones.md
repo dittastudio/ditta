@@ -113,6 +113,15 @@ Done (24 Nov 2026). A real brief from ditta.studio reached hello@. Scripted post
 
 **Done when:** every item in the Verification section of `brief-builder.md` passes, except the PDF items.
 
+Built (26 Nov 2026), not yet tried on a deploy:
+
+- D1: `ditta-briefs` for production and `ditta-briefs-preview` for branch previews (Western Europe), both bound as `DB` in `wrangler.jsonc`. Migrations in `server/database/migrations/`, applied to both. `nuxt dev` runs on Nitro's `cloudflare-dev` preset, so it gets a local D1 from `.wrangler/state`.
+- To migrate: `npx wrangler d1 migrations apply ditta-briefs --remote` (and `--local`). The preview database lives in the `previews` block, which `wrangler d1` can't find by name, so apply it with a throwaway config naming it.
+- Routes in `server/api/brief/`: `index.post` (create, or update this browser's pending brief), `[id]/resend.post` (60 seconds apart, 10 sends at most), `[id]/status.get`, `confirm.get` (no side effects), `confirm.post`, and `renew.post` (a new link from an expired one, on any device). Shared logic in `server/utils/briefs.ts`; emails in `server/emails/brief.ts`.
+- Tokens: 32 random bytes, stored as SHA-256, 72 hours. The draft cookie `brief_owner` is httpOnly, scoped to `/api/brief`, and stored hashed. A confirmed brief keeps its token hash so a second click can say when it arrived.
+- On confirm, the team email and the client's copy go in one Resend batch. If that fails the brief still counts, and the hourly sweep (`server/tasks/brief/sweep.ts`, cron in `wrangler.jsonc`) retries. The sweep also deletes briefs left pending for 14 days after their last send.
+- Screens: Check your inbox (`BriefInbox`, polls every 4 seconds and on focus; the nav's main button is Resend), `/brief/confirm` (send, already received, expired, new link sent, invalid), and the thanks (`BriefThanks`). The answers stay in the browser until the brief is confirmed, so Back from Check your inbox edits and re-sends the same brief.
+
 ---
 
 ## M5: Branded PDF
