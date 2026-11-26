@@ -6,7 +6,7 @@ interface Props {
 
 const { name } = defineProps<Props>()
 
-const firstName = computed(() => name?.trim().split(/\s+/)[0] ?? '')
+const firstName = computed(() => briefFirstName({ name: name ?? undefined }))
 
 // True while the burger has been eaten and the next one hasn't arrived
 const eaten = ref(false)
@@ -42,14 +42,14 @@ const eaten = ref(false)
       class="text-24 leading-tight text-balance trim-both md:text-28"
       data-crumb-surface="text"
     >
-      Thanks{{ firstName ? `, ${firstName}` : '' }}. Your brief is on its way.
+      Thanks{{ firstName ? `, ${firstName}` : '' }}. We've got your brief.
     </h1>
 
     <p
       class="text-18 opacity-60 md:text-20"
       data-crumb-surface="text"
     >
-      We'll reply within two working days to book a short call.
+      We'll reply within two working days to book a short call. A copy is on its way to your inbox.
     </p>
   </section>
 </template>

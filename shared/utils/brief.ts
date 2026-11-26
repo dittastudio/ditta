@@ -175,7 +175,12 @@ const hasBriefAnswer = (value: unknown): boolean =>
 
 const isBriefStepRequired = (step: BriefStep) => isBriefFieldRequired(step.key)
 
-const briefFirstName = (answers: BriefDraft) => answers.name?.trim().split(/\s+/)[0] ?? ''
+// Shown with a capital however it was typed ("will" reads "Will"). Only the first letter, so "McKenzie" keeps its
+// own, and only for display: the stored name stays as typed.
+const briefFirstName = (answers: Pick<BriefDraft, 'name'>) => {
+  const first = answers.name?.trim().split(/\s+/)[0] ?? ''
+  return first.charAt(0).toLocaleUpperCase('en-GB') + first.slice(1)
+}
 
 // `[name]` becomes the first name, or `, [name]` is dropped when there isn't one yet
 const personaliseBrief = (title: string, answers: BriefDraft) => {
