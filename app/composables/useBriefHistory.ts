@@ -4,6 +4,11 @@ import { briefStepSchemas } from '#shared/schemas/brief'
 interface BriefHistoryState {
   // How many of the brief's entries sit behind this one
   briefDepth?: number
+  // When the brief this entry belongs to was started (the store's startedAt), so entries left over from a brief that
+  // has since been started again or sent can be told apart
+  briefStart?: number | null
+  // Whether this step was opened with Edit from the review, so Next goes back there
+  briefEditing?: boolean
   // Vue Router's own: the path of the entry behind this one
   back?: string | null
 }
@@ -26,8 +31,8 @@ function stepParamOf(path: string | null | undefined) {
 // step, so long as every step before it has been answered. A step further on than that lands on the first one still
 // to answer. Answers are kept either way. A brief that has gone (sent, confirmed) stays where it is.
 // Called once before the brief first renders, so it opens where the URL says rather than where it was left, and again
-// on every Back and Forward.
-export function followBriefUrl(value: unknown) {
+// on every Back and Forward, which also say whether the step was being edited from the review.
+export function followBriefUrl(value: unknown, fromSummary = false) {
   const brief = useBriefStore()
   if (!brief.inProgress) return
 
@@ -39,7 +44,8 @@ export function followBriefUrl(value: unknown) {
 
   const reachable = briefSteps.findIndex((step) => !briefStepSchemas[step.key].safeParse(brief.answers).success)
   if (brief.status === 'intro') brief.start()
-  brief.goTo(reachable === -1 ? index : Math.min(index, reachable))
+  const to = reachable === -1 ? index : Math.min(index, reachable)
+  brief.goTo(to, fromSummary && to === index && to < brief.summaryIndex)
 }
 
 // The intro and each step are their own history entries, named in the URL (see briefParam), so the browser's own Back
@@ -51,6 +57,8 @@ export function followBriefUrl(value: unknown) {
 export function useBriefHistory(onBack: () => void) {
   const brief = useBriefStore()
   const router = useRouter()
+  // The brief's own page. A Back or Forward to anywhere else is the router's to handle, not the brief's.
+  const briefPath = router.currentRoute.value.path
 
   const param = computed(() => briefParam(brief))
 
@@ -64,7 +72,10 @@ export function useBriefHistory(onBack: () => void) {
 
   function write(mode: 'push' | 'replace') {
     const { step: _, ...query } = router.currentRoute.value.query
-    const to = { query: param.value ? { ...query, step: param.value } : query, state: { briefDepth: depth } }
+    const to = {
+      query: param.value ? { ...query, step: param.value } : query,
+      state: { briefDepth: depth, briefStart: brief.startedAt, briefEditing: brief.editingFromSummary },
+    }
     ;(mode === 'push' ? router.push(to) : router.replace(to)).catch(() => {})
   }
 
@@ -96,23 +107,39 @@ export function useBriefHistory(onBack: () => void) {
     if ((name === 'reset' && !brief.sending) || name === 'markPending' || name === 'markConfirmed') after(collapse)
   })
 
+  // Puts the entry right once the router has caught up with a Back or Forward. Sooner, and the router (still on the
+  // entry it's leaving) can take the replace for a duplicate and drop it, then finish arriving at the wrong step.
+  function rewriteAfterPop() {
+    const stop = router.afterEach(() => {
+      stop()
+      write('replace')
+    })
+  }
+
   useEventListener(window, 'popstate', () => {
-    const to = historyState().briefDepth ?? 0
+    if (location.pathname !== briefPath) return
+
+    const state = historyState()
+    const to = state.briefDepth ?? 0
     const wentBack = to < depth
     depth = to
 
     if (collapsing) {
       collapsing = false
-      return write('replace')
+      return rewriteAfterPop()
     }
 
     if (wentBack && !fromNav) onBack()
     fromNav = false
 
     const stepParam = new URLSearchParams(location.search).get('step') ?? undefined
-    apply(() => followBriefUrl(stepParam))
+    // Forward into a brief that has since been started again or sent: those entries are left after the brief's first
+    // one (see collapse), so the brief stays where it is and the entry is put right
+    if (stepParam && state.briefStart !== undefined && state.briefStart !== brief.startedAt) return rewriteAfterPop()
+
+    apply(() => followBriefUrl(stepParam, state.briefEditing))
     // A brief that has gone, or a step not yet reached: the entry is put right to where the brief is
-    if (stepParam !== param.value) write('replace')
+    if (stepParam !== param.value) rewriteAfterPop()
   })
 
   onMounted(() => {
