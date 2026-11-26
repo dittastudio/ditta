@@ -130,7 +130,9 @@ Tried locally (26 Nov 2026), with Resend's test address and the team email point
 - Spam checks: a filled honeypot and a brief sent too fast get the quiet fake success with nothing stored. Invalid answers get 400, and a fourth post in a minute gets 429.
 - Resend limits: 20 seconds apart, 10 sends at most, also when edited and sent again. At the cap the client goes back to the review, and Send starts a new brief.
 
-Still to do: the same on a branch preview, a real confirm from a second device, and the prerender build.
+The prerender build passes: the home page and the work pages are prerendered, and `/brief` and `/brief/confirm` are left to the Worker.
+
+Still to do: the same on a branch preview, and a real confirm from a second device.
 
 ---
 
