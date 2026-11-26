@@ -1,6 +1,15 @@
 <script lang="ts" setup>
 import type { BriefLinkRow, BriefLinkRowErrors, BriefQuestion } from '#shared/utils/brief'
+import type { BriefFieldKey } from '#shared/schemas/brief'
+import type { Component } from 'vue'
 import { briefLinkLimits } from '#shared/schemas/brief'
+import IconChatgpt from '@/assets/icons/chatgpt.svg'
+import IconClaude from '@/assets/icons/claude.svg'
+import IconGoogle from '@/assets/icons/google.svg'
+import IconInstagram from '@/assets/icons/instagram.svg'
+import IconLinkedin from '@/assets/icons/linkedin.svg'
+import IconReferral from '@/assets/icons/referral.svg'
+import BriefDot from '@/components/brief/Dot.vue'
 
 interface Props {
   question: BriefQuestion
@@ -14,6 +23,19 @@ const { question, labelledby, errors = [], rowErrors = [], focusOnMount = false 
 const model = defineModel<unknown>()
 // `touch` once a typed answer has been left, so its errors can start to show (see Question)
 const emit = defineEmits<{ submit: []; touch: [] }>()
+
+// Logos for option cards, kept here rather than with the questions in #shared, which the server reads too
+const optionIcons: Partial<Record<BriefFieldKey, Partial<Record<string, Component>>>> = {
+  source: {
+    Google: IconGoogle,
+    Instagram: IconInstagram,
+    LinkedIn: IconLinkedin,
+    ChatGPT: IconChatgpt,
+    Claude: IconClaude,
+    Referral: IconReferral,
+    'Your work': BriefDot,
+  },
+}
 
 // Shows what Regle reports; never validates anything itself
 const errorId = useId()
@@ -63,6 +85,7 @@ function onFocusout() {
       v-bind="a11y"
       :options="question.options ?? []"
       :descriptions="question.descriptions"
+      :icons="optionIcons[question.key]"
       :multiple="question.multiple"
     />
 

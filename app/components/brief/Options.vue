@@ -1,14 +1,17 @@
 <script lang="ts" setup>
+import type { Component } from 'vue'
 import { defineSound } from '@web-kits/audio'
 import { checkbox, radio } from '@@/.web-kits/core'
 
 interface Props {
   options: readonly string[]
   descriptions?: Partial<Record<string, string>>
+  // A logo before an option card's title, keyed by option
+  icons?: Partial<Record<string, Component>>
   multiple?: boolean
 }
 
-const { options, descriptions = {}, multiple = false } = defineProps<Props>()
+const { options, descriptions = {}, icons = {}, multiple = false } = defineProps<Props>()
 const model = defineModel<string | string[] | undefined>()
 
 // Native radios and checkboxes under the cards: they bring the semantics, Space to pick, and arrows between radios.
@@ -33,6 +36,8 @@ const selected = computed({
 
 // Title-only cards are short enough to sit two to a row even on a phone
 const hasDescriptions = computed(() => options.some((option) => descriptions[option]))
+// Titles without a logo stand as tall as one, so they line up with their neighbours
+const hasIcons = computed(() => options.some((option) => icons[option]))
 
 // Checkboxes don't move on arrows natively, unlike radios. Here arrows only move focus, Space still toggles,
 // and every checkbox stays a Tab stop, so this adds to the usual keys rather than replacing them.
@@ -97,10 +102,17 @@ const shortcut = (index: number) => (index < 9 ? String(index + 1) : undefined)
       >
 
       <span
-        class="font-medium leading-tight trim-both md:text-20"
-        :class="hasDescriptions ? 'text-18' : 'text-16'"
-        >{{ option }}</span
+        class="flex items-center gap-2.5 font-medium leading-tight md:gap-3 md:text-20"
+        :class="[hasDescriptions ? 'text-18' : 'text-16', hasIcons && 'min-h-5 md:min-h-6']"
       >
+        <component
+          :is="icons[option]"
+          v-if="icons[option]"
+          aria-hidden="true"
+          class="size-5 shrink-0 md:size-6"
+        />
+        <span class="trim-both">{{ option }}</span>
+      </span>
 
       <span
         v-if="descriptions[option]"

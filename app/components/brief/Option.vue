@@ -121,10 +121,12 @@ onMounted(() => pixels.init(checked.value))
       <slot />
     </span>
 
+    <!-- The picked copy, black on the fill. Icons can follow it: --icon-ring outlines what would vanish into the fill
+         (an olive dot) in the same black, and --icon-solid turns a full-colour logo black with it -->
     <span
       ref="ink"
       aria-hidden="true"
-      class="pointer-events-none invisible absolute inset-0 z-2 text-black group-has-checked/option:visible"
+      class="pointer-events-none invisible absolute inset-0 z-2 text-black [--icon-ring:currentcolor] [--icon-solid:currentcolor] group-has-checked/option:visible"
       :class="contentClass"
     >
       <slot />

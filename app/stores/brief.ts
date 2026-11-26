@@ -76,8 +76,11 @@ export const useBriefStore = defineStore(
       }
     }
 
-    // `files` was a single link before it became link rows. Runs when a saved draft is loaded.
+    // `files` was a single link before it became link rows, and a `source` option was reworded. Runs when a saved
+    // draft is loaded, before dropStaleChoices would drop the old wording.
     function upgradeSavedAnswers() {
+      if ((answers.value.source as string | undefined) === 'From a website you made') answers.value.source = 'Your work'
+
       const files: unknown = answers.value.files
       if (typeof files !== 'string') return
       if (files.trim()) answers.value.files = [{ url: files, note: '' }]

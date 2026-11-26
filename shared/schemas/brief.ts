@@ -26,7 +26,7 @@ export const briefOptions = {
   timing: ['ASAP', '3 months', '6 months', 'Other'],
   contentStage: ['Ready to go', 'Partially ready', 'Not ready', 'Other'],
   budget: ['Under £5k', '£5k–£10k', '£10k–£20k', '£20k–£40k', '£40k+'],
-  source: ['Google', 'Instagram', 'LinkedIn', 'ChatGPT', 'Claude', 'Referral', 'From a website you made', 'Other'],
+  source: ['Google', 'Instagram', 'LinkedIn', 'ChatGPT', 'Claude', 'Referral', 'Your work', 'Other'],
 } as const
 
 const text = z.string({ error: REQUIRED }).trim().min(1, REQUIRED).max(BRIEF_TEXT_MAX, TOO_LONG)

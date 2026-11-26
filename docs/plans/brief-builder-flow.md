@@ -263,11 +263,11 @@ _Hint:_ Skip if you don't have one yet.
 
 **How did you find us?** · optional
 
-|          |                                                                                               |
-| -------- | --------------------------------------------------------------------------------------------- |
-| Field    | Single-select cards                                                                           |
-| Options  | Google · Instagram · LinkedIn · ChatGPT · Claude · Referral · From a website you made · Other |
-| Key / id | `source` / `q11`                                                                              |
+|          |                                                                                 |
+| -------- | ------------------------------------------------------------------------------- |
+| Field    | Single-select cards                                                             |
+| Options  | Google · Instagram · LinkedIn · ChatGPT · Claude · Referral · Your work · Other |
+| Key / id | `source` / `q11`                                                                |
 
 **Follow-up:** when `source` = **Other**
 
