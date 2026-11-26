@@ -95,7 +95,7 @@ const briefSteps: BriefStep[] = [
     // Links only for now: uploads are M6 (docs/plans/brief-builder-milestones.md)
     key: 'files',
     title: "Is there anything you'd like to share?",
-    hint: 'Designs, brand guidelines, a brief — anything that helps.',
+    hint: 'Designs, brand guidelines, a brief, anything that helps.',
     field: 'links',
     // Rests on the first, which is also what screen readers hear
     placeholders: ['Paste a link', 'figma.com/design/…', 'drive.google.com/…', 'docs.google.com/…', 'dropbox.com/…'],

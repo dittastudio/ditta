@@ -174,7 +174,7 @@ Behaviour:
 ### 6. Files or links
 
 **Is there anything you'd like to share?** · optional
-_Hint:_ Designs, brand guidelines, a brief — anything that helps.
+_Hint:_ Designs, brand guidelines, a brief, anything that helps.
 
 |          |                                  |
 | -------- | -------------------------------- |
