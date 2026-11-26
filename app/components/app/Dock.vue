@@ -252,12 +252,12 @@ defineExpose({
                     <ul class="flex flex-col items-center justify-center gap-10 w-full">
                       <li>
                         <NuxtLink
-                          to="mailto:hello@ditta.studio"
+                          to="/brief"
                           class="block"
                           prefetch-on="interaction"
                         >
                           <UiButton
-                            text="Talk to us"
+                            text="Start a brief"
                             size="medium"
                             theme="light"
                           />
