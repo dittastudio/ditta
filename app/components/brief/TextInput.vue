@@ -85,8 +85,6 @@ watchEffect((onCleanup) => {
 </script>
 
 <template>
-  <!-- No fill, only the outline. Chrome paints its own fill on autofilled fields that background-color can't undo,
-       so an inset shadow in the page's black covers it. -->
   <div class="relative grid w-full min-w-0">
     <input
       ref="input"
@@ -114,14 +112,12 @@ watchEffect((onCleanup) => {
       <slot name="end" />
     </div>
 
-    <!-- Stands in for the placeholder, which can't animate. Typing removes it at once, with no fade. -->
     <div
       v-if="rotates && !model"
       aria-hidden="true"
       class="pointer-events-none absolute inset-0 grid items-center border border-transparent px-5 text-white/40"
       :class="[small ? 'text-16' : 'text-16 md:text-20', slots.end ? 'pr-14' : '']"
     >
-      <!-- The next example arrives a beat behind, so the two cross rather than blur into each other -->
       <Transition
         name="brief-rise"
         enter-active-class="brief-rise-enter-active delay-60"

@@ -21,8 +21,6 @@ const rows = computed(() =>
       Check everything's right before you send it
     </p>
 
-    <!-- Turnstile shares this wrapper rather than taking a gap of its own: its element is never empty (a hidden
-         iframe runs the check) but has no height unless Cloudflare asks for a click -->
     <div>
       <ol class="flex flex-col divide-y divide-white/25 border-y border-white/25">
         <li

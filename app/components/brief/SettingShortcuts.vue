@@ -29,7 +29,6 @@ function onFocus(event: FocusEvent) {
 onBeforeUnmount(() => preview(false))
 </script>
 
-<!-- One of the nav's icon buttons, which plays their hover sound -->
 <template>
   <UiNavButton
     square

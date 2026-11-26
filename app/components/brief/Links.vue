@@ -84,10 +84,6 @@ function onPaste(index: number, event: ClipboardEvent) {
 </script>
 
 <template>
-  <!-- Rows and the add button each open their own space and come into focus as they do, and fade before closing it
-       as they go, so what's under them eases rather than jumping (see brief-open). The space between rows is padding
-       inside the part that grows rather than the list's gap, so it opens and closes with them. Every row has it, so
-       the first can go without the next one's gap snapping shut; the list's negative margin takes back the first. -->
   <div class="-mt-3 flex flex-col">
     <TransitionGroup name="brief-open">
       <div

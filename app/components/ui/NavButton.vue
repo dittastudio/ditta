@@ -35,9 +35,6 @@ const soundHover = defineSound(hover)
 const { playHover } = useAudio()
 </script>
 
-<!-- The buttons on the site's bars, the Dock and the brief nav: a squircle that tints on hover and gives a little when
-     pressed. aria-disabled dims it and stops the pointer, but leaves it focusable, so focus isn't lost while it waits;
-     whatever it runs checks for itself. A named group, so what's inside can react to hovering it (group-hover/button). -->
 <template>
   <button
     type="button"

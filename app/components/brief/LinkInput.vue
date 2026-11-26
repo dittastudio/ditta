@@ -84,9 +84,6 @@ const layer =
         </BriefTextInput>
       </div>
 
-      <!-- Opens its own height and comes into focus as it does, so what's under it eases rather than jumps (see
-           brief-open). Not clipped while it opens, which would wipe it in. The link's corners ease square and back
-           alongside it (see TextInput's transition). Pulled up a pixel so the two share one border line. -->
       <Transition name="brief-open">
         <div
           v-if="hasNote"

@@ -157,9 +157,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <!-- Set further apart than the text below it: the bob carries the burger 30px down towards the heading -->
   <div class="relative isolate grid place-items-center motion-safe:animate-bob mb-10 md:mb-15">
-    <!-- A soft light breathing behind the burger, dimming as it's eaten. Held still for reduced motion. -->
     <div
       class="pointer-events-none absolute -inset-15 -z-10 transition-opacity duration-700 ease-outCubic md:-inset-20"
       :style="{ opacity: remaining / total }"
@@ -178,14 +176,11 @@ onBeforeUnmount(() => {
       @focus="warm"
       @click="onClick"
     >
-      <!-- Tilt and squash are separate properties (rotate, scale), so neither undoes the other -->
       <span
         ref="tilt"
         class="block rotate-(--tilt) transition-[scale]"
         :class="squashed ? 'scale-96 duration-75 ease-outCubic' : 'duration-300 ease-outBack'"
       >
-        <!-- 30 art pixels wide, so 4 and 6 screen pixels to each keeps the edges crisp. A new burger scales and fades
-             in from just under full size; for reduced motion it only fades. -->
         <svg
           ref="svg"
           :viewBox="`0 0 ${width} ${height}`"

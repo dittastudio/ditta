@@ -260,8 +260,6 @@ const fillStyle = computed(() => ({ transform: `scaleX(${Math.min(Math.max(posit
     class="@container flex flex-col gap-6"
     data-brief-slider
   >
-    <!-- The readout, and the brief's Left and Right keys beside it when the shortcuts setting is on (see useBriefKeys).
-         Each key is what useBriefKeys marks data-pressed, so it presses down with the real one. -->
     <div class="flex items-end justify-between gap-4">
       <p
         class="text-40 leading-none trim-both md:text-64"
@@ -310,7 +308,6 @@ const fillStyle = computed(() => ({ transform: `scaleX(${Math.min(Math.max(posit
         />
       </div>
 
-      <!-- A dot at each stop, so the scale reads as stepped even when only its ends are labelled -->
       <span
         v-for="(option, i) in options"
         :key="option"
@@ -326,7 +323,6 @@ const fillStyle = computed(() => ({ transform: `scaleX(${Math.min(Math.max(posit
       />
     </div>
 
-    <!-- On a narrow slider only the ends are labelled: the readout above names the value, and the dots show the stops -->
     <div
       class="relative h-5 text-14 leading-tight text-beige"
       aria-hidden="true"

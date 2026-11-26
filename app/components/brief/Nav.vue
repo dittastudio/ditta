@@ -223,11 +223,6 @@ defineExpose({ primaryLabel, back })
     data-crumb-surface="box"
     class="relative h-(--brief-nav-height) rounded-20 corner-shape-squircle bg-black/50 text-grey outline outline-1 outline-ash backdrop-blur-sm shadow-2xl"
   >
-    <!-- The same glass, outline and corners as the Dock, so the two bars read as a pair. Crumbs from the thanks
-         screen's burger can land on top of it. Inside the <nav>, not above it: a comment beside the root makes it a
-         fragment in dev, and $el (which Shell's morph reads) would be the fragment's anchor rather than the bar. -->
-    <!-- How the bar looks while it's still the intro's Start button, Next's faint square and label, for it to fade from
-         as it grows (see useBriefMorph). The button itself is in Shell. -->
     <span
       data-brief-nav-start
       class="pointer-events-none absolute inset-0 flex items-center justify-center rounded-[inherit] corner-shape-inherit bg-white/15 pl-2 text-14 font-medium text-white opacity-0 md:text-16"
@@ -237,13 +232,10 @@ defineExpose({ primaryLabel, back })
       <IconReturn class="ml-2 size-4 fill-none" />
     </span>
 
-    <!-- Everything else, so the morph can fade it all as one -->
     <div
       data-brief-nav-contents
       class="rounded-[inherit] corner-shape-inherit"
     >
-      <!-- Progress is a hairline along the bar's top edge, full width. Clipped in its own layer, not on the nav, so the
-         error above the bar on mobile isn't cut off. -->
       <div
         v-if="brief.inProgress"
         data-brief-nav-part
@@ -265,7 +257,6 @@ defineExpose({ primaryLabel, back })
         </div>
       </div>
 
-      <!-- The step's controls, the clear confirm and settings swap in the same cell -->
       <div
         class="grid *:col-start-1 *:row-start-1 *:flex *:items-center *:gap-(--brief-nav-padding) *:p-(--brief-nav-padding)"
       >
@@ -284,7 +275,6 @@ defineExpose({ primaryLabel, back })
               Clear everything?
             </p>
 
-            <!-- Wrapped so the stagger can move it: the button's own transition is for hover and press -->
             <div class="flex">
               <UiNavButton
                 data-autofocus
@@ -307,9 +297,6 @@ defineExpose({ primaryLabel, back })
             </div>
           </div>
 
-          <!-- One control per setting, each named by its own tooltip, so more can join without the row needing labels.
-               Shortcuts only where there's room and likely a keyboard. Start again always: with nothing to clear, it
-               just goes back to the start. -->
           <div
             v-else-if="panel === 'settings'"
             data-brief-panel
@@ -338,7 +325,6 @@ defineExpose({ primaryLabel, back })
                   panel = 'clear'
                 "
               >
-                <!-- Hover winds it back a little on a spring -->
                 <IconReset
                   class="size-4.5 transition-[rotate] duration-600 ease-spring-3 only-hover:group-hover/button:-rotate-45 motion-reduce:rotate-0!"
                 />
@@ -377,7 +363,6 @@ defineExpose({ primaryLabel, back })
               {{ brief.status === 'sent' ? 'Check your inbox' : 'Brief sent' }}
             </p>
 
-            <!-- Beside the count on desktop. On mobile it sits just above the bar, so it never pushes the buttons apart. -->
             <p
               v-if="error"
               class="min-w-0 truncate pl-2 text-14 text-coral max-md:absolute max-md:bottom-full max-md:left-0 max-md:mb-2 max-md:max-w-full max-md:whitespace-normal max-md:rounded-20 max-md:corner-shape-squircle max-md:bg-black/50 max-md:outline max-md:outline-1 max-md:outline-ash max-md:backdrop-blur-sm max-md:px-4 max-md:py-2"
@@ -386,8 +371,6 @@ defineExpose({ primaryLabel, back })
               {{ error }}
             </p>
 
-            <!-- In tab order Next comes first, then Previous, then Settings: Next is what's wanted nearly every time.
-               Reversed back for display, so they still read left to right as Settings, Previous, Next. -->
             <div
               ref="group"
               data-brief-nav-part
@@ -410,7 +393,6 @@ defineExpose({ primaryLabel, back })
                 />
               </UiNavButton>
 
-              <!-- Not on the first step, where there's nowhere to go back to. Pops in on the second, as Start again does -->
               <Transition v-bind="popLate">
                 <div
                   v-if="hasPrevious"
@@ -431,8 +413,6 @@ defineExpose({ primaryLabel, back })
                 </div>
               </Transition>
 
-              <!-- There from the first step, leftmost. Wrapped so the pop can fade and blur it: the button's own
-                   transition is for hover and press. -->
               <Transition v-bind="pop">
                 <div
                   v-if="brief.inProgress"
@@ -447,7 +427,6 @@ defineExpose({ primaryLabel, back })
                       panel = 'settings'
                     "
                   >
-                    <!-- Hover turns it a tooth on a spring, which lands it looking just as it started -->
                     <IconSettings
                       ref="settingsIcon"
                       class="size-4.5 transition-[rotate] duration-600 ease-spring-3 only-hover:group-hover/button:rotate-45 motion-reduce:rotate-0!"

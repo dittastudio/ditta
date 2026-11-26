@@ -75,8 +75,6 @@ onMounted(() => pixels.init(checked.value))
 </script>
 
 <template>
-  <!-- A picked option keeps a dashed ring while focused: moving between ticked boxes, that's the only sign of where
-       focus is -->
   <label
     ref="root"
     class="group/option relative isolate cursor-pointer touch-manipulation overflow-hidden text-left select-none has-checked:has-focus-visible:outline-1 has-checked:has-focus-visible:outline-dashed has-checked:has-focus-visible:outline-offset-4 has-checked:has-focus-visible:outline-white/50"
@@ -95,8 +93,6 @@ onMounted(() => pixels.init(checked.value))
       @change="emit('pick')"
     />
 
-    <!-- The border is its own layer under the fill, so the fill covers it cell by cell. Coral while the question still
-         needs an answer, otherwise faint, half white on hover and full white while focused from the keyboard. -->
     <span
       class="pointer-events-none absolute inset-0 rounded-[inherit] border transition-colors duration-hover ease-outCubic"
       :class="
@@ -106,7 +102,6 @@ onMounted(() => pixels.init(checked.value))
       "
     />
 
-    <!-- Hidden until mounted, apart from an option that's already picked, so it renders picked before the fill takes over -->
     <span
       ref="fill"
       aria-hidden="true"
@@ -121,8 +116,6 @@ onMounted(() => pixels.init(checked.value))
       <slot />
     </span>
 
-    <!-- The picked copy, black on the fill. Icons can follow it: --icon-solid turns a full-colour logo, or the Your
-         work dot, black with it -->
     <span
       ref="ink"
       aria-hidden="true"
