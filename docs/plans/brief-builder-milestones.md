@@ -136,7 +136,7 @@ Done (26 Nov 2026). On the `brief-builder` preview, a brief sent from desktop pa
 
 ---
 
-## M5: Branded PDF
+## M5: Branded PDF ✅
 
 **Goal:** the confirmed brief arrives as an on-brand PDF.
 
@@ -145,7 +145,7 @@ Done (26 Nov 2026). On the `brief-builder` preview, a brief sent from desktop pa
 - Archive the PDF in R2 (`briefs/{id}.pdf`). Retry when generation fails. If it still fails, send the internal email without the attachment.
 - Needs the branding template as a design reference.
 
-Built (26 Nov 2026), waiting on R2:
+Built (26 Nov 2026):
 
 - No branding template exists, so the PDF is a light A4 page built from the site's own font (Saans, embedded), tokens and logo: the brief at a glance, then every step's answer with its follow-ups inside it, and the reference and page count in the footer. Template in `server/pdf/brief.ts`; `/_dev/brief-pdf` (dev only, `?long` for every answer at its limit) shows it in a browser.
 - Rendered by Browser Run's `/pdf` REST action with an account token (`NUXT_CLOUDFLARE_BROWSER_TOKEN`, "Browser Run: Edit" on this account only), not the Worker's `browser` binding, which would mean moving the compatibility date. The free plan is enough (see "Branded PDF" in `brief-builder.md`).
@@ -153,9 +153,11 @@ Built (26 Nov 2026), waiting on R2:
 - A PDF that fails never holds a brief up: the emails go without it, and the sweep keeps the PDF later (three a run).
 - Tried locally: confirm attaches it and keeps it in R2; a broken token sends the emails without it; the sweep archives the missed ones.
 
-**To launch:** enable R2 on the account and create both buckets (`npx wrangler r2 bucket create ditta-briefs --location weur`, and `ditta-briefs-preview`); until they exist a deploy fails on the binding. Apply migration 0002 to both databases. Add `NUXT_CLOUDFLARE_BROWSER_TOKEN` as a secret on production and the preview.
+Set up (26 Nov 2026): R2 enabled (free allowance: 10 GB, about 50,000 PDFs at roughly 200 KB each; beyond it R2 bills the card, so a budget alert is the guard), both buckets created in Western Europe, migration 0002 applied to both databases, and `NUXT_CLOUDFLARE_BROWSER_TOKEN` set on production, the `brief-builder` preview and Previews Base.
 
 **Done when:** a long brief paginates cleanly, and when PDF generation fails on purpose, the brief still counts as confirmed and is delivered.
+
+Done (26 Nov 2026). On the `brief-builder` preview, a confirmed brief arrived with its PDF attached to both emails. On the Worker, the logo's SVG is read from server assets as bytes rather than text, so it's decoded explicitly (`server/pdf/brief.ts`); the first preview PDF printed it as a row of numbers.
 
 ---
 
