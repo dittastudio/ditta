@@ -101,7 +101,7 @@ Done (24 Nov 2026). A real brief from ditta.studio reached hello@. Scripted post
 
 ---
 
-## M4: Verified submission
+## M4: Verified submission ✅
 
 **Goal:** only briefs with a confirmed email reach the team (the full flow in `brief-builder.md`).
 
@@ -113,7 +113,7 @@ Done (24 Nov 2026). A real brief from ditta.studio reached hello@. Scripted post
 
 **Done when:** every item in the Verification section of `brief-builder.md` passes, except the PDF items.
 
-Built (26 Nov 2026), not yet tried on a deploy:
+Built (26 Nov 2026):
 
 - D1: `ditta-briefs` for production and `ditta-briefs-preview` for branch previews (Western Europe), both bound as `DB` in `wrangler.jsonc`. Migrations in `server/database/migrations/`, applied to both. `nuxt dev` runs on Nitro's `cloudflare-dev` preset, so it gets a local D1 from `.wrangler/state`.
 - To migrate: `npx wrangler d1 migrations apply ditta-briefs --remote` (and `--local`). The preview database lives in the `previews` block, which `wrangler d1` can't find by name, so apply it with a throwaway config naming it.
@@ -132,7 +132,7 @@ Tried locally (26 Nov 2026), with Resend's test address and the team email point
 
 The prerender build passes: the home page and the work pages are prerendered, and `/brief` and `/brief/confirm` are left to the Worker.
 
-Still to do: the same on a branch preview, and a real confirm from a second device.
+Done (26 Nov 2026). On the `brief-builder` preview, a brief sent from desktop passed the real Turnstile, its link (on the preview's own host) was confirmed from a phone, the desktop tab flipped to Thank you, and both the team email and the client's copy arrived. The link, spam and failure checks above are the same code, so they weren't repeated there.
 
 ---
 
