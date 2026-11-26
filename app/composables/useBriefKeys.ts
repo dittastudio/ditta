@@ -6,7 +6,7 @@ const isMultiline = (el: HTMLElement) => el.isContentEditable || el instanceof H
 
 const isRange = (el: HTMLElement): el is HTMLInputElement => el instanceof HTMLInputElement && el.type === 'range'
 
-// Focus on nothing that takes keys: the page, or a heading or section focused in code (tabindex -1, see Shell)
+// Focus on nothing that takes keys: the page, or a heading focused in code (tabindex -1, see Shell)
 const isUnfocused = (el: HTMLElement) =>
   el === document.body ||
   (el.getAttribute('tabindex') === '-1' && !el.matches('input, textarea, select, button, a, summary'))

@@ -38,7 +38,7 @@ const arrows = {
 } as const
 
 const hoverSound = computed(() => defineSound(sound))
-const { play } = useAudio()
+const { playHover } = useAudio()
 
 const root = useTemplateRef('root')
 const width = ref(0)
@@ -72,7 +72,7 @@ onUnmounted(() => {
     ref="root"
     :style="{ '--scale-x': scaleX, '--scale-y': scaleY }"
     class="ui-button relative isolate select-none inline-flex items-center font-medium leading-none rounded-full"
-    @pointerenter="play(hoverSound)"
+    @pointerenter="playHover($event, hoverSound)"
     :class="[
       `ui-button--${size}`,
       { 'gap-[0.71em]': icon },

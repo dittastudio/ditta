@@ -46,11 +46,14 @@ const MORPH_PROPS = 'x,y,xPercent,width,height,borderRadius,outlineWidth,maxWidt
  * `morphing` is true from the moment either way starts until it's landed: the nav stays shown for it, and Start
  * stays hidden.
  */
-export function useBriefMorph(
-  nav: () => HTMLElement | null | undefined,
-  bar: () => HTMLElement | null | undefined,
-  pinnedTop: () => number | undefined,
-) {
+interface MorphElements {
+  start: () => HTMLElement | null | undefined
+  nav: () => HTMLElement | null | undefined
+  bar: () => HTMLElement | null | undefined
+}
+
+export function useBriefMorph({ start: startButton, nav, bar }: MorphElements) {
+  const brief = useBriefStore()
   const reducedMotion = useAtMedia('(prefers-reduced-motion: reduce)')
   const morphing = ref(false)
   // The journey underway, so a new one can take over from wherever it's got to
@@ -241,7 +244,44 @@ export function useBriefMorph(
     if (el) stop(el)
   })
 
-  return { morphing, begin, grow, fade, shrink }
+  // Where the bar's top sits when pinned to the bottom of the screen, rather than riding up with the brief's end
+  function pinnedTop() {
+    const slot = bar()
+    if (!slot) return
+    return window.innerHeight - Number.parseFloat(getComputedStyle(slot).bottom) - slot.offsetHeight
+  }
+
+  // Set going back to the intro: the bar shrinks once the intro has mounted and Start can be measured
+  let shrinkPending = false
+
+  // Start pressed: measured and hidden before the intro leaves, then the bar grows out of where it was
+  watch(
+    () => brief.status,
+    async (to, from) => {
+      if (from === 'intro' && to === 'draft') {
+        const button = startButton()
+        if (!button) return
+        const rect = button.getBoundingClientRect()
+        button.style.visibility = 'hidden'
+        begin()
+        await nextTick()
+        grow(rect, radiusOf(button))
+      } else if (to === 'intro') {
+        shrinkPending = true
+        void fade()
+      }
+    },
+    { flush: 'pre' },
+  )
+
+  // For the screen's enter transition: lands the bar on Start where it'll sit once the intro has come in
+  function enter(screen: Element) {
+    const button = startButton()
+    if (shrinkPending && button) shrink(settledRect(button, screen), radiusOf(button))
+    shrinkPending = false
+  }
+
+  return { morphing, fade, enter }
 }
 
 // Where an element inside a brief screen will sit once the screen's enter transition has finished. The screen comes

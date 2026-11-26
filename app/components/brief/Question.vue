@@ -11,7 +11,6 @@ const { step } = defineProps<Props>()
 const emit = defineEmits<{ submit: [] }>()
 
 const brief = useBriefStore()
-const frame = useBriefFrame()
 
 // This screen's schema: its question plus its follow-ups. A field isn't judged while it's first being typed into:
 // its errors show once it's been left with something in it (see Field), or after Next. From then on they follow
@@ -23,9 +22,9 @@ const titleId = useId()
 const title = computed(() => personaliseBrief(step.title, brief.answers))
 const followUps = computed(() => visibleFollowUps(step, brief.answers))
 
-// A follow-up going would hold its space while it fades, and the step would only glide closed after it had, by which
-// time the scroll framing the answer that closed it has set off on its own (see useBriefScroll). Lifted out of the
-// list where it stands, it fades in place while the step glides closed at once, alongside that scroll. The last one
+// A follow-up going would hold its space while it fades, and the step would only glide closed after it had, a beat
+// after the answer that closed it. Lifted out of the list where it stands, it fades in place while the step glides
+// closed at once. The last one
 // to go takes the whole list with it, or the list (hidden only once it's empty) would hold its place in the question,
 // gap and all, until the fade was done. Single-argument hooks, so Vue still runs the fade's CSS transition.
 const followUpList = useTemplateRef('followUpList')
@@ -39,6 +38,32 @@ function onFollowUpLeave(el: Element) {
 function onFollowUpBeforeEnter() {
   const list = followUpList.value?.$el as HTMLElement | undefined
   if (list) liftInPlace(list, false)
+}
+
+// A follow-up opening below the fold, or under the nav (its scroll-margin), comes into view once it's in place, title
+// and field. Measured against the visible area, which the keyboard shrinks on a phone where the window doesn't.
+const lenis = useLenis()
+const appStore = useAppStore()
+
+function reveal(el: Element) {
+  const view = window.visualViewport
+  const viewBottom = view ? view.offsetTop + view.height : window.innerHeight
+  const box = el.getBoundingClientRect()
+  const below = box.bottom - (viewBottom - Number.parseFloat(getComputedStyle(el).scrollMarginBottom))
+  if (below <= 0) return
+
+  // Never so far that its title goes up under the dock
+  lenis.value?.scrollTo(window.scrollY + Math.min(below, box.top - appStore.getDockBottom))
+}
+
+// Its field takes focus as it opens, and on a phone the keyboard may still be coming up, so it's looked at again
+// once the keyboard is up, while the field still has focus
+function onFollowUpAfterEnter(el: Element) {
+  reveal(el)
+  if (!el.contains(document.activeElement)) return
+  window.visualViewport?.addEventListener('resize', () => el.contains(document.activeElement) && reveal(el), {
+    once: true,
+  })
 }
 
 const emailSuggestion = computed(() =>
@@ -74,13 +99,11 @@ defineExpose({ validate })
 <template>
   <section
     :aria-labelledby="titleId"
-    data-brief-question
     class="relative flex flex-col gap-10 md:gap-15"
   >
     <div class="flex flex-col gap-5 md:gap-7.5">
       <h1
         :id="titleId"
-        data-brief-heading
         class="text-24 leading-tight text-balance trim-both md:text-28"
       >
         {{ title }}
@@ -152,18 +175,16 @@ defineExpose({ validate })
       tag="div"
       class="relative flex flex-col gap-6 empty:hidden md:gap-15"
       @before-enter="onFollowUpBeforeEnter"
-      @enter="(el: Element) => frame(el.querySelector('[data-brief-target]'))"
+      @after-enter="onFollowUpAfterEnter"
       @leave="onFollowUpLeave"
     >
       <div
         v-for="followUp in followUps"
         :key="followUp.key"
-        data-brief-question
-        class="flex flex-col gap-4 md:gap-7.5"
+        class="flex scroll-mb-(--brief-nav-space) flex-col gap-4 md:gap-7.5"
       >
         <p
           :id="`${titleId}-${followUp.key}`"
-          data-brief-heading
           class="text-20 leading-tight trim-both"
         >
           {{ followUp.title }}

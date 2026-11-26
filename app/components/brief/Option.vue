@@ -49,8 +49,7 @@ function onPointerenter(event: PointerEvent) {
 
 // A press on the card would focus its input the way a label does, and the browser would jump the page to bring that
 // input into view: it's the card's top-left corner, off the screen when only the bottom of the card is showing. The
-// brief frames the question itself, smoothly (see useBriefScroll), so the card focuses its input without scrolling
-// and then picks it. The input's own clicks (Space, the brief's number keys, the click below) carry on as usual.
+// card focuses its input without scrolling and then picks it. The input's own clicks (Space, the brief's number keys, the click below) carry on as usual.
 // Focus moved from code would otherwise count as keyboard focus and draw the dashed ring, which a press (any click
 // with a `detail`, its click count) shouldn't.
 const input = useTemplateRef('input')

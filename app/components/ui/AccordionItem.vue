@@ -14,7 +14,7 @@ const { heading, copy } = defineProps<Props>()
 const soundPageEnter = defineSound(drawerOpen)
 const soundPageExit = defineSound(drawerClose)
 const soundHover = defineSound(hover)
-const { play } = useAudio()
+const { play, playHover } = useAudio()
 
 function handleToggle(event: Event) {
   const details = event.target as HTMLDetailsElement
@@ -26,7 +26,7 @@ function handleToggle(event: Event) {
   <details
     class="accordion-item group w-full bg-white/7.5"
     @toggle="handleToggle"
-    @pointerenter="play(soundHover)"
+    @pointerenter="playHover($event, soundHover)"
   >
     <summary
       v-if="heading"

@@ -6,7 +6,7 @@ import { briefOptions } from '#shared/schemas/brief'
 // `intro` is the title and Start button before the first question
 export type BriefStatus = 'intro' | 'draft' | 'sent' | 'confirmed'
 
-const briefSettingDefaults = { shortcuts: true }
+const briefSettingDefaults = { shortcuts: false }
 
 // The in-progress brief. Lives only in this browser (localStorage) until it's sent.
 export const useBriefStore = defineStore(
@@ -44,6 +44,14 @@ export const useBriefStore = defineStore(
     const total = briefSteps.length
     const step = computed(() => briefSteps[stepIndex.value])
     const isSummary = computed(() => stepIndex.value === summaryIndex)
+    // What the main button does on a question: shared by its label (Nav) and its sound (Shell)
+    const advance = computed<'summary' | 'review' | 'skip' | 'next'>(() => {
+      const current = step.value
+      if (editingFromSummary.value) return 'summary'
+      if (current?.field === 'email') return 'review'
+      if (current && !isBriefStepRequired(current) && !hasBriefAnswer(answers.value[current.key])) return 'skip'
+      return 'next'
+    })
 
     function setAnswer<K extends BriefFieldKey>(key: K, value: BriefDraft[K]) {
       startedAt.value ??= Date.now()
@@ -159,6 +167,7 @@ export const useBriefStore = defineStore(
       total,
       step,
       isSummary,
+      advance,
       setAnswer,
       dropStaleChoices,
       upgradeSavedAnswers,

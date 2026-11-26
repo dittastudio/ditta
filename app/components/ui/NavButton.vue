@@ -32,7 +32,7 @@ const sizes = {
 }
 
 const soundHover = defineSound(hover)
-const { play } = useAudio()
+const { playHover } = useAudio()
 </script>
 
 <!-- The buttons on the site's bars, the Dock and the brief nav: a squircle that tints on hover and gives a little when
@@ -44,7 +44,7 @@ const { play } = useAudio()
     :class="[variants[variant], sizes[size].height, square ? sizes[size].square : 'px-4']"
     :role="pressed === undefined ? undefined : 'switch'"
     :aria-checked="pressed"
-    @pointerenter="play(soundHover)"
+    @pointerenter="playHover($event, soundHover)"
   >
     <slot />
   </button>

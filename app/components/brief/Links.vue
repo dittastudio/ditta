@@ -26,9 +26,6 @@ const {
 const model = defineModel<BriefLinkRow[] | undefined>()
 const emit = defineEmits<{ submit: [] }>()
 
-const list = useTemplateRef('list')
-const frame = useBriefFrame()
-
 // A row added by hand takes focus and comes into view; the rows already there on load leave focus to the first
 const added = ref(false)
 
@@ -53,13 +50,10 @@ function update(index: number, patch: Partial<BriefLinkRow>) {
   model.value = rows.value.map((row, i) => (i === index ? { ...row, ...patch } : row))
 }
 
-async function add() {
+function add() {
   added.value = true
   keys.value = [...keys.value, nextKey++]
   model.value = [...rows.value, { url: '', note: '' }]
-
-  await nextTick()
-  frame([...(list.value?.querySelectorAll('[data-brief-row]') ?? [])].at(-1))
 }
 
 function remove(index: number) {
@@ -94,10 +88,7 @@ function onPaste(index: number, event: ClipboardEvent) {
        as they go, so what's under them eases rather than jumping (see brief-open). The space between rows is padding
        inside the part that grows rather than the list's gap, so it opens and closes with them. Every row has it, so
        the first can go without the next one's gap snapping shut; the list's negative margin takes back the first. -->
-  <div
-    ref="list"
-    class="-mt-3 flex flex-col"
-  >
+  <div class="-mt-3 flex flex-col">
     <TransitionGroup name="brief-open">
       <div
         v-for="(row, index) in rows"
@@ -108,7 +99,6 @@ function onPaste(index: number, event: ClipboardEvent) {
           <BriefLinkInput
             :url="row.url ?? ''"
             :note="row.note ?? ''"
-            data-brief-row
             class="pt-3"
             :index="index"
             :url-errors="rowErrors[index]?.url"

@@ -53,7 +53,7 @@ const dockTextClasses: Record<DockThemes, string> = {
 const soundExpand = defineSound(expand)
 const soundCollapse = defineSound(collapse)
 const soundHover = defineSound(hover)
-const { play } = useAudio()
+const { play, playHover } = useAudio()
 
 const appStore = useAppStore()
 const { theme, navigation } = storeToRefs(appStore)
@@ -243,7 +243,7 @@ defineExpose({
                           :item="item.link"
                           prefetch-on="interaction"
                           class="block w-full transition-colors duration-hover ease-outCubic focus:outline-0"
-                          @pointerenter="play(soundHover)"
+                          @pointerenter="playHover($event, soundHover)"
                         >
                           {{ item.text }}
                         </StoryblokLink>

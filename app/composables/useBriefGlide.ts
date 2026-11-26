@@ -2,16 +2,6 @@ import type { ComponentPublicInstance } from 'vue'
 import { useEventListener, useResizeObserver } from '@vueuse/core'
 
 const GLIDE_MS = 300
-// --ease-outQuart, which the glide runs on, for a scroll to keep in step with it
-const outQuart = (t: number) => 1 - (1 - t) ** 4
-
-interface BriefGlideMotion {
-  // How far the step is still drawn from where it sits in the layout
-  offset: number
-  // What's left of the glide, for a scroll that runs alongside it
-  duration: number
-  easing: (t: number) => number
-}
 
 const offset = (el: Element) => Number.parseFloat(getComputedStyle(el).translate.split(' ')[1] ?? '') || 0
 
@@ -22,8 +12,7 @@ const offset = (el: Element) => Number.parseFloat(getComputedStyle(el).translate
  * and rises in alongside, into the space the step is moving to make. A step taller than the screen isn't centred, so it
  * doesn't move and there's nothing to glide.
  *
- * Pass `observe` as the step's ref. `motion` describes a glide underway, and `onStart` tells as one starts, so a
- * scroll can be measured against where the step is going and run alongside it (see useBriefScroll).
+ * Pass `observe` as the step's ref.
  */
 export function useBriefGlide() {
   const reducedMotion = useAtMedia('(prefers-reduced-motion: reduce)')
@@ -35,8 +24,6 @@ export function useBriefGlide() {
   let glide: Animation | undefined
   // --ease-outQuart, read once from the first step
   let easing: string | undefined
-  // Told as each glide starts, so a scroll can start in the same frame
-  const listeners = new Set<() => void>()
 
   // A function ref runs on every render of its parent, not only when the step changes, so it only measures a new step
   function observe(el: Element | ComponentPublicInstance | null) {
@@ -75,7 +62,6 @@ export function useBriefGlide() {
       duration: GLIDE_MS,
       easing: (easing ??= getComputedStyle(el).getPropertyValue('--ease-outQuart').trim() || 'ease-out'),
     })
-    for (const listener of listeners) listener()
   })
 
   // The screen's height moves a centred step without changing its size, so nothing above sees it. Measured once a
@@ -90,20 +76,5 @@ export function useBriefGlide() {
     { passive: true },
   )
 
-  function motion(): BriefGlideMotion | undefined {
-    const el = screen.value
-    if (!el || glide?.playState !== 'running') return
-    const elapsed = Number(glide.currentTime ?? 0)
-    return { offset: offset(el), duration: Math.max(GLIDE_MS - elapsed, 0) / 1000, easing: outQuart }
-  }
-
-  // Returns the way to stop listening
-  function onStart(listener: () => void) {
-    listeners.add(listener)
-    return () => listeners.delete(listener)
-  }
-
-  return { observe, motion, onStart }
+  return { observe }
 }
-
-export type BriefGlide = ReturnType<typeof useBriefGlide>

@@ -350,11 +350,16 @@
     --ui-button-medium-icon: utopia.clamp(24, 30);
     --ui-button-medium-height: calc(var(--ui-button-medium-icon) + --spacing(4));
     /* The brief's nav, the same size on every screen: how far it's pinned up from the bottom of the screen, its
-       buttons, its height (a button plus its p-2), and inset and height together, which the brief keeps clear above
-       and below its steps. */
+       buttons, the padding and gap round them (tighter on mobile), its height (a button plus that padding), and inset
+       and height together, which the brief keeps clear above and below its steps. */
     --brief-nav-inset: --spacing(7.5);
     --brief-nav-button: --spacing(11);
-    --brief-nav-height: calc(var(--brief-nav-button) + --spacing(4));
-    --brief-nav-space: calc(var(--brief-nav-inset) + var(--brief-nav-height));
+    --brief-nav-padding: --spacing(1.5);
+    --brief-nav-height: calc(var(--brief-nav-button) + var(--brief-nav-padding) * 2);
+
+    @variant md {
+      --brief-nav-padding: --spacing(2);
+    }
+    --brief-nav-space: calc((var(--brief-nav-inset) + var(--brief-nav-height)) * 1.5);
   }
 }

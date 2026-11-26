@@ -43,7 +43,7 @@ const activeColumns = computed(() => {
 <template>
   <div>
     <input
-      class="peer fixed right-5 bottom-5 size-12 cursor-pointer appearance-none rounded-full bg-white/50 shadow-lg backdrop-blur-md transition-colors duration-200 hover:bg-white/80 checked:bg-white"
+      class="peer fixed top-5 right-5 size-12 cursor-pointer appearance-none rounded-full bg-white/50 shadow-lg backdrop-blur-md transition-colors duration-200 hover:bg-white/80 checked:bg-white"
       :style="{ zIndex: zIndex + 1 }"
       type="checkbox"
       name="dev_guide"

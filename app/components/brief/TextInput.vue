@@ -64,9 +64,7 @@ function onEnter(event: KeyboardEvent) {
 }
 
 onMounted(() => {
-  // The browser only scrolls for a focus that opens the keyboard (on touch, with no field holding it open already, as
-  // Shell does across a Next). Every other time the brief frames the field itself (see useBriefScroll).
-  if (focusOnMount) input.value?.focus({ preventScroll: !isTouch() || opensKeyboard(document.activeElement) })
+  if (focusOnMount) input.value?.focus()
 })
 
 // The examples go round once and come to rest on the first, rather than looping for as long as the field is empty.
@@ -98,7 +96,7 @@ watchEffect((onCleanup) => {
       v-model="model"
       :maxlength="$attrs.type === 'url' ? BRIEF_LINK_MAX : BRIEF_TEXT_MAX"
       enterkeyhint="next"
-      class="w-full scroll-mt-[calc(var(--dock-height)+--spacing(13.5))] border px-5 text-white outline-none autofill:shadow-[inset_0_0_0_100vmax_var(--color-black)] autofill:[-webkit-text-fill-color:var(--color-white)] transition-[color,background-color,border-color,border-radius] duration-200 ease-outCubic"
+      class="w-full scroll-my-4 border px-5 text-white outline-none autofill:shadow-[inset_0_0_0_100vmax_var(--color-black)] autofill:[-webkit-text-fill-color:var(--color-white)] transition-[color,background-color,border-color,border-radius] duration-200 ease-outCubic"
       :class="[
         corners,
         outline,

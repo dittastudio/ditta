@@ -50,15 +50,10 @@ const typed = ['text', 'email', 'url', 'links'].includes(question.field)
 function onFocusout() {
   if (typed && document.hasFocus() && hasBriefAnswer(model.value)) emit('touch')
 }
-
-// Coming back to a field that's already filled in leaves it be, rather than dropping the caret into an answer that's
-// done. Focus goes to the question instead, so Enter carries on. Decided as it mounts, not as it's typed into.
-const focusFirst = focusOnMount && !hasBriefAnswer(model.value)
 </script>
 
 <template>
   <div
-    data-brief-target
     class="flex flex-col gap-(--brief-error-gap) [--brief-error-gap:--spacing(3)]"
     @focusout="onFocusout"
   >
@@ -89,7 +84,7 @@ const focusFirst = focusOnMount && !hasBriefAnswer(model.value)
       :note-placeholder="question.notePlaceholder"
       :sharing-nudge="question.sharingNudge"
       :max="briefLinkLimits[question.key as keyof typeof briefLinkLimits]"
-      :focus-on-mount="focusFirst"
+      :focus-on-mount="focusOnMount"
       @submit="emit('submit')"
     />
 
@@ -103,7 +98,7 @@ const focusFirst = focusOnMount && !hasBriefAnswer(model.value)
       :placeholder="question.placeholders?.[0] ?? question.placeholder"
       :placeholders="question.placeholders"
       :autocomplete="question.autocomplete ?? 'off'"
-      :focus-on-mount="focusFirst"
+      :focus-on-mount="focusOnMount"
       @submit="emit('submit')"
     />
 
