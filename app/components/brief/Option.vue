@@ -111,7 +111,7 @@ onMounted(() => pixels.init(checked.value))
     <span
       ref="fill"
       aria-hidden="true"
-      class="pointer-events-none invisible absolute inset-0 bg-olive group-has-checked/option:visible motion-reduce:transition-opacity motion-reduce:duration-500 motion-reduce:ease-outQuart"
+      class="pointer-events-none invisible absolute inset-0 bg-accent group-has-checked/option:visible motion-reduce:transition-opacity motion-reduce:duration-500 motion-reduce:ease-outQuart"
     />
 
     <span
@@ -123,7 +123,7 @@ onMounted(() => pixels.init(checked.value))
     </span>
 
     <!-- The picked copy, black on the fill. Icons can follow it: --icon-ring outlines what would vanish into the fill
-         (an olive dot) in the same black, and --icon-solid turns a full-colour logo black with it -->
+         (a dot in the accent) in the same black, and --icon-solid turns a full-colour logo black with it -->
     <span
       ref="ink"
       aria-hidden="true"
@@ -136,7 +136,7 @@ onMounted(() => pixels.init(checked.value))
     <span
       ref="flash"
       aria-hidden="true"
-      class="pointer-events-none invisible absolute inset-0 z-3 bg-olive-pale"
+      class="pointer-events-none invisible absolute inset-0 z-3 bg-accent-pale"
     />
   </label>
 </template>

@@ -4,9 +4,9 @@ import type { ShallowRef } from 'vue'
 interface PixelFillLayers {
   // The option, which sets the grid's size
   root: Readonly<ShallowRef<HTMLElement | null>>
-  // The olive
+  // The accent
   fill: Readonly<ShallowRef<HTMLElement | null>>
-  // Each cell's flash on its way to olive, over everything
+  // Each cell's flash on its way to the accent, over everything
   flash: Readonly<ShallowRef<HTMLElement | null>>
   // The white text, shown wherever the fill isn't
   content: Readonly<ShallowRef<HTMLElement | null>>
@@ -19,7 +19,7 @@ interface Point {
   y: number
 }
 
-// A picked option fills with olive pixels spreading out from where it was tapped. The option is a grid of cells, each
+// A picked option fills with accent pixels spreading out from where it was tapped. The option is a grid of cells, each
 // lit at its distance from that point, plus optional noise so the front is ragged, plus a little chance, on an
 // ease-outCubic front. A cell can flash pale before settling, and switches in whole steps, never fading. The text turns
 // black cell by cell: a black copy of it shows through the lit cells, the white through the rest. Unpicking dissolves
@@ -28,7 +28,7 @@ const CELL = 8 // CSS px
 const RAGGED = 0 // cells deep the front is jagged
 const SCATTER = 0.25 // share of a cell's timing that's random rather than distance
 const FILL_MS = 750
-const FLASH_MS = 0 // how long a cell flashes pale on its way to olive; 0 for none
+const FLASH_MS = 0 // how long a cell flashes pale on its way to the accent; 0 for none
 const EMPTY_RATIO = 0.5 // unpicking runs this share of the fill, without the flash
 
 const OFF = 0

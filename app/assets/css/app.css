@@ -26,7 +26,6 @@
   --color-offblack: oklch(22.21% 0 0);
   --color-offblack-glass: oklch(33.28% 0 0); /* reads as offblack at 50% over black */
   --color-olive: oklch(0.7442 0.0554 154.96);
-  --color-olive-pale: oklch(0.8848 0.0249 154.96); /* olive 45% into white: a picked option's pixels flash it */
   --color-pink: oklch(0.8221 0.1207 348.4);
   --color-putty: oklch(90.72% 0.0017 67.8);
   --color-red: oklch(64.645% 0.12902 21.246);
@@ -35,6 +34,11 @@
   --color-rage-dark: oklch(51.5% 0.211 29.23);
 
   --color-accent: var(--color-pink);
+  --color-accent-pale: color-mix(
+    in oklch,
+    var(--color-accent) 55%,
+    var(--color-white)
+  ); /* accent 45% into white: a picked option's pixels flash it */
 
   /* Breakpoints — keep in sync with app/utils/breakpoints.ts */
   --breakpoint-\*: initial;
