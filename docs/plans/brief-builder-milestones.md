@@ -137,7 +137,17 @@ Built (26 Nov 2026), not yet tried on a deploy:
 
 ---
 
-## M6: File uploads
+## M6: File uploads (deferred)
+
+**Deferred (26 Nov 2026), not in v1.** Few clients will have files at the brief stage, screen 6 already takes links, and every brief gets a reply within two working days. Uploads would be the biggest and riskiest part left (storage, file checks, a download route, cleanup, retention, the privacy policy) for an optional extra on one screen. Instead, the client's copy of their brief invites them to reply with any files attached, and replies go to hello@. Email providers scan attachments, so we don't have to.
+
+If it comes back, these are already decided, and the drop zone (UI and browser checks only) is on the `brief-uploads` branch:
+
+- PDF, DOCX, PNG and JPG only. That covers briefs, brand guidelines, screenshots and photos, and each can be checked by its first bytes. No ZIP, SVG or old Office formats.
+- Design files (`.fig`, `.psd`, `.ai`) are pointed to a link instead.
+- Upload through the Worker into an R2 binding, not with presigned URLs, so each file is checked as it arrives and nothing unchecked is stored. At 25MB a file, the Worker's request limit isn't a concern.
+
+Reconsider after launch if Plausible shows screen 6 being used, or clients keep sending files separately. The spec below is kept as the record.
 
 **Goal:** clients can attach designs or brand guidelines on screen 6, alongside the links. Settled 24 Nov 2026.
 

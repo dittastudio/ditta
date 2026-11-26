@@ -190,7 +190,7 @@ Behaviour:
 - A draft saved when `files` was a single link string loads as one row.
 - Button reads **Skip** until at least one URL is entered.
 
-File uploads (a drop zone under the links) are M6 in `brief-builder-milestones.md`.
+File uploads (a drop zone under the links) are M6 in `brief-builder-milestones.md`, deferred past launch: files come by replying to the client's copy of their brief.
 
 ---
 
