@@ -52,7 +52,7 @@ function answerHtml(row: BriefEmailRow) {
 // Email clients want tables and inline styles. Colours are plain hex here: the site's tokens don't reach an inbox.
 // `rows` is already HTML: table rows, each a cell.
 // Dark mode is declared and styled here, or Apple Mail darkens the email by its own guess, which left the button's
-// text dark on dark. The button stays black in both: Mail darkens a white background even when it's set here.
+// text dark on dark. In dark mode the button turns the site's pink.
 // Clients that ignore <style> (Gmail) keep the light email.
 const layout = (rows: string) => `<!doctype html>
 <html>
@@ -68,6 +68,9 @@ const layout = (rows: string) => `<!doctype html>
         .line { border-color: #333 !important; }
         .muted { color: #a3a3a3 !important; }
         .link { color: #fff !important; }
+        /* The site's accent. Mail darkens a white background, but leaves this one alone */
+        td.button { background: #ffa4d2 !important; }
+        a.button { color: #000 !important; }
       }
     </style>
   </head>
@@ -136,7 +139,7 @@ export function briefConfirmEmail(answers: Pick<BriefAnswers, 'name'>, link: str
   const intro = `Hi${name ? ` ${name}` : ''}, click below to send us your brief. It only reaches us once you do.`
   const after = 'The link works for 72 hours. If you didn’t fill in a brief on ditta.studio, ignore this email.'
 
-  const button = `<table role="presentation" cellpadding="0" cellspacing="0"><tr><td bgcolor="#000000" style="border-radius:999px;background:#000"><a href="${escapeHtml(link)}" style="display:inline-block;padding:14px 24px;border-radius:999px;color:#fff;font-weight:500;text-decoration:none">Confirm and send</a></td></tr></table>`
+  const button = `<table role="presentation" cellpadding="0" cellspacing="0"><tr><td class="button" bgcolor="#000000" style="border-radius:999px;background:#000"><a href="${escapeHtml(link)}" class="button" style="display:inline-block;padding:14px 24px;border-radius:999px;color:#fff;font-weight:500;text-decoration:none">Confirm and send</a></td></tr></table>`
 
   return {
     subject,
