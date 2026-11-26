@@ -20,16 +20,16 @@ interface Point {
 }
 
 // A picked option fills with olive pixels spreading out from where it was tapped. The option is a grid of cells, each
-// lit at its distance from that point, plus a little noise so the front is ragged, plus a little chance, on an
-// ease-outCubic front. A cell flashes pale before settling, and switches in whole steps, never fading. The text turns
+// lit at its distance from that point, plus optional noise so the front is ragged, plus a little chance, on an
+// ease-outCubic front. A cell can flash pale before settling, and switches in whole steps, never fading. The text turns
 // black cell by cell: a black copy of it shows through the lit cells, the white through the rest. Unpicking dissolves
 // the cells at random, quicker than the fill. Tuned in the Pixel Pick playground.
-const CELL = 6 // CSS px
-const RAGGED = 5 // cells deep the front is jagged
+const CELL = 8 // CSS px
+const RAGGED = 0 // cells deep the front is jagged
 const SCATTER = 0.25 // share of a cell's timing that's random rather than distance
-const FILL_MS = 400
-const FLASH_MS = 80
-const EMPTY_RATIO = 0.6 // unpicking runs this share of the fill, without the flash
+const FILL_MS = 750
+const FLASH_MS = 0 // how long a cell flashes pale on its way to olive; 0 for none
+const EMPTY_RATIO = 0.5 // unpicking runs this share of the fill, without the flash
 
 const OFF = 0
 const FLASH = 1
