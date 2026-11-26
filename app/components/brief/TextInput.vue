@@ -29,11 +29,11 @@ const input = useTemplateRef('input')
 const attrs = useAttrs()
 
 // The outline says how the answer stands: coral with an error, green once it's filled in and nothing's wrong with
-// it, otherwise faint, turning white on hover and while it's being typed into
+// it, otherwise faint, half white on hover and full white while it's being typed into
 const outline = computed(() => {
   if (attrs['aria-invalid']) return 'border-coral'
   if (model.value.trim()) return 'border-olive'
-  return 'border-ash only-hover:hover:border-white focus:border-white'
+  return 'border-ash only-hover:hover:not-focus:border-white/50 focus:border-white'
 })
 
 // A tick for every key typed and a tap for every one deleted, like a phone keyboard with its clicks on. Pastes,

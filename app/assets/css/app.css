@@ -12,7 +12,8 @@
   --color-white: oklch(100% 0 0);
   --color-black: oklch(0% 0 0);
   --color-blue: blue;
-  /* Reads as the Dock's white/15 outline on black, solid so it doesn't stack where two fields join */
+  /* The one resting border and outline colour (fields, options, the Dock and brief nav): solid, so it doesn't stack
+     where two fields join or shift with what's behind it */
   --color-ash: oklch(26.96% 0 0);
   --color-beige: oklch(0.8643 0.0104 32.52);
   --color-charcoal: oklch(29.72% 0 0);

@@ -19,8 +19,8 @@ const { data: weather } = useLazyFetch('/api/weather', { server: false })
 type DockThemes = Themes | 'navigationOpen'
 
 const dockBgClasses: Record<DockThemes, string> = {
-  navigationOpen: 'bg-black outline outline-1 outline-white/15',
-  dark: 'bg-black/50 outline outline-1 outline-white/15',
+  navigationOpen: 'bg-black outline outline-1 outline-ash',
+  dark: 'bg-black/50 outline outline-1 outline-ash',
   light: 'bg-grey/50 outline outline-1 outline-black/5',
   white: 'bg-grey/50 outline outline-1 outline-black/5',
   pink: 'bg-pink/50 outline outline-1 outline-black/5',

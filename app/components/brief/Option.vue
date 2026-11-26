@@ -96,13 +96,13 @@ onMounted(() => pixels.init(checked.value))
     />
 
     <!-- The border is its own layer under the fill, so the fill covers it cell by cell. Coral while the question still
-         needs an answer, otherwise faint, turning white on hover and while focused from the keyboard. -->
+         needs an answer, otherwise faint, half white on hover and full white while focused from the keyboard. -->
     <span
       class="pointer-events-none absolute inset-0 rounded-[inherit] border transition-colors duration-hover ease-outCubic"
       :class="
         invalid && !checked
           ? 'border-coral'
-          : 'border-ash only-hover:group-hover/option:border-white group-has-focus-visible/option:border-white'
+          : 'border-ash only-hover:group-hover/option:group-not-has-focus-visible/option:border-white/50 group-has-focus-visible/option:border-white'
       "
     />
 

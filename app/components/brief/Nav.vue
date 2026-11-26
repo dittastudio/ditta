@@ -206,7 +206,7 @@ defineExpose({ primaryLabel, back })
     ref="nav"
     aria-label="Brief steps"
     data-crumb-surface="box"
-    class="relative h-(--brief-nav-height) rounded-20 corner-shape-squircle bg-black/50 text-grey outline outline-1 outline-white/15 backdrop-blur-sm shadow-2xl"
+    class="relative h-(--brief-nav-height) rounded-20 corner-shape-squircle bg-black/50 text-grey outline outline-1 outline-ash backdrop-blur-sm shadow-2xl"
   >
     <!-- The same glass, outline and corners as the Dock, so the two bars read as a pair. Crumbs from the thanks
          screen's burger can land on top of it. Inside the <nav>, not above it: a comment beside the root makes it a
@@ -364,7 +364,7 @@ defineExpose({ primaryLabel, back })
             <!-- Beside the count on desktop. On mobile it sits just above the bar, so it never pushes the buttons apart. -->
             <p
               v-if="error"
-              class="min-w-0 truncate pl-2 text-14 text-coral max-md:absolute max-md:bottom-full max-md:left-0 max-md:mb-2 max-md:max-w-full max-md:whitespace-normal max-md:rounded-20 max-md:corner-shape-squircle max-md:bg-black/50 max-md:outline max-md:outline-1 max-md:outline-white/15 max-md:backdrop-blur-sm max-md:px-4 max-md:py-2"
+              class="min-w-0 truncate pl-2 text-14 text-coral max-md:absolute max-md:bottom-full max-md:left-0 max-md:mb-2 max-md:max-w-full max-md:whitespace-normal max-md:rounded-20 max-md:corner-shape-squircle max-md:bg-black/50 max-md:outline max-md:outline-1 max-md:outline-ash max-md:backdrop-blur-sm max-md:px-4 max-md:py-2"
               role="alert"
             >
               {{ error }}
