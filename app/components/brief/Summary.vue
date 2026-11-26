@@ -67,6 +67,7 @@ const rows = computed(() =>
       <BriefTurnstile
         v-model="brief.turnstileToken"
         v-model:failed="brief.turnstileFailed"
+        v-model:asking="brief.turnstileAsking"
       />
     </div>
   </section>

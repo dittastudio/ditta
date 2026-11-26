@@ -98,6 +98,15 @@ async function send() {
   if (!brief.turnstileToken && brief.turnstileFailed) {
     return fail('We couldn’t check you’re not a robot. Reload the page and try again.')
   }
+  // Cloudflare wants a click, which waiting won't give it: point at its box
+  if (!brief.turnstileToken && brief.turnstileAsking) {
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
+    document.querySelector('[data-brief-turnstile]')?.scrollIntoView({
+      block: 'center',
+      behavior: reduce ? 'auto' : 'smooth',
+    })
+    return fail('Tick the box above to show you’re not a robot')
+  }
   if (!brief.turnstileToken) return fail('Still checking you’re not a robot. Try again in a moment.')
 
   brief.sending = true

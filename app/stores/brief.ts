@@ -36,6 +36,8 @@ export const useBriefStore = defineStore(
     const turnstileToken = ref('')
     // Turnstile reported an error (a hostname it isn't set up for, a blocked script), so no token is coming
     const turnstileFailed = ref(false)
+    // Cloudflare is showing its box and waiting for a click, so no token comes until there is one
+    const turnstileAsking = ref(false)
     const honeypot = ref('')
     // Preferences from the nav's settings, rather than part of the draft, so Start again leaves them. Each setting has
     // its own control in the settings row (see BriefSettingShortcuts).
@@ -188,6 +190,7 @@ export const useBriefStore = defineStore(
       sending,
       turnstileToken,
       turnstileFailed,
+      turnstileAsking,
       honeypot,
       settings,
       previewShortcuts,
