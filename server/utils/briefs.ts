@@ -100,7 +100,11 @@ export async function ownedBrief(event: H3Event, id: string) {
     ? await useBriefDb(event).prepare('SELECT * FROM briefs WHERE id = ?').bind(id).first<BriefRow>()
     : null
 
-  if (!row || row.owner_hash !== ownerHash) throw createError({ statusCode: 404, message: 'That brief has gone' })
+  // Marked, so Check your inbox gives up only on this answer, not on any 404 (a route missing mid-deploy, a broken
+  // dev build), which would otherwise throw away a brief that's still waiting on its link
+  if (!row || row.owner_hash !== ownerHash) {
+    throw createError({ statusCode: 404, message: 'That brief has gone', data: { gone: true } })
+  }
   return row
 }
 

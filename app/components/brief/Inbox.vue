@@ -32,7 +32,9 @@ function gone() {
   emit('error', 'That link has run out. Send your brief again.')
 }
 
-const isGone = (failure: unknown) => (failure as { statusCode?: number }).statusCode === 404
+// Only the server's own answer that the brief has gone (see ownedBrief). Any other failure is a missed check, and the
+// next poll tries again.
+const isGone = (failure: unknown) => (failure as { data?: { data?: { gone?: boolean } } }).data?.data?.gone === true
 
 async function check() {
   if (!brief.briefId || brief.sending) return
