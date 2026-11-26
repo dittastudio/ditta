@@ -80,7 +80,7 @@ This is the recovery loop. Clicking it opens a panel on the Check-your-inbox scr
 [Not received your email?]
    • Check spam/promotions
    • Email shown, editable:  [ jo@acme.co      ]   ← fix a typo here
-   • [Resend]  (rate-limited, e.g. once per 60s)
+   • [Resend]  (rate-limited, e.g. once per 20s)
 ```
 
 What happens on **Resend**:

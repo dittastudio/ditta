@@ -48,8 +48,15 @@ const progress = computed(() => (brief.isSummary ? 1 : brief.stepIndex / brief.t
 
 const advanceLabels = { summary: 'Back to summary', review: 'Review', skip: 'Skip', next: 'Next' }
 
+// Check your inbox's Resend counts down the wait between sends, and can't be pressed until it's done
+const resendWait = useBriefResendWait()
+const resendWaiting = computed(() => brief.status === 'sent' && !brief.sending && resendWait.value > 0)
+
 const primaryLabel = computed(() => {
-  if (brief.status === 'sent') return brief.sending ? 'Sending…' : 'Resend'
+  if (brief.status === 'sent') {
+    if (brief.sending) return 'Sending…'
+    return resendWaiting.value ? `Resend in ${resendWait.value}s` : 'Resend'
+  }
   if (brief.status === 'confirmed') return 'Start over'
   if (brief.isSummary) return brief.sending ? 'Sending…' : 'Send'
   return advanceLabels[brief.advance]
@@ -381,7 +388,9 @@ defineExpose({ primaryLabel, back })
             >
               <UiNavButton
                 variant="primary"
+                class="tabular-nums"
                 :class="{ 'shake-once': shaking }"
+                :aria-disabled="resendWaiting || undefined"
                 :aria-keyshortcuts="enterAdvances ? 'Enter' : undefined"
                 @click="emit('primary')"
                 @animationend="shaking = false"

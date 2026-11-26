@@ -36,11 +36,12 @@ const { playHover } = useAudio()
 </script>
 
 <!-- The buttons on the site's bars, the Dock and the brief nav: a squircle that tints on hover and gives a little when
-     pressed. A named group, so what's inside can react to hovering it (group-hover/button). -->
+     pressed. aria-disabled dims it and stops the pointer, but leaves it focusable, so focus isn't lost while it waits;
+     whatever it runs checks for itself. A named group, so what's inside can react to hovering it (group-hover/button). -->
 <template>
   <button
     type="button"
-    class="group/button flex shrink-0 items-center justify-center rounded-16 corner-shape-squircle text-14 font-medium whitespace-nowrap transition-[background-color,color,scale] duration-hover ease-outCubic active:scale-96 md:text-16"
+    class="group/button flex shrink-0 items-center justify-center rounded-16 corner-shape-squircle text-14 font-medium whitespace-nowrap transition-[background-color,color,scale] duration-hover ease-outCubic active:scale-96 aria-disabled:pointer-events-none aria-disabled:opacity-40 md:text-16"
     :class="[variants[variant], sizes[size].height, square ? sizes[size].square : 'px-4']"
     :role="pressed === undefined ? undefined : 'switch'"
     :aria-checked="pressed"
