@@ -28,11 +28,10 @@ const slots = defineSlots<{ end?: () => unknown }>()
 const input = useTemplateRef('input')
 const attrs = useAttrs()
 
-// The outline says how the answer stands: coral with an error, green once it's filled in and nothing's wrong with
-// it, otherwise faint, half white on hover and full white while it's being typed into
+// The outline turns coral with an error, otherwise it's faint, half white on hover and full white while it's being
+// typed into
 const outline = computed(() => {
   if (attrs['aria-invalid']) return 'border-coral'
-  if (model.value.trim()) return 'border-olive'
   return 'border-ash only-hover:hover:not-focus:border-white/50 focus:border-white'
 })
 
