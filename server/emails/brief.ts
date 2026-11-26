@@ -1,31 +1,35 @@
 // The brief builder's emails, as HTML with a plain-text twin: the link that confirms a brief, the team's copy of a
 // confirmed brief, and the client's.
 import type { BriefAnswers } from '#shared/schemas/brief'
-import type { BriefLinkRow } from '#shared/utils/brief'
+import type { BriefLinkRow, BriefQuestion } from '#shared/utils/brief'
 
-interface BriefEmailRow {
+export interface BriefEmailRow {
   title: string
   answer: string | null
   // Link rows, kept apart so the HTML can make each one clickable
   links?: BriefLinkRow[]
 }
 
-const escapeHtml = (value: string) =>
+export const escapeHtml = (value: string) =>
   value.replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]!)
 
 const isLinkRows = (value: unknown): value is BriefLinkRow[] =>
   Array.isArray(value) && value.every((item) => typeof item === 'object' && item !== null && 'url' in item)
 
+// One question and its answer, formatted. Shared with the PDF.
+export function rowFor(question: BriefQuestion, answers: BriefAnswers): BriefEmailRow {
+  const value: unknown = answers[question.key]
+  return {
+    title: personaliseBrief(question.title, answers),
+    answer: formatBriefAnswer(value),
+    links: isLinkRows(value) && value.length ? value : undefined,
+  }
+}
+
+// Every question shown to the client, in the summary's order
 function rowsFor(answers: BriefAnswers): BriefEmailRow[] {
   return briefSteps.flatMap((step) =>
-    [step, ...visibleFollowUps(step, answers)].map((question) => {
-      const value: unknown = answers[question.key]
-      return {
-        title: personaliseBrief(question.title, answers),
-        answer: formatBriefAnswer(value),
-        links: isLinkRows(value) && value.length ? value : undefined,
-      }
-    }),
+    [step, ...visibleFollowUps(step, answers)].map((question) => rowFor(question, answers)),
   )
 }
 

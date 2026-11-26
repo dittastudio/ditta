@@ -109,6 +109,12 @@ export default defineNuxtConfig({
       wasm: true, // ...for Cloudflare Workers
       tasks: true,
     },
+    // Bundled into the server for the brief PDF (server/pdf/brief.ts), which embeds the brand font and logo rather
+    // than fetching them, so it renders the same wherever the brief was sent from (localhost included)
+    serverAssets: [
+      { baseName: 'fonts', dir: '../public/fonts' },
+      { baseName: 'icons', dir: '../app/assets/icons' },
+    ],
     // Cron triggers on the Worker (server/tasks). Each cron also has to be in wrangler.jsonc's triggers.
     scheduledTasks: {
       '0 * * * *': ['brief:sweep'],
@@ -163,6 +169,13 @@ export default defineNuxtConfig({
     brief: {
       from: 'ditta briefs <onboarding@resend.dev>',
       to: 'delivered@resend.dev',
+    },
+    // Browser Run, which renders the confirmed brief's PDF (server/utils/briefPdf.ts). The account ID is set in
+    // wrangler.jsonc; NUXT_CLOUDFLARE_BROWSER_TOKEN is a Worker secret ("Browser Run: Edit" on this account only).
+    // Without them the emails go without the PDF.
+    cloudflare: {
+      accountId: '',
+      browserToken: '',
     },
     // The Storyblok token lives in the module's `public.storyblok.accessToken`. On Cloudflare, runtime vars override
     // both at request time: NUXT_PUBLIC_STORYBLOK_ACCESS_TOKEN (the previews' secret) and NUXT_PUBLIC_STORYBLOK_VERSION.

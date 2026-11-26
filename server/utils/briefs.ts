@@ -39,6 +39,8 @@ export interface BriefRow {
   last_sent_at: number
   confirmed_at: number | null
   notified_at: number | null
+  // The PDF's key in R2, once it's been rendered and kept (server/utils/briefPdf.ts)
+  pdf_key: string | null
   created_at: number
   updated_at: number
 }
@@ -123,11 +125,26 @@ export async function sendBriefLink(event: H3Event, row: Pick<BriefRow, 'name' |
 export async function notifyBrief(db: D1Database, row: BriefRow, event?: H3Event) {
   const answers = parseBriefAnswers(row)
   const config = useRuntimeConfig(event)
+  // Both emails carry the PDF, or neither does if it couldn't be made
+  const pdf = await briefPdf(db, row, event)
+  const attachments = pdf ? [pdf] : undefined
 
   await sendEmails(event, [
-    { to: config.brief.to, replyTo: row.email, ...briefTeamEmail(answers) },
+    {
+      to: config.brief.to,
+      replyTo: row.email,
+      attachments,
+      idempotencyKey: `brief-${row.id}-team`,
+      ...briefTeamEmail(answers),
+    },
     // Replies (with files, as the copy invites) go to the team rather than the briefs@ sender
-    { to: row.email, replyTo: config.brief.to, ...briefCopyEmail(answers) },
+    {
+      to: row.email,
+      replyTo: config.brief.to,
+      attachments,
+      idempotencyKey: `brief-${row.id}-copy`,
+      ...briefCopyEmail(answers),
+    },
   ])
 
   await db.prepare('UPDATE briefs SET notified_at = ? WHERE id = ?').bind(Date.now(), row.id).run()

@@ -20,6 +20,8 @@
       "migrations_dir": "server/database/migrations",
     },
   ],
+  // Confirmed briefs' PDFs, as briefs/{id}.pdf (server/utils/briefPdf.ts)
+  "r2_buckets": [{ "binding": "BRIEF_PDFS", "bucket_name": "ditta-briefs" }],
   // Hourly: runs the Nitro task in server/tasks/brief/sweep.ts, which nuxt.config.ts's scheduledTasks ties to this
   // same cron. Nitro runs the tasks but doesn't write the trigger, so it's here. Production only.
   "triggers": { "crons": ["0 * * * *"] },
@@ -35,6 +37,8 @@
     "NUXT_BRIEF_TO": "hello@ditta.studio",
     // Turnstile's site key is public. Read at runtime, since /brief is rendered by the Worker, not prerendered.
     "NUXT_PUBLIC_TURNSTILE_SITE_KEY": "0x4AAAAAAGQ0b2civA5o_kxC",
+    // Browser Run renders the brief PDF through the account's API. Not secret; the token is.
+    "NUXT_CLOUDFLARE_ACCOUNT_ID": "b2b14f73295e95bc6d2dad0a36c22414",
   },
   // Worker Previews (non-production branches): SPA, draft content + Visual Editor. Nothing is inherited from the top
   // level, so vars are repeated here. Set the preview token in the dashboard (Settings → Runtime variables and
@@ -45,6 +49,7 @@
       "NUXT_BRIEF_FROM": "ditta briefs <briefs@ditta.studio>",
       "NUXT_BRIEF_TO": "hello@ditta.studio",
       "NUXT_PUBLIC_TURNSTILE_SITE_KEY": "0x4AAAAAAGQ0b2civA5o_kxC",
+      "NUXT_CLOUDFLARE_ACCOUNT_ID": "b2b14f73295e95bc6d2dad0a36c22414",
     },
     // Their own database, so test briefs never sit among real ones
     "d1_databases": [
@@ -55,5 +60,7 @@
         "migrations_dir": "server/database/migrations",
       },
     ],
+    // And their own bucket for PDFs
+    "r2_buckets": [{ "binding": "BRIEF_PDFS", "bucket_name": "ditta-briefs-preview" }],
   },
 }
