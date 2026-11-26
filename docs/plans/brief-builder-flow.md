@@ -117,12 +117,12 @@ _Hint:_ Give us your best elevator pitch 🛗
 **What are the main objectives for this work?** · required
 _Hint:_ Pick what matters most.
 
-|          |                                                                                                                                         |
-| -------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| Field    | Multi-select cards                                                                                                                      |
-| Options  | Showcase work · Improve SEO/GEO · Increase enquiries · Take bookings · Sell online · Explain what we do · Bespoke functionality · Other |
-| Key / id | `objectives` / `q3`                                                                                                                     |
-| Answer   | Array, at least 1                                                                                                                       |
+|          |                                                                                                                                                                                                            |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Field    | Multi-select cards                                                                                                                                                                                         |
+| Options  | Improve SEO/GEO · AI integration · Drive traffic · Increase sales · Sell online · Show off our best work · Explain what we do · Update the site ourselves · Automate admin · Bespoke functionality · Other |
+| Key / id | `objectives` / `q3`                                                                                                                                                                                        |
+| Answer   | Array, at least 1                                                                                                                                                                                          |
 
 **Follow-ups** (both can be open together):
 

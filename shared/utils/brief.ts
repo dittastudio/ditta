@@ -46,10 +46,10 @@ const briefSteps: BriefStep[] = [
     multiple: true,
     options: briefOptions.services,
     descriptions: {
-      'Web Design': 'Planning, organising, and building the visual and interactive layers of a website.',
-      'Web Build': 'Planning, organising, and building the website based on a design.',
-      'Existing project': "You have something already that you'd like us to look at.",
-      Other: 'Anything else that might not be covered here.',
+      'Web Design': 'Planning, structuring and designing how your website looks and works.',
+      'Web Build': 'Developing, testing and launching your website from a finished design.',
+      'Existing project': 'You have a site and want help improving it.',
+      Other: "Something that isn't listed here.",
     },
   },
   {
@@ -68,7 +68,7 @@ const briefSteps: BriefStep[] = [
   {
     key: 'objectives',
     title: 'What are the main objectives for this work?',
-    hint: 'Pick what matters most.',
+    hint: 'Tick every one that fits.',
     field: 'cards',
     multiple: true,
     options: briefOptions.objectives,
@@ -105,7 +105,7 @@ const briefSteps: BriefStep[] = [
   {
     key: 'contentStage',
     title: 'At what stage is your content?',
-    hint: 'Things like your about text, service descriptions and photos.',
+    hint: 'Things like product details, your about text, service descriptions and imagery.',
     field: 'cards',
     options: briefOptions.contentStage,
   },

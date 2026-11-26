@@ -13,12 +13,15 @@ const TOO_LONG = `Keep it under ${BRIEF_TEXT_MAX} characters`
 export const briefOptions = {
   services: ['Web Design', 'Web Build', 'Existing project', 'Other'],
   objectives: [
-    'Showcase work',
     'Improve SEO/GEO',
-    'Increase enquiries',
-    'Take bookings',
+    'AI integration',
+    'Drive traffic',
+    'Increase sales',
     'Sell online',
+    'Show off our best work',
     'Explain what we do',
+    'Update the site ourselves',
+    'Automate admin',
     'Bespoke functionality',
     'Other',
   ],
