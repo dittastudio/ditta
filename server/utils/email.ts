@@ -14,13 +14,16 @@ export interface OutgoingEmail {
 }
 
 // One email, or several in one batch call. Resend's batch call takes no attachments, so emails with one go one at a
-// time. In `nuxt dev` without NUXT_RESEND_API_KEY they're logged, not sent.
+// time. In `nuxt dev` without NUXT_RESEND_API_KEY they're logged and kept in the dev outbox (for the e2e tests), not
+// sent.
 export async function sendEmails(event: H3Event | undefined, emails: OutgoingEmail[]) {
   const config = useRuntimeConfig(event)
 
   if (!config.resendApiKey) {
     if (!import.meta.dev) throw createError({ statusCode: 500, message: 'The brief isn’t set up to send yet' })
     for (const email of emails) {
+      const { to, subject, html, text } = email
+      devOutbox.push({ to, subject, html, text, attachments: email.attachments?.map(({ filename }) => filename) ?? [] })
       const attached = email.attachments?.map(({ filename }) => filename).join(', ')
       console.info(
         `[brief] No NUXT_RESEND_API_KEY, so not sent to ${email.to}${attached ? ` (with ${attached})` : ''}:\n${email.subject}\n\n${email.text}\n`,
