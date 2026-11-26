@@ -121,7 +121,7 @@ If they go **back** to edit answers while pending, the next Submit updates the s
 
 ## Screens
 
-1. **Brief steps**: one topic per step, progress indicator, Back/Next, local autosave. Screen 6 takes up to 3 links; file uploads are M6.
+1. **Brief steps**: one topic per step, progress indicator, Back/Next, local autosave. Screen 6 takes up to 3 links; no file uploads.
 2. **Your details** (steps 9–12): name, website, source and email (with a light "did you mean gmail.com?" check and a consent line linking to the privacy policy). Honeypot field on the email step.
 3. **Summary**: every answer with Edit links, then **Send brief**, which is the Submit. Putting it after the details means the email is on screen to check before anything is sent.
 4. **Check your inbox**: shows the address, "Not received your email?" panel, auto-advances on confirm.

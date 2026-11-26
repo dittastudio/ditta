@@ -190,7 +190,7 @@ Behaviour:
 - A draft saved when `files` was a single link string loads as one row.
 - Button reads **Skip** until at least one URL is entered.
 
-File uploads (a drop zone under the links) are M6 in `brief-builder-milestones.md`, deferred past launch: files come by replying to the client's copy of their brief.
+There are no file uploads: files come by replying to the client's copy of their brief.
 
 ---
 
@@ -346,4 +346,4 @@ Options marked "Not sure" or "No idea" (none at present) get a dashed border so 
 
 ## Things still to settle
 
-Nothing at present. Settled in M0 (see `brief-builder-milestones.md`): order of contact screens and summary, screen 6 as links (uploads in M6), consent wording, plain numbering, the small-phone exception for screen 3, the repo as source of truth, the two-working-day promise, the budget hint figures, and no "not sure" tips on the summary for v1.
+Nothing at present. Settled in M0 (see `brief-builder-milestones.md`): order of contact screens and summary, screen 6 as links (no uploads), consent wording, plain numbering, the small-phone exception for screen 3, the repo as source of truth, the two-working-day promise, the budget hint figures, and no "not sure" tips on the summary for v1.

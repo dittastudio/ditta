@@ -13,7 +13,7 @@ Each milestone should leave the site deployable. The builder stays unlinked and 
 Decided (18 Nov 2026), and written into both docs:
 
 - **Order:** the contact screens (9–12) come **before** the Summary, and **Send brief** on the Summary is the Submit.
-- **Uploads:** screen 6 takes **links only** for v1 (up to 3, like screen 5, with a sharing reminder for Drive, Dropbox, Figma and the like). File uploads move to M6. (Links revised 24 Nov 2026.)
+- **Uploads:** screen 6 takes **links only** for v1 (up to 3, like screen 5, with a sharing reminder for Drive, Dropbox, Figma and the like). No file uploads: clients reply to their copy of the brief with any files. (Links revised 24 Nov 2026; uploads dropped 26 Nov 2026.)
 - **Budget bands:** Under £5k · £5k–£10k · £10k–£20k · £20k–£40k · £40k+ stay. The slider **starts with nothing chosen** and needs a drag, tap or arrow key before Next works.
 - **Consent:** a line on screen 12, no checkbox: "We'll only use this to reply about your project. See our privacy policy." The `/privacy-policy` page doesn't exist yet (see M7).
 - **Numbering:** plain "9 of 12", no a–d lettering.
@@ -134,55 +134,6 @@ Built (26 Nov 2026), not yet tried on a deploy:
 - Needs the branding template as a design reference.
 
 **Done when:** a long brief paginates cleanly, and when PDF generation fails on purpose, the brief still counts as confirmed and is delivered.
-
----
-
-## M6: File uploads (deferred)
-
-**Deferred (26 Nov 2026), not in v1.** Few clients will have files at the brief stage, screen 6 already takes links, and every brief gets a reply within two working days. Uploads would be the biggest and riskiest part left (storage, file checks, a download route, cleanup, retention, the privacy policy) for an optional extra on one screen. Instead, the client's copy of their brief invites them to reply with any files attached, and replies go to hello@. Email providers scan attachments, so we don't have to.
-
-If it comes back, these are already decided, and the drop zone (UI and browser checks only) is on the `brief-uploads` branch:
-
-- PDF, DOCX, PNG and JPG only. That covers briefs, brand guidelines, screenshots and photos, and each can be checked by its first bytes. No ZIP, SVG or old Office formats.
-- Design files (`.fig`, `.psd`, `.ai`) are pointed to a link instead.
-- Upload through the Worker into an R2 binding, not with presigned URLs, so each file is checked as it arrives and nothing unchecked is stored. At 25MB a file, the Worker's request limit isn't a concern.
-
-Reconsider after launch if Plausible shows screen 6 being used, or clients keep sending files separately. The spec below is kept as the record.
-
-**Goal:** clients can attach designs or brand guidelines on screen 6, alongside the links. Settled 24 Nov 2026.
-
-**UI**
-
-- A dashed drop zone under the link rows: the inputs' border colour and radius, "Drop files here or browse" with the limits underneath. On touch it reads "Choose files" (no drag and drop there).
-- It turns olive, like a selected card, while files are dragged over the page.
-- A row per file under the zone: name, size, progress, and a remove (×) button.
-- Skip until there's a link or a file. The summary lists the file names after the links.
-
-**Limits**
-
-- Up to 5 files, 25MB each. PDF, images (PNG, JPG, WebP, SVG, GIF), Word, Excel, PowerPoint, Keynote, Pages, ZIP.
-- Design-tool files (`.fig`, `.psd`, `.ai`) are refused, with copy suggesting a zip or a link.
-- Checked in the browser for instant feedback, and again on the server.
-
-**Upload**
-
-- Each file uploads as soon as it's dropped, straight to R2 with a presigned URL from a Worker route, never through the Worker.
-- Files sit under an upload id kept in localStorage with the answers, so a refresh keeps them. Submit attaches them to the brief.
-- Uploads not attached to a confirmed brief are deleted after 14 days, with the `pending` records.
-
-**Security and abuse**
-
-- Presigned URLs only for an upload id under its limits, rate-limited per IP (e.g. 20 an hour), behind the M3 honeypot.
-- When an upload finishes, the server reads the file's first bytes and deletes it if its real type doesn't match.
-- Always served with `Content-Disposition: attachment`, never inline, so an SVG or HTML file can't run on the site.
-- No virus scanning: R2 has none, and only the team opens the files.
-
-**Delivery and retention**
-
-- The team email and the PDF list each file as a signed, non-expiring link to a Worker route that streams it from R2. Never email attachments.
-- Files from confirmed briefs are kept 12 months, then deleted. The privacy policy (M7) says so.
-
-**Done when:** five 25MB files go through end to end and survive a refresh mid-brief; an oversized or wrong-type file is refused with a clear message; a renamed `.html` posing as a PDF is deleted after upload.
 
 ---
 
