@@ -122,7 +122,8 @@ export async function notifyBrief(db: D1Database, row: BriefRow, event?: H3Event
 
   await sendEmails(event, [
     { to: config.brief.to, replyTo: row.email, ...briefTeamEmail(answers) },
-    { to: row.email, ...briefCopyEmail(answers) },
+    // Replies (with files, as the copy invites) go to the team rather than the briefs@ sender
+    { to: row.email, replyTo: config.brief.to, ...briefCopyEmail(answers) },
   ])
 
   await db.prepare('UPDATE briefs SET notified_at = ? WHERE id = ?').bind(Date.now(), row.id).run()

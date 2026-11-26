@@ -93,7 +93,7 @@ export function briefCopyEmail(answers: BriefAnswers) {
   const rows = rowsFor(answers)
   const name = briefFirstName(answers)
   const subject = 'We’ve got your brief'
-  const intro = `Thanks${name ? `, ${name}` : ''}. Your brief has reached us, and we’ll reply within two working days to book a short call. Here’s a copy of what you sent.`
+  const intro = `Thanks${name ? `, ${name}` : ''}. Your brief has reached us, and we’ll reply within two working days to book a short call. Here’s a copy of what you sent. Got files to share, like brand guidelines or an old brief? Reply to this email with them attached.`
   const footer = 'ditta · hello@ditta.studio'
 
   return {
