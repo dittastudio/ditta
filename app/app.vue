@@ -11,8 +11,9 @@ const router = useRouter()
 const isBrief = computed(() => route.path.startsWith('/brief'))
 const appStore = useAppStore()
 
-// Vue renders the Dock and Tagline before the page's async setup resolves, so the page can't set this in time
-if (import.meta.server) {
+// Vue renders the Dock and Tagline before the page's async setup resolves, so the page can't set this in time. Only
+// for Storyblok's pages ([...slug].vue): a page written in code, like /privacy-policy, has no story to look up.
+if (import.meta.server && route.name === 'slug') {
   const page = await useStory<Block<'page'> | Block<'project'>>(
     route.path,
     { resolve_relations: storyRelations },

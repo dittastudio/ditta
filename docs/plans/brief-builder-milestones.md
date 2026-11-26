@@ -183,3 +183,11 @@ End-to-end tests (Playwright) cover the flow M4 was checked by hand against: `np
 - Team process: who answers a brief, and how they keep to "within two working days".
 
 **Done when:** it's live, linked from the site, and the funnel shows up in Plausible.
+
+In progress (26 Nov 2026):
+
+- Plausible: `Brief: Started`, `Brief: Step` (props `step` and `number`), `Brief: Review`, `Brief: Sent`, and `Brief: Confirmed` from the confirm page (`app/composables/useBriefTracking.ts`). No answers are sent; an e2e test (`tests/e2e/plausible.spec.ts`) checks the sequence. **To do in Plausible:** add the five as custom event goals and a funnel Started → Review → Sent → Confirmed; break `Brief: Step` down by `number` to see where people stop.
+- `/brief` is indexed. `/brief/confirm` stays noindex, as header and meta: it's only reached from an email.
+- The menu's main button is now "Start a brief" (it was a "Talk to us" mailto). Any Storyblok link can point at `/brief` as a URL link.
+- `/privacy-policy` is a draft page in code (`app/pages/privacy-policy.vue`). **Before launch:** fill in the [bracketed] parts (legal name and address, how long confirmed briefs are kept, Resend's transfer safeguard) and have it checked. `app.vue` now looks up a Storyblok story only for the catch-all's pages, so code pages don't 404.
+- Still open: the team process (who answers a brief, keeping to two working days).
