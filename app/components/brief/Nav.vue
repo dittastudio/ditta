@@ -50,13 +50,13 @@ const advanceLabels = { summary: 'Back to summary', review: 'Review', skip: 'Ski
 const primaryLabel = computed(() => {
   if (brief.status === 'sent') return 'Simulate confirm'
   if (brief.status === 'confirmed') return 'Start over'
-  if (brief.isSummary) return brief.sending ? 'Sending…' : 'Send brief'
+  if (brief.isSummary) return brief.sending ? 'Sending…' : 'Send'
   return advanceLabels[brief.advance]
 })
 
-// Enter moves on from any question (see useBriefKeys), announced to assistive tech on the primary button. Not on the
-// review, where sending takes a deliberate press.
-const enterAdvances = computed(() => brief.inProgress && !brief.isSummary)
+// Enter moves on from any question and sends from the review, and Shift+Enter goes back (see useBriefKeys), announced
+// to assistive tech on the buttons and shown as their keys
+const enterAdvances = computed(() => brief.inProgress)
 
 // Back goes through the browser's history, so the browser's own Back does the same (see useBriefHistory)
 const briefHistory = useBriefHistory(() => play(soundPageExit))
@@ -314,6 +314,7 @@ defineExpose({ primaryLabel, back })
                 data-autofocus
                 highlight
               />
+              <ActionAccentCycle />
               <UiNavButton
                 square
                 aria-label="Start again"

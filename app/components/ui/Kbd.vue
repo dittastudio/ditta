@@ -10,12 +10,16 @@
 // Never on touch, where there's no keyboard to use it with.
 // `tone="fixed"` is for keys inside buttons (the nav's): its own colours rather than the text's, so keys on buttons of
 // different colours (Next, Back) read as the same size, and a larger glyph to suit.
+// `preview: false` keeps the key hidden for a preview, showing it only once the setting is on. For keys that can't be
+// seen while the setting is being hovered (the nav's, which leave as the settings row comes in) yet would still take
+// their room as they go and shove the buttons beside them.
 
 interface Props {
   tone?: 'current' | 'fixed'
+  preview?: boolean
 }
 
-const { tone = 'current' } = defineProps<Props>()
+const { tone = 'current', preview = true } = defineProps<Props>()
 
 const tones = {
   current: 'bg-current/8 text-10 inset-ring-current/15',
@@ -33,7 +37,7 @@ const visibility =
 
 <template>
   <kbd
-    :class="visibility"
+    :class="[visibility, { 'in-data-[shortcuts=preview]:hidden!': !preview }]"
     aria-hidden="true"
   >
     <span

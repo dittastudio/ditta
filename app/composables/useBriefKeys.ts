@@ -31,8 +31,10 @@ const isTyping = (el: HTMLElement) =>
   (el instanceof HTMLInputElement && !['radio', 'checkbox', 'range'].includes(el.type))
 
 // The brief's own keys, on top of what each field does itself:
-// - Enter starts the brief from its intro, and moves on from any question, as it already does from a text field (which handles its own Enter). Not from a
-//   button or link, where Enter presses that instead, and not on the review, where sending takes a deliberate press.
+// - Enter starts the brief from its intro, turning the shortcuts setting on, moves on from any question, as it already
+//   does from a text field (which handles its own Enter), and sends from the review. Not from a button or link, where
+//   Enter presses that instead. The review only takes it once it has been up a moment, so a quick double Enter from
+//   the last question can't send a brief nobody has looked over.
 // - Shift+Enter goes back a step, its reverse. From a single-line field too (which leaves Shift+Enter alone), but not
 //   from one that takes new lines.
 // - 1–9 pick (or tick) the matching card or chip, and focus it, so Space and the arrows carry on from there. The group
@@ -70,6 +72,17 @@ export function useBriefKeys(
     for (const code of pressed.keys()) release(code)
   }
 
+  // When the review last came up, for its pause before Enter sends
+  const reviewGuard = 600
+  let reviewAt = 0
+  watch(
+    () => brief.isSummary,
+    (now) => {
+      if (now) reviewAt = performance.now()
+    },
+    { immediate: true },
+  )
+
   useEventListener(document, 'keyup', (event) => release(event.code))
   useEventListener(window, 'blur', releaseAll)
 
@@ -77,7 +90,7 @@ export function useBriefKeys(
     if (event.defaultPrevented || event.repeat || event.isComposing || event.metaKey || event.ctrlKey || event.altKey)
       return
     // The intro takes Enter for Start
-    if (!brief.inProgress || brief.isSummary || !root.value) return
+    if (!brief.inProgress || !root.value) return
 
     const target = event.target as HTMLElement
     // Only from the brief itself, or from nothing in particular
@@ -110,8 +123,12 @@ export function useBriefKeys(
     }
 
     if (event.key === 'Enter') {
+      // Starting with Enter says they'd rather use the keyboard, so the shortcuts setting comes on. Before the button
+      // check, so pressing a focused Start (which clicks it natively) counts too. Only on, never off.
+      if (brief.status === 'intro') brief.settings.shortcuts = true
       if (target.closest('a, button, summary')) return
       event.preventDefault()
+      if (brief.isSummary && performance.now() - reviewAt < reviewGuard) return
       press(event.code, root.value.querySelector('[data-brief-enter-key]'))
       return primary()
     }
