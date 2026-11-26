@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { ComponentPublicInstance } from 'vue'
 import { onClickOutside, onKeyStroke, useResizeObserver } from '@vueuse/core'
 import { gsap } from 'gsap'
 import { defineSound } from '@web-kits/audio'
@@ -100,7 +101,7 @@ onClickOutside(nav, () => (panel.value = null))
 
 // Clearing winds the settings cog back a full turn, where Start again was pressed from. On the cog's transform, so it
 // stacks with its hover turn (the `rotate` property), and a full turn lands it looking just as it started.
-const settingsIcon = useTemplateRef('settingsIcon')
+const settingsIcon = useTemplateRef<ComponentPublicInstance>('settingsIcon')
 
 function clear() {
   panel.value = null

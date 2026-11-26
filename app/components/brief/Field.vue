@@ -24,7 +24,9 @@ const model = defineModel<unknown>()
 // `touch` once a typed answer has been left, so its errors can start to show (see Question)
 const emit = defineEmits<{ submit: []; touch: [] }>()
 
-// Logos for option cards, kept here rather than with the questions in #shared, which the server reads too
+// Logos for option cards, kept here rather than with the questions in #shared, which the server reads too. The cast is
+// because vue-tsc types an `.svg` import by vite/client's declaration (a URL string), not the component one in
+// app/types, though vite-svg-loader makes it a component at build time.
 const optionIcons: Partial<Record<BriefFieldKey, Partial<Record<string, Component>>>> = {
   source: {
     Google: IconGoogle,
@@ -34,7 +36,7 @@ const optionIcons: Partial<Record<BriefFieldKey, Partial<Record<string, Componen
     Claude: IconClaude,
     Referral: IconReferral,
     'Your work': BriefDot,
-  },
+  } as unknown as Partial<Record<string, Component>>,
 }
 
 // Shows what Regle reports; never validates anything itself

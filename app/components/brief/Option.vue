@@ -57,7 +57,8 @@ const input = useTemplateRef('input')
 function onClick(event: MouseEvent) {
   if (!input.value || event.target === input.value) return
   event.preventDefault()
-  input.value.focus({ preventScroll: true, focusVisible: event.detail === 0 })
+  // `focusVisible` is newer than TypeScript's DOM types
+  input.value.focus({ preventScroll: true, focusVisible: event.detail === 0 } as FocusOptions)
   input.value.click()
 }
 

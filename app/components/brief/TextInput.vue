@@ -19,7 +19,7 @@ interface Props {
 }
 
 const { focusOnMount = false, small = false, placeholders = [], join } = defineProps<Props>()
-const corners = computed(() => ({ top: 'rounded-t-10', bottom: 'rounded-b-10' })[join ?? ''] ?? 'rounded-10')
+const corners = computed(() => (join ? { top: 'rounded-t-10', bottom: 'rounded-b-10' }[join] : 'rounded-10'))
 const model = defineModel<string>({ default: '' })
 const emit = defineEmits<{ submit: [] }>()
 // A control inside the field on the right, such as a row's remove button. The field leaves room for it.
