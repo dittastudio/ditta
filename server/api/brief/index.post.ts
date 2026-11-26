@@ -52,13 +52,24 @@ export default defineEventHandler(async (event) => {
   const answers = JSON.stringify(body.answers)
 
   // Only this browser's own brief, and only while it's pending: a confirmed brief is locked, so an edit after that
-  // is a new brief
-  const existing = body.id
+  // is a new brief. So is one already sent as many times as it can be (BRIEF_MAX_SENDS), which is what its "Start a
+  // new brief" asks for.
+  const pending = body.id
     ? await db
-        .prepare("SELECT id FROM briefs WHERE id = ? AND owner_hash = ? AND status = 'pending'")
+        .prepare(
+          "SELECT id, send_count, last_sent_at FROM briefs WHERE id = ? AND owner_hash = ? AND status = 'pending'",
+        )
         .bind(body.id, ownerHash)
-        .first<{ id: string }>()
+        .first<Pick<BriefRow, 'id' | 'send_count' | 'last_sent_at'>>()
     : null
+  const existing = pending && pending.send_count < BRIEF_MAX_SENDS ? pending : null
+
+  // Sent again after an edit, it waits as long as Resend does, so Back and Send isn't a way round it
+  const wait = existing ? existing.last_sent_at + BRIEF_RESEND_COOLDOWN_MS - now : 0
+  if (wait > 0) {
+    setResponseHeader(event, 'Retry-After', Math.ceil(wait / 1000))
+    throw createError({ statusCode: 429, message: `Wait ${Math.ceil(wait / 1000)} seconds to send it again` })
+  }
 
   const id = existing?.id ?? crypto.randomUUID()
 

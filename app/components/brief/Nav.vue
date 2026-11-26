@@ -48,9 +48,13 @@ const progress = computed(() => (brief.isSummary ? 1 : brief.stepIndex / brief.t
 
 const advanceLabels = { summary: 'Back to summary', review: 'Review', skip: 'Skip', next: 'Next' }
 
-// Check your inbox's Resend counts down the wait between sends, and can't be pressed until it's done
+// Check your inbox's Resend counts down the wait between sends, and can't be pressed until it's done. So does the
+// review's Send, back from Check your inbox to edit a brief that's just gone (the server holds both to the same wait).
 const resendWait = useBriefResendWait()
-const resendWaiting = computed(() => brief.status === 'sent' && !brief.sending && resendWait.value > 0)
+const resendWaiting = computed(() => {
+  const resending = brief.status === 'sent' || (brief.status === 'draft' && brief.isSummary && !!brief.briefId)
+  return resending && !brief.sending && resendWait.value > 0
+})
 
 const primaryLabel = computed(() => {
   if (brief.status === 'sent') {
@@ -58,7 +62,10 @@ const primaryLabel = computed(() => {
     return resendWaiting.value ? `Resend in ${resendWait.value}s` : 'Resend'
   }
   if (brief.status === 'confirmed') return 'Start over'
-  if (brief.isSummary) return brief.sending ? 'Sending…' : 'Send'
+  if (brief.isSummary) {
+    if (brief.sending) return 'Sending…'
+    return resendWaiting.value ? `Send in ${resendWait.value}s` : 'Send'
+  }
   return advanceLabels[brief.advance]
 })
 

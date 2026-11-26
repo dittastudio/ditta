@@ -16,7 +16,12 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 429, message: `Wait ${Math.ceil(wait / 1000)} seconds to send it again` })
   }
   if (row.send_count >= BRIEF_MAX_SENDS) {
-    throw createError({ statusCode: 429, message: 'That’s as many times as we can send it. Start a new brief.' })
+    // Marked, so Check your inbox goes back to the review, where Send starts a new brief (see index.post.ts)
+    throw createError({
+      statusCode: 429,
+      message: 'That’s as many times as we can send it. Check your email and send your brief again.',
+      data: { capped: true },
+    })
   }
 
   const { token, tokenHash, expiresAt } = await newBriefToken(now)

@@ -24,17 +24,21 @@ const emailErrors = computed(() => (r$.email.$dirty ? r$.email.$errors : []))
 // Read out once a resend has gone
 const announcement = ref('')
 
-// The brief has gone from the server (unconfirmed for two weeks, or this browser's cookie was cleared): back to the
-// review, with the answers still here, to send it again
-function gone() {
+// Back to the review, with the answers still here, to send them as a new brief: when the brief has gone from the
+// server (unconfirmed for two weeks, or this browser's cookie was cleared), or its link has been sent as many times as
+// it can be
+function sendAgain(message: string) {
   brief.briefId = null
   brief.setStatus('draft')
-  emit('error', 'That link has run out. Send your brief again.')
+  emit('error', message)
 }
+
+type Failure = { data?: { message?: string; data?: { gone?: boolean; capped?: boolean } } }
 
 // Only the server's own answer that the brief has gone (see ownedBrief). Any other failure is a missed check, and the
 // next poll tries again.
-const isGone = (failure: unknown) => (failure as { data?: { data?: { gone?: boolean } } }).data?.data?.gone === true
+const isGone = (failure: unknown) => (failure as Failure).data?.data?.gone === true
+const gone = () => sendAgain('That link has run out. Send your brief again.')
 
 async function check() {
   if (!brief.briefId || brief.sending) return
@@ -87,7 +91,8 @@ async function resend() {
     announcement.value = `Sent again to ${sent.email}`
   } catch (failure) {
     if (isGone(failure)) return gone()
-    const { data } = failure as { data?: { message?: string } }
+    const { data } = failure as Failure
+    if (data?.data?.capped) return sendAgain(data.message || 'Send your brief again.')
     emit('error', data?.message || 'That didn’t send. Try again.')
   } finally {
     brief.sending = false
