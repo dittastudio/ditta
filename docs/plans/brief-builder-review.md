@@ -177,7 +177,7 @@ After step 5, apply the migration to both D1 databases with `--remote` before th
 - Migration `0003` is applied to `ditta-briefs` and `ditta-briefs-preview`.
 - The Turnstile widget's hostname allowlist is checked in the dashboard.
 - A brief is sent on the `develop` preview after reaching `/brief` from a link in the app, not by typing the URL.
-- `NUXT_STORYBLOK_TOKEN` (the public token) is added as a GitHub Actions secret, and the `e2e` job is made a required check in the branch protection for `develop` and `main`.
+- `NUXT_STORYBLOK_TOKEN` (the public token) is added as a GitHub Actions secret.
 
 ## How it went (27 Nov 2026)
 
@@ -189,10 +189,10 @@ All 11 commits are in on `develop`. Where the work moved away from the plan abov
 - **Dev routes (10).** They moved to `server/dev/` and are registered under `$development.serverHandlers`. The URLs are the same.
 - **Resend wait (8).** It's 4 seconds in the e2e tests (`test/e2e/settings.ts`). The e2e suite now takes about 30 seconds.
 - **Vitest (4).** The config lives in `vitest.config.ts`, not `vite.config.ts`. The Nuxt project boots Nuxt to load, which `vp check` would otherwise do on every run. `npm test` runs 41 tests in about 2 seconds. Component tests through `mountSuspended` aren't added yet: they'd need `@vue/test-utils`, and the store and composables were the higher-value targets.
-- **CI (5, 13).** Every page loads a Storyblok story, so the e2e job needs `NUXT_STORYBLOK_TOKEN` as a repo secret and reads published content. Until the secret is added, the job fails whenever brief code changes.
+- **CI (5, 13).** Every page loads a Storyblok story, so the e2e job needs `NUXT_STORYBLOK_TOKEN` as a repo secret and reads published content.
 
-Not done, as they need someone with access:
+Done by hand on 27 Nov: migration `0003` applied to both databases with `--remote`, the Actions secret added, and the Turnstile hostnames checked (only `ditta.studio` and `ditta.workers.dev`, in Managed mode). The first CI run passed, `e2e` included.
 
-- Applying migration `0003` with `--remote` to `ditta-briefs` and `ditta-briefs-preview`. It's additive and safe before the code ships, since the old code ignores the new column and indexes.
-- Adding the Actions secret and making `e2e` a required check.
-- Checking the Turnstile hostname allowlist.
+Not required checks: on the org's free plan, rulesets on a private repo aren't enforced, and the checks already show on every push and PR. The `e2e` job still passes at once when nothing relevant changed, so it can be made required if the plan changes.
+
+Still to do: send a brief on the `develop` preview after reaching `/brief` from a link in the app, confirm it, and check both emails arrive with the PDF.
