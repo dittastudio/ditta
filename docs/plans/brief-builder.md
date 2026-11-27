@@ -265,6 +265,7 @@ No reminder emails are sent. Emails 2 and 3 can go in one `resend.batch.send` ca
 ## Verification (when built)
 
 - Happy path locally with `wrangler dev` (D1 local) and Resend's test addresses (`delivered@resend.dev`).
+  - Shortcut: `/_dev/brief` fills the brief in and opens the review (`?step=4` for a question), and after Send, `/_dev/brief/confirm` follows the confirm link from the dev outbox.
 - The PDF is attached to both the ditta and client emails, renders the brand fonts and logo, paginates cleanly with a long brief, and matches the branding template.
 - Make PDF generation or Resend fail on purpose: the brief still shows as confirmed, and the retry delivers it.
 - Typo recovery: submit with a wrong email, fix it via "Not received?", confirm that the old link is dead and the new one works, and that there's still one DB row.
