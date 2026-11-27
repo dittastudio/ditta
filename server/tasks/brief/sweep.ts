@@ -1,8 +1,8 @@
-// Hourly (nuxt.config.ts → scheduledTasks): deletes briefs left unconfirmed for two weeks, sends the emails for
-// confirmed briefs whose emails failed at the time, and keeps the PDFs of briefs whose PDF failed (their emails went
-// without it, so this sends nothing)
+// Hourly (nuxt.config.ts → scheduledTasks): deletes briefs left unconfirmed for two weeks and confirmed briefs (with
+// their PDFs) after six months, sends the emails for confirmed briefs whose emails failed at the time, and keeps the
+// PDFs of briefs whose PDF failed (their emails went without it, so this sends nothing)
 export default defineTask({
-  meta: { name: 'brief:sweep', description: 'Delete stale pending briefs and retry failed brief emails' },
+  meta: { name: 'brief:sweep', description: 'Delete expired briefs and retry failed brief emails' },
   async run() {
     const db = useBriefDb()
     const now = Date.now()
@@ -11,6 +11,21 @@ export default defineTask({
       .prepare("DELETE FROM briefs WHERE status = 'pending' AND updated_at < ?")
       .bind(now - BRIEF_PENDING_TTL_MS)
       .run()
+
+    // The PDFs go first, so a failure leaves the row to try again next hour rather than an orphaned PDF
+    const { results: expired } = await db
+      .prepare("SELECT id, pdf_key FROM briefs WHERE status = 'confirmed' AND confirmed_at < ? LIMIT 50")
+      .bind(now - BRIEF_CONFIRMED_TTL_MS)
+      .all<Pick<BriefRow, 'id' | 'pdf_key'>>()
+
+    const pdfKeys = expired.flatMap((row) => row.pdf_key ?? [])
+    if (pdfKeys.length) await useBriefPdfBucket()?.delete(pdfKeys)
+    if (expired.length) {
+      await db
+        .prepare(`DELETE FROM briefs WHERE id IN (${expired.map(() => '?').join(', ')})`)
+        .bind(...expired.map((row) => row.id))
+        .run()
+    }
 
     // Left a few minutes, so a confirm still sending its emails isn't sent twice
     const { results } = await db
@@ -40,6 +55,14 @@ export default defineTask({
       for (const row of unarchived) if (await briefPdf(db, row)) archived++
     }
 
-    return { result: { deleted: deleted.meta.changes, notified, failed: results.length - notified, archived } }
+    return {
+      result: {
+        deleted: deleted.meta.changes,
+        expired: expired.length,
+        notified,
+        failed: results.length - notified,
+        archived,
+      },
+    }
   },
 })

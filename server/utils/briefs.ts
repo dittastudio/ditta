@@ -8,6 +8,8 @@ import { briefConfirmEmail, briefCopyEmail, briefTeamEmail } from '../emails/bri
 export const BRIEF_TOKEN_TTL_MS = 72 * 60 * 60 * 1000
 // How long an unconfirmed brief is kept after its last send (server/tasks/brief/sweep.ts)
 export const BRIEF_PENDING_TTL_MS = 14 * 24 * 60 * 60 * 1000
+// How long a confirmed brief, and its PDF, is kept after it was confirmed: six months, as the privacy policy says
+export const BRIEF_CONFIRMED_TTL_MS = 183 * 24 * 60 * 60 * 1000
 // The most times one brief's link can be sent. The least time between two sends is BRIEF_RESEND_COOLDOWN_MS, in
 // shared/utils/brief.ts, since Check your inbox counts it down too.
 export const BRIEF_MAX_SENDS = 10

@@ -1,3 +1,5 @@
+import { fileURLToPath } from 'node:url'
+import type { ConfigOptions } from '@nuxt/test-utils/playwright'
 import { defineConfig, devices } from '@playwright/test'
 
 // End-to-end tests for the brief builder: `npm run test:e2e`. Local only for now. They run their own `nuxt dev` on
@@ -5,22 +7,29 @@ import { defineConfig, devices } from '@playwright/test'
 // keys, and no Resend key or Browser Run token: emails land in the dev outbox (server/routes/_dev/outbox.get.ts), and
 // there's no PDF. Real delivery, the PDF and the real Turnstile stay checks on the preview.
 const PORT = 3100
+const HOST = `http://localhost:${PORT}`
 
-export default defineConfig({
-  testDir: 'tests/e2e',
+export default defineConfig<ConfigOptions>({
+  testDir: 'test/e2e',
   // Each test has its own email and IP, so they can run side by side
   fullyParallel: true,
   timeout: 60_000,
   reporter: 'list',
   use: {
-    baseURL: `http://localhost:${PORT}`,
+    // Nuxt's fixture (@nuxt/test-utils/playwright) is pointed at the one dev server below rather than building and
+    // serving the app itself: its servers are one per worker, and the app only runs against wrangler's local
+    // bindings under `nuxt dev` (the cloudflare-dev preset)
+    nuxt: {
+      rootDir: fileURLToPath(new URL('.', import.meta.url)),
+      host: HOST,
+    },
     trace: 'retain-on-failure',
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
     // The local D1 brought up to date first
     command: `npx wrangler d1 migrations apply ditta-briefs --local && npx nuxt dev --port ${PORT}`,
-    url: `http://localhost:${PORT}/brief`,
+    url: `${HOST}/brief`,
     reuseExistingServer: true,
     timeout: 180_000,
     env: {

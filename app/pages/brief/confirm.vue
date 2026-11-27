@@ -4,6 +4,8 @@ import IconReturn from '@/assets/icons/return.svg'
 
 // Where a brief's email link lands (M4 in docs/plans/brief-builder-milestones.md). Opening the link only looks it up:
 // email scanners open links before people do, so the brief is sent by the button, never by the visit.
+definePageMeta({ tagline: false })
+
 useSeoMeta({
   title: 'Send your brief',
   robots: 'noindex, nofollow',

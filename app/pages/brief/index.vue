@@ -1,10 +1,13 @@
 <script lang="ts" setup>
 import type { Block } from '#storyblok-schema'
 
-// The brief builder (docs/plans/brief-builder.md). Client-only: see routeRules in nuxt.config.ts. Its intro and SEO
-// come from the `brief` story in Storyblok, so it can be linked and edited there; the questions stay in code
+// The brief builder (docs/plans/brief-builder.md). The page is prerendered, for its title and link preview, but the
+// brief itself is client-only: it lives in the visitor's browser (see routeRules in nuxt.config.ts). Its intro
+// and SEO come from the `brief` story in Storyblok, so it can be linked and edited there; the questions stay in code
 // (shared/utils/brief.ts), as the server checks answers against them. Until the story arrives, or if it can't be had,
 // this wording stands in, so the brief never waits on Storyblok or breaks without it.
+definePageMeta({ tagline: false, theme: 'dark' })
+
 const fallback = {
   introHeading: 'Create your brief',
   introCopy: 'A few quick questions about you and your project.\nOnly takes a few minutes.',
@@ -19,7 +22,8 @@ const preview = storyblokEditor(route.query)
 const { story } = await useAsyncStoryblok('brief', {
   api: { version: config.public.STORYBLOK_VERSION === 'published' ? 'published' : 'draft' },
   bridge: { preventClicks: true },
-  lazy: true,
+  // Waited for when prerendering, so the link preview has the story's SEO, but never on a navigation in the browser
+  lazy: import.meta.client,
 })
 
 const content = computed(() => (story.value?.content as Block<'brief'> | undefined) ?? null)
@@ -35,7 +39,9 @@ useSeoMeta({
   description: seoDescription,
   ogTitle: seoTitle,
   ogDescription: seoDescription,
-  ogImage: () => storyblokImage(content.value?.seo_image?.filename, imageOptions) || null,
+  // Set once, here in setup, where storyblokImage's useImage() can reach Nuxt. The prerender has the story by now, and
+  // only crawlers read the image
+  ogImage: storyblokImage(content.value?.seo_image?.filename, imageOptions) || null,
   ogType: 'website',
 })
 
@@ -48,10 +54,15 @@ onMounted(() => {
 
 <template>
   <div v-editable="content ?? undefined">
-    <BriefShell
-      :intro-heading="introHeading"
-      :intro-copy="introCopy"
-      :preview="preview"
-    />
+    <ClientOnly>
+      <BriefShell
+        :intro-heading="introHeading"
+        :intro-copy="introCopy"
+        :preview="preview"
+      />
+      <template #fallback>
+        <div class="min-h-svh bg-black" />
+      </template>
+    </ClientOnly>
   </div>
 </template>

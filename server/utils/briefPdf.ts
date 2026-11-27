@@ -8,6 +8,7 @@ import { briefPdfHtml, briefReference, toBase64 } from '../pdf/brief'
 interface R2Bucket {
   get: (key: string) => Promise<{ arrayBuffer: () => Promise<ArrayBuffer> } | null>
   put: (key: string, value: Uint8Array, options?: { httpMetadata?: { contentType?: string } }) => Promise<unknown>
+  delete: (keys: string | string[]) => Promise<void>
 }
 
 export interface BriefPdfAttachment {

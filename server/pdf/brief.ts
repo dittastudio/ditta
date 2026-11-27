@@ -43,9 +43,14 @@ const answerHtml = (row: BriefEmailRow) => {
   return row.answer ? escapeHtml(row.answer) : '<span class="skipped">Skipped</span>'
 }
 
-// At a glance stays at a glance: a long answer is cut short here, and is there in full in the brief below
+// At a glance stays at a glance: a long answer is cut short here, at a word, and is there in full in the brief below
 const GLANCE_MAX = 60
-const clip = (value: string) => (value.length > GLANCE_MAX ? `${value.slice(0, GLANCE_MAX - 1).trimEnd()}…` : value)
+const clip = (value: string) => {
+  if (value.length <= GLANCE_MAX) return value
+  const cut = value.slice(0, GLANCE_MAX - 1)
+  const lastSpace = cut.lastIndexOf(' ')
+  return `${(lastSpace > GLANCE_MAX / 2 ? cut.slice(0, lastSpace) : cut).replace(/[\s,.;:–-]+$/, '')}…`
+}
 
 const fact = (label: string, value: string | null | undefined) =>
   `<div class="fact"><dt>${label}</dt><dd>${value ? escapeHtml(clip(value)) : '<span class="skipped">Not given</span>'}</dd></div>`
@@ -150,12 +155,14 @@ export async function briefPdfHtml(answers: BriefAnswers, meta: BriefPdfMeta) {
     color: var(--muted);
   }
 
-  header .eyebrow::before {
-    content: '';
+  /* An SVG circle, not a rounded box: Chrome snaps a box's edges to whole pixels, which drew a 2mm dot 7px by 8px */
+  header .dot {
+    flex: none;
     width: 2mm;
     height: 2mm;
-    border-radius: 50%;
-    background: var(--color-accent);
+    /* Its box is still snapped, so the circle draws past it rather than being cut flat */
+    overflow: visible;
+    fill: var(--color-accent);
   }
 
   h1 {
@@ -257,7 +264,7 @@ export async function briefPdfHtml(answers: BriefAnswers, meta: BriefPdfMeta) {
 <body>
   <header>
     ${logo}
-    <p class="eyebrow">Project brief</p>
+    <p class="eyebrow"><svg class="dot" viewBox="0 0 2 2" aria-hidden="true"><circle cx="1" cy="1" r="1"/></svg>Project brief</p>
   </header>
 
   <p class="eyebrow">${date} · Brief ${reference}</p>

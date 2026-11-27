@@ -8,32 +8,48 @@ const { name } = defineProps<Props>()
 
 const firstName = computed(() => briefFirstName({ name: name ?? undefined }))
 
-// True while the burger has been eaten and the next one hasn't arrived
-const eaten = ref(false)
+// The line above the burger, by how many have been eaten. It moves on with each one's last bite and holds while the
+// next arrives. The last is game over, after the third (see Burger.vue), and Restart goes back to the first.
+const lines = [
+  'Have a burger on us!',
+  'Struth! Fancy another...?',
+  'Ooo, getting full are we?',
+  'Absolute filth, game over.',
+]
+const eaten = ref(0)
+const current = computed(() => Math.min(eaten.value, lines.length - 1))
 </script>
 
 <template>
   <section class="flex flex-col items-center gap-10 text-center">
     <p class="mb-5 text-24 leading-tight text-balance trim-both md:mb-8 md:text-28">
-      <span class="inline-grid">
+      <span
+        class="inline-grid"
+        aria-hidden="true"
+      >
         <span
-          class="col-start-1 row-start-1 transition-opacity duration-200 ease-outCubic motion-reduce:transition-none"
-          :class="{ 'opacity-0': eaten }"
-          :aria-hidden="eaten"
+          v-for="(line, index) in lines"
+          :key="line"
+          class="col-start-1 row-start-1 transition-[opacity,translate,scale,filter]"
+          :class="
+            index === current
+              ? 'delay-100 duration-panel ease-outBack'
+              : index < current
+                ? 'opacity-0 duration-quick ease-outCubic motion-safe:-translate-y-2 motion-safe:blur-xs'
+                : 'opacity-0 duration-quick ease-outCubic motion-safe:translate-y-3 motion-safe:scale-96 motion-safe:blur-xs'
+          "
         >
-          Have a burger on us!
-        </span>
-        <span
-          class="col-start-1 row-start-1 transition-opacity duration-200 ease-outCubic motion-reduce:transition-none"
-          :class="{ 'opacity-0': !eaten }"
-          :aria-hidden="!eaten"
-        >
-          Struth! Fancy another...?
+          {{ line }}
         </span>
       </span>
+      <span
+        class="sr-only"
+        role="status"
+        >{{ lines[current] }}</span
+      >
     </p>
 
-    <BriefBurger v-model:finished="eaten" />
+    <BriefBurger v-model:eaten="eaten" />
 
     <h1
       class="text-24 leading-tight text-balance trim-both md:text-28"
@@ -43,7 +59,7 @@ const eaten = ref(false)
     </h1>
 
     <p
-      class="text-18 opacity-60 md:text-20"
+      class="max-w-[38ch] text-18 opacity-60 md:text-20"
       data-crumb-surface="text"
     >
       We'll reply within two working days to book a short call. A copy is on its way to your inbox.
