@@ -10,7 +10,8 @@ interface Point {
   y: number
 }
 
-// About this many bites to finish it. The last one takes whatever's left, so there are never crumbs to hunt down.
+// About this many bites to finish it, unless `reset` asks for another number. The last one takes whatever's left, so
+// there are never crumbs to hunt down.
 const BITES = 8
 // Bits cut off from the rest by a bite go with it rather than floating on their own
 const ISLAND = 15
@@ -48,9 +49,10 @@ export const useBites = (svg: string) => {
   const cells = shallowRef<Grid>(whole.map((row) => [...row]))
   const remaining = ref(total)
   const taken = ref(0)
+  const bites = ref(BITES)
 
   const isEmpty = computed(() => remaining.value === 0)
-  const bitesLeft = computed(() => (isEmpty.value ? 0 : BITES - taken.value))
+  const bitesLeft = computed(() => (isEmpty.value ? 0 : bites.value - taken.value))
 
   // Row runs per colour, in the order the colours first appear
   const paths = computed(() => {
@@ -187,7 +189,7 @@ export const useBites = (svg: string) => {
     )
 
     const direction = { x: edge.x + 0.5 - centre.x, y: edge.y + 0.5 - centre.y }
-    const isLast = taken.value >= BITES - 1
+    const isLast = taken.value >= bites.value - 1
     const next = cells.value.map((row) => [...row])
     let removed: BiteCell[]
 
@@ -196,7 +198,7 @@ export const useBites = (svg: string) => {
     } else {
       // The smallest bite that takes its share of what's left, so every bite is about the same size. A bigger radius
       // never takes less, so it's found by halving the range rather than trying every size.
-      const share = list.length / (BITES - taken.value)
+      const share = list.length / (bites.value - taken.value)
       const take = (radius: number) => {
         const inBite = biteShape(edge, centre, radius)
         return list.filter((cell) => inBite(cell.x, cell.y))
@@ -229,7 +231,9 @@ export const useBites = (svg: string) => {
     return { removed, direction }
   }
 
-  function reset() {
+  // A whole one again, to be eaten in `count` bites
+  function reset(count = BITES) {
+    bites.value = count
     cells.value = whole.map((row) => [...row])
     remaining.value = total
     taken.value = 0
