@@ -35,7 +35,7 @@ export default defineEventHandler(async (event) => {
     .bind(email, email, tokenHash, expiresAt, now, now, id)
     .run()
 
-  await sendBriefLink(event, { name: row.name, email }, token)
+  await sendBriefLinkOrRestore(event, row, { name: row.name, email }, token)
 
   return { status: row.status, email }
 })

@@ -122,6 +122,40 @@ export async function sendBriefLink(event: H3Event, row: Pick<BriefRow, 'name' |
   await sendEmails(event, [{ to: row.email, ...briefConfirmEmail(answers, briefConfirmLink(event, token)) }])
 }
 
+// Sends the new link of a brief already updated for it. If the email fails, the brief goes back to how it was before
+// (`before`), so the link it already had still works and the failed try doesn't count towards the wait or the cap.
+// Only while the brief still has the new link: anything that has moved it on since is left alone.
+export async function sendBriefLinkOrRestore(
+  event: H3Event,
+  before: BriefRow,
+  to: Pick<BriefRow, 'name' | 'email'>,
+  token: string,
+) {
+  try {
+    await sendBriefLink(event, to, token)
+  } catch (error) {
+    await useBriefDb(event)
+      .prepare(
+        `UPDATE briefs SET name = ?, email = ?, answers = ?, token_hash = ?, token_expires_at = ?, send_count = ?,
+          last_sent_at = ?, updated_at = ? WHERE id = ? AND token_hash = ?`,
+      )
+      .bind(
+        before.name,
+        before.email,
+        before.answers,
+        before.token_hash,
+        before.token_expires_at,
+        before.send_count,
+        before.last_sent_at,
+        before.updated_at,
+        before.id,
+        await sha256(token),
+      )
+      .run()
+    throw error
+  }
+}
+
 // The team's email and the client's copy, once a brief is confirmed. Marked notified only once both have gone, so
 // the sweep tries again if Resend fails.
 export async function notifyBrief(db: D1Database, row: BriefRow, event?: H3Event) {

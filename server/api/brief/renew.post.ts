@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
     .bind(next.tokenHash, next.expiresAt, now, now, row.id)
     .run()
 
-  await sendBriefLink(event, row, next.token)
+  await sendBriefLinkOrRestore(event, row, row, next.token)
 
   return { state: 'renewed' as const, email: row.email }
 })

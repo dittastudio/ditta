@@ -56,11 +56,9 @@ export default defineEventHandler(async (event) => {
   // new brief" asks for.
   const pending = body.id
     ? await db
-        .prepare(
-          "SELECT id, send_count, last_sent_at FROM briefs WHERE id = ? AND owner_hash = ? AND status = 'pending'",
-        )
+        .prepare("SELECT * FROM briefs WHERE id = ? AND owner_hash = ? AND status = 'pending'")
         .bind(body.id, ownerHash)
-        .first<Pick<BriefRow, 'id' | 'send_count' | 'last_sent_at'>>()
+        .first<BriefRow>()
     : null
   const existing = pending && pending.send_count < BRIEF_MAX_SENDS ? pending : null
 
@@ -92,7 +90,9 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    await sendBriefLink(event, { name, email }, token)
+    // One sent before goes back to how it was if this fails, so its last link still works
+    if (existing) await sendBriefLinkOrRestore(event, existing, { name, email }, token)
+    else await sendBriefLink(event, { name, email }, token)
   } catch (error) {
     // A brief new this time goes again with the failed send, so trying again doesn't leave two behind
     if (!existing) await db.prepare('DELETE FROM briefs WHERE id = ?').bind(id).run()
