@@ -6,17 +6,29 @@ import { briefAnswersSchema } from '#shared/schemas/brief'
 import { confetti, drawerOpen, hover, pageEnter, save } from '@@/.web-kits/core'
 import IconReturn from '@/assets/icons/return.svg'
 
+interface Props {
+  // The intro's wording, from the `brief` story (app/pages/brief/index.vue)
+  introHeading: string
+  introCopy: string
+  // Storyblok's Visual Editor: only the intro shows, and nothing touches the brief this browser has saved
+  preview?: boolean
+}
+
+const { introHeading, introCopy, preview = false } = defineProps<Props>()
+
 // The brief's answers and progress, opened at the step in the URL
 const brief = useBriefStore()
 useBriefTracking()
-followBriefUrl(useRoute().query.step)
+if (!preview) followBriefUrl(useRoute().query.step)
 
 // Which screen is showing, keyed so each step (and each restart) mounts fresh
 const root = useTemplateRef('root')
-const isIntro = computed(() => brief.status === 'intro')
-const isDraft = computed(() => brief.status === 'draft')
+const isIntro = computed(() => preview || brief.status === 'intro')
+const isDraft = computed(() => !preview && brief.status === 'draft')
 const restarts = ref(0)
-const screenKey = computed(() => (isDraft.value ? `step-${brief.stepIndex}-${restarts.value}` : brief.status))
+const screenKey = computed(() =>
+  isIntro.value ? 'intro' : isDraft.value ? `step-${brief.stepIndex}-${restarts.value}` : brief.status,
+)
 
 // Start grows into the nav, and the nav shrinks back into Start
 const { play, playHover } = useAudio()
@@ -137,6 +149,7 @@ const question = useTemplateRef('question')
 const inbox = useTemplateRef('inbox')
 
 async function primary() {
+  if (preview) return
   if (brief.status === 'intro') {
     play(soundStart)
     return brief.start()
@@ -211,10 +224,9 @@ function onEnter(el: Element) {
           >
             <template v-if="isIntro">
               <div class="flex flex-col items-center gap-6 text-center md:gap-10">
-                <h1 class="text-40 leading-tight trim-both md:text-64">Create your brief</h1>
-                <p class="max-w-120 text-16 leading-snug text-pretty opacity-60 md:text-20">
-                  A few quick questions about you and your project.<br />
-                  Only takes a few minutes.
+                <h1 class="text-40 leading-tight trim-both md:text-64">{{ introHeading }}</h1>
+                <p class="max-w-120 text-16 leading-snug text-pretty whitespace-pre-line opacity-60 md:text-20">
+                  {{ introCopy }}
                 </p>
               </div>
 

@@ -10,6 +10,11 @@ const story = await useStory<Block<'page'> | Block<'project'>>(
   { resolveRelations: storyRelations },
 )
 
+// A story of a type no template renders, such as the `brief` story moved off its /brief slug
+if (!isPage(story.value) && !isProject(story.value) && !isPost(story.value)) {
+  throw createError({ statusCode: 404, statusMessage: `Page not found for: ${route.path}`, fatal: true })
+}
+
 const { seo_title, seo_description, seo_image } = story.value.content
 const imageOptions = { width: 1200, height: 630, format: 'jpg', smart: true, quality: 90 }
 
