@@ -44,12 +44,14 @@ export default defineTask({
     }
 
     // Only where there's a bucket to keep them in, or this would render the same PDFs every run. A few at a time,
-    // since each may wait 10 seconds for its turn (server/utils/briefPdf.ts)
+    // since each may wait 10 seconds for its turn (server/utils/briefPdf.ts), and not past BRIEF_PDF_MAX_ATTEMPTS. The
+    // limit is written into the query, not bound, so it matches the index's (migration 0003).
     let archived = 0
     if (useBriefPdfBucket()) {
       const { results: unarchived } = await db
         .prepare(
-          "SELECT * FROM briefs WHERE status = 'confirmed' AND notified_at IS NOT NULL AND pdf_key IS NULL ORDER BY confirmed_at LIMIT 3",
+          `SELECT * FROM briefs WHERE status = 'confirmed' AND notified_at IS NOT NULL AND pdf_key IS NULL
+            AND pdf_attempts < ${BRIEF_PDF_MAX_ATTEMPTS} ORDER BY confirmed_at LIMIT 3`,
         )
         .all<BriefRow>()
       for (const row of unarchived) if (await briefPdf(db, row)) archived++

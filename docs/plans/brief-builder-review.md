@@ -125,7 +125,7 @@ The job runs on GitHub, not in Cloudflare's build. Cloudflare deploys `main` reg
 
 **Problem.** D1 bills by rows _read_, not rows returned. None of the sweep's four queries uses an index, so each one reads every row. With 1,000 briefs at 96 runs a day, that's roughly 400k rows read a day. That's under the free 5M, but it grows with every brief. `briefs_status_created` isn't used by any query.
 
-**Decision.** Add `0003_brief_indexes.sql`: create indexes on `(status, updated_at)` and `(status, confirmed_at)`, and drop `briefs_status_created`. Apply it with `--local` and `--remote`, and on the preview database too.
+**Decision.** Add `0003_brief_sweep_indexes.sql`, with one partial index per sweep query (each covers only the rows that query is after), and drop `briefs_status_created`. A plain `(status, confirmed_at)` index would still read every confirmed brief for the PDF query, so partial indexes it is; `EXPLAIN QUERY PLAN` shows each query reading only its own index. Apply it with `--local` and `--remote`, and on the preview database too.
 
 ### 12. A PDF that always fails would be retried forever
 

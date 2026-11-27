@@ -13,6 +13,9 @@ export const BRIEF_CONFIRMED_TTL_MS = 183 * 24 * 60 * 60 * 1000
 // The most times one brief's link can be sent. The least time between two sends is BRIEF_RESEND_COOLDOWN_MS, in
 // shared/utils/brief.ts, since Check your inbox counts it down too.
 export const BRIEF_MAX_SENDS = 10
+// The most times a confirmed brief's PDF is tried before the sweep leaves it, so one that never renders doesn't use up
+// Browser Run for good. Also written into the index the sweep reads it through (migration 0003), so change both.
+export const BRIEF_PDF_MAX_ATTEMPTS = 3
 
 const OWNER_COOKIE = 'brief_owner'
 
@@ -43,6 +46,8 @@ export interface BriefRow {
   notified_at: number | null
   // The PDF's key in R2, once it's been rendered and kept (server/utils/briefPdf.ts)
   pdf_key: string | null
+  // Failed renders of the PDF (BRIEF_PDF_MAX_ATTEMPTS)
+  pdf_attempts: number
   created_at: number
   updated_at: number
 }

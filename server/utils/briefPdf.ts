@@ -79,6 +79,14 @@ export async function briefPdf(
     return { filename, content: toBase64(pdf) }
   } catch (error) {
     console.error('[brief] The PDF failed, so the emails go without it', row.id, error)
+    if (row.pdf_attempts + 1 >= BRIEF_PDF_MAX_ATTEMPTS) {
+      console.error(`[brief] Giving up on the PDF after ${BRIEF_PDF_MAX_ATTEMPTS} tries`, row.id)
+    }
+    await db
+      .prepare('UPDATE briefs SET pdf_attempts = pdf_attempts + 1 WHERE id = ?')
+      .bind(row.id)
+      .run()
+      .catch(() => {})
     return null
   }
 }
