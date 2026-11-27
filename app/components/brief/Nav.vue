@@ -1,9 +1,13 @@
 <script lang="ts" setup>
-import { onClickOutside, onKeyStroke } from '@vueuse/core'
+import type { ComponentPublicInstance } from 'vue'
+import { onClickOutside, onKeyStroke, useResizeObserver } from '@vueuse/core'
 import { gsap } from 'gsap'
 import { defineSound } from '@web-kits/audio'
 import IconReset from '@/assets/icons/reset.svg'
-import { error as errorSound, hover, pageExit, warning } from '@@/.web-kits/core'
+import IconReturn from '@/assets/icons/return.svg'
+import IconClose from '@/assets/icons/close.svg'
+import IconSettings from '@/assets/icons/settings.svg'
+import { drawerClose, drawerOpen, error as errorSound, pageExit, warning } from '@@/.web-kits/core'
 
 interface Props {
   // Why Next was blocked, shown above the bar on mobile and beside it on desktop
@@ -16,9 +20,11 @@ const shaking = defineModel<boolean>('shaking', { default: false })
 
 // Next being blocked is heard as well as seen
 const soundError = defineSound(errorSound)
-// Start again: the hover the bar's other buttons have, and a warning as it asks to be sure
-const soundHover = defineSound(hover)
+// Start again warns as it asks to be sure (each button's hover sound is UiNavButton's)
 const soundWarning = defineSound(warning)
+// Settings open out of their button and fold back into it with ✕
+const soundDrawerOpen = defineSound(drawerOpen)
+const soundDrawerClose = defineSound(drawerClose)
 // Back turns the page the other way from Skip's
 const soundPageExit = defineSound(pageExit)
 const { play, isAudioOn } = useAudio()
@@ -34,325 +40,404 @@ const emit = defineEmits<{ primary: []; cleared: [] }>()
 
 const brief = useBriefStore()
 const nav = useTemplateRef('nav')
-const resetButton = useTemplateRef('resetButton')
-const cancelButton = useTemplateRef('cancelButton')
-const fill = useTemplateRef('fill')
+const settingsButton = useTemplateRef('settingsButton')
 
-const isDraft = computed(() => brief.status === 'draft')
-const hasPrevious = computed(() => brief.status === 'sent' || (isDraft.value && brief.stepIndex > 0))
+const hasPrevious = computed(() => brief.status === 'sent' || (brief.inProgress && brief.stepIndex > 0))
 const position = computed(() => brief.stepIndex + 1)
 const progress = computed(() => (brief.isSummary ? 1 : brief.stepIndex / brief.total))
 
-const primaryLabel = computed(() => {
-  if (brief.status === 'sent') return 'Simulate confirm'
-  if (brief.status === 'confirmed') return 'Start over'
-  if (brief.isSummary) return brief.sending ? 'Sending…' : 'Send brief'
-  if (brief.editingFromSummary) return 'Back to summary'
-  if (brief.step?.field === 'email') return 'Review'
-  if (brief.step && !isBriefStepRequired(brief.step) && !hasBriefAnswer(brief.answers[brief.step.key])) return 'Skip'
+const advanceLabels = { summary: 'Review', review: 'Review', skip: 'Skip', next: 'Next' }
 
-  return 'Next'
+// Check your inbox's Resend counts down the wait between sends, and can't be pressed until it's done. So does the
+// review's Send, back from Check your inbox to edit a brief that's just gone (the server holds both to the same wait).
+const resendWait = useBriefResendWait()
+const resendWaiting = computed(() => {
+  const resending = brief.status === 'sent' || (brief.status === 'draft' && brief.isSummary && !!brief.briefId)
+  return resending && !brief.sending && resendWait.value > 0
 })
+
+const primaryLabel = computed(() => {
+  if (brief.status === 'sent') {
+    if (brief.sending) return 'Sending…'
+    return resendWaiting.value ? `Resend in ${resendWait.value}s` : 'Resend'
+  }
+  if (brief.status === 'confirmed') return 'Start over'
+  if (brief.isSummary) {
+    if (brief.sending) return 'Sending…'
+    return resendWaiting.value ? `Send in ${resendWait.value}s` : 'Send'
+  }
+  return advanceLabels[brief.advance]
+})
+
+// Enter moves on from any question and sends from the review, and Shift+Enter goes back (see useBriefKeys), announced
+// to assistive tech on the buttons and shown as their keys
+const enterAdvances = computed(() => brief.inProgress)
+
+// Back goes through the browser's history, so the browser's own Back does the same (see useBriefHistory)
+const briefHistory = useBriefHistory(() => play(soundPageExit))
 
 function back() {
+  if (!hasPrevious.value || brief.sending) return
   play(soundPageExit)
-  if (brief.status === 'sent') return brief.setStatus('draft')
-  brief.back()
+  briefHistory.back()
 }
 
-// Start again wipes the whole draft, so the nav turns into a "Clear everything?" confirm first. Cancel takes focus,
-// so a reflexive Enter is safe. Esc, a click outside the nav, or answering anything all count as carrying on.
-const hasStarted = computed(() => brief.stepIndex > 0 || Object.keys(brief.answers).length > 0)
-const confirmingClear = ref(false)
-// True while the icon spins its full turn after clearing, so the button stays put long enough to be seen doing it.
-// The nav's steps come back with a fresh button, so `spinning` starts the turn a frame after it mounts at rest.
-const clearing = ref(false)
-const spinning = ref(false)
+// The settings button turns the nav into a row of settings, in the same cell, and Start again in there turns it into a
+// "Clear everything?" confirm. Focus goes to the panel's first visible data-autofocus as it opens (Cancel, so a
+// reflexive Enter is safe), and back to the settings button when either is closed with Cancel, ✕ or Esc. A click
+// outside closes either; answering closes the confirm, and a new step closes settings.
+const panel = ref<'clear' | 'settings' | null>(null)
 
-async function askToClear() {
-  play(soundWarning)
-  confirmingClear.value = true
+function focusPanel(el: Element) {
+  const targets = [...el.querySelectorAll<HTMLElement>('[data-autofocus]')]
+  targets.find((target) => target.checkVisibility())?.focus()
+}
+
+async function closePanel() {
+  if (!panel.value) return
+  panel.value = null
   await nextTick()
-  cancelButton.value?.focus()
+  settingsButton.value?.$el.focus()
 }
 
-async function cancelClear({ refocus = true } = {}) {
-  if (!confirmingClear.value) return
-  confirmingClear.value = false
-  if (!refocus) return
-  await nextTick()
-  resetButton.value?.focus()
-}
-
-function clear() {
-  confirmingClear.value = false
-  clearing.value = true
-  spinning.value = false
-  // Reduced motion holds the icon still, so there's no turn to wait for
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) clearing.value = false
-  else requestAnimationFrame(() => requestAnimationFrame(() => (spinning.value = true)))
-
-  soundStartup.play()
-  // Drains alongside the icon's turn, so the reset's drop to 0 doesn't cut it short
-  fill.value?.drain()
-  brief.reset()
-  emit('cleared')
-}
-
-onKeyStroke('Escape', () => cancelClear())
-onClickOutside(nav, () => cancelClear({ refocus: false }))
-// The button goes once the turn has finished, or been cut short
-function onSpun(event: TransitionEvent) {
-  if (spinning.value && event.propertyName === 'rotate') clearing.value = false
-}
-
+watch([() => brief.stepIndex, () => brief.status], () => {
+  if (panel.value === 'settings') panel.value = null
+})
 watch(
   () => brief.answers,
-  () => cancelClear({ refocus: false }),
+  () => {
+    if (panel.value === 'clear') panel.value = null
+  },
   { deep: true },
 )
+onKeyStroke('Escape', closePanel)
+onClickOutside(nav, () => (panel.value = null))
 
-// Previous sits beside Start again, so it coming or going moves Start again by its width. Start again glides there
-// rather than jumping: measured just before the change, then sprung back from where it was (FLIP). It starts with
-// the pop and overshoots a touch before settling, so it reads as being nudged aside rather than slid.
-let resetFrom: number | undefined
+// Clearing winds the settings cog back a full turn, where Start again was pressed from. On the cog's transform, so it
+// stacks with its hover turn (the `rotate` property), and a full turn lands it looking just as it started.
+const settingsIcon = useTemplateRef<ComponentPublicInstance>('settingsIcon')
 
-function measureReset() {
-  resetFrom = resetButton.value?.getBoundingClientRect().left
-}
+function clear() {
+  panel.value = null
+  soundStartup.play()
+  brief.reset()
+  emit('cleared')
 
-function glideReset(delay = 0) {
-  const el = resetButton.value?.parentElement
-  const from = resetFrom
-  resetFrom = undefined
-  // Both measurements include any glide still running, which glide() then carries on from
-  if (el && from !== undefined)
-    glide(el, 'x', from - el.getBoundingClientRect().left, {
-      duration: 0.7,
-      // elastic is a damped sine, the shape of a spring: a 0.9 period overshoots by about 7% and settles with
-      // barely a dip, much like --ease-spring-2
-      ease: 'elastic.out(1, 0.9)',
-      delay,
-    })
-}
-
-// Single-argument hooks, so Vue still runs the pop's CSS transition and tracks when it ends
-function onPreviousEnter() {
-  glideReset()
-}
-
-// A leaving Previous would hold its space until it had faded, and Start again would jump after. Lifted out of the
-// row where it stands, it fades in place, and Start again waits the same beat Previous does coming in before it
-// closes the gap, so it never slides over Previous while it's still visible.
-function onPreviousLeave(el: Element) {
-  measureReset()
-  const wrapper = el as HTMLElement
-  Object.assign(wrapper.style, {
-    position: 'absolute',
-    left: `${wrapper.offsetLeft}px`,
-    top: `${wrapper.offsetTop}px`,
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
+  // The cog is back once the confirm has gone, a frame later
+  requestAnimationFrame(() => {
+    const icon = settingsIcon.value?.$el
+    if (!(icon instanceof Element)) return
+    gsap.fromTo(icon, { rotation: 0 }, { rotation: -360, duration: 0.7, ease: 'power4.out', clearProps: 'transform' })
   })
-  glideReset(0.15)
 }
 
-onBeforeUnmount(() => {
-  if (resetButton.value?.parentElement) gsap.killTweensOf(resetButton.value.parentElement)
-})
+// Settings and Previous sit side by side, right-aligned, so one coming or going, or Next or Previous
+// widening for its key, moves everything to its left. Those glide there rather than jumping: measured just before the
+// change, then sprung back from where they were (FLIP). It starts with the pop and overshoots a touch before settling,
+// so it reads as being nudged aside rather than slid. The row is reversed for display, so what sits to the left of an
+// item comes after it in the DOM.
+const group = useTemplateRef('group')
+const lefts = new Map<HTMLElement, number>()
 
-// The brief measures the nav to frame fields above it and glides it when the screen above changes height
-defineExpose({ el: nav, primaryLabel })
+// Only what's laid out in the row: not something hidden at this width, or lifted out of the row as it leaves
+const inRow = (el: HTMLElement) => el.getClientRects().length > 0 && el.style.position !== 'absolute'
+const items = () => [...(group.value?.children ?? [])].filter((el): el is HTMLElement => el instanceof HTMLElement)
+
+function glideItem(el: HTMLElement, offset: number, delay = 0) {
+  glide(el, 'x', offset, {
+    duration: 0.5,
+    // elastic is a damped sine, the shape of a spring: a 1.1 period overshoots by about 4% and settles with no
+    // visible dip, a gentle nudge rather than a wobble
+    ease: 'elastic.out(1, 1.1)',
+    delay,
+  })
+}
+
+function measureRow() {
+  lefts.clear()
+  for (const el of items()) if (inRow(el)) lefts.set(el, el.getBoundingClientRect().left)
+}
+
+// Both measurements include any glide still running, which glide() then carries on from. Every item is measured
+// before any is moved, so the row is laid out once rather than once per item.
+function glideRow(delay = 0) {
+  const moves = [...lefts]
+    .filter(([el]) => el.isConnected && inRow(el))
+    .map(([el, from]) => [el, from - el.getBoundingClientRect().left] as const)
+  lefts.clear()
+  for (const [el, offset] of moves) glideItem(el, offset, delay)
+}
+
+// A leaving item would hold its space until it had faded, and the rest would jump after. Lifted out of the row where
+// it stands, it fades in place, and the rest wait the same beat an item does coming in before they close the gap, so
+// they never slide over it while it's still visible.
+function onPopLeave(el: Element) {
+  measureRow()
+  liftInPlace(el as HTMLElement)
+  glideRow(0.15)
+}
+
+// Each button in the row comes and goes the same way. One hook argument each, so Vue still runs the pop's CSS
+// transition and tracks when it ends. Previous waits a beat coming in, so what's to their left moves
+// aside first and they pop into the space left.
+const pop = { name: 'brief-pop', onBeforeEnter: measureRow, onEnter: () => glideRow(), onLeave: onPopLeave }
+const popLate = { ...pop, enterActiveClass: 'brief-pop-enter-active delay-100 motion-reduce:delay-0' }
+// The row's buttons dim and can't be pressed while the brief is sending
+const whileSending = computed(() => ({
+  class: ['flex transition-opacity duration-200 ease-outCubic', { 'opacity-40': brief.sending }],
+  inert: brief.sending,
+}))
+
+// Next's and Previous's keys take room only while shown (see UiKbd), so the row moves when they come and go. Their
+// box is only measured once it has changed, so the move is the change in its width, given to everything to its left.
+// A key leaving fades out first and only then gives its room back.
+const enterKey = useTemplateRef('enterKey')
+const backKey = useTemplateRef('backKey')
+const keyWidths = new WeakMap<Element, number>()
+
+function onKeyResize(entry: ResizeObserverEntry) {
+  const width = entry.borderBoxSize[0]?.inlineSize ?? 0
+  const before = keyWidths.get(entry.target)
+  keyWidths.set(entry.target, width)
+  const change = before === undefined ? 0 : width - before
+  if (Math.abs(change) < 1) return
+
+  const all = items()
+  const at = all.findIndex((el) => el.contains(entry.target))
+  for (const el of all.slice(at + 1).filter(inRow)) glideItem(el, change)
+}
+
+useResizeObserver([enterKey, backKey], (entries) => entries.forEach(onKeyResize))
+
+onBeforeUnmount(() => gsap.killTweensOf(items()))
+
+// The brief plays the sound that matches the label Next has, and goes back for Shift+Enter (see useBriefKeys)
+defineExpose({ primaryLabel, back })
 </script>
 
 <template>
-  <!-- Crumbs from the thanks screen's burger can land on top of the bar -->
   <nav
     ref="nav"
     aria-label="Brief steps"
     data-crumb-surface="box"
-    class="sticky bottom-4 z-10 grid rounded-20 corner-shape-squircle bg-offblack-glass/50 text-grey outline outline-1 outline-white/15 backdrop-blur-sm shadow-2xl"
+    class="relative h-(--brief-nav-height) rounded-20 corner-shape-squircle bg-black/50 text-grey outline outline-1 outline-ash backdrop-blur-sm shadow-2xl"
   >
-    <!-- The bar's own background floods with pixels as the brief goes on. Clipped in its own layer, not on the nav,
-         so the error above the bar on mobile isn't cut off. -->
-    <div
-      v-if="isDraft"
-      class="pointer-events-none absolute inset-0 overflow-hidden rounded-20 corner-shape-squircle"
-      role="progressbar"
-      aria-label="Progress"
-      :aria-valuetext="brief.isSummary ? 'Review' : `${position} of ${brief.total}`"
-      :aria-valuenow="Math.min(position, brief.total)"
-      aria-valuemin="1"
-      :aria-valuemax="brief.total"
+    <span
+      data-brief-nav-start
+      class="pointer-events-none absolute inset-0 flex items-center justify-center rounded-[inherit] corner-shape-inherit bg-white/15 pl-2 text-14 font-medium text-white opacity-0 md:text-16"
+      aria-hidden="true"
     >
-      <BriefPixelFill
-        ref="fill"
-        :progress="progress"
-        :review="brief.isSummary"
-      />
-    </div>
+      Start
+      <IconReturn class="ml-2 size-4 fill-none" />
+    </span>
 
-    <Transition name="brief-rise">
+    <div
+      data-brief-nav-contents
+      class="rounded-[inherit] corner-shape-inherit"
+    >
       <div
-        v-if="confirmingClear"
-        data-brief-confirm
-        class="relative flex items-center gap-2.5 p-3.5 pl-5 col-start-1 row-start-1 md:p-5 md:pl-6"
+        v-if="brief.inProgress"
+        data-brief-nav-part
+        class="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit] corner-shape-inherit"
       >
-        <p
-          class="flex-1 text-14 font-medium whitespace-nowrap md:text-16"
-          role="status"
+        <div
+          class="absolute inset-x-0 top-0 h-0.5 bg-white/10"
+          role="progressbar"
+          aria-label="Progress"
+          :aria-valuetext="brief.isSummary ? 'Review' : `${position} of ${brief.total}`"
+          :aria-valuenow="Math.min(position, brief.total)"
+          aria-valuemin="1"
+          :aria-valuemax="brief.total"
         >
-          Clear everything?
-        </p>
-
-        <!-- Wrapped so the stagger can move it: the button's own transition is for hover and press -->
-        <div class="flex">
-          <button
-            ref="cancelButton"
-            type="button"
-            class="rounded-full"
-            @click="cancelClear()"
-          >
-            <UiButton
-              text="Cancel"
-              :icon="false"
-              theme="dark"
-              size="medium"
-              :sound="hover"
-            />
-          </button>
-        </div>
-
-        <div class="flex">
-          <button
-            type="button"
-            class="rounded-full"
-            @click="clear"
-          >
-            <UiButton
-              text="Clear"
-              :icon="false"
-              theme="coral"
-              size="medium"
-              :sound="hover"
-            />
-          </button>
+          <div
+            class="h-full origin-left bg-accent transition-[scale] duration-400 ease-outCubic motion-reduce:transition-none"
+            :style="{ scale: `${progress} 1` }"
+          />
         </div>
       </div>
 
       <div
-        v-else
-        class="relative flex items-center gap-3 p-3.5 pl-5 col-start-1 row-start-1 md:gap-5 md:p-5"
+        class="grid *:col-start-1 *:row-start-1 *:flex *:items-center *:gap-(--brief-nav-padding) *:p-(--brief-nav-padding)"
       >
-        <!-- Tucked into the bar's bottom left corner, out of the buttons' way: the pixel fill already shows progress -->
-        <p
-          v-if="isDraft"
-          class="absolute bottom-3.5 left-3.5 font-mono text-11 leading-none text-grey/60 tabular-nums md:bottom-5 md:left-5"
+        <Transition
+          name="brief-rise"
+          @enter="focusPanel"
         >
-          {{ brief.isSummary ? 'Review' : `${position} of ${brief.total}` }}
-        </p>
-
-        <p
-          v-else
-          class="flex-1 pl-1 text-14"
-        >
-          {{ brief.status === 'sent' ? 'Prototype' : 'Brief sent' }}
-        </p>
-
-        <!-- Sits just above the bar on mobile, so it never pushes the buttons apart -->
-        <p
-          v-if="error"
-          class="pl-1 text-14 text-coral max-md:absolute max-md:bottom-full max-md:left-0 max-md:mb-2 max-md:rounded-20 max-md:corner-shape-squircle max-md:bg-offblack-glass/50 max-md:outline max-md:outline-1 max-md:outline-white/15 max-md:backdrop-blur-sm max-md:px-4 max-md:py-2"
-          role="alert"
-        >
-          {{ error }}
-        </p>
-
-        <!-- In tab order Next comes first, then Previous, then Start again: Next is what's wanted nearly every
-             time. Reversed back for display, so they still read left to right as Start again, Previous, Next. -->
-        <div class="ml-auto flex flex-row-reverse items-center gap-2.5">
-          <button
-            type="button"
-            class="rounded-full"
-            :class="{ 'shake-once': shaking }"
-            @click="emit('primary')"
-            @animationend="shaking = false"
+          <div
+            v-if="panel === 'clear'"
+            data-brief-panel
           >
-            <UiButton
-              :text="primaryLabel"
-              theme="light"
-              arrow="right"
-              size="medium"
-              :sound="hover"
-            />
-          </button>
-
-          <!-- Not on the first step, where there's nowhere to go back to. Pops in on the second, as Start again does -->
-          <!-- Coming in, it waits a beat so Start again moves aside first and it pops into the space left -->
-          <Transition
-            name="brief-pop"
-            enter-active-class="brief-pop-enter-active delay-150 motion-reduce:delay-0"
-            @before-enter="measureReset"
-            @enter="onPreviousEnter"
-            @leave="onPreviousLeave"
-          >
-            <div
-              v-if="hasPrevious"
-              class="flex transition-opacity duration-200 ease-outCubic"
-              :class="{ 'opacity-40': brief.sending }"
-              :inert="brief.sending"
+            <p
+              class="flex-1 pl-3 text-14 font-medium whitespace-nowrap md:text-16"
+              role="status"
             >
-              <button
-                type="button"
-                class="rounded-full"
-                @click="back"
+              Clear everything?
+            </p>
+
+            <div class="flex">
+              <UiNavButton
+                data-autofocus
+                @click="
+                  play(soundDrawerClose);
+                  closePanel()
+                "
               >
-                <UiButton
-                  text="Back"
-                  theme="dark"
-                  arrow="left"
-                  size="medium"
-                  :sound="hover"
-                />
-              </button>
+                Cancel
+              </UiNavButton>
             </div>
-          </Transition>
 
-          <!-- Stays while its icon spins after a clear, then goes: there's nothing left to clear -->
-          <Transition
-            name="brief-pop"
-            @after-leave="spinning = false"
+            <div class="flex">
+              <UiNavButton
+                variant="danger"
+                @click="clear"
+              >
+                Clear
+              </UiNavButton>
+            </div>
+          </div>
+
+          <div
+            v-else-if="panel === 'settings'"
+            data-brief-panel
           >
-            <!-- Wrapped so the pop can fade and blur it: the button's own transition is for hover and press -->
+            <p class="flex-1 pl-3 text-14 font-medium whitespace-nowrap md:text-16">Settings</p>
+
             <div
-              v-if="isDraft && (hasStarted || clearing)"
-              class="flex transition-opacity duration-200 ease-outCubic"
-              :class="{ 'opacity-40': brief.sending }"
-              :inert="brief.sending"
+              role="group"
+              aria-label="Settings"
+              class="flex items-center gap-2"
             >
-              <button
-                ref="resetButton"
-                type="button"
+              <BriefSettingShortcuts
+                data-autofocus
+                class="max-md:hidden only-touch:hidden"
+              />
+              <ActionAudioToggle
+                data-autofocus
+                highlight
+              />
+              <ActionAccentCycle />
+              <UiNavButton
+                square
                 aria-label="Start again"
-                class="group flex size-(--ui-button-medium-height) items-center justify-center rounded-full bg-black text-beige transition-[color,scale] duration-200 ease-outCubic active:scale-92 only-hover:hover:text-white"
-                :inert="clearing"
-                @pointerenter="play(soundHover)"
-                @click="askToClear"
+                @click="
+                  play(soundWarning);
+                  panel = 'clear'
+                "
               >
-                <!-- Hover winds it back a little on a spring; clearing turns it all the way round -->
                 <IconReset
-                  class="size-4.5 transition-[rotate] motion-reduce:rotate-0!"
-                  :class="
-                    spinning
-                      ? '-rotate-360 duration-700 ease-outQuart'
-                      : 'duration-600 ease-spring-3 only-hover:group-hover:-rotate-45'
-                  "
-                  @transitionend="onSpun"
-                  @transitioncancel="onSpun"
+                  class="size-4.5 transition-[rotate] duration-600 ease-spring-3 only-hover:group-hover/button:-rotate-45 motion-reduce:rotate-0!"
                 />
-              </button>
+              </UiNavButton>
             </div>
-          </Transition>
-        </div>
+
+            <div class="flex">
+              <UiNavButton
+                square
+                aria-label="Close settings"
+                @click="
+                  play(soundDrawerClose);
+                  closePanel()
+                "
+              >
+                <IconClose class="size-4" />
+              </UiNavButton>
+            </div>
+          </div>
+
+          <div v-else>
+            <p
+              v-if="brief.inProgress"
+              data-brief-nav-part
+              class="shrink-0 pl-3 text-14 leading-none tabular-nums"
+            >
+              <template v-if="brief.isSummary">Review</template>
+              <template v-else> {{ position }}<span class="text-grey/40"> / {{ brief.total }}</span> </template>
+            </p>
+
+            <p
+              v-else
+              data-brief-nav-part
+              class="shrink-0 pl-3 text-14"
+            >
+              {{ brief.status === 'sent' ? 'Check your inbox' : 'Brief sent' }}
+            </p>
+
+            <p
+              v-if="error"
+              class="min-w-0 truncate pl-2 text-14 text-coral max-md:absolute max-md:bottom-full max-md:left-0 max-md:mb-2 max-md:max-w-full max-md:whitespace-normal max-md:rounded-20 max-md:corner-shape-squircle max-md:bg-black/50 max-md:outline max-md:outline-1 max-md:outline-ash max-md:backdrop-blur-sm max-md:px-4 max-md:py-2"
+              role="alert"
+            >
+              {{ error }}
+            </p>
+
+            <div
+              ref="group"
+              data-brief-nav-part
+              class="ml-auto flex flex-row-reverse items-center gap-(--brief-nav-padding)"
+            >
+              <UiNavButton
+                variant="primary"
+                class="tabular-nums"
+                :class="{ 'shake-once': shaking }"
+                :aria-disabled="resendWaiting || undefined"
+                :aria-keyshortcuts="enterAdvances ? 'Enter' : undefined"
+                @click="emit('primary')"
+                @animationend="shaking = false"
+              >
+                {{ primaryLabel }}
+                <BriefKeyHint
+                  v-if="enterAdvances"
+                  ref="enterKey"
+                  data-brief-enter-key
+                />
+              </UiNavButton>
+
+              <Transition v-bind="popLate">
+                <div
+                  v-if="hasPrevious"
+                  v-bind="whileSending"
+                >
+                  <UiNavButton
+                    :aria-keyshortcuts="enterAdvances ? 'Shift+Enter' : undefined"
+                    @click="back"
+                  >
+                    Back
+                    <BriefKeyHint
+                      v-if="enterAdvances"
+                      ref="backKey"
+                      shift
+                      data-brief-back-key
+                    />
+                  </UiNavButton>
+                </div>
+              </Transition>
+
+              <Transition v-bind="pop">
+                <div
+                  v-if="brief.inProgress"
+                  v-bind="whileSending"
+                >
+                  <UiNavButton
+                    ref="settingsButton"
+                    square
+                    aria-label="Settings"
+                    @click="
+                      play(soundDrawerOpen);
+                      panel = 'settings'
+                    "
+                  >
+                    <IconSettings
+                      ref="settingsIcon"
+                      class="size-4.5 transition-[rotate] duration-600 ease-spring-3 only-hover:group-hover/button:rotate-45 motion-reduce:rotate-0!"
+                    />
+                  </UiNavButton>
+                </div>
+              </Transition>
+            </div>
+          </div>
+        </Transition>
       </div>
-    </Transition>
+    </div>
   </nav>
 </template>

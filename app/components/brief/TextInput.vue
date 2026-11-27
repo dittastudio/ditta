@@ -2,24 +2,38 @@
 import { useDocumentVisibility, usePreferredReducedMotion } from '@vueuse/core'
 import { defineSound } from '@web-kits/audio'
 import { tap, tick } from '@@/.web-kits/core'
-import IconClose from '@/assets/icons/close.svg'
 import { BRIEF_LINK_MAX, BRIEF_TEXT_MAX } from '#shared/schemas/brief'
 
 // Native attributes (type, placeholder, autocomplete, inputmode, aria-*) fall through to the <input>
 defineOptions({ inheritAttrs: false })
+// Every field needs a name for autofill. The caller's (a question's key) wins, since $attrs is bound after it.
+const fallbackName = useId()
 
 interface Props {
   focusOnMount?: boolean
   small?: boolean
   // Examples shown in turn while the field is empty. The native placeholder should be the first, for screen readers.
   placeholders?: readonly string[]
+  // Joined to a field below ('top') or above ('bottom'): square on the side where they meet (see LinkInput)
+  join?: 'top' | 'bottom'
 }
 
-const { focusOnMount = false, small = false, placeholders = [] } = defineProps<Props>()
+const { focusOnMount = false, small = false, placeholders = [], join } = defineProps<Props>()
+const corners = computed(() => (join ? { top: 'rounded-t-10', bottom: 'rounded-b-10' }[join] : 'rounded-10'))
 const model = defineModel<string>({ default: '' })
 const emit = defineEmits<{ submit: [] }>()
+// A control inside the field on the right, such as a row's remove button. The field leaves room for it.
+const slots = defineSlots<{ end?: () => unknown }>()
 
 const input = useTemplateRef('input')
+const attrs = useAttrs()
+
+// The outline turns coral with an error, otherwise it's faint, half white on hover and full white while it's being
+// typed into
+const outline = computed(() => {
+  if (attrs['aria-invalid']) return 'border-coral'
+  return 'border-ash only-hover:hover:not-focus:border-white/50 focus:border-white'
+})
 
 // A tick for every key typed and a tap for every one deleted, like a phone keyboard with its clicks on. Pastes,
 // drops and autocorrect swaps aren't keys, so they stay quiet.
@@ -39,15 +53,9 @@ function onInput(event: Event) {
   if (sound) play(sound)
 }
 
-// Empties the field and hands focus straight back, so the next answer can be typed without reaching for the field
-function clear() {
-  model.value = ''
-  play(soundTap)
-  input.value?.focus({ preventScroll: true })
-}
-
 // Enter also confirms a word being composed (Chinese, Japanese and the like), which mustn't count as Next. Safari ends
-// the composition before its keydown, so its keyCode of 229 is the only sign.
+// the composition before its keydown, so its keyCode of 229 is the only sign. Only a bare Enter: Shift+Enter is Back,
+// which the brief handles (see useBriefKeys).
 function onEnter(event: KeyboardEvent) {
   if (event.isComposing || event.keyCode === 229) return
   event.preventDefault()
@@ -55,9 +63,7 @@ function onEnter(event: KeyboardEvent) {
 }
 
 onMounted(() => {
-  // The browser only scrolls for a focus that opens the keyboard (on touch, with no field holding it open already, as
-  // Shell does across a Next). Every other time the brief frames the field itself (see useBriefScroll).
-  if (focusOnMount) input.value?.focus({ preventScroll: !isTouch() || opensKeyboard(document.activeElement) })
+  if (focusOnMount) input.value?.focus()
 })
 
 // The examples go round once and come to rest on the first, rather than looping for as long as the field is empty.
@@ -82,52 +88,36 @@ watchEffect((onCleanup) => {
   <div class="relative grid w-full min-w-0">
     <input
       ref="input"
+      :name="fallbackName"
       v-bind="$attrs"
       v-model="model"
       :maxlength="$attrs.type === 'url' ? BRIEF_LINK_MAX : BRIEF_TEXT_MAX"
       enterkeyhint="next"
-      class="w-full scroll-mt-[calc(var(--dock-height)+--spacing(13.5))] rounded-10 border border-white/25 bg-white/10 px-5 text-white outline-none transition-colors duration-200 ease-outCubic focus:border-olive aria-invalid:border-coral"
+      class="w-full scroll-my-4 border px-5 text-white outline-none autofill:shadow-[inset_0_0_0_100vmax_var(--color-black)] autofill:[-webkit-text-fill-color:var(--color-white)] transition-[color,background-color,border-color,border-radius] duration-200 ease-outCubic"
       :class="[
+        corners,
+        outline,
         small ? 'py-3 text-16' : 'py-4 text-16 md:text-20',
         rotates ? 'placeholder:text-transparent' : 'placeholder:text-white/40',
-        model ? 'pr-14' : '',
+        slots.end ? 'pr-14' : '',
       ]"
-      @keydown.enter="onEnter"
+      @keydown.enter.exact="onEnter"
       @input="onInput"
     />
 
-    <!-- mousedown is held back so the field keeps focus, and on touch the keyboard stays up -->
-    <Transition
-      enter-active-class="transition-opacity duration-200 ease-outCubic"
-      leave-active-class="transition-opacity duration-200 ease-outCubic"
-      enter-from-class="opacity-0"
-      leave-to-class="opacity-0"
+    <div
+      v-if="slots.end"
+      class="absolute inset-y-0 right-0 flex items-center"
     >
-      <button
-        v-if="model"
-        type="button"
-        tabindex="-1"
-        aria-label="Clear"
-        class="group absolute inset-y-0 right-0 flex touch-manipulation items-center pr-5 pl-3 text-white/60 transition-colors duration-200 ease-outCubic only-hover:hover:text-white"
-        @mousedown.prevent
-        @click="clear"
-      >
-        <span
-          class="grid size-6 place-items-center rounded-full bg-white/15 transition-colors duration-200 ease-outCubic only-hover:group-hover:bg-white/25"
-        >
-          <IconClose class="size-3.5" />
-        </span>
-      </button>
-    </Transition>
+      <slot name="end" />
+    </div>
 
-    <!-- Stands in for the placeholder, which can't animate. Typing removes it at once, with no fade. -->
     <div
       v-if="rotates && !model"
       aria-hidden="true"
       class="pointer-events-none absolute inset-0 grid items-center border border-transparent px-5 text-white/40"
-      :class="small ? 'text-16' : 'text-16 md:text-20'"
+      :class="[small ? 'text-16' : 'text-16 md:text-20', slots.end ? 'pr-14' : '']"
     >
-      <!-- The next example arrives a beat behind, so the two cross rather than blur into each other -->
       <Transition
         name="brief-rise"
         enter-active-class="brief-rise-enter-active delay-60"

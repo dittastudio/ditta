@@ -3,13 +3,13 @@
 import type { BriefAnswersInput, BriefFieldKey, BriefFollowUpKey, BriefStepKey } from '#shared/schemas/brief'
 import { briefFollowUps, briefOptions, hasValue, isBriefFieldRequired, isFollowUpShown } from '#shared/schemas/brief'
 
-type BriefField = 'cards' | 'chips' | 'text' | 'email' | 'url' | 'links' | 'slider'
+type BriefField = 'cards' | 'text' | 'email' | 'url' | 'links' | 'slider'
 type BriefDraft = Partial<BriefAnswersInput>
 type BriefLinkRow = NonNullable<BriefAnswersInput['references']>[number]
-
-interface BriefFigure {
-  figure: string
-  unit: string
+// What's wrong with each part of a link row, for the fields to show
+interface BriefLinkRowErrors {
+  url: string[]
+  note: string[]
 }
 
 interface BriefQuestion {
@@ -23,8 +23,6 @@ interface BriefQuestion {
   initial?: string
   // A line under an option card's title, keyed by option
   descriptions?: Partial<Record<string, string>>
-  // A big figure with its unit under it in place of an option card's title, keyed by option
-  figures?: Partial<Record<string, BriefFigure>>
   placeholder?: string
   // Shown in turn in place of `placeholder`, for a question that's easier to answer with a few ideas to go on
   placeholders?: readonly string[]
@@ -48,16 +46,16 @@ const briefSteps: BriefStep[] = [
     multiple: true,
     options: briefOptions.services,
     descriptions: {
-      'Web Design': 'Planning, organising, and building the visual and interactive layers of a website.',
-      'Web Build': 'Planning, organising, and building the website based on a design.',
-      'Existing project': "You have something already that you'd like us to look at.",
-      Other: 'Anything else that might not be covered here.',
+      'Web Design': 'Planning, structuring and designing how your website looks and works.',
+      'Web Build': 'Developing, testing and launching your website from a finished design.',
+      'Existing project': 'You have a site and want help improving it.',
+      Other: "Something that isn't listed here.",
     },
   },
   {
     key: 'business',
     title: 'In a few words, what does your business do?',
-    hint: 'Give us your best elevator pitch 🛗',
+    hint: 'Give us your best elevator pitch.',
     field: 'text',
     placeholders: [
       'A physio clinic in Ealing',
@@ -70,7 +68,7 @@ const briefSteps: BriefStep[] = [
   {
     key: 'objectives',
     title: 'What are the main objectives for this work?',
-    hint: 'Pick what matters most.',
+    hint: 'Tick every one that fits.',
     field: 'cards',
     multiple: true,
     options: briefOptions.objectives,
@@ -80,11 +78,11 @@ const briefSteps: BriefStep[] = [
     title: 'When would you like your project ready?',
     field: 'cards',
     options: briefOptions.timing,
-    figures: {
-      ASAP: { figure: 'ASAP', unit: 'right away' },
-      '3 months': { figure: '3', unit: 'months' },
-      '6 months': { figure: '6', unit: 'months' },
-      Other: { figure: 'Other', unit: 'something else' },
+    descriptions: {
+      ASAP: "You'd like to get started as soon as possible.",
+      '3 months': 'Ready to launch within the next three months.',
+      '6 months': 'Ready to launch within the next six months.',
+      Other: 'A different timeline, or a fixed date to work to.',
     },
   },
   {
@@ -97,7 +95,7 @@ const briefSteps: BriefStep[] = [
     // Links only for now: uploads are M6 (docs/plans/brief-builder-milestones.md)
     key: 'files',
     title: "Is there anything you'd like to share?",
-    hint: 'Designs, brand guidelines, a brief — anything that helps.',
+    hint: 'Designs, brand guidelines, a brief, anything that helps.',
     field: 'links',
     // Rests on the first, which is also what screen readers hear
     placeholders: ['Paste a link', 'figma.com/design/…', 'drive.google.com/…', 'docs.google.com/…', 'dropbox.com/…'],
@@ -107,7 +105,7 @@ const briefSteps: BriefStep[] = [
   {
     key: 'contentStage',
     title: 'At what stage is your content?',
-    hint: 'Things like your about text, service descriptions and photos.',
+    hint: 'Things like product details, your about text, service descriptions and imagery.',
     field: 'cards',
     options: briefOptions.contentStage,
   },
@@ -136,7 +134,7 @@ const briefSteps: BriefStep[] = [
   {
     key: 'source',
     title: 'How did you find us?',
-    field: 'chips',
+    field: 'cards',
     options: briefOptions.source,
   },
   {
@@ -177,7 +175,12 @@ const hasBriefAnswer = (value: unknown): boolean =>
 
 const isBriefStepRequired = (step: BriefStep) => isBriefFieldRequired(step.key)
 
-const briefFirstName = (answers: BriefDraft) => answers.name?.trim().split(/\s+/)[0] ?? ''
+// Shown with a capital however it was typed ("will" reads "Will"). Only the first letter, so "McKenzie" keeps its
+// own, and only for display: the stored name stays as typed.
+const briefFirstName = (answers: Pick<BriefDraft, 'name'>) => {
+  const first = answers.name?.trim().split(/\s+/)[0] ?? ''
+  return first.charAt(0).toLocaleUpperCase('en-GB') + first.slice(1)
+}
 
 // `[name]` becomes the first name, or `, [name]` is dropped when there isn't one yet
 const personaliseBrief = (title: string, answers: BriefDraft) => {
@@ -251,8 +254,13 @@ const suggestBriefEmail = (email: string): string | null => {
   return local && fix ? `${local}@${fix}` : null
 }
 
-export type { BriefDraft, BriefField, BriefFigure, BriefLinkRow, BriefQuestion, BriefStep }
+// The least time between two emails for one brief: the server refuses a resend sooner (server/api/brief/[id]/resend.post.ts),
+// and Check your inbox counts it down on Resend (useBriefResendWait)
+const BRIEF_RESEND_COOLDOWN_MS = 20 * 1000
+
+export type { BriefDraft, BriefField, BriefLinkRow, BriefLinkRowErrors, BriefQuestion, BriefStep }
 export {
+  BRIEF_RESEND_COOLDOWN_MS,
   briefFirstName,
   briefSteps,
   formatBriefAnswer,

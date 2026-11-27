@@ -12,6 +12,9 @@
   --color-white: oklch(100% 0 0);
   --color-black: oklch(0% 0 0);
   --color-blue: blue;
+  /* The one resting border and outline colour (fields, options, the Dock and brief nav): solid, so it doesn't stack
+     where two fields join or shift with what's behind it */
+  --color-ash: oklch(26.96% 0 0);
   --color-beige: oklch(0.8643 0.0104 32.52);
   --color-charcoal: oklch(29.72% 0 0);
   --color-coral: oklch(73.99% 0.137 20.91);
@@ -23,12 +26,6 @@
   --color-offblack: oklch(22.21% 0 0);
   --color-offblack-glass: oklch(33.28% 0 0); /* reads as offblack at 50% over black */
   --color-olive: oklch(0.7442 0.0554 154.96);
-  --color-olive-light: oklch(83.37% 0.036 154.96); /* olive with 35% white */
-  --color-olive-dark: color-mix(
-    in srgb,
-    var(--color-olive) 15%,
-    var(--color-offblack)
-  ); /* olive at 10% over offblack */
   --color-pink: oklch(0.8221 0.1207 348.4);
   --color-putty: oklch(90.72% 0.0017 67.8);
   --color-red: oklch(64.645% 0.12902 21.246);
@@ -64,6 +61,7 @@
   --font-weight-heavy: 900;
 
   --text-\*: initial;
+  --text-10: 0.625rem;
   --text-11: 0.6875rem;
   --text-12: 0.75rem;
   --text-14: 0.875rem;
@@ -81,9 +79,25 @@
   --radius-\*: initial;
   --radius-full: 9999px;
   --radius-0: 0px;
+  --radius-4: 4px;
   --radius-5: 5px;
   --radius-10: 10px;
+  --radius-16: 16px;
   --radius-20: 20px;
+
+  /* On top of Tailwind's blur scale (xs is 4px): the faint blur a small thing leaves with (see UiKbd) */
+  --blur-2xs: 2px;
+
+  /* The darker lip along the bottom of a MacBook-style keycap (see UiKbd), in the text's colour */
+  --shadow-key: inset 0 -1.5px 0 color-mix(in oklab, currentcolor 30%, transparent);
+
+  /* Durations, as duration-hover etc. Quick to react, gentle to settle: hover feedback is near instant, things that
+     close or show again are quick, a panel opening and a decorative fade take a little longer. Choreographed and
+     playful motion (the brief's steps, springs, the toys) keeps its own timings. */
+  --transition-duration-hover: 150ms;
+  --transition-duration-quick: 250ms;
+  --transition-duration-fade: 300ms;
+  --transition-duration-panel: 350ms;
 
   --ease-inQuad: cubic-bezier(0.55, 0.085, 0.68, 0.53);
   --ease-outQuad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -332,8 +346,18 @@
     --app-gutter-outer: utopia.clamp(20, 190);
     --app-gutter-inner: --spacing(5);
     --app-vertical-rhythm: utopia.clamp(100, 300);
-    /* The medium UiButton's icon, and the height its padding puts round it. Icon-only buttons beside one match it */
+
     --ui-button-medium-icon: utopia.clamp(24, 30);
     --ui-button-medium-height: calc(var(--ui-button-medium-icon) + --spacing(4));
+
+    --brief-nav-inset: --spacing(7.5);
+    --brief-nav-button: --spacing(11);
+    --brief-nav-padding: --spacing(1.5);
+    --brief-nav-height: calc(var(--brief-nav-button) + var(--brief-nav-padding) * 2);
+
+    @variant md {
+      --brief-nav-padding: --spacing(2);
+    }
+    --brief-nav-space: calc(var(--brief-nav-inset) + (var(--brief-nav-height) * 2));
   }
 }

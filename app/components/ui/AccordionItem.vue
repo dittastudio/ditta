@@ -14,7 +14,7 @@ const { heading, copy } = defineProps<Props>()
 const soundPageEnter = defineSound(drawerOpen)
 const soundPageExit = defineSound(drawerClose)
 const soundHover = defineSound(hover)
-const { play } = useAudio()
+const { play, playHover } = useAudio()
 
 function handleToggle(event: Event) {
   const details = event.target as HTMLDetailsElement
@@ -26,7 +26,7 @@ function handleToggle(event: Event) {
   <details
     class="accordion-item group w-full bg-white/7.5"
     @toggle="handleToggle"
-    @pointerenter="play(soundHover)"
+    @pointerenter="playHover($event, soundHover)"
   >
     <summary
       v-if="heading"
@@ -38,7 +38,7 @@ function handleToggle(event: Event) {
 
     <div
       v-if="storyblokRichTextContent(copy)"
-      class="w-full pl-18 pr-10 pb-10 md:pl-21.5 md:pr-12 md:pb-12 opacity-0 transition-opacity duration-250 ease-out delay-0 group-open:starting:opacity-0 group-open:opacity-60 group-open:duration-500 group-open:delay-200 prose text-balance"
+      class="w-full pl-18 pr-10 pb-10 md:pl-21.5 md:pr-12 md:pb-12 opacity-0 transition-opacity duration-150 ease-outCubic delay-0 group-open:starting:opacity-0 group-open:opacity-60 group-open:duration-quick group-open:delay-100 prose text-balance"
     >
       <StoryblokText :html="copy" />
     </div>
@@ -47,10 +47,10 @@ function handleToggle(event: Event) {
 
 <style lang="postcss" scoped>
 .accordion-item__cross {
-  animation: rotate-reset 0.5s var(--ease-outBack) 0.2s both;
+  animation: rotate-reset 0.35s var(--ease-outBack) both;
 
   .accordion-item[open] & {
-    animation: rotate-open 0.5s var(--ease-out) both;
+    animation: rotate-open 0.3s var(--ease-outCubic) both;
   }
 }
 

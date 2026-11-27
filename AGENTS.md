@@ -77,7 +77,8 @@ app/assets/css/app.css       # Tailwind import + @theme tokens (entry)
 - **Spacing base is 4px** (`--spacing: 4px`). Tailwind spacing utilities (`p-2`, `gap-4`, etc.) multiply this base — `p-2` = 8px, `p-4` = 16px.
 - **Breakpoints** are `2xs` (375px), `xs` (480px), `sm` (600px), `md` (800px), `lg` (1200px), `xl` (1440px), `2xl` (1800px). They mirror the `@nuxt/image` `screens` config in `nuxt.config.ts` — keep both in sync.
 - **Custom variants** available: `only-hover:` (hover-capable devices), `only-touch:` (touch devices). Defined in `app/assets/css/utils.css`.
-- **Easings** are exposed as Tailwind `ease-*` utilities and as CSS variables (`var(--ease-outCubic)`, etc.). Use them for transitions.
+- **Easings** are exposed as Tailwind `ease-*` utilities and as CSS variables (`var(--ease-outCubic)`, etc.). Use them for transitions. Default to `ease-outCubic`, not Tailwind's `ease-out`.
+- **Durations** come from the `--transition-duration-*` tokens: `duration-hover` (150ms), `duration-quick` (250ms, closes and small enters), `duration-fade` (300ms, decorative fades), `duration-panel` (350ms, panels opening), or `var(--transition-duration-hover)` in CSS. Exits run quicker than entrances. Choreographed or playful motion (brief steps, springs, the Hero/Mario toys) keeps its own timings.
 - **Prefer utility classes in templates** over `<style>` blocks. Vue SFCs in this repo do not use `<style scoped>` — keep that convention. Add to global CSS files only when a utility composition would be unreasonable (e.g. selection styles, complex transitions, `@font-face`).
 - When writing custom CSS, place it in the appropriate layer (`@layer base` for resets/element styling, `@layer theme` for document-level theming) and use `var(--token)` references.
 - Use `--alpha(var(--color-x) / N%)` for alpha blending of theme colors (see `resets.css` for an example).

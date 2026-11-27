@@ -1,17 +1,43 @@
 <script lang="ts" setup>
-import type { BriefLinkRow, BriefQuestion } from '#shared/utils/brief'
+import type { BriefLinkRow, BriefLinkRowErrors, BriefQuestion } from '#shared/utils/brief'
+import type { BriefFieldKey } from '#shared/schemas/brief'
+import type { Component } from 'vue'
+import { briefLinkLimits } from '#shared/schemas/brief'
+import IconChatgpt from '@/assets/icons/chatgpt.svg'
+import IconClaude from '@/assets/icons/claude.svg'
+import IconGoogle from '@/assets/icons/google.svg'
+import IconInstagram from '@/assets/icons/instagram.svg'
+import IconLinkedin from '@/assets/icons/linkedin.svg'
+import IconReferral from '@/assets/icons/referral.svg'
+import BriefDot from '@/components/brief/Dot.vue'
 
 interface Props {
   question: BriefQuestion
   labelledby: string
   errors?: string[]
-  rowErrors?: string[][]
+  rowErrors?: BriefLinkRowErrors[]
   focusOnMount?: boolean
 }
 
 const { question, labelledby, errors = [], rowErrors = [], focusOnMount = false } = defineProps<Props>()
 const model = defineModel<unknown>()
-const emit = defineEmits<{ submit: [] }>()
+// `touch` once a typed answer has been left, so its errors can start to show (see Question)
+const emit = defineEmits<{ submit: []; touch: [] }>()
+
+// Logos for option cards, kept here rather than with the questions in #shared, which the server reads too. The cast is
+// because vue-tsc types an `.svg` import by vite/client's declaration (a URL string), not the component one in
+// app/types, though vite-svg-loader makes it a component at build time.
+const optionIcons: Partial<Record<BriefFieldKey, Partial<Record<string, Component>>>> = {
+  source: {
+    Google: IconGoogle,
+    Instagram: IconInstagram,
+    LinkedIn: IconLinkedin,
+    ChatGPT: IconChatgpt,
+    Claude: IconClaude,
+    Referral: IconReferral,
+    'Your work': BriefDot,
+  } as unknown as Partial<Record<string, Component>>,
+}
 
 // Shows what Regle reports; never validates anything itself
 const errorId = useId()
@@ -40,21 +66,28 @@ const single = as<string | undefined>()
 const links = as<BriefLinkRow[] | undefined>()
 
 const inputmode = { email: 'email', url: 'url' } as const
+
+// Leaving a field you've typed in is when it's checked. Not an empty one, which would only be told off for being
+// empty, and not when the whole window loses focus, which isn't leaving the field.
+const typed = ['text', 'email', 'url', 'links'].includes(question.field)
+
+function onFocusout() {
+  if (typed && document.hasFocus() && hasBriefAnswer(model.value)) emit('touch')
+}
 </script>
 
 <template>
   <div
-    data-brief-target
-    class="flex flex-col gap-3"
+    class="flex flex-col gap-(--brief-error-gap) [--brief-error-gap:--spacing(3)]"
+    @focusout="onFocusout"
   >
     <BriefOptions
-      v-if="question.field === 'cards' || question.field === 'chips'"
+      v-if="question.field === 'cards'"
       v-model="options"
       v-bind="a11y"
       :options="question.options ?? []"
       :descriptions="question.descriptions"
-      :figures="question.figures"
-      :variant="question.field"
+      :icons="optionIcons[question.key]"
       :multiple="question.multiple"
     />
 
@@ -62,6 +95,7 @@ const inputmode = { email: 'email', url: 'url' } as const
       v-else-if="question.field === 'slider'"
       v-model="single"
       v-bind="a11y"
+      :name="question.key"
       :options="question.options ?? []"
       :initial="question.initial"
     />
@@ -74,6 +108,8 @@ const inputmode = { email: 'email', url: 'url' } as const
       :placeholders="question.placeholders"
       :note-placeholder="question.notePlaceholder"
       :sharing-nudge="question.sharingNudge"
+      :max="briefLinkLimits[question.key as keyof typeof briefLinkLimits]"
+      :focus-on-mount="focusOnMount"
       @submit="emit('submit')"
     />
 
@@ -81,6 +117,7 @@ const inputmode = { email: 'email', url: 'url' } as const
       v-else
       v-model="text"
       v-bind="a11y"
+      :name="question.key"
       :type="question.field === 'email' || question.field === 'url' ? question.field : 'text'"
       :inputmode="question.field === 'email' || question.field === 'url' ? inputmode[question.field] : undefined"
       :placeholder="question.placeholders?.[0] ?? question.placeholder"

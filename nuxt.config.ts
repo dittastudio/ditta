@@ -11,6 +11,8 @@ const isSpa = ciBranch ? ciBranch !== 'main' : process.env.NUXT_PRERENDER === 'f
 const isProduction = ciBranch === 'main'
 
 export default defineNuxtConfig({
+  // The e2e tests run their own dev server (playwright.config.ts), beside `npm run dev`, which locks .nuxt
+  buildDir: process.env.NUXT_E2E ? '.nuxt-e2e' : undefined,
   modules: [
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',
@@ -86,13 +88,17 @@ export default defineNuxtConfig({
     '/**': {
       prerender: !isSpa,
     },
-    // Per-visitor form state, nothing to prerender (docs/plans/brief-builder-milestones.md)
-    // noindex as a response header as well as a meta tag, since the page is client-only and crawlers that don't
-    // run JavaScript never see the tag. Remove this and the page's useSeoMeta robots at launch (M7).
-    '/brief': {
+    // Per-visitor form state, nothing to prerender (docs/plans/brief-builder-milestones.md). /brief is indexed;
+    // /brief/confirm, only ever reached from an email link, isn't: noindex as a response header as well as a meta tag,
+    // since the page is client-only and crawlers that don't run JavaScript never see the tag.
+    '/brief/confirm': {
       ssr: false,
       prerender: false,
       robots: false,
+    },
+    '/brief': {
+      ssr: false,
+      prerender: false,
     },
   },
   nitro: {
@@ -102,6 +108,17 @@ export default defineNuxtConfig({
     },
     experimental: {
       wasm: true, // ...for Cloudflare Workers
+      tasks: true,
+    },
+    // Bundled into the server for the brief PDF (server/pdf/brief.ts), which embeds the brand font and logo rather
+    // than fetching them, so it renders the same wherever the brief was sent from (localhost included)
+    serverAssets: [
+      { baseName: 'fonts', dir: '../public/fonts' },
+      { baseName: 'icons', dir: '../app/assets/icons' },
+    ],
+    // Cron triggers on the Worker (server/tasks). Each cron also has to be in wrangler.jsonc's triggers.
+    scheduledTasks: {
+      '0 * * * *': ['brief:sweep'],
     },
     prerender: {
       crawlLinks: !isSpa,
@@ -135,6 +152,13 @@ export default defineNuxtConfig({
       }
     },
   },
+  // `nuxt dev` runs with wrangler's local bindings from wrangler.jsonc: the briefs' D1 (`.wrangler/state`) and the rate
+  // limit. Apply migrations to it with `npx wrangler d1 migrations apply ditta-briefs --local`.
+  $development: {
+    nitro: {
+      preset: 'cloudflare-dev',
+    },
+  },
   ssr: !isSpa,
   css: ['~/assets/css/app.css'],
   devtools: { enabled: false },
@@ -146,6 +170,13 @@ export default defineNuxtConfig({
     brief: {
       from: 'ditta briefs <onboarding@resend.dev>',
       to: 'delivered@resend.dev',
+    },
+    // Browser Run, which renders the confirmed brief's PDF (server/utils/briefPdf.ts). The account ID is set in
+    // wrangler.jsonc; NUXT_CLOUDFLARE_BROWSER_TOKEN is a Worker secret ("Browser Run: Edit" on this account only).
+    // Without them the emails go without the PDF.
+    cloudflare: {
+      accountId: '',
+      browserToken: '',
     },
     // The Storyblok token lives in the module's `public.storyblok.accessToken`. On Cloudflare, runtime vars override
     // both at request time: NUXT_PUBLIC_STORYBLOK_ACCESS_TOKEN (the previews' secret) and NUXT_PUBLIC_STORYBLOK_VERSION.

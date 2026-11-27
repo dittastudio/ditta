@@ -2,6 +2,7 @@
 .output
 .data
 .nuxt
+.nuxt-e2e
 .nitro
 .cache
 dist
@@ -35,3 +36,7 @@ logs
 
 # Wrangler (Nitro writes .wrangler/deploy/config.json on every build)
 .wrangler
+
+# Playwright (npm run test:e2e)
+test-results
+playwright-report

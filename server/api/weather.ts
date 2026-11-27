@@ -1,5 +1,3 @@
-import { $fetch } from 'ofetch'
-
 interface OpenMeteoResponse {
   current: {
     temperature_2m: number

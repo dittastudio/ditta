@@ -3,7 +3,11 @@ import type { BriefFieldKey } from '#shared/schemas/brief'
 import type { BriefDraft } from '#shared/utils/brief'
 import { briefOptions } from '#shared/schemas/brief'
 
-export type BriefStatus = 'draft' | 'sent' | 'confirmed'
+// `intro` is the title and Start button before the first question. `sent` is waiting on the email link (Check your
+// inbox), `confirmed` once it's been clicked.
+export type BriefStatus = 'intro' | 'draft' | 'sent' | 'confirmed'
+
+const briefSettingDefaults = { shortcuts: false }
 
 // The in-progress brief. Lives only in this browser (localStorage) until it's sent.
 export const useBriefStore = defineStore(
@@ -13,25 +17,49 @@ export const useBriefStore = defineStore(
     const answers = ref<BriefDraft>({})
     const stepIndex = ref(0)
     const editingFromSummary = ref(false)
-    const status = ref<BriefStatus>('draft')
+    const status = ref<BriefStatus>('intro')
+    // Still being filled in: the intro counts, as the first step's way in
+    const inProgress = computed(() => status.value === 'draft' || status.value === 'intro')
     // Which way the last move went, for the slide direction. Not persisted.
     const direction = ref<1 | -1>(1)
-    // When the first answer was given, so the server can turn away a brief filled in faster than a person could
+    // When Start was pressed (or, for a draft from before the intro, the first answer given), so the server can turn away a brief filled in faster than a person could
     const startedAt = ref<number | null>(null)
     // Kept for the thank-you screen, since the answers are cleared once the brief has gone
     const sentName = ref('')
+    // Once sent: the brief's id on the server, the address its link went to and when, for Check your inbox. An edit
+    // sent again while it's unconfirmed updates the same brief.
+    const briefId = ref<string | null>(null)
+    const sentEmail = ref('')
+    const lastSentAt = ref(0)
     // Not persisted: a send in flight, the Turnstile token for it, and the honeypot
     const sending = ref(false)
     const turnstileToken = ref('')
     // Turnstile reported an error (a hostname it isn't set up for, a blocked script), so no token is coming
     const turnstileFailed = ref(false)
+    // Cloudflare is showing its box and waiting for a click, so no token comes until there is one
+    const turnstileAsking = ref(false)
     const honeypot = ref('')
+    // Preferences from the nav's settings, rather than part of the draft, so Start again leaves them. Each setting has
+    // its own control in the settings row (see BriefSettingShortcuts).
+    // - shortcuts: whether the keyboard shortcut keys show (see UiKbd). Never on touch, whatever it's set to.
+    const settings = ref({ ...briefSettingDefaults })
+    // While the shortcuts setting is hovered or focused, the keys show faintly. Not persisted.
+    const previewShortcuts = ref(false)
+    const shortcuts = computed(() => (settings.value.shortcuts ? 'on' : previewShortcuts.value ? 'preview' : undefined))
 
     const summaryIndex = briefSteps.length
     // The summary isn't counted: "1 of 12" covers the questions
     const total = briefSteps.length
     const step = computed(() => briefSteps[stepIndex.value])
     const isSummary = computed(() => stepIndex.value === summaryIndex)
+    // What the main button does on a question: shared by its label (Nav) and its sound (Shell)
+    const advance = computed<'summary' | 'review' | 'skip' | 'next'>(() => {
+      const current = step.value
+      if (editingFromSummary.value) return 'summary'
+      if (current?.field === 'email') return 'review'
+      if (current && !isBriefStepRequired(current) && !hasBriefAnswer(answers.value[current.key])) return 'skip'
+      return 'next'
+    })
 
     function setAnswer<K extends BriefFieldKey>(key: K, value: BriefDraft[K]) {
       startedAt.value ??= Date.now()
@@ -56,8 +84,11 @@ export const useBriefStore = defineStore(
       }
     }
 
-    // `files` was a single link before it became link rows. Runs when a saved draft is loaded.
+    // `files` was a single link before it became link rows, and a `source` option was reworded. Runs when a saved
+    // draft is loaded, before dropStaleChoices would drop the old wording.
     function upgradeSavedAnswers() {
+      if ((answers.value.source as string | undefined) === 'From a website you made') answers.value.source = 'Your work'
+
       const files: unknown = answers.value.files
       if (typeof files !== 'string') return
       if (files.trim()) answers.value.files = [{ url: files, note: '' }]
@@ -81,15 +112,44 @@ export const useBriefStore = defineStore(
       else goTo(stepIndex.value - 1)
     }
 
+    // Start, from the intro: on to the first question
+    function start() {
+      startedAt.value ??= Date.now()
+      direction.value = 1
+      status.value = 'draft'
+    }
+
+    // Back to the intro. Whatever's been answered stays, and Start picks up from the first question again.
+    function showIntro() {
+      direction.value = -1
+      stepIndex.value = 0
+      editingFromSummary.value = false
+      status.value = 'intro'
+    }
+
     function setStatus(value: BriefStatus) {
       direction.value = 1
       status.value = value
     }
 
-    // The brief has reached the team: the answers go, so a refresh can't send it twice
-    function markSent() {
-      sentName.value = briefFirstName(answers.value)
+    // Sent, and waiting on its email link. The answers stay until it's confirmed, so it can still be edited and sent
+    // again.
+    function markPending(id: string, email: string) {
+      briefId.value = id
+      sentEmail.value = email
+      lastSentAt.value = Date.now()
+      turnstileToken.value = ''
+      editingFromSummary.value = false
+      setStatus('sent')
+    }
+
+    // The link was clicked, here or on another device: the brief has reached the team, and the answers go
+    function markConfirmed() {
+      sentName.value = briefFirstName(answers.value) || sentName.value
       answers.value = {}
+      briefId.value = null
+      sentEmail.value = ''
+      lastSentAt.value = 0
       startedAt.value = null
       honeypot.value = ''
       turnstileToken.value = ''
@@ -98,16 +158,20 @@ export const useBriefStore = defineStore(
       setStatus('confirmed')
     }
 
+    // Start again, and Start over once a brief has gone: a new brief, from the intro
     function reset() {
       if (sending.value) return
       answers.value = {}
       startedAt.value = null
       sentName.value = ''
+      briefId.value = null
+      sentEmail.value = ''
+      lastSentAt.value = 0
       honeypot.value = ''
       turnstileToken.value = ''
       stepIndex.value = 0
       editingFromSummary.value = false
-      status.value = 'draft'
+      status.value = 'intro'
       direction.value = -1
     }
 
@@ -116,35 +180,62 @@ export const useBriefStore = defineStore(
       stepIndex,
       editingFromSummary,
       status,
+      inProgress,
       direction,
       startedAt,
       sentName,
+      briefId,
+      sentEmail,
+      lastSentAt,
       sending,
       turnstileToken,
       turnstileFailed,
+      turnstileAsking,
       honeypot,
+      settings,
+      previewShortcuts,
+      shortcuts,
       summaryIndex,
       total,
       step,
       isSummary,
+      advance,
       setAnswer,
       dropStaleChoices,
       upgradeSavedAnswers,
       goTo,
       next,
       back,
+      start,
+      showIntro,
       setStatus,
-      markSent,
+      markPending,
+      markConfirmed,
       reset,
     }
   },
   {
     persist: {
-      pick: ['answers', 'stepIndex', 'editingFromSummary', 'status', 'startedAt', 'sentName'],
+      pick: [
+        'answers',
+        'stepIndex',
+        'editingFromSummary',
+        'status',
+        'startedAt',
+        'sentName',
+        'briefId',
+        'sentEmail',
+        'lastSentAt',
+        'settings',
+      ],
       storage: piniaPluginPersistedstate.localStorage(),
       afterHydrate: ({ store }) => {
+        // A setting added since these were saved takes its default
+        store.settings = { ...briefSettingDefaults, ...store.settings }
         store.upgradeSavedAnswers()
         store.dropStaleChoices()
+        // Sent from the prototype, which sent nothing: back to the review, to send for real
+        if (store.status === 'sent' && !store.briefId) store.status = 'draft'
       },
     },
   },

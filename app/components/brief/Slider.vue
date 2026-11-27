@@ -5,6 +5,8 @@ import { spring as springSound } from '@@/.web-kits/core'
 
 // Attributes (aria-labelledby, aria-describedby) belong on the range input, not the wrapper
 defineOptions({ inheritAttrs: false })
+// Every field needs a name for autofill. The caller's (a question's key) wins, since $attrs is bound after it.
+const fallbackName = useId()
 
 interface Props {
   options: readonly string[]
@@ -35,6 +37,7 @@ const RESISTANCE = 0.2 // how far the handle follows the pointer within a band
 const PULL = 0.55 // how much it stretches towards the pointer while held
 const SPEED_STRETCH = 0.045 // how much it stretches with speed in flight
 const MAX_STRETCH = 0.18
+const KEY_LEAN = 0.12 // how much it leans towards an arrow key while it's held
 const MOVE = { stiffness: 500, damping: 26 } // under-damped (ζ ≈ 0.58): a small overshoot, then settles
 const SHAPE = { stiffness: 800, damping: 26 } // ζ ≈ 0.46, so the shape gives a little wobble as it lands
 
@@ -63,6 +66,7 @@ const shape: Spring = { value: 0, velocity: 0 }
 let target = position.value
 let moving = false
 let pull = 0
+let lean = 0 // -1 or 1 while an arrow key is held, towards it
 
 const { pause, resume, isActive } = useRafFn(({ delta }) => tick(Math.min(delta / 1000, 1 / 30)), { immediate: false })
 
@@ -82,7 +86,7 @@ function tick(dt: number) {
   // Both pulls act at once, so there's never a hand-over between them: its own speed stretches it along its path, and
   // the pointer's tension stretches it towards the finger. Let go and both fade, and it rounds out. The tension only
   // counts while a drag is live, so however a drag ends, the shape can never be left held out of round.
-  const goal = clamp(move.velocity * SPEED_STRETCH + (dragging.value ? pull * PULL : 0), MAX_STRETCH)
+  const goal = clamp(move.velocity * SPEED_STRETCH + (dragging.value ? pull * PULL : 0) + lean * KEY_LEAN, MAX_STRETCH)
   stepSpring(shape, goal, SHAPE, dt)
 
   if (!moving && isSettled(shape, goal, 0.001, 0.01)) {
@@ -195,22 +199,34 @@ function release(event: PointerEvent) {
   resume() // make sure the shape gets a frame to round out, whatever state the loop was left in
 }
 
-// Keyboard and screen readers go through the native input, one band at a time, with no animation
+// Keyboard and screen readers go through the native input, one band at a time, on the same spring as a tap. A key held
+// down retargets the spring as it goes, so the handle stretches along behind it rather than queueing up hops.
 function onInput(event: Event) {
-  const index = Number((event.target as HTMLInputElement).value)
-  snap(index)
-  place(index)
-  model.value = options[index]
+  choose(Number((event.target as HTMLInputElement).value))
+}
+
+// An arrow key held is a finger pressing: the value steps on keydown as a native range's does, and the handle leans
+// towards the key for as long as it's held, letting go on keyup. Held at an end, it only leans, pressed against it.
+const arrows: Partial<Record<string, 1 | -1>> = { ArrowRight: 1, ArrowUp: 1, ArrowLeft: -1, ArrowDown: -1 }
+
+function setLean(value: number) {
+  if (still.value || value === lean) return
+  lean = value
+  resume()
 }
 
 // With nothing chosen the native input still sits at the first band, so Left or Home wouldn't move it and the first
 // band could only be reached by going right and back. Any of them picks it instead.
 function onKeydown(event: KeyboardEvent) {
+  setLean(arrows[event.key] ?? lean)
+
   if (chosen.value !== -1 || !['ArrowLeft', 'ArrowDown', 'Home', 'PageDown'].includes(event.key)) return
   event.preventDefault()
-  snap(0)
-  place(0)
-  model.value = options[0]
+  choose(0)
+}
+
+function onKeyup(event: KeyboardEvent) {
+  if (arrows[event.key] === lean) setLean(0)
 }
 
 // Keep the handle in step when the answer changes from outside (Start again, a restored draft)
@@ -240,14 +256,24 @@ const fillStyle = computed(() => ({ transform: `scaleX(${Math.min(Math.max(posit
 </script>
 
 <template>
-  <div class="@container flex flex-col gap-6">
-    <p
-      class="text-40 leading-none trim-both md:text-64"
-      :class="{ 'text-beige': shown === -1 }"
-      aria-hidden="true"
-    >
-      {{ shown === -1 ? 'Drag to choose' : options[shown] }}
-    </p>
+  <div
+    class="@container flex flex-col gap-6"
+    data-brief-slider
+  >
+    <div class="flex items-end justify-between gap-4">
+      <p
+        class="text-40 leading-none trim-both md:text-64"
+        :class="{ 'text-beige': shown === -1 }"
+        aria-hidden="true"
+      >
+        {{ shown === -1 ? 'Drag to choose' : options[shown] }}
+      </p>
+
+      <span class="flex gap-1">
+        <span data-brief-key="ArrowLeft"><UiKbd>←</UiKbd></span>
+        <span data-brief-key="ArrowRight"><UiKbd>→</UiKbd></span>
+      </span>
+    </div>
 
     <div
       ref="track"
@@ -259,6 +285,7 @@ const fillStyle = computed(() => ({ transform: `scaleX(${Math.min(Math.max(posit
       @lostpointercapture="release"
     >
       <input
+        :name="fallbackName"
         v-bind="$attrs"
         :value="Math.max(chosen, 0)"
         type="range"
@@ -266,9 +293,12 @@ const fillStyle = computed(() => ({ transform: `scaleX(${Math.min(Math.max(posit
         :max="last"
         step="1"
         :aria-valuetext="chosen === -1 ? 'Not chosen yet' : options[chosen]"
+        aria-keyshortcuts="ArrowLeft ArrowRight"
         class="peer pointer-events-none absolute inset-0 size-full opacity-0"
         @input="onInput"
         @keydown="onKeydown"
+        @keyup="onKeyup"
+        @blur="setLean(0)"
       />
 
       <div class="absolute inset-x-3 top-1/2 h-0.5 -translate-y-1/2 bg-graphite">
@@ -278,7 +308,6 @@ const fillStyle = computed(() => ({ transform: `scaleX(${Math.min(Math.max(posit
         />
       </div>
 
-      <!-- A dot at each stop, so the scale reads as stepped even when only its ends are labelled -->
       <span
         v-for="(option, i) in options"
         :key="option"
@@ -294,7 +323,6 @@ const fillStyle = computed(() => ({ transform: `scaleX(${Math.min(Math.max(posit
       />
     </div>
 
-    <!-- On a narrow slider only the ends are labelled: the readout above names the value, and the dots show the stops -->
     <div
       class="relative h-5 text-14 leading-tight text-beige"
       aria-hidden="true"

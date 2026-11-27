@@ -80,7 +80,7 @@ This is the recovery loop. Clicking it opens a panel on the Check-your-inbox scr
 [Not received your email?]
    • Check spam/promotions
    • Email shown, editable:  [ jo@acme.co      ]   ← fix a typo here
-   • [Resend]  (rate-limited, e.g. once per 60s)
+   • [Resend]  (rate-limited, e.g. once per 20s)
 ```
 
 What happens on **Resend**:
@@ -121,7 +121,7 @@ If they go **back** to edit answers while pending, the next Submit updates the s
 
 ## Screens
 
-1. **Brief steps**: one topic per step, progress indicator, Back/Next, local autosave. Screen 6 takes up to 3 links; file uploads are M6.
+1. **Brief steps**: one topic per step, progress indicator, Back/Next, local autosave. Screen 6 takes up to 3 links; no file uploads.
 2. **Your details** (steps 9–12): name, website, source and email (with a light "did you mean gmail.com?" check and a consent line linking to the privacy policy). Honeypot field on the email step.
 3. **Summary**: every answer with Edit links, then **Send brief**, which is the Submit. Putting it after the details means the email is on screen to check before anything is sent.
 4. **Check your inbox**: shows the address, "Not received your email?" panel, auto-advances on confirm.
@@ -223,7 +223,7 @@ No reminder emails are sent. Emails 2 and 3 can go in one `resend.batch.send` ca
 - The template is HTML/CSS, so it can use the site's own fonts (`public/fonts/`), the colour and spacing tokens from `app/assets/css/app.css`, and the logo SVG (`app/assets/icons/ditta.svg`). The PDF then stays on-brand automatically as the brand evolves.
 - It needs CSS paged-media support for a proper document: A4, margins, a header/footer with page numbers via Puppeteer's `headerTemplate`/`footerTemplate`, and `break-inside: avoid` on answer groups.
 - Render it from an internal-only route or a server-side HTML string. It must not be public. For example, a Worker endpoint that takes a signed, short-lived render token and feeds the brief's answers into the template.
-- Cost and limits: Browser Rendering needs the Workers Paid plan and has concurrency and time limits. That's fine at the expected brief volume.
+- Cost and limits: Browser Run (formerly Browser Rendering) works on the free plan: 10 minutes of browser time a day, one PDF every 10 seconds. A brief takes about 1.5 seconds, so that's several hundred a day; a render turned away waits 10 seconds and tries again.
 
 **Fallback** if Browser Rendering proves awkward: build the PDF with `pdf-lib`, which is pure JS and runs in Workers. That means more manual layout, but no browser.
 
