@@ -195,4 +195,4 @@ Done by hand on 27 Nov: migration `0003` applied to both databases with `--remot
 
 Not required checks: on the org's free plan, rulesets on a private repo aren't enforced, and the checks already show on every push and PR. The `e2e` job still passes at once when nothing relevant changed, so it can be made required if the plan changes.
 
-Still to do: send a brief on the `develop` preview after reaching `/brief` from a link in the app, confirm it, and check both emails arrive with the PDF.
+Checked on the `develop` preview (27 Nov): a brief sent after reaching `/brief` from a link in the app passed Turnstile, confirmed at once, and both emails arrived with the PDF. The review is done.
