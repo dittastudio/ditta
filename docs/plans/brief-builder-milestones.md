@@ -13,7 +13,7 @@ Each milestone should leave the site deployable. The builder stays unlinked and 
 Decided (18 Nov 2026), and written into both docs:
 
 - **Order:** the contact screens (9–12) come **before** the Summary, and **Send brief** on the Summary is the Submit.
-- **Uploads:** screen 6 takes **links only** for v1 (up to 3, like screen 5, with a sharing reminder for Drive, Dropbox, Figma and the like). File uploads move to M6. (Links revised 24 Nov 2026.)
+- **Uploads:** screen 6 takes **links only** for v1 (up to 3, like screen 5, with a sharing reminder for Drive, Dropbox, Figma and the like). No file uploads: clients reply to their copy of the brief with any files. (Links revised 24 Nov 2026; uploads dropped 26 Nov 2026.)
 - **Budget bands:** Under £5k · £5k–£10k · £10k–£20k · £20k–£40k · £40k+ stay. The slider **starts with nothing chosen** and needs a drag, tap or arrow key before Next works.
 - **Consent:** a line on screen 12, no checkbox: "We'll only use this to reply about your project. See our privacy policy." The `/privacy-policy` page doesn't exist yet (see M7).
 - **Numbering:** plain "9 of 12", no a–d lettering.
@@ -34,7 +34,7 @@ Built. The phone testing below is parked until later (19 Nov 2026) and doesn't b
 **Goal:** find out whether the form itself works (length, wording, feel) before building any backend.
 
 - Client-only page at `/brief` (`ssr: false`, not prerendered, `noindex`, not linked anywhere).
-- All 13 screens come from one config, with follow-ups, validation, `[name]` personalisation, Summary with Edit, and "Back to summary".
+- All 13 screens come from one config, with follow-ups, validation, `[name]` personalisation, Summary with Edit, and a "Review" button back to it.
 - Answers persist in localStorage, so a refresh resumes where you left off.
 - **Send brief** goes to a mocked "Check your inbox" screen, which links on to a mocked "Thank you". Nothing is sent.
 - Visual design is deliberately plain.
@@ -73,7 +73,7 @@ Done (19 Nov 2026). Letter shortcuts were dropped. Measured at 320 × 568, every
 
 ---
 
-## M3: Simple submission
+## M3: Simple submission ✅
 
 **Goal:** real leads arrive with the smallest backend that's safe to run.
 
@@ -87,19 +87,21 @@ No database and no email verification yet. This milestone tells us how much spam
 
 Built (24 Nov 2026), waiting on accounts:
 
-- `server/api/brief.post.ts` parses `briefSubmitSchema` (answers, `elapsed`, honeypot, Turnstile token). Order: rate limit, parse, honeypot and 20-second minimum (a quiet fake success), Turnstile, then Resend.
-- Rate limit: the Workers `BRIEF_RATE_LIMIT` binding in `wrangler.jsonc`, 3 a minute per IP (Workers only count over 10 or 60 seconds). Absent in `nuxt dev` and on previews, where it's skipped.
+- `server/api/brief/index.post.ts` parses `briefSubmitSchema` (answers, `elapsed`, honeypot, Turnstile token). Order: rate limit, parse, honeypot and 20-second minimum (a quiet fake success), Turnstile, then Resend.
+- Rate limit: the Workers `BRIEF_RATE_LIMIT` binding in `wrangler.jsonc`, 3 a minute per IP (Workers only count over 10 or 60 seconds). Absent on previews, where it's skipped. Since M4 runs `nuxt dev` on the `cloudflare-dev` preset, dev has it too.
 - Resend through its REST API with `$fetch`, not the SDK: one call doesn't need the dependency. Template in `server/emails/brief.ts`, written from the same question copy (`shared/utils/brief.ts`).
 - Turnstile in managed, interaction-only mode on the summary. `nuxt dev` falls back to Cloudflare's always-pass test keys; built sites refuse to send without real ones.
 - After a send the answers are cleared and the thank-you screen shows. The mocked Check your inbox screen is unreachable until M4.
 
-**To launch:** `ditta.studio` is verified in Resend (EU), and a sending-only key has delivered a test brief locally (24 Nov 2026). The addresses and Turnstile's public site key are in `wrangler.jsonc` (read at runtime: `/brief` isn't prerendered, so a build variable wouldn't reach it). `NUXT_RESEND_API_KEY` and `NUXT_TURNSTILE_SECRET_KEY` are Worker secrets, on Previews Base too.
+**To launch:** `ditta.studio` is verified in Resend (EU), and a sending-only key has delivered a test brief locally (24 Nov 2026). The addresses are in `wrangler.jsonc`. Turnstile's public site key is in `nuxt.config.ts`: pages are prerendered, so the client's public config is the build's, and a runtime var never reaches it (27 Nov 2026, see brief-builder-review.md). `NUXT_RESEND_API_KEY` and `NUXT_TURNSTILE_SECRET_KEY` are Worker secrets, on Previews Base too.
 
 **Done when:** a brief submitted from production arrives in the team inbox, and the spam checks reject a scripted submission.
 
+Done (24 Nov 2026). A real brief from ditta.studio reached hello@. Scripted posts to production: a fake Turnstile token gets 403, a filled honeypot gets the quiet fake success, and invalid answers get 400. The rate limit is loose: Cloudflare counts per data centre and syncs late, so a burst of 30 saw only five 429s. Treat it as a brake; Turnstile is the gate.
+
 ---
 
-## M4: Verified submission
+## M4: Verified submission ✅
 
 **Goal:** only briefs with a confirmed email reach the team (the full flow in `brief-builder.md`).
 
@@ -111,9 +113,30 @@ Built (24 Nov 2026), waiting on accounts:
 
 **Done when:** every item in the Verification section of `brief-builder.md` passes, except the PDF items.
 
+Built (26 Nov 2026):
+
+- D1: `ditta-briefs` for production and `ditta-briefs-preview` for branch previews (Western Europe), both bound as `DB` in `wrangler.jsonc`. Migrations in `server/database/migrations/`, applied to both. `nuxt dev` runs on Nitro's `cloudflare-dev` preset, so it gets a local D1 from `.wrangler/state`.
+- To migrate: `npx wrangler d1 migrations apply ditta-briefs --remote` (and `--local`). The preview database lives in the `previews` block, which `wrangler d1` can't find by name, so apply it with a throwaway config naming it.
+- Routes in `server/api/brief/`: `index.post` (create, or update this browser's pending brief), `[id]/resend.post` (20 seconds apart, 10 sends at most), `[id]/status.get`, `confirm.get` (no side effects), `confirm.post`, and `renew.post` (a new link from an expired one, on any device). Shared logic in `server/utils/briefs.ts`; emails in `server/emails/brief.ts`.
+- Tokens: 32 random bytes, stored as SHA-256, 72 hours. The draft cookie `brief_owner` is httpOnly, scoped to `/api/brief`, and stored hashed. A confirmed brief keeps its token hash so a second click can say when it arrived.
+- On confirm, the team email and the client's copy go in one Resend batch. If that fails the brief still counts, and the sweep (`server/tasks/brief/sweep.ts`, every 15 minutes, cron in `wrangler.jsonc`) retries. Since 27 Nov 2026 the confirm page is answered at once and the emails go after the response, with one quick try at the PDF (see brief-builder-review.md). The sweep also deletes briefs left pending for 14 days after their last send.
+- Screens: Check your inbox (`BriefInbox`, polls every 4 seconds and on focus; the nav's main button is Resend, which counts down the 20 seconds between sends, dimmed), `/brief/confirm` (send, already received, expired, new link sent, invalid), and the thanks (`BriefThanks`). The answers stay in the browser until the brief is confirmed, so Back from Check your inbox edits and re-sends the same brief.
+
+Tried locally (26 Nov 2026), with Resend's test address and the team email pointed at it:
+
+- Typo recovery: one row however many sends, and only the newest link works. Confirming flips the waiting tab to Thank you.
+- Links: opening one changes nothing until its button is pressed. Already confirmed, replaced and expired links each get their page, and an expired one sends a new link that retires it.
+- Resend failing at confirm (a broken key): the brief still counts, and the sweep (`/_nitro/tasks/brief:sweep` in dev) sends it once, and only once.
+- Spam checks: a filled honeypot and a brief sent too fast get the quiet fake success with nothing stored. Invalid answers get 400, and a fourth post in a minute gets 429.
+- Resend limits: 20 seconds apart, 10 sends at most, also when edited and sent again. At the cap the client goes back to the review, and Send starts a new brief.
+
+The prerender build passes: the home page and the work pages are prerendered, and `/brief` and `/brief/confirm` are left to the Worker.
+
+Done (26 Nov 2026). On the `brief-builder` preview, a brief sent from desktop passed the real Turnstile, its link (on the preview's own host) was confirmed from a phone, the desktop tab flipped to Thank you, and both the team email and the client's copy arrived. The link, spam and failure checks above are the same code, so they weren't repeated there.
+
 ---
 
-## M5: Branded PDF
+## M5: Branded PDF ✅
 
 **Goal:** the confirmed brief arrives as an on-brand PDF.
 
@@ -122,46 +145,32 @@ Built (24 Nov 2026), waiting on accounts:
 - Archive the PDF in R2 (`briefs/{id}.pdf`). Retry when generation fails. If it still fails, send the internal email without the attachment.
 - Needs the branding template as a design reference.
 
+Built (26 Nov 2026):
+
+- No branding template exists, so the PDF is a light A4 page built from the site's own font (Saans, embedded), tokens and logo: the brief at a glance, then every step's answer with its follow-ups inside it, and the reference and page count in the footer. Template in `server/pdf/brief.ts`; `/_dev/brief-pdf` (dev only, `?long` for every answer at its limit) shows it in a browser.
+- Rendered by Browser Run's `/pdf` REST action with an account token (`NUXT_CLOUDFLARE_BROWSER_TOKEN`, "Browser Run: Edit" on this account only), not the Worker's `browser` binding, which would mean moving the compatibility date. The free plan is enough (see "Branded PDF" in `brief-builder.md`).
+- `server/utils/briefPdf.ts` renders it at confirm and keeps it in R2 (`BRIEF_PDFS`: `ditta-briefs`, `ditta-briefs-preview` for previews) with its key in `pdf_key` (migration 0002). Resend's batch call takes no attachments, so the two emails now go one at a time, each with an idempotency key so a retry doesn't send one twice.
+- A PDF that fails never holds a brief up: the emails go without it, and the sweep keeps the PDF later (three a run).
+- Tried locally: confirm attaches it and keeps it in R2; a broken token sends the emails without it; the sweep archives the missed ones.
+
+Set up (26 Nov 2026): R2 enabled (free allowance: 10 GB, about 50,000 PDFs at roughly 200 KB each; beyond it R2 bills the card, so a budget alert is the guard), both buckets created in Western Europe, migration 0002 applied to both databases, and `NUXT_CLOUDFLARE_BROWSER_TOKEN` set on production, the `brief-builder` preview and Previews Base.
+
 **Done when:** a long brief paginates cleanly, and when PDF generation fails on purpose, the brief still counts as confirmed and is delivered.
+
+Done (26 Nov 2026). On the `brief-builder` preview, a confirmed brief arrived with its PDF attached to both emails. On the Worker, the logo's SVG is read from server assets as bytes rather than text, so it's decoded explicitly (`server/pdf/brief.ts`); the first preview PDF printed it as a row of numbers.
 
 ---
 
-## M6: File uploads
+## Tests
 
-**Goal:** clients can attach designs or brand guidelines on screen 6, alongside the links. Settled 24 Nov 2026.
+End-to-end tests (Playwright) cover the flow M4 was checked by hand against: `npm run test:e2e` (`test:e2e:ui` to watch them). Local only for now.
 
-**UI**
-
-- A dashed drop zone under the link rows: the inputs' border colour and radius, "Drop files here or browse" with the limits underneath. On touch it reads "Choose files" (no drag and drop there).
-- It turns olive, like a selected card, while files are dragged over the page.
-- A row per file under the zone: name, size, progress, and a remove (×) button.
-- Skip until there's a link or a file. The summary lists the file names after the links.
-
-**Limits**
-
-- Up to 5 files, 25MB each. PDF, images (PNG, JPG, WebP, SVG, GIF), Word, Excel, PowerPoint, Keynote, Pages, ZIP.
-- Design-tool files (`.fig`, `.psd`, `.ai`) are refused, with copy suggesting a zip or a link.
-- Checked in the browser for instant feedback, and again on the server.
-
-**Upload**
-
-- Each file uploads as soon as it's dropped, straight to R2 with a presigned URL from a Worker route, never through the Worker.
-- Files sit under an upload id kept in localStorage with the answers, so a refresh keeps them. Submit attaches them to the brief.
-- Uploads not attached to a confirmed brief are deleted after 14 days, with the `pending` records.
-
-**Security and abuse**
-
-- Presigned URLs only for an upload id under its limits, rate-limited per IP (e.g. 20 an hour), behind the M3 honeypot.
-- When an upload finishes, the server reads the file's first bytes and deletes it if its real type doesn't match.
-- Always served with `Content-Disposition: attachment`, never inline, so an SVG or HTML file can't run on the site.
-- No virus scanning: R2 has none, and only the team opens the files.
-
-**Delivery and retention**
-
-- The team email and the PDF list each file as a signed, non-expiring link to a Worker route that streams it from R2. Never email attachments.
-- Files from confirmed briefs are kept 12 months, then deleted. The privacy policy (M7) says so.
-
-**Done when:** five 25MB files go through end to end and survive a refresh mid-brief; an oversized or wrong-type file is refused with a clear message; a renamed `.html` posing as a PDF is deleted after upload.
+- They start their own `nuxt dev` on port 3100, beside `npm run dev` (its own build dir, `.nuxt-e2e`), applying D1 migrations first. Config in `playwright.config.ts`, tests in `test/e2e/`.
+- They follow Nuxt's testing docs (https://nuxt.com/docs/4.x/getting-started/testing): `test` and `expect` come from `@nuxt/test-utils/playwright`, whose fixture is pointed at that dev server with `nuxt.host` rather than building its own. Open pages with `goto(url, { waitUntil: 'hydration' })`, or `open(page, url)` from `helpers.ts` for other tabs, so nothing is clicked before Nuxt hydrates.
+- Nothing leaves the machine: no Resend key, so emails land in the dev outbox (`/_dev/outbox?to=`), where the tests read the confirm link. No Browser Run token, so no PDF.
+- Turnstile's script is swapped for a stand-in giving Cloudflare's dummy token (the real one hangs in Playwright's browser); the server still checks it against the always-pass test secret. Each test has its own email and `cf-connecting-ip`, so the rate limit counts them apart, and its sends add 25 seconds to `elapsed` to clear the too-fast check.
+- Covered: confirm through to Thank you in the waiting tab, with the team email and the client's copy; opening a link changes nothing; typo recovery (the old link stops working, one brief); the Resend countdown; a link opened again after confirming; validation; the too-fast quiet success; the rate limit.
+- Not covered, so still checked on the preview: real delivery, the PDF, the real Turnstile, and expired links (72 hours).
 
 ---
 
@@ -174,4 +183,14 @@ Built (24 Nov 2026), waiting on accounts:
 - A privacy policy page at `/privacy-policy` (it doesn't exist yet; the consent line already links to it) covering brief data and how long it's kept.
 - Team process: who answers a brief, and how they keep to "within two working days".
 
-**Done when:** it's live, linked from the site, and the funnel shows up in Plausible.
+**Done when:** it's live, linked from the site, and the brief's goals show up in Plausible.
+
+In progress (26 Nov 2026):
+
+- Plausible: `Brief: Started`, `Brief: Step` (props `step` and `number`), `Brief: Review`, `Brief: Sent`, and `Brief: Confirmed` from the confirm page (`app/composables/useBriefTracking.ts`). No answers are sent; an e2e test (`test/e2e/plausible.spec.ts`) checks the sequence. The five are goals in Plausible (27 Nov 2026). Funnels and custom properties need its Business plan, which we're not on, so the drop-off is read from the goal totals (Started → Review → Sent → Confirmed) for one date range. `Brief: Step` keeps its `step` and `number` props in case we upgrade; until then it only counts steps reached. If people turn out to stop mid-brief, sending `Brief: Step 1`–`12` as separate goals would show where without upgrading.
+- `/brief` is indexed, and prerendered (27 Nov 2026) so its title, description and link image come from the `brief` story at build time; the brief itself mounts client-only. An edit to the story's SEO shows on the next deploy, like every other page. `/brief/confirm` stays noindex, as header and meta: it's only reached from an email.
+- The menu's main button is now "Start a brief" (it was a "Talk to us" mailto). Any Storyblok link can point at `/brief` as a URL link.
+- `/privacy-policy` is a Storyblok story (`privacy-policy`, a page with one Text block), unpublished. Page templates now render Text blocks. Filled in (27 Nov 2026): ditta ltd and its company number (no address: it's a home address, and the email is the contact), confirmed briefs kept six months, and Resend's transfer covered by the UK Extension to the Data Privacy Framework (its DPA, which also carries the SCCs with the UK Addendum). The sweep now deletes confirmed briefs and their PDFs six months after confirming (`BRIEF_CONFIRMED_TTL_MS`). **Before launch:** have it checked, and publish it. The emails in hello@ fall under the same six months, so clearing them is part of the team process. `app.vue` looks up a Storyblok story only for the catch-all's pages, so code pages don't 404.
+- `/brief` has a Storyblok story (content type `brief`, slug `brief`, at the root), so the story link picker can point at it. It holds the intro heading and copy and optional SEO fields; the questions stay in code. `app/pages/brief/index.vue` loads it without waiting and falls back to its own wording if it's missing or Storyblok fails. In the Visual Editor the page shows only the intro and leaves a saved brief alone. Keep the slug: `[...slug]` 404s a story type it can't render, so a renamed `brief` story leads nowhere. Tests in `test/e2e/storyblok.spec.ts`.
+- Still open: the team process (who answers a brief, keeping to two working days).
+- PDF styling checked (27 Nov 2026). The pink dot by "Project brief" printed 7px by 8px, as Chrome snaps a box's edges to whole pixels, so it's now an SVG circle. Long answers in the at-a-glance panel are cut at a word. Copying text from the PDF in Preview keeps every space (some extractors guess spaces from gaps and drop a few after r and f; the PDF itself is fine).

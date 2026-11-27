@@ -90,5 +90,10 @@ export const useAudio = () => {
     if (isAudioOn.value) sound()
   }
 
-  return { isAudioOn: readonly(isAudioOn), toggle, play }
+  // Hover sounds are for a mouse. A tap fires pointerenter too, and would play one on every press.
+  const playHover = (event: PointerEvent, sound: () => void) => {
+    if (event.pointerType === 'mouse') play(sound)
+  }
+
+  return { isAudioOn: readonly(isAudioOn), toggle, play, playHover }
 }

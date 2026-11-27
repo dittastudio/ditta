@@ -20,6 +20,7 @@ export const pageBlock = defineBlock({
         'block_hero',
         'block_hero_project',
         'block_media',
+        'block_page_text',
         'block_posts',
         'block_project_overview',
         'block_projects',

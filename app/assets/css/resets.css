@@ -57,16 +57,27 @@
     interpolate-size: allow-keywords;
   }
 
+  /* Closing tucks away quickly; opening eases out so it reacts at once and settles */
   details::details-content {
     height: 0;
     overflow: hidden;
     transition:
-      height 0.5s var(--ease-inOutCubic),
-      content-visibility 0.5s var(--ease-inOutCubic) allow-discrete;
+      height var(--transition-duration-quick) var(--ease-outCubic),
+      content-visibility var(--transition-duration-quick) var(--ease-outCubic) allow-discrete;
   }
 
   details[open]::details-content {
     height: auto;
+    transition-duration: var(--transition-duration-panel);
+    transition-timing-function: var(--ease-outQuart);
+  }
+
+  /* Reduced motion: the space opens and closes at once, the copy's fade still eases it in */
+  @media (prefers-reduced-motion: reduce) {
+    details::details-content,
+    details[open]::details-content {
+      transition-duration: 0s;
+    }
   }
 
   summary {

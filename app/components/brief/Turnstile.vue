@@ -11,6 +11,8 @@ interface TurnstileOptions {
   callback?: (token: string) => void
   'expired-callback'?: () => void
   'error-callback'?: () => void
+  'before-interactive-callback'?: () => void
+  'after-interactive-callback'?: () => void
 }
 
 interface Turnstile {
@@ -32,6 +34,8 @@ const SCRIPT_SRC = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render
 const token = defineModel<string>({ default: '' })
 // Set when Turnstile errors, for Send to say so rather than wait
 const failed = defineModel<boolean>('failed', { default: false })
+// Set while Cloudflare is showing its box and waiting for a click, for Send to ask for one rather than to wait
+const asking = defineModel<boolean>('asking', { default: false })
 
 const el = useTemplateRef('el')
 const config = useRuntimeConfig()
@@ -80,6 +84,8 @@ onMounted(async () => {
       token.value = ''
       failed.value = true
     },
+    'before-interactive-callback': () => (asking.value = true),
+    'after-interactive-callback': () => (asking.value = false),
   })
 })
 
@@ -89,6 +95,7 @@ watch(token, (value, previous) => {
 })
 
 onBeforeUnmount(() => {
+  asking.value = false
   if (widgetId) window.turnstile?.remove(widgetId)
 })
 </script>
@@ -96,6 +103,7 @@ onBeforeUnmount(() => {
 <template>
   <div
     ref="el"
-    class="empty:hidden"
+    data-brief-turnstile
+    :data-passed="token ? '' : undefined"
   />
 </template>

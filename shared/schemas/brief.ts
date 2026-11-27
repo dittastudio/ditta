@@ -1,4 +1,4 @@
-// The brief builder's validation, shared by the form (Regle) and the API route (server/api/brief.post.ts).
+// The brief builder's validation, shared by the form (Regle) and the API route (server/api/brief/index.post.ts).
 // See "Validation — Regle + Zod" in docs/plans/brief-builder.md.
 import { z } from 'zod'
 
@@ -13,12 +13,15 @@ const TOO_LONG = `Keep it under ${BRIEF_TEXT_MAX} characters`
 export const briefOptions = {
   services: ['Web Design', 'Web Build', 'Existing project', 'Other'],
   objectives: [
-    'Showcase work',
     'Improve SEO/GEO',
-    'Increase enquiries',
-    'Take bookings',
+    'AI integration',
+    'Drive traffic',
+    'Increase sales',
     'Sell online',
+    'Show off our best work',
     'Explain what we do',
+    'Update the site ourselves',
+    'Automate admin',
     'Bespoke functionality',
     'Other',
   ],
@@ -26,7 +29,7 @@ export const briefOptions = {
   timing: ['ASAP', '3 months', '6 months', 'Other'],
   contentStage: ['Ready to go', 'Partially ready', 'Not ready', 'Other'],
   budget: ['Under £5k', '£5k–£10k', '£10k–£20k', '£20k–£40k', '£40k+'],
-  source: ['Google', 'Instagram', 'LinkedIn', 'ChatGPT', 'Claude', 'Referral', 'From a website you made', 'Other'],
+  source: ['Google', 'Instagram', 'LinkedIn', 'ChatGPT', 'Claude', 'Referral', 'Your work', 'Other'],
 } as const
 
 const text = z.string({ error: REQUIRED }).trim().min(1, REQUIRED).max(BRIEF_TEXT_MAX, TOO_LONG)
@@ -42,6 +45,9 @@ const optionalLink = z
     z.union([z.literal(''), z.url({ protocol: /^https?$/, hostname: z.regexes.domain, error: 'Enter a valid link' })]),
   )
   .optional()
+
+// How many link rows each links field takes, for the schema to enforce and the field to stop adding at
+export const briefLinkLimits = { references: 5, files: 3 } as const
 
 // Up to `max` link rows, each with an optional note. Rows left without a link are dropped.
 const linkRows = (max: number) =>
@@ -65,8 +71,8 @@ const briefFields = {
   objectivesOther: optionalText,
   timing: pickOne(briefOptions.timing),
   timingOther: optionalText,
-  references: linkRows(3),
-  files: linkRows(3),
+  references: linkRows(briefLinkLimits.references),
+  files: linkRows(briefLinkLimits.files),
   contentStage: pickOne(briefOptions.contentStage),
   contentOther: optionalText,
   budget: pickOne(briefOptions.budget),
@@ -78,6 +84,7 @@ const briefFields = {
     .string({ error: REQUIRED })
     .trim()
     .min(1, REQUIRED)
+    .max(BRIEF_TEXT_MAX, TOO_LONG)
     .pipe(z.email({ error: 'Enter a valid email' })),
 }
 
@@ -178,6 +185,8 @@ export type BriefAnswers = z.output<typeof briefAnswersSchema>
 
 // The body of POST /api/brief. The spam checks on `elapsed`, `honeypot` and `turnstileToken` are the route's.
 export const briefSubmitSchema = z.object({
+  // A brief this browser already sent and hasn't confirmed, sent again after an edit. Updated rather than duplicated.
+  id: z.uuid().optional(),
   answers: briefAnswersSchema,
   // Milliseconds from the first answer to Send brief
   elapsed: z.number().int().nonnegative(),
@@ -187,3 +196,19 @@ export const briefSubmitSchema = z.object({
 })
 
 export type BriefSubmitInput = z.input<typeof briefSubmitSchema>
+
+// The body of POST /api/brief/:id/resend, from "Not received your email?": the address, perhaps with a typo fixed
+export const briefResendSchema = z.object({ email: briefFields.email })
+
+export type BriefResendInput = z.input<typeof briefResendSchema>
+
+// The email link's token, for the confirm page's GET and POST, and for asking for a fresh link once it's expired
+export const briefTokenSchema = z.object({ token: z.string().min(1).max(100) })
+
+// What an email link leads to, for the confirm page. A link replaced by a resend, or for a brief that's been deleted,
+// is invalid; nothing more is said about it.
+export type BriefLinkState =
+  | { state: 'invalid' }
+  | { state: 'expired' }
+  | { state: 'pending'; id: string; name: string; email: string; business: string }
+  | { state: 'confirmed'; id: string; name: string; confirmedAt: number }

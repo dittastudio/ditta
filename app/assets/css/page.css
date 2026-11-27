@@ -2,7 +2,7 @@
   html {
     color: var(--color-grey);
     background-color: var(--color-black);
-    transition: --color-accent 300ms var(--ease-out);
+    transition: --color-accent 200ms var(--ease-outCubic);
   }
 
   body {

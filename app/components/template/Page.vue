@@ -17,11 +17,6 @@ const { story } = defineProps<Props>()
     :id="block?.id"
     :theme="'theme' in block ? (block.theme as Themes) : undefined"
   >
-    <!-- <BlockCompanies
-      v-if="block.component === 'block_companies'"
-      :block="block"
-    /> -->
-
     <BlockAccordion
       v-if="block.component === 'block_accordion'"
       :block="block"
@@ -64,6 +59,16 @@ const { story } = defineProps<Props>()
 
     <BlockSteps
       v-else-if="block.component === 'block_steps'"
+      :block="block"
+    />
+
+    <BlockText
+      v-else-if="block.component === 'block_text'"
+      :block="block"
+    />
+
+    <BlockPageText
+      v-else-if="block.component === 'block_page_text'"
       :block="block"
     />
   </UiTheme>

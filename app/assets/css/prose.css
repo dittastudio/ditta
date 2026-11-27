@@ -35,13 +35,47 @@
   }
 }
 
+@utility prose-legal {
+  & :where(* + h1, * + h2) {
+    margin-top: 2lh;
+  }
+
+  & :where(* + h3, * + h4, * + h5, * + h6) {
+    margin-top: 1.5lh;
+  }
+
+  & :where(p + ul, p + ol, ul + p, ol + p) {
+    margin-top: 0.75lh;
+  }
+
+  & :where(ul, ol) {
+    padding-left: 1.25em;
+  }
+
+  & :where(ul) {
+    list-style-type: disc;
+  }
+
+  & :where(ol) {
+    list-style-type: decimal;
+  }
+
+  & :where(li + li) {
+    margin-top: 0.4lh;
+  }
+
+  & :where(li)::marker {
+    color: --alpha(currentColor / 50%);
+  }
+}
+
 @utility prose-links {
   & :where(a) {
     text-decoration: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 0.2em;
     text-decoration-color: --alpha(currentColor / 50%);
-    transition: opacity 0.2s var(--ease-out);
+    transition: opacity var(--transition-duration-hover) var(--ease-outCubic);
   }
 
   & :where(a:hover) {

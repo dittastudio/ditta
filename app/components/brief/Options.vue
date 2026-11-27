@@ -1,18 +1,17 @@
 <script lang="ts" setup>
-import type { BriefFigure } from '#shared/utils/brief'
+import type { Component } from 'vue'
 import { defineSound } from '@web-kits/audio'
 import { checkbox, radio } from '@@/.web-kits/core'
 
 interface Props {
   options: readonly string[]
   descriptions?: Partial<Record<string, string>>
-  // Shows an option as a big figure with its unit underneath, keyed by option
-  figures?: Partial<Record<string, BriefFigure>>
-  variant?: 'cards' | 'chips'
+  // A logo before an option card's title, keyed by option
+  icons?: Partial<Record<string, Component>>
   multiple?: boolean
 }
 
-const { options, descriptions = {}, figures = {}, variant = 'cards', multiple = false } = defineProps<Props>()
+const { options, descriptions = {}, icons = {}, multiple = false } = defineProps<Props>()
 const model = defineModel<string | string[] | undefined>()
 
 // Native radios and checkboxes under the cards: they bring the semantics, Space to pick, and arrows between radios.
@@ -37,6 +36,8 @@ const selected = computed({
 
 // Title-only cards are short enough to sit two to a row even on a phone
 const hasDescriptions = computed(() => options.some((option) => descriptions[option]))
+// Titles without a logo stand as tall as one, so they line up with their neighbours
+const hasIcons = computed(() => options.some((option) => icons[option]))
 
 // Checkboxes don't move on arrows natively, unlike radios. Here arrows only move focus, Space still toggles,
 // and every checkbox stays a Tab stop, so this adds to the usual keys rather than replacing them.
@@ -64,49 +65,54 @@ function onKeydown(event: KeyboardEvent) {
   inputs[to]?.focus()
 }
 
-// The input is hidden, so the label shows its focus. Shell's own ring skips inputs.
-const focusRing =
-  'has-focus-visible:outline-1 has-focus-visible:outline-dashed has-focus-visible:outline-offset-4 has-focus-visible:outline-white/50'
+// 1–9 pick the first nine options (see useBriefKeys), announced through aria-keyshortcuts and shown as keycaps when
+// the shortcuts setting is on. Each key is part of the option's content, which Option draws twice, so the fill turns it
+// black with the text. The label is what useBriefKeys marks data-pressed, so its key presses down with the real one.
+const shortcut = (index: number) => (index < 9 ? String(index + 1) : undefined)
 </script>
 
 <template>
-  <UiEdgeLight
-    v-if="variant === 'cards'"
+  <div
     :role="role"
-    class="grid gap-(--app-gutter-inner)"
+    class="grid auto-rows-fr gap-(--app-gutter-inner)"
     :class="hasDescriptions ? 'sm:grid-cols-2' : 'grid-cols-2'"
+    data-brief-options
     @keydown="onKeydown"
   >
-    <label
-      v-for="option in options"
+    <BriefOption
+      v-for="(option, index) in options"
       :key="option"
-      class="edge-light edge-glow flex cursor-pointer touch-manipulation flex-col items-start gap-4 rounded-10 border border-white/25 bg-offblack text-left select-none transition-[border-color,background-color] duration-500 ease-outQuart [--el-fade:500ms] [--el-fade-ease:var(--ease-outQuart)] only-hover:hover:not-has-checked:border-white/50 has-checked:border-olive has-checked:bg-olive-dark has-checked:[--eg-color:var(--color-olive)] has-checked:[--el-color:var(--color-olive-light)] md:gap-5"
-      :class="[hasDescriptions ? 'p-5 md:p-7.5' : 'p-4 md:p-6', focusRing]"
+      v-model="selected"
+      :type="type"
+      :name="name"
+      :value="option"
+      :shortcut="shortcut(index)"
+      :invalid="!!$attrs['aria-invalid']"
+      class="flex rounded-10"
+      :content-class="[
+        'flex w-full flex-col items-start gap-4 md:gap-5',
+        hasDescriptions ? 'p-5 md:p-7.5' : 'p-4 md:p-6',
+      ]"
+      @pick="playPick"
     >
-      <input
-        v-model="selected"
-        :type="type"
-        :name="name"
-        :value="option"
-        class="sr-only"
-        @change="playPick"
-      />
-
-      <template v-if="figures[option]">
-        <span class="text-28 font-medium leading-none trim-both 2xs:text-40 md:text-64">{{
-          figures[option].figure
-        }}</span>
-        <span class="-mt-1 text-14 leading-none opacity-60 trim-both md:-mt-1 md:text-16">{{
-          figures[option].unit
-        }}</span>
-      </template>
+      <UiKbd
+        v-if="shortcut(index)"
+        class="absolute top-3 right-3 md:top-4 md:right-4"
+        >{{ shortcut(index) }}</UiKbd
+      >
 
       <span
-        v-else
-        class="font-medium leading-tight trim-both md:text-20"
-        :class="hasDescriptions ? 'text-18' : 'text-16'"
-        >{{ option }}</span
+        class="flex items-center gap-2.5 font-medium leading-tight md:gap-3 md:text-20"
+        :class="[hasDescriptions ? 'text-18' : 'text-16', hasIcons && 'min-h-5 md:min-h-6']"
       >
+        <component
+          :is="icons[option]"
+          v-if="icons[option]"
+          aria-hidden="true"
+          class="size-5 shrink-0 md:size-6"
+        />
+        <span class="trim-both">{{ option }}</span>
+      </span>
 
       <span
         v-if="descriptions[option]"
@@ -114,31 +120,6 @@ const focusRing =
       >
         {{ descriptions[option] }}
       </span>
-    </label>
-  </UiEdgeLight>
-
-  <div
-    v-else
-    :role="role"
-    class="flex flex-wrap gap-(--app-gutter-inner)"
-    @keydown="onKeydown"
-  >
-    <label
-      v-for="option in options"
-      :key="option"
-      class="relative cursor-pointer touch-manipulation rounded-full bg-white/10 px-5 py-3 text-16 font-medium leading-none text-white select-none transition-colors duration-200 ease-outCubic only-hover:hover:not-has-checked:bg-white/20 has-checked:bg-white has-checked:text-black"
-      :class="focusRing"
-    >
-      <input
-        v-model="selected"
-        :type="type"
-        :name="name"
-        :value="option"
-        class="sr-only"
-        @change="playPick"
-      />
-
-      <span class="block trim-both">{{ option }}</span>
-    </label>
+    </BriefOption>
   </div>
 </template>

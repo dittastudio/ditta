@@ -3,14 +3,17 @@ import tailwindcss from '@tailwindcss/vite'
 import svgLoader from 'vite-svg-loader'
 import { breakpoints } from './app/utils/breakpoints'
 
-// Workers Builds sets WORKERS_CI_BRANCH at build time only, and its build variables are shared by every branch, so
-// the branch decides: `main` prerenders the live site, any other branch (`develop`) builds the Storyblok editor
-// preview as an SPA. Locally, `NUXT_PRERENDER=false` does. At runtime, wrangler.jsonc's vars decide.
+// `main` prerenders the live site; other branches build the Storyblok editor preview as an SPA
 const ciBranch = process.env.WORKERS_CI_BRANCH
 const isSpa = ciBranch ? ciBranch !== 'main' : process.env.NUXT_PRERENDER === 'false'
 const isProduction = ciBranch === 'main'
 
+// Public config the client can't work without. Prerendered pages carry the build's copy, so a build missing one
+// fails rather than deploying a page that can't use it.
+const requiredPublicConfig = ['turnstileSiteKey']
+
 export default defineNuxtConfig({
+  buildDir: process.env.NUXT_E2E ? '.nuxt-e2e' : undefined,
   modules: [
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',
@@ -86,10 +89,7 @@ export default defineNuxtConfig({
     '/**': {
       prerender: !isSpa,
     },
-    // Per-visitor form state, nothing to prerender (docs/plans/brief-builder-milestones.md)
-    // noindex as a response header as well as a meta tag, since the page is client-only and crawlers that don't
-    // run JavaScript never see the tag. Remove this and the page's useSeoMeta robots at launch (M7).
-    '/brief': {
+    '/brief/confirm': {
       ssr: false,
       prerender: false,
       robots: false,
@@ -97,15 +97,30 @@ export default defineNuxtConfig({
   },
   nitro: {
     cloudflare: {
-      deployConfig: true, // writes .output/server/wrangler.json for `wrangler deploy`
-      nodeCompat: true, // merged with the root wrangler.jsonc
+      deployConfig: true,
+      nodeCompat: true,
+    },
+    // The Worker's bindings (see cloudflare.d.ts). The app's tsconfig takes them in as root .d.ts files already.
+    typescript: {
+      tsConfig: {
+        include: ['../worker-configuration.d.ts', '../cloudflare.d.ts'],
+      },
     },
     experimental: {
-      wasm: true, // ...for Cloudflare Workers
+      wasm: true,
+      tasks: true,
+    },
+    serverAssets: [
+      { baseName: 'fonts', dir: '../public/fonts' },
+      { baseName: 'icons', dir: '../app/assets/icons' },
+    ],
+    // Each cron also has to be in wrangler.jsonc's triggers
+    scheduledTasks: {
+      '*/15 * * * *': ['brief:sweep'],
     },
     prerender: {
       crawlLinks: !isSpa,
-      routes: isSpa ? [] : ['/'],
+      routes: isSpa ? [] : ['/', '/brief'],
       autoSubfolderIndex: false,
       ignore: [(route) => route.includes('?')],
     },
@@ -118,13 +133,10 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   experimental: {
     defaults: {
-      // A link's page is fetched when it's hovered or focused, not as soon as it scrolls into view
       nuxtLink: { prefetchOn: { interaction: true, visibility: false } },
     },
   },
   hooks: {
-    // Heavy chunks few visitors need, so not prefetched on every page. Mario's is fetched by code on the arrow's first poke,
-    // the preview bridge is only for the editor, and the video player still preloads on the pages that render one.
     'build:manifest': (manifest) => {
       const notPrefetched = ['block/StepsMario.vue', 'ui/MuxVideo.vue', '@storyblok/preview-bridge/dist/esm/index.js']
 
@@ -135,24 +147,74 @@ export default defineNuxtConfig({
       }
     },
   },
+  $development: {
+    nitro: {
+      preset: 'cloudflare-dev',
+    },
+    // Brief tools for designing the PDF and running through the flow, kept out of production builds altogether
+    serverHandlers: [
+      { route: '/_dev/outbox', method: 'get', handler: '~~/server/dev/outbox.ts' },
+      { route: '/_dev/brief-pdf', method: 'get', handler: '~~/server/dev/brief-pdf.ts' },
+      { route: '/_dev/brief/confirm', method: 'get', handler: '~~/server/dev/brief-confirm.ts' },
+    ],
+    // Empty, so `nuxt dev` uses Cloudflare's always-pass test key (app/components/brief/Turnstile.vue)
+    runtimeConfig: {
+      public: {
+        turnstileSiteKey: '',
+      },
+    },
+  },
+  $production: {
+    hooks: {
+      ready: (nuxt) => {
+        nuxt.hook('build:before', () => {
+          const config = nuxt.options.runtimeConfig.public
+          const missing = requiredPublicConfig.filter((key) => !config[key])
+          if (missing.length) throw new Error(`Missing public runtime config: ${missing.join(', ')}`)
+        })
+      },
+      'pages:extend': (pages) => {
+        const previews = pages.filter((page) => page.file?.includes('/pages/_dev/'))
+        for (const page of previews) pages.splice(pages.indexOf(page), 1)
+      },
+    },
+  },
   ssr: !isSpa,
+  typescript: {
+    tsConfig: {
+      include: ['../test/nuxt/**/*'],
+    },
+    sharedTsConfig: {
+      include: ['../test/unit/**/*'],
+    },
+    nodeTsConfig: {
+      include: ['../test/e2e/**/*', '../playwright.config.ts', '../vitest.config.ts'],
+    },
+  },
   css: ['~/assets/css/app.css'],
   devtools: { enabled: false },
   runtimeConfig: {
-    // The brief builder's submission (server/api/brief.post.ts). NUXT_RESEND_API_KEY and NUXT_TURNSTILE_SECRET_KEY
-    // are Worker secrets; the addresses are set in wrangler.jsonc. These defaults are Resend's test addresses.
     resendApiKey: '',
     turnstileSecretKey: '',
     brief: {
       from: 'ditta briefs <onboarding@resend.dev>',
       to: 'delivered@resend.dev',
     },
-    // The Storyblok token lives in the module's `public.storyblok.accessToken`. On Cloudflare, runtime vars override
-    // both at request time: NUXT_PUBLIC_STORYBLOK_ACCESS_TOKEN (the previews' secret) and NUXT_PUBLIC_STORYBLOK_VERSION.
+    cloudflare: {
+      accountId: '',
+      browserToken: '',
+    },
     public: {
       STORYBLOK_VERSION: ciBranch ? (isSpa ? 'draft' : 'published') : process.env.NUXT_STORYBLOK_VERSION,
-      // Set in wrangler.jsonc; empty in `nuxt dev`, which falls back to Turnstile's test key
-      turnstileSiteKey: '',
+      // Public by design, and set here rather than as a Worker var: prerendered pages carry the build's public config,
+      // so a runtime var never reaches the client. The dashboard's hostname list is what keeps it to this site.
+      turnstileSiteKey: '0x4AAAAAAGQ0b2civA5o_kxC',
+      brief: {
+        // The least time between two emails for one brief: the server refuses a send sooner, and Check your inbox
+        // counts it down. Set only here, never as a Worker var: the client's copy is the build's (see above), so a
+        // runtime var would leave the countdown and the server disagreeing. The e2e tests shorten it under `nuxt dev`.
+        resendCooldownMs: 20_000,
+      },
     },
   },
   vite: {

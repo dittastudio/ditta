@@ -13,7 +13,7 @@ Source of truth for the wording: the repo. Questions, hints and options live in 
 The form is for prospective clients who often don't know exactly what they want yet. It has to help them work it out without feeling like a survey.
 
 1. **One question per screen.** A follow-up question can appear underneath its parent on the same screen. Follow-ups don't count as a second question.
-2. **Tap rather than type.** Use cards, chips and sliders wherever there's a known set of answers. Only use text fields for things only the client can know (their business, name, email, links).
+2. **Tap rather than type.** Use cards and sliders wherever there's a known set of answers. Only use text fields for things only the client can know (their business, name, email, links).
 3. **Single-line by default.** Text answers are single-line inputs. A textarea is allowed where an answer genuinely needs more room, but none of the current questions use one.
 4. **Every screen fits a small phone (320 × 568) without scrolling before a follow-up opens.** The exceptions are screen 1 (its cards keep their descriptions, so they stack one per row) and screen 3 (eight cards), plus the summary. Once a follow-up opens or a link row is added, the screen may scroll: the brief keeps the active field and the nav in view.
 5. **Email comes last.** Nothing is sent to the server until the client presses **Send brief** on the summary (see the technical doc).
@@ -47,14 +47,14 @@ The form is for prospective clients who often don't know exactly what they want 
 
 ## Navigation and validation rules
 
-| Rule                               | Behaviour                                                                                                                                                                                                                     |
-| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Back**                           | Hidden on screen 1. From screen 2 it blurs and scales in.                                                                                                                                                                     |
-| **Primary button label**           | `Next` by default. `Skip` on an optional screen that hasn't been answered. `Review` on the email screen (12). `Send brief` on the summary (13). `Back to summary` when the client got there from an Edit link on the summary. |
-| **Required question not answered** | Next doesn't advance. The button shakes and a small message appears between the buttons: "Answer to continue".                                                                                                                |
-| **Invalid email**                  | Same, with the message "Enter a valid email".                                                                                                                                                                                 |
-| **Enter key**                      | In a text, URL or email field, Enter acts as the primary button.                                                                                                                                                              |
-| **Autosave**                       | Every answer is saved locally as it changes (Pinia + localStorage, per the technical doc).                                                                                                                                    |
+| Rule                               | Behaviour                                                                                                                                                                                                            |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Back**                           | Hidden on screen 1. From screen 2 it blurs and scales in.                                                                                                                                                            |
+| **Primary button label**           | `Next` by default. `Skip` on an optional screen that hasn't been answered. `Review` on the email screen (12). `Send brief` on the summary (13). `Review` when the client got there from an Edit link on the summary. |
+| **Required question not answered** | Next doesn't advance. The button shakes and a small message appears between the buttons: "Answer to continue".                                                                                                       |
+| **Invalid email**                  | Same, with the message "Enter a valid email".                                                                                                                                                                        |
+| **Enter key**                      | In a text, URL or email field, Enter acts as the primary button.                                                                                                                                                     |
+| **Autosave**                       | Every answer is saved locally as it changes (Pinia + localStorage, per the technical doc).                                                                                                                           |
 
 ### Follow-up (conditional) questions
 
@@ -115,14 +115,14 @@ _Hint:_ Give us your best elevator pitch 🛗
 ### 3. Main job
 
 **What are the main objectives for this work?** · required
-_Hint:_ Pick what matters most.
+_Hint:_ Tick every one that fits.
 
-|          |                                                                                                                                         |
-| -------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| Field    | Multi-select cards                                                                                                                      |
-| Options  | Showcase work · Improve SEO/GEO · Increase enquiries · Take bookings · Sell online · Explain what we do · Bespoke functionality · Other |
-| Key / id | `objectives` / `q3`                                                                                                                     |
-| Answer   | Array, at least 1                                                                                                                       |
+|          |                                                                                                                                                                                                            |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Field    | Multi-select cards                                                                                                                                                                                         |
+| Options  | Improve SEO/GEO · AI integration · Drive traffic · Increase sales · Sell online · Show off our best work · Explain what we do · Update the site ourselves · Automate admin · Bespoke functionality · Other |
+| Key / id | `objectives` / `q3`                                                                                                                                                                                        |
+| Answer   | Array, at least 1                                                                                                                                                                                          |
 
 **Follow-ups** (both can be open together):
 
@@ -174,7 +174,7 @@ Behaviour:
 ### 6. Files or links
 
 **Is there anything you'd like to share?** · optional
-_Hint:_ Designs, brand guidelines, a brief — anything that helps.
+_Hint:_ Designs, brand guidelines, a brief, anything that helps.
 
 |          |                                  |
 | -------- | -------------------------------- |
@@ -190,14 +190,14 @@ Behaviour:
 - A draft saved when `files` was a single link string loads as one row.
 - Button reads **Skip** until at least one URL is entered.
 
-File uploads (a drop zone under the links) are M6 in `brief-builder-milestones.md`.
+There are no file uploads: files come by replying to the client's copy of their brief.
 
 ---
 
 ### 7. Content
 
 **At what stage is your content?** · required
-_Hint:_ Things like your about text, service descriptions and photos.
+_Hint:_ Things like product details, your about text, service descriptions and imagery.
 
 |          |                                                   |
 | -------- | ------------------------------------------------- |
@@ -263,11 +263,11 @@ _Hint:_ Skip if you don't have one yet.
 
 **How did you find us?** · optional
 
-|          |                                                                                               |
-| -------- | --------------------------------------------------------------------------------------------- |
-| Field    | Single-select chips                                                                           |
-| Options  | Google · Instagram · LinkedIn · ChatGPT · Claude · Referral · From a website you made · Other |
-| Key / id | `source` / `q11`                                                                              |
+|          |                                                                                 |
+| -------- | ------------------------------------------------------------------------------- |
+| Field    | Single-select cards                                                             |
+| Options  | Google · Instagram · LinkedIn · ChatGPT · Claude · Referral · Your work · Other |
+| Key / id | `source` / `q11`                                                                |
 
 **Follow-up:** when `source` = **Other**
 
@@ -319,7 +319,7 @@ The review screen. It lists **every visible question in order**, numbered, with 
   - multi-select: comma-separated
   - slider: the band label
   - links: "url (note)", comma-separated
-- **Edit** jumps to that screen. Its primary button becomes **Back to summary**, and picking a single-select option returns to the summary automatically.
+- **Edit** jumps to that screen. Its primary button becomes **Review**, and picking a single-select option returns to the summary automatically.
 - This screen may scroll.
 - Primary button: **Send brief**. This is the **Submit** in the technical doc: it creates the pending record and sends the "Confirm & send your brief" email. The flow then goes to **Check your inbox** and the rest of the technical doc's screens.
 
@@ -337,7 +337,6 @@ The review screen. It lists **every visible question in order**, numbered, with 
 | Links, add another  | URL rows + optional note               | `{ url, note? }[]`, max 3 | Paste splitting            |
 | Single-select cards | Grid of cards                          | `string`                  | Next to continue           |
 | Multi-select cards  | Same, several can be on                | `string[]`                | Hint says "Pick any"       |
-| Single-select chips | Wrapping pill buttons                  | `string`                  | For short labels           |
 | Snapping slider     | One handle + labelled points           | `string` (label)          | Starts with nothing chosen |
 | Info                | No input                               | n/a                       | Used for the summary       |
 
@@ -347,4 +346,4 @@ Options marked "Not sure" or "No idea" (none at present) get a dashed border so 
 
 ## Things still to settle
 
-Nothing at present. Settled in M0 (see `brief-builder-milestones.md`): order of contact screens and summary, screen 6 as links (uploads in M6), consent wording, plain numbering, the small-phone exception for screen 3, the repo as source of truth, the two-working-day promise, the budget hint figures, and no "not sure" tips on the summary for v1.
+Nothing at present. Settled in M0 (see `brief-builder-milestones.md`): order of contact screens and summary, screen 6 as links (no uploads), consent wording, plain numbering, the small-phone exception for screen 3, the repo as source of truth, the two-working-day promise, the budget hint figures, and no "not sure" tips on the summary for v1.

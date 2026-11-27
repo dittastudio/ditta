@@ -2,8 +2,7 @@
 import IconBurger from '@/assets/icons/burger.svg'
 
 const appStore = useAppStore()
-const { theme, navigation } = storeToRefs(appStore)
-const isDark = computed(() => theme.value === 'dark')
+const { navigation } = storeToRefs(appStore)
 
 const toggle = () => {
   appStore.setNavigation(!navigation.value)
@@ -11,20 +10,16 @@ const toggle = () => {
 </script>
 
 <template>
-  <button
-    class="group block"
-    type="button"
+  <UiNavButton
+    square
+    size="compact"
+    variant="plain"
+    :aria-label="navigation ? 'Close Menu' : 'Open Menu'"
     @click="toggle"
   >
-    <span
-      class="flex items-center justify-center w-12 h-full rounded-[16px] corner-shape-squircle transition-colors duration-300 ease-out"
-      :class="{
-        'group-hover:bg-current/15': isDark || navigation,
-        'group-hover:bg-current/5': !isDark,
-      }"
-    >
-      <IconBurger class="w-[17px] h-auto" />
-      <span class="sr-only">{{ navigation ? 'Close Menu' : 'Open Menu' }}</span>
-    </span>
-  </button>
+    <IconBurger
+      class="w-[17px] h-auto"
+      aria-hidden="true"
+    />
+  </UiNavButton>
 </template>

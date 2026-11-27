@@ -38,7 +38,7 @@ const arrows = {
 } as const
 
 const hoverSound = computed(() => defineSound(sound))
-const { play } = useAudio()
+const { playHover } = useAudio()
 
 const root = useTemplateRef('root')
 const width = ref(0)
@@ -72,7 +72,7 @@ onUnmounted(() => {
     ref="root"
     :style="{ '--scale-x': scaleX, '--scale-y': scaleY }"
     class="ui-button relative isolate select-none inline-flex items-center font-medium leading-none rounded-full"
-    @pointerenter="play(hoverSound)"
+    @pointerenter="playHover($event, hoverSound)"
     :class="[
       `ui-button--${size}`,
       { 'gap-[0.71em]': icon },
@@ -93,7 +93,6 @@ onUnmounted(() => {
       {{ text }}
     </span>
 
-    <!-- Without the icon it stays as a zero-width strut, so the button keeps the height it has with one -->
     <span
       class="ui-button__icon size-[1em] rounded-full aspect-square bg-accent flex items-center justify-center overflow-hidden"
       :class="{ 'w-0 invisible': !icon, 'order-first': leading }"
@@ -130,26 +129,26 @@ onUnmounted(() => {
 .ui-button__bg {
   scale: 1 1;
   transform: translateZ(0);
-  transition: scale 0.8s var(--ease-spring-3);
+  transition: scale 0.6s var(--ease-spring-3);
 
   /* Hover only where it can, so a tap on a phone doesn't leave it stuck grown. A press grows it everywhere. */
   @media (hover: hover) {
     .ui-button:hover & {
-      transition: scale 0.4s var(--ease-out);
+      transition: scale 0.2s var(--ease-outCubic);
       scale: var(--scale-x) var(--scale-y);
     }
   }
 
   .ui-button:active & {
-    transition: scale 0.4s var(--ease-out);
+    transition: scale 0.15s var(--ease-outCubic);
     scale: var(--scale-x) var(--scale-y);
   }
 }
 
 .ui-button__arrow {
-  @media (hover: hover) {
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
     .ui-button:hover & {
-      animation: arrow-fire 0.8s both;
+      animation: arrow-fire 0.65s both;
     }
   }
 }
