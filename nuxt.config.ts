@@ -159,6 +159,17 @@ export default defineNuxtConfig({
       preset: 'cloudflare-dev',
     },
   },
+  // Pages under app/pages/_dev/ preview a component's states without walking the app to them. Dev only: a build
+  // leaves them out, so the routes don't exist anywhere it's deployed.
+  $production: {
+    hooks: {
+      'pages:extend': (pages) => {
+        // By file rather than route, as in Nuxt's custom routing recipe, so a renamed route can't carry one into a build
+        const previews = pages.filter((page) => page.file?.includes('/pages/_dev/'))
+        for (const page of previews) pages.splice(pages.indexOf(page), 1)
+      },
+    },
+  },
   ssr: !isSpa,
   css: ['~/assets/css/app.css'],
   devtools: { enabled: false },
