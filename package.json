@@ -18,6 +18,7 @@
     "create:icons": "npx nuxt-seo-utils icons --source ./favicon.svg",
     "agent:readability": "npx @vercel/agent-readability audit https://ditta.studio",
     "agent:isAgentic": "npx is-agentic ditta.studio",
+    "db:migrate-local": "wrangler d1 migrations apply ditta-briefs --local",
     "dev": "nuxt dev --host 0.0.0.0",
     "dev:ssl": "local-ssl-proxy --source 3010 --target 3000 --cert localhost.pem --key localhost-key.pem",
     "build": "nuxt build",

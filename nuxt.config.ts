@@ -153,7 +153,7 @@ export default defineNuxtConfig({
     },
   },
   // `nuxt dev` runs with wrangler's local bindings from wrangler.jsonc: the briefs' D1 (`.wrangler/state`) and the rate
-  // limit. Apply migrations to it with `npx wrangler d1 migrations apply ditta-briefs --local`.
+  // limit. Apply migrations to it with `npm run db:migrate-local`.
   $development: {
     nitro: {
       preset: 'cloudflare-dev',
