@@ -1,5 +1,5 @@
-import { expect, test } from '@playwright/test'
-import { confirmLink, fillBrief, sendBrief, visitor } from './helpers'
+import { expect, test } from '@nuxt/test-utils/playwright'
+import { confirmLink, fillBrief, open, sendBrief, visitor } from './helpers'
 
 // The brief's funnel events (app/composables/useBriefTracking.ts). Plausible ignores localhost and pages run by a test
 // browser, so this visits e2e.localhost, lets the tracker know it's wanted, and catches its requests before they
@@ -19,7 +19,7 @@ test('the funnel reaches Plausible, with nothing from the answers', async ({ pag
   await sendBrief(page)
 
   const confirmPage = await context.newPage()
-  await confirmPage.goto((await confirmLink(request, client.email)).replace(/^https?:\/\/[^/]+/, HOST))
+  await open(confirmPage, (await confirmLink(request, client.email)).replace(/^https?:\/\/[^/]+/, HOST))
   await confirmPage.getByRole('button', { name: 'Confirm and send' }).click()
   await expect(confirmPage.getByRole('heading', { name: /We've got your brief/ })).toBeVisible()
 

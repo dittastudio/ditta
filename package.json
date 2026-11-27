@@ -55,6 +55,7 @@
   "devDependencies": {
     "@commitlint/cli": "^21.2.4",
     "@commitlint/config-conventional": "^21.2.4",
+    "@nuxt/test-utils": "^4.4.0",
     "@nuxtjs/seo": "^6.1.0",
     "@playwright/test": "^1.65.1",
     "@storyblok/schema": "^0.8.0",

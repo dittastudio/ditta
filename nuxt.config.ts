@@ -171,6 +171,13 @@ export default defineNuxtConfig({
     },
   },
   ssr: !isSpa,
+  // The e2e tests run in Node against a running server, so they're type-checked in the Node context, not the app's
+  // (no auto-imports, no DOM). See https://nuxt.com/docs/4.x/getting-started/testing#typescript-support
+  typescript: {
+    nodeTsConfig: {
+      include: ['../test/e2e/**/*', '../playwright.config.ts'],
+    },
+  },
   css: ['~/assets/css/app.css'],
   devtools: { enabled: false },
   runtimeConfig: {

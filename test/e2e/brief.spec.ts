@@ -1,5 +1,5 @@
-import { expect, test } from '@playwright/test'
-import { confirmLink, fillBrief, outbox, primary, sendBrief, visitor } from './helpers'
+import { expect, test } from '@nuxt/test-utils/playwright'
+import { confirmLink, fillBrief, open, outbox, primary, sendBrief, visitor } from './helpers'
 
 // The brief builder from the first step to the brief reaching the team (docs/plans/brief-builder.md, Verification).
 // Real email delivery, the PDF and the real Turnstile are checked on the preview instead.
@@ -16,7 +16,7 @@ test('a sent brief reaches the team once its link is confirmed, and the waiting 
 
   const link = await confirmLink(request, client.email)
   const confirmPage = await context.newPage()
-  await confirmPage.goto(link)
+  await open(confirmPage, link)
   await expect(confirmPage.getByRole('heading', { name: 'Send your brief?' })).toBeVisible()
   await confirmPage.getByRole('button', { name: 'Confirm and send' }).click()
   await expect(confirmPage.getByRole('heading', { name: /We've got your brief/ })).toBeVisible()
@@ -36,7 +36,7 @@ test('opening the link changes nothing until its button is pressed', async ({ pa
   await sendBrief(page)
 
   const confirmPage = await context.newPage()
-  await confirmPage.goto(await confirmLink(request, client.email))
+  await open(confirmPage, await confirmLink(request, client.email))
   await expect(confirmPage.getByRole('heading', { name: 'Send your brief?' })).toBeVisible()
 
   // Past a few of the inbox's 4-second polls: still waiting, and nothing sent to the team
@@ -63,10 +63,10 @@ test('a mistyped email is fixed from the inbox, and only the newest link works',
 
   const newLink = await confirmLink(request, client.email)
   const confirmPage = await context.newPage()
-  await confirmPage.goto(oldLink)
+  await open(confirmPage, oldLink)
   await expect(confirmPage.getByRole('heading', { name: "This link doesn't work" })).toBeVisible()
 
-  await confirmPage.goto(newLink)
+  await open(confirmPage, newLink)
   await confirmPage.getByRole('button', { name: 'Confirm and send' }).click()
   await expect(confirmPage.getByRole('heading', { name: /We've got your brief/ })).toBeVisible()
 
@@ -97,7 +97,7 @@ test('a confirmed link says so when opened again', async ({ page, context, reque
   await sendBrief(page)
 
   const confirmPage = await context.newPage()
-  await confirmPage.goto(await confirmLink(request, client.email))
+  await open(confirmPage, await confirmLink(request, client.email))
   await confirmPage.getByRole('button', { name: 'Confirm and send' }).click()
   await expect(confirmPage.getByRole('heading', { name: /We've got your brief/ })).toBeVisible()
 
@@ -106,8 +106,8 @@ test('a confirmed link says so when opened again', async ({ page, context, reque
 })
 
 test.describe('validation', () => {
-  test('a required step holds Next until it is answered', async ({ page }) => {
-    await page.goto('/brief')
+  test('a required step holds Next until it is answered', async ({ page, goto }) => {
+    await goto('/brief', { waitUntil: 'hydration' })
     await page.getByRole('button', { name: 'Start' }).click()
     await primary(page, 'Next').click()
 

@@ -1,5 +1,14 @@
 import type { APIRequestContext, BrowserContext, Page } from '@playwright/test'
-import { expect } from '@playwright/test'
+import { waitForHydration } from '@nuxt/test-utils/e2e'
+import { expect } from '@nuxt/test-utils/playwright'
+
+// Opens a page and waits for Nuxt to hydrate it, as the `goto` fixture does for the test's own `page`. For the other
+// tabs a test opens, and for helpers handed a page: a click before hydration lands on nothing.
+export async function open(page: Page, url: string) {
+  const response = await page.goto(url)
+  await waitForHydration(page, url, 'hydration')
+  return response
+}
 
 // The brief's own spam check turns away a brief sent within 20 seconds of starting (server/api/brief/index.post.ts).
 // A test fills it in faster than that, so its sends say it took 25 seconds longer. (Playwright's fake clock would do
@@ -46,7 +55,7 @@ async function advance(page: Page, label: string) {
 
 // Every step through the real form, up to the review. Optional steps are skipped.
 export async function fillBrief(page: Page, { email, name }: { email: string; name: string }, origin = '') {
-  await page.goto(`${origin}/brief`)
+  await open(page, `${origin}/brief`)
   await page.getByRole('button', { name: 'Start' }).click()
   await expect(page).toHaveURL(/step=1/)
 
