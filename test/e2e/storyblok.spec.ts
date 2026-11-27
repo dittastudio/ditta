@@ -6,9 +6,11 @@ import { open, primary } from './helpers'
 // real story's wording never breaks them.
 const STORY = '**/v2/cdn/stories/brief?*'
 
-// A visit to /brief fetches the story on the server, out of these mocks' reach, so the mocked tests arrive the way a
-// visitor from elsewhere on the site does: a navigation in the browser, which fetches it there
-async function openFromSite(page: Page) {
+// /brief is prerendered, so a visit, or a navigation to it, gets the story the page was built with, out of these mocks'
+// reach. They test the browser fetching it, as the editor preview (an SPA) does: a navigation in the app, with the
+// prerendered payload kept back so the page asks Storyblok
+async function fetchInBrowser(page: Page) {
+  await page.route('**/brief/_payload.json*', (route) => route.abort())
   await open(page, '/_dev/thanks')
   await page.evaluate(() => {
     const app = (document.querySelector('#__nuxt') as { __vue_app__?: { config: { globalProperties: any } } } | null)
@@ -31,14 +33,14 @@ test('the intro shows the story’s wording', async ({ page }) => {
       },
     }),
   )
-  await openFromSite(page)
+  await fetchInBrowser(page)
   await expect(page.getByRole('heading', { name: 'E2E heading' })).toBeVisible()
   await expect(page.getByText('E2E copy')).toBeVisible()
 })
 
 test('the brief still starts when Storyblok fails', async ({ page }) => {
   await page.route(STORY, (route) => route.abort())
-  await openFromSite(page)
+  await fetchInBrowser(page)
   await expect(page.getByRole('heading', { name: 'Create your brief' })).toBeVisible()
   await page.getByRole('button', { name: 'Start' }).click()
   await expect(page).toHaveURL(/step=1/)
