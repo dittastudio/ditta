@@ -7,16 +7,13 @@ import { open, primary } from './helpers'
 const STORY = '**/v2/cdn/stories/brief?*'
 
 // /brief is prerendered, so a visit, or a navigation to it, gets the story the page was built with, out of these mocks'
-// reach. They test the browser fetching it, as the editor preview (an SPA) does: a navigation in the app, with the
-// prerendered payload kept back so the page asks Storyblok
+// reach. They test the browser fetching it, as the editor preview (an SPA) does: a click on a link to /brief from
+// another page, with the prerendered payload kept back so the page asks Storyblok. The link is the one an email link
+// that no longer works offers (/brief/confirm with no token), since it's in code rather than in Storyblok.
 async function fetchInBrowser(page: Page) {
   await page.route('**/brief/_payload.json*', (route) => route.abort())
-  await open(page, '/_dev/thanks')
-  await page.evaluate(() => {
-    const app = (document.querySelector('#__nuxt') as { __vue_app__?: { config: { globalProperties: any } } } | null)
-      ?.__vue_app__
-    return app?.config.globalProperties.$router.push('/brief')
-  })
+  await open(page, '/brief/confirm')
+  await page.getByRole('link', { name: 'start a new brief' }).click()
   await expect(page).toHaveURL(/\/brief$/)
 }
 
