@@ -1,11 +1,24 @@
+import type { Page } from '@playwright/test'
 import { expect, test } from '@nuxt/test-utils/playwright'
-import { primary } from './helpers'
+import { open, primary } from './helpers'
 
 // /brief's intro comes from the `brief` story (app/pages/brief/index.vue). These stand in for Storyblok, so editing the
 // real story's wording never breaks them.
 const STORY = '**/v2/cdn/stories/brief?*'
 
-test('the intro shows the story’s wording', async ({ page, goto }) => {
+// A visit to /brief fetches the story on the server, out of these mocks' reach, so the mocked tests arrive the way a
+// visitor from elsewhere on the site does: a navigation in the browser, which fetches it there
+async function openFromSite(page: Page) {
+  await open(page, '/_dev/thanks')
+  await page.evaluate(() => {
+    const app = (document.querySelector('#__nuxt') as { __vue_app__?: { config: { globalProperties: any } } } | null)
+      ?.__vue_app__
+    return app?.config.globalProperties.$router.push('/brief')
+  })
+  await expect(page).toHaveURL(/\/brief$/)
+}
+
+test('the intro shows the story’s wording', async ({ page }) => {
   await page.route(STORY, (route) =>
     route.fulfill({
       json: {
@@ -18,14 +31,14 @@ test('the intro shows the story’s wording', async ({ page, goto }) => {
       },
     }),
   )
-  await goto('/brief', { waitUntil: 'hydration' })
+  await openFromSite(page)
   await expect(page.getByRole('heading', { name: 'E2E heading' })).toBeVisible()
   await expect(page.getByText('E2E copy')).toBeVisible()
 })
 
-test('the brief still starts when Storyblok fails', async ({ page, goto }) => {
+test('the brief still starts when Storyblok fails', async ({ page }) => {
   await page.route(STORY, (route) => route.abort())
-  await goto('/brief', { waitUntil: 'hydration' })
+  await openFromSite(page)
   await expect(page.getByRole('heading', { name: 'Create your brief' })).toBeVisible()
   await page.getByRole('button', { name: 'Start' }).click()
   await expect(page).toHaveURL(/step=1/)
@@ -49,4 +62,11 @@ test('the Visual Editor shows the intro, and leaves a brief in progress alone', 
 
   await goto('/brief?step=2', { waitUntil: 'hydration' })
   await expect(page.getByRole('region').first()).toHaveAccessibleName(/what does your business do/)
+})
+
+test('the server sends /brief with its title and link preview', async ({ request }) => {
+  const html = await (await request.get('/brief')).text()
+  expect(html).toMatch(/<title>[^<]+ - ditta<\/title>/)
+  expect(html).toMatch(/<meta name="description" content="[^"]+">/)
+  expect(html).toMatch(/<meta property="og:title" content="[^"]+">/)
 })
