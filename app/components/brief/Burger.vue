@@ -26,7 +26,17 @@ const LAST_CRUMBS = 16
 const munch = defineSample('/sounds/munch.opus')
 const funky = defineSample('/sounds/funky-s.opus')
 const pacman = defineSample('/sounds/pacman-beginning.opus')
-const { isAudioOn } = useAudio()
+const { isAudioOn, toggle } = useAudio()
+
+// The first bite turns the site's sound on, if it isn't already, so the munch is heard. Only the first: turned off
+// again after that, it stays off.
+let woken = false
+
+async function wakeAudio() {
+  if (woken) return
+  woken = true
+  if (!isAudioOn.value) await toggle()
+}
 
 // Loaded in the order they're needed, and sounds only once audio is on (so a later call still fetches them if it's
 // turned on in between). The physics and the munch are needed by the first bite, so they load as the pointer comes
@@ -120,8 +130,11 @@ function onClick(event: MouseEvent) {
   const { removed, direction } = bite(at)
   if (!removed.length) return
 
-  munch.play()
-  warmTunes()
+  // Once sound is on: the first bite may be what turns it on
+  void wakeAudio().then(() => {
+    munch.play()
+    warmTunes()
+  })
   squash()
   shake(removed, direction, isEmpty.value ? LAST_CRUMBS : CRUMBS)
 
