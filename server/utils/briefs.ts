@@ -19,18 +19,6 @@ export const BRIEF_PDF_MAX_ATTEMPTS = 3
 
 const OWNER_COOKIE = 'brief_owner'
 
-// Only the parts of Cloudflare's D1 binding used here, rather than a dependency for its types
-interface D1Statement {
-  bind: (...values: unknown[]) => D1Statement
-  first: <T>() => Promise<T | null>
-  run: () => Promise<{ meta: { changes: number } }>
-  all: <T>() => Promise<{ results: T[] }>
-}
-
-interface D1Database {
-  prepare: (sql: string) => D1Statement
-}
-
 export interface BriefRow {
   id: string
   name: string
@@ -52,13 +40,8 @@ export interface BriefRow {
   updated_at: number
 }
 
-declare global {
-  // Set by Nitro's Cloudflare runtime for each request and scheduled event, and by its dev proxy in `nuxt dev`
-  var __env__: { DB?: D1Database } | undefined
-}
-
 export function useBriefDb(event?: H3Event) {
-  const env = (event?.context.cloudflare?.env as { DB?: D1Database } | undefined) ?? globalThis.__env__
+  const env = event?.context.cloudflare?.env ?? globalThis.__env__
   if (!env?.DB) throw createError({ statusCode: 500, message: 'The brief isn’t set up to send yet' })
   return env.DB
 }

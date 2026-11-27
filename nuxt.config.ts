@@ -100,6 +100,12 @@ export default defineNuxtConfig({
       deployConfig: true,
       nodeCompat: true,
     },
+    // The Worker's bindings (see cloudflare.d.ts). The app's tsconfig takes them in as root .d.ts files already.
+    typescript: {
+      tsConfig: {
+        include: ['../worker-configuration.d.ts', '../cloudflare.d.ts'],
+      },
+    },
     experimental: {
       wasm: true,
       tasks: true,

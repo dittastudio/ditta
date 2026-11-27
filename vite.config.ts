@@ -10,7 +10,14 @@ export default defineConfig({
     singleAttributePerLine: true,
     vueIndentScriptAndStyle: false,
     printWidth: 120,
-    ignorePatterns: ['.storyblok/**/*', '.claude/**/*', '.vscode/**/*', '.agents/**/*', '.wrangler/**/*'],
+    ignorePatterns: [
+      'worker-configuration.d.ts',
+      '.storyblok/**/*',
+      '.claude/**/*',
+      '.vscode/**/*',
+      '.agents/**/*',
+      '.wrangler/**/*',
+    ],
   },
   lint: {
     plugins: ['typescript', 'unicorn', 'oxc', 'vue', 'import'],

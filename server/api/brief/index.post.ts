@@ -6,10 +6,6 @@ const MIN_ELAPSED_MS = 20_000
 // Cloudflare's always-pass Turnstile secret, used only in `nuxt dev` when no secret is set
 const TURNSTILE_TEST_SECRET = '1x0000000000000000000000000000000AA'
 
-interface RateLimiter {
-  limit: (options: { key: string }) => Promise<{ success: boolean }>
-}
-
 interface TurnstileResult {
   success: boolean
   'error-codes'?: string[]
@@ -22,7 +18,7 @@ export default defineEventHandler(async (event) => {
   const ip = getRequestHeader(event, 'cf-connecting-ip') ?? getRequestIP(event, { xForwardedFor: true }) ?? 'unknown'
 
   // Per IP, through the Workers rate limit binding in wrangler.jsonc. Absent on branch previews.
-  const limiter = (event.context.cloudflare?.env as { BRIEF_RATE_LIMIT?: RateLimiter } | undefined)?.BRIEF_RATE_LIMIT
+  const limiter = event.context.cloudflare?.env.BRIEF_RATE_LIMIT
   if (limiter && !(await limiter.limit({ key: ip })).success) {
     throw createError({ statusCode: 429, message: 'Too many briefs at once. Try again in a minute.' })
   }

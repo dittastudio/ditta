@@ -4,13 +4,6 @@
 import type { H3Event } from 'h3'
 import { briefPdfHtml, briefReference, toBase64 } from '../pdf/brief'
 
-// Only the parts of R2's binding used here, rather than a dependency for its types
-interface R2Bucket {
-  get: (key: string) => Promise<{ arrayBuffer: () => Promise<ArrayBuffer> } | null>
-  put: (key: string, value: Uint8Array, options?: { httpMetadata?: { contentType?: string } }) => Promise<unknown>
-  delete: (keys: string | string[]) => Promise<void>
-}
-
 export interface BriefPdfAttachment {
   filename: string
   // Base64, as Resend takes it
@@ -20,8 +13,7 @@ export interface BriefPdfAttachment {
 // Absent until R2 is set up for the account, and on any Worker without the binding: the PDF is still attached, just
 // not kept
 export function useBriefPdfBucket(event?: H3Event) {
-  const env = (event?.context.cloudflare?.env ?? globalThis.__env__) as { BRIEF_PDFS?: R2Bucket } | undefined
-  return env?.BRIEF_PDFS
+  return (event?.context.cloudflare?.env ?? globalThis.__env__)?.BRIEF_PDFS
 }
 
 // HTML in, PDF out, through Browser Run's /pdf quick action. Null when the account isn't set up for it.
