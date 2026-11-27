@@ -181,8 +181,14 @@ export default defineNuxtConfig({
   },
   ssr: !isSpa,
   typescript: {
+    tsConfig: {
+      include: ['../test/nuxt/**/*'],
+    },
+    sharedTsConfig: {
+      include: ['../test/unit/**/*'],
+    },
     nodeTsConfig: {
-      include: ['../test/e2e/**/*', '../playwright.config.ts'],
+      include: ['../test/e2e/**/*', '../playwright.config.ts', '../vitest.config.ts'],
     },
   },
   css: ['~/assets/css/app.css'],

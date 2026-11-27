@@ -3,6 +3,7 @@
 .data
 .nuxt
 .nuxt-e2e
+.nuxt-vitest
 .nitro
 .cache
 dist
