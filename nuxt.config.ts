@@ -8,6 +8,10 @@ const ciBranch = process.env.WORKERS_CI_BRANCH
 const isSpa = ciBranch ? ciBranch !== 'main' : process.env.NUXT_PRERENDER === 'false'
 const isProduction = ciBranch === 'main'
 
+// Public config the client can't work without. Prerendered pages carry the build's copy, so a build missing one
+// fails rather than deploying a page that can't use it.
+const requiredPublicConfig = ['turnstileSiteKey']
+
 export default defineNuxtConfig({
   buildDir: process.env.NUXT_E2E ? '.nuxt-e2e' : undefined,
   modules: [
@@ -150,6 +154,13 @@ export default defineNuxtConfig({
   },
   $production: {
     hooks: {
+      ready: (nuxt) => {
+        nuxt.hook('build:before', () => {
+          const config = nuxt.options.runtimeConfig.public
+          const missing = requiredPublicConfig.filter((key) => !config[key])
+          if (missing.length) throw new Error(`Missing public runtime config: ${missing.join(', ')}`)
+        })
+      },
       'pages:extend': (pages) => {
         const previews = pages.filter((page) => page.file?.includes('/pages/_dev/'))
         for (const page of previews) pages.splice(pages.indexOf(page), 1)
