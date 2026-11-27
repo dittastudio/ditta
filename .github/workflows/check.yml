@@ -17,3 +17,58 @@ jobs:
       # vp install runs `nuxt prepare` (postinstall), which generates the .nuxt tsconfigs vp check type-checks against
       - run: vp check
       - run: npm run typecheck
+      - run: npm test
+
+  # The brief's Playwright tests (playwright.config.ts). Always runs, so it can be a required check, but passes at once
+  # when nothing the brief depends on has changed: a paths filter on the workflow would leave such PRs waiting on it.
+  # A global style or layout change outside this list isn't covered.
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            brief:
+              - 'app/components/brief/**'
+              - 'app/composables/useBrief*'
+              - 'app/pages/brief/**'
+              - 'app/stores/brief.ts'
+              - 'server/**'
+              - 'shared/**'
+              - 'test/e2e/**'
+              - 'nuxt.config.ts'
+              - 'wrangler.jsonc'
+              - 'playwright.config.ts'
+              - 'package-lock.json'
+              - '.github/workflows/check.yml'
+      - if: steps.changes.outputs.brief == 'true'
+        uses: voidzero-dev/setup-vp@v1.22.0
+        with:
+          node-version: '24'
+          cache: true
+      - if: steps.changes.outputs.brief == 'true'
+        id: playwright
+        run: echo "version=$(npm ls @playwright/test --json | jq -r '.dependencies["@playwright/test"].version')" >> "$GITHUB_OUTPUT"
+      - if: steps.changes.outputs.brief == 'true'
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+      - if: steps.changes.outputs.brief == 'true'
+        run: npx playwright install --with-deps chromium
+      # Every page loads a Storyblok story, so the app needs a token to render at all. The public one reads
+      # published content, which is all the tests need: they stand in for the brief story themselves.
+      - if: steps.changes.outputs.brief == 'true'
+        run: npm run test:e2e
+        env:
+          NUXT_STORYBLOK_TOKEN: ${{ secrets.NUXT_STORYBLOK_TOKEN }}
+          NUXT_STORYBLOK_VERSION: published
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces
+          path: test-results/
+          retention-days: 7
