@@ -130,6 +130,7 @@ onUnmounted(() => {
           v-if="storyblokRichTextContent(text)"
           :class="[
             'prose',
+            'prose-links',
             'text-pretty',
             'prose-h2:text-heading',
             'prose-h2:max-w-[18em]',
