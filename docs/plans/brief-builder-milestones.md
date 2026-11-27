@@ -183,11 +183,11 @@ End-to-end tests (Playwright) cover the flow M4 was checked by hand against: `np
 - A privacy policy page at `/privacy-policy` (it doesn't exist yet; the consent line already links to it) covering brief data and how long it's kept.
 - Team process: who answers a brief, and how they keep to "within two working days".
 
-**Done when:** it's live, linked from the site, and the funnel shows up in Plausible.
+**Done when:** it's live, linked from the site, and the brief's goals show up in Plausible.
 
 In progress (26 Nov 2026):
 
-- Plausible: `Brief: Started`, `Brief: Step` (props `step` and `number`), `Brief: Review`, `Brief: Sent`, and `Brief: Confirmed` from the confirm page (`app/composables/useBriefTracking.ts`). No answers are sent; an e2e test (`test/e2e/plausible.spec.ts`) checks the sequence. **To do in Plausible:** add the five as custom event goals and a funnel Started → Review → Sent → Confirmed; break `Brief: Step` down by `number` to see where people stop.
+- Plausible: `Brief: Started`, `Brief: Step` (props `step` and `number`), `Brief: Review`, `Brief: Sent`, and `Brief: Confirmed` from the confirm page (`app/composables/useBriefTracking.ts`). No answers are sent; an e2e test (`test/e2e/plausible.spec.ts`) checks the sequence. The five are goals in Plausible (27 Nov 2026). Funnels and custom properties need its Business plan, which we're not on, so the drop-off is read from the goal totals (Started → Review → Sent → Confirmed) for one date range. `Brief: Step` keeps its `step` and `number` props in case we upgrade; until then it only counts steps reached. If people turn out to stop mid-brief, sending `Brief: Step 1`–`12` as separate goals would show where without upgrading.
 - `/brief` is indexed. `/brief/confirm` stays noindex, as header and meta: it's only reached from an email.
 - The menu's main button is now "Start a brief" (it was a "Talk to us" mailto). Any Storyblok link can point at `/brief` as a URL link.
 - `/privacy-policy` is a Storyblok story (`privacy-policy`, a page with one Text block), unpublished. Page templates now render Text blocks. Filled in (27 Nov 2026): ditta ltd and its company number (no address: it's a home address, and the email is the contact), confirmed briefs kept six months, and Resend's transfer covered by the UK Extension to the Data Privacy Framework (its DPA, which also carries the SCCs with the UK Addendum). The sweep now deletes confirmed briefs and their PDFs six months after confirming (`BRIEF_CONFIRMED_TTL_MS`). **Before launch:** have it checked, and publish it. The emails in hello@ fall under the same six months, so clearing them is part of the team process. `app.vue` looks up a Storyblok story only for the catch-all's pages, so code pages don't 404.
