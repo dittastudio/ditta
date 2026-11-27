@@ -1,4 +1,4 @@
-// The brief builder's validation, shared by the form (Regle) and the API route (server/api/brief.post.ts).
+// The brief builder's validation, shared by the form (Regle) and the API route (server/api/brief/index.post.ts).
 // See "Validation — Regle + Zod" in docs/plans/brief-builder.md.
 import { z } from 'zod'
 

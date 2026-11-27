@@ -141,6 +141,12 @@ export default defineNuxtConfig({
     nitro: {
       preset: 'cloudflare-dev',
     },
+    // Empty, so `nuxt dev` uses Cloudflare's always-pass test key (app/components/brief/Turnstile.vue)
+    runtimeConfig: {
+      public: {
+        turnstileSiteKey: '',
+      },
+    },
   },
   $production: {
     hooks: {
@@ -171,7 +177,9 @@ export default defineNuxtConfig({
     },
     public: {
       STORYBLOK_VERSION: ciBranch ? (isSpa ? 'draft' : 'published') : process.env.NUXT_STORYBLOK_VERSION,
-      turnstileSiteKey: '',
+      // Public by design, and set here rather than as a Worker var: prerendered pages carry the build's public config,
+      // so a runtime var never reaches the client. The dashboard's hostname list is what keeps it to this site.
+      turnstileSiteKey: '0x4AAAAAAGQ0b2civA5o_kxC',
     },
   },
   vite: {

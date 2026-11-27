@@ -32,11 +32,10 @@
   // NUXT_STORYBLOK_TOKEN build variable (the public token), so no runtime secret is needed.
   "vars": {
     "NUXT_PUBLIC_STORYBLOK_VERSION": "published",
-    // The brief builder's team email (server/api/brief.post.ts). Not secret, so kept here, where a deploy can't drop it.
+    // The brief builder's team email (server/api/brief/index.post.ts). Not secret, so kept here, where a deploy can't
+    // drop it.
     "NUXT_BRIEF_FROM": "ditta briefs <briefs@ditta.studio>",
     "NUXT_BRIEF_TO": "hello@ditta.studio",
-    // Turnstile's site key is public. Read at runtime, since /brief is rendered by the Worker, not prerendered.
-    "NUXT_PUBLIC_TURNSTILE_SITE_KEY": "0x4AAAAAAGQ0b2civA5o_kxC",
     // Browser Run renders the brief PDF through the account's API. Not secret; the token is.
     "NUXT_CLOUDFLARE_ACCOUNT_ID": "b2b14f73295e95bc6d2dad0a36c22414",
   },
@@ -48,7 +47,6 @@
       "NUXT_PUBLIC_STORYBLOK_VERSION": "draft",
       "NUXT_BRIEF_FROM": "ditta briefs <briefs@ditta.studio>",
       "NUXT_BRIEF_TO": "hello@ditta.studio",
-      "NUXT_PUBLIC_TURNSTILE_SITE_KEY": "0x4AAAAAAGQ0b2civA5o_kxC",
       "NUXT_CLOUDFLARE_ACCOUNT_ID": "b2b14f73295e95bc6d2dad0a36c22414",
     },
     // Their own database, so test briefs never sit among real ones
