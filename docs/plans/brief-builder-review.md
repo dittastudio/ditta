@@ -177,3 +177,22 @@ After step 5, apply the migration to both D1 databases with `--remote` before th
 - Migration `0003` is applied to `ditta-briefs` and `ditta-briefs-preview`.
 - The Turnstile widget's hostname allowlist is checked in the dashboard.
 - A brief is sent on the `develop` preview after reaching `/brief` from a link in the app, not by typing the URL.
+- `NUXT_STORYBLOK_TOKEN` (the public token) is added as a GitHub Actions secret, and the `e2e` job is made a required check in the branch protection for `develop` and `main`.
+
+## How it went (27 Nov 2026)
+
+All 11 commits are in on `develop`. Where the work moved away from the plan above:
+
+- **Turnstile key (1).** `nuxt dev` still gets Cloudflare's always-pass test key: `$development` sets the site key back to empty, so local dev doesn't hit the real widget on localhost.
+- **Indexes (11).** Partial indexes, one per sweep query, rather than `(status, …)` pairs. A pair would still have read every confirmed brief for the PDF query. `EXPLAIN QUERY PLAN` shows each query reading only its own index. Migration `0003_brief_sweep_indexes.sql` also adds `pdf_attempts` (12). The cap of 3 is written into both the index and the query, so change both together.
+- **Binding types (9).** `npm run cf:types` generates only `Env` (`--include-runtime=false`). Workers' full runtime types redefine DOM globals (`Element`, `Response`) and broke the app's typecheck, because the app's typed `$fetch` reads the server routes' types. The binding types come from `@cloudflare/workers-types`' importable form instead, in the root `cloudflare.d.ts`, which also types `event.context.cloudflare` once. The generated file is left out of formatting so it stays exactly as wrangler writes it.
+- **Dev routes (10).** They moved to `server/dev/` and are registered under `$development.serverHandlers`. The URLs are the same.
+- **Resend wait (8).** It's 4 seconds in the e2e tests (`test/e2e/settings.ts`). The e2e suite now takes about 30 seconds.
+- **Vitest (4).** The config lives in `vitest.config.ts`, not `vite.config.ts`. The Nuxt project boots Nuxt to load, which `vp check` would otherwise do on every run. `npm test` runs 41 tests in about 2 seconds. Component tests through `mountSuspended` aren't added yet: they'd need `@vue/test-utils`, and the store and composables were the higher-value targets.
+- **CI (5, 13).** Every page loads a Storyblok story, so the e2e job needs `NUXT_STORYBLOK_TOKEN` as a repo secret and reads published content. Until the secret is added, the job fails whenever brief code changes.
+
+Not done, as they need someone with access:
+
+- Applying migration `0003` with `--remote` to `ditta-briefs` and `ditta-briefs-preview`. It's additive and safe before the code ships, since the old code ignores the new column and indexes.
+- Adding the Actions secret and making `e2e` a required check.
+- Checking the Turnstile hostname allowlist.
