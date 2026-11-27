@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 // Dev only (see $production in nuxt.config.ts): the brief's thank-you, without sending a brief to reach it.
 // ?name=Sam sets the name, and ?name= leaves it out.
+definePageMeta({ tagline: false })
 useSeoMeta({ robots: 'noindex, nofollow' })
 
 const route = useRoute()

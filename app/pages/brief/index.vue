@@ -5,6 +5,8 @@ import type { Block } from '#storyblok-schema'
 // come from the `brief` story in Storyblok, so it can be linked and edited there; the questions stay in code
 // (shared/utils/brief.ts), as the server checks answers against them. Until the story arrives, or if it can't be had,
 // this wording stands in, so the brief never waits on Storyblok or breaks without it.
+definePageMeta({ tagline: false })
+
 const fallback = {
   introHeading: 'Create your brief',
   introCopy: 'A few quick questions about you and your project.\nOnly takes a few minutes.',
