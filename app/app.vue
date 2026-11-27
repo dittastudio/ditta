@@ -21,6 +21,8 @@ if (import.meta.server && route.name === 'slug') {
 
   if (first && 'theme' in first) appStore.setTheme(first.theme as Themes)
   else if (isPost(page.value)) appStore.setTheme('light')
+} else if (import.meta.server && route.meta.theme) {
+  appStore.setTheme(route.meta.theme)
 }
 
 const globalClasses = computed(() => ({

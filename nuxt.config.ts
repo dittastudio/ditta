@@ -88,16 +88,16 @@ export default defineNuxtConfig({
     '/**': {
       prerender: !isSpa,
     },
-    // Per-visitor form state, nothing to prerender (docs/plans/brief-builder-milestones.md). /brief is indexed;
-    // /brief/confirm, only ever reached from an email link, isn't: noindex as a response header as well as a meta tag,
-    // since the page is client-only and crawlers that don't run JavaScript never see the tag.
+    // Per-visitor form state, nothing to prerender (docs/plans/brief-builder-milestones.md). /brief is indexed, and
+    // rendered on the Worker so its title and link preview reach crawlers that don't run JavaScript; the brief itself
+    // stays client-only (app/pages/brief/index.vue). /brief/confirm, only ever reached from an email link, isn't
+    // indexed: noindex as a response header as well as a meta tag, since that page is client-only.
     '/brief/confirm': {
       ssr: false,
       prerender: false,
       robots: false,
     },
     '/brief': {
-      ssr: false,
       prerender: false,
     },
   },
