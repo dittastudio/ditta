@@ -43,7 +43,7 @@ const eaten = ref(false)
     </h1>
 
     <p
-      class="text-18 opacity-60 md:text-20"
+      class="max-w-[38ch] text-18 opacity-60 md:text-20"
       data-crumb-surface="text"
     >
       We'll reply within two working days to book a short call. A copy is on its way to your inbox.
