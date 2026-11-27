@@ -261,7 +261,6 @@ onBeforeUnmount(() => {
         </span>
       </button>
 
-      <!-- Where the burger was, once there are no more: pops in the way the brief nav's buttons do (transitions.css) -->
       <Transition name="brief-pop">
         <div
           v-if="restartable"

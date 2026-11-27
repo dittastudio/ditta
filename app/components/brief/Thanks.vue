@@ -23,13 +23,10 @@ const current = computed(() => Math.min(eaten.value, lines.length - 1))
 <template>
   <section class="flex flex-col items-center gap-10 text-center">
     <p class="mb-5 text-24 leading-tight text-balance trim-both md:mb-8 md:text-28">
-      <!-- Stacked, so the line keeps the longest one's size as they cross-fade -->
       <span
         class="inline-grid"
         aria-hidden="true"
       >
-        <!-- The lines read upwards: the old one lifts away, quick and blurring, then the new one rises into focus from
-        below with a small overshoot. Restart runs it backwards. Reduced motion keeps only the fade. -->
         <span
           v-for="(line, index) in lines"
           :key="line"
@@ -45,7 +42,6 @@ const current = computed(() => Math.min(eaten.value, lines.length - 1))
           {{ line }}
         </span>
       </span>
-      <!-- Read out as it changes -->
       <span
         class="sr-only"
         role="status"

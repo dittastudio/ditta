@@ -17,11 +17,6 @@ const { story } = defineProps<Props>()
     :id="block?.id"
     :theme="'theme' in block ? (block.theme as Themes) : undefined"
   >
-    <!-- <BlockCompanies
-      v-if="block.component === 'block_companies'"
-      :block="block"
-    /> -->
-
     <BlockAccordion
       v-if="block.component === 'block_accordion'"
       :block="block"
