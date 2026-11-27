@@ -119,7 +119,7 @@ export async function briefPdfHtml(answers: BriefAnswers, meta: BriefPdfMeta) {
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
-  /* Only for looking at it in a browser (server/routes/_dev/brief-pdf.get.ts): the page as a sheet of A4 */
+  /* Only for looking at it in a browser (server/dev/brief-pdf.ts): the page as a sheet of A4 */
   @media screen {
     html { background: var(--color-putty); }
     body { width: 210mm; min-height: 297mm; margin: 10mm auto; padding: 18mm; background: var(--color-white); }

@@ -4,7 +4,7 @@ import { defineConfig, devices } from '@playwright/test'
 
 // End-to-end tests for the brief builder: `npm run test:e2e`. Local only for now. They run their own `nuxt dev` on
 // port 3100, beside `npm run dev` (its own build dir, see nuxt.config.ts), with the local D1, Turnstile's always-pass
-// keys, and no Resend key or Browser Run token: emails land in the dev outbox (server/routes/_dev/outbox.get.ts), and
+// keys, and no Resend key or Browser Run token: emails land in the dev outbox (server/dev/outbox.ts), and
 // there's no PDF. Real delivery, the PDF and the real Turnstile stay checks on the preview.
 const PORT = 3100
 const HOST = `http://localhost:${PORT}`

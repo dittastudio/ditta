@@ -151,6 +151,12 @@ export default defineNuxtConfig({
     nitro: {
       preset: 'cloudflare-dev',
     },
+    // Brief tools for designing the PDF and running through the flow, kept out of production builds altogether
+    serverHandlers: [
+      { route: '/_dev/outbox', method: 'get', handler: '~~/server/dev/outbox.ts' },
+      { route: '/_dev/brief-pdf', method: 'get', handler: '~~/server/dev/brief-pdf.ts' },
+      { route: '/_dev/brief/confirm', method: 'get', handler: '~~/server/dev/brief-confirm.ts' },
+    ],
     // Empty, so `nuxt dev` uses Cloudflare's always-pass test key (app/components/brief/Turnstile.vue)
     runtimeConfig: {
       public: {
