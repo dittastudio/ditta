@@ -25,7 +25,7 @@ export function useBriefPdfBucket(event?: H3Event) {
 }
 
 // HTML in, PDF out, through Browser Run's /pdf quick action. Null when the account isn't set up for it.
-async function renderPdf(event: H3Event | undefined, html: string) {
+async function renderPdf(event: H3Event | undefined, html: string, hurry: boolean) {
   const { accountId, browserToken } = useRuntimeConfig(event).cloudflare
   if (!accountId || !browserToken) {
     console.info('[brief] No NUXT_CLOUDFLARE_BROWSER_TOKEN or account ID, so no PDF')
@@ -38,10 +38,10 @@ async function renderPdf(event: H3Event | undefined, html: string) {
     // The page sets its own size and margins (@page), and its grey panel is a background
     body: { html, pdfOptions: { printBackground: true, preferCSSPageSize: true } },
     responseType: 'arrayBuffer',
-    timeout: 30_000,
-    // The free plan renders one every 10 seconds, so a second brief confirmed straight after, or the sweep's next,
-    // waits its turn rather than going without
-    retry: 1,
+    timeout: hurry ? 15_000 : 30_000,
+    // The free plan renders one every 10 seconds, so the sweep's next waits its turn rather than going without. Not
+    // in a hurry, where waiting would cost the emails their chance to go.
+    retry: hurry ? 0 : 1,
     retryDelay: 10_000,
     retryStatusCodes: [429, 500, 502, 503, 504],
   })
@@ -49,11 +49,12 @@ async function renderPdf(event: H3Event | undefined, html: string) {
 }
 
 // The brief's PDF, from R2 if it was kept, otherwise rendered now (and kept, where there's a bucket). Null if it
-// can't be had, for the emails to go without it.
+// can't be had, for the emails to go without it. `hurry` gives the render one quick try (see notifyBrief).
 export async function briefPdf(
   db: ReturnType<typeof useBriefDb>,
   row: BriefRow,
   event?: H3Event,
+  { hurry = false } = {},
 ): Promise<BriefPdfAttachment | null> {
   const bucket = useBriefPdfBucket(event)
   const filename = `ditta-brief-${briefReference(row.id)}.pdf`
@@ -66,7 +67,7 @@ export async function briefPdf(
       id: row.id,
       confirmedAt: row.confirmed_at ?? row.updated_at,
     })
-    const pdf = await renderPdf(event, html)
+    const pdf = await renderPdf(event, html, hurry)
     if (!pdf) return null
 
     if (bucket) {

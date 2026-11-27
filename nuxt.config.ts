@@ -110,7 +110,7 @@ export default defineNuxtConfig({
     ],
     // Each cron also has to be in wrangler.jsonc's triggers
     scheduledTasks: {
-      '0 * * * *': ['brief:sweep'],
+      '*/15 * * * *': ['brief:sweep'],
     },
     prerender: {
       crawlLinks: !isSpa,

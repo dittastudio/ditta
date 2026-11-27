@@ -1,4 +1,4 @@
-// Hourly (nuxt.config.ts → scheduledTasks): deletes briefs left unconfirmed for two weeks and confirmed briefs (with
+// Every 15 minutes (nuxt.config.ts → scheduledTasks): deletes briefs left unconfirmed for two weeks and confirmed briefs (with
 // their PDFs) after six months, sends the emails for confirmed briefs whose emails failed at the time, and keeps the
 // PDFs of briefs whose PDF failed (their emails went without it, so this sends nothing)
 export default defineTask({
@@ -12,7 +12,7 @@ export default defineTask({
       .bind(now - BRIEF_PENDING_TTL_MS)
       .run()
 
-    // The PDFs go first, so a failure leaves the row to try again next hour rather than an orphaned PDF
+    // The PDFs go first, so a failure leaves the row to try again next time rather than an orphaned PDF
     const { results: expired } = await db
       .prepare("SELECT id, pdf_key FROM briefs WHERE status = 'confirmed' AND confirmed_at < ? LIMIT 50")
       .bind(now - BRIEF_CONFIRMED_TTL_MS)
@@ -43,7 +43,7 @@ export default defineTask({
       }
     }
 
-    // Only where there's a bucket to keep them in, or this would render the same PDFs every hour. A few at a time,
+    // Only where there's a bucket to keep them in, or this would render the same PDFs every run. A few at a time,
     // since each may wait 10 seconds for its turn (server/utils/briefPdf.ts)
     let archived = 0
     if (useBriefPdfBucket()) {

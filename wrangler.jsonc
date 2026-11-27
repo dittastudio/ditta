@@ -22,9 +22,9 @@
   ],
   // Confirmed briefs' PDFs, as briefs/{id}.pdf (server/utils/briefPdf.ts)
   "r2_buckets": [{ "binding": "BRIEF_PDFS", "bucket_name": "ditta-briefs" }],
-  // Hourly: runs the Nitro task in server/tasks/brief/sweep.ts, which nuxt.config.ts's scheduledTasks ties to this
-  // same cron. Nitro runs the tasks but doesn't write the trigger, so it's here. Production only.
-  "triggers": { "crons": ["0 * * * *"] },
+  // Every 15 minutes: runs the Nitro task in server/tasks/brief/sweep.ts, which nuxt.config.ts's scheduledTasks ties to
+  // this same cron. Nitro runs the tasks but doesn't write the trigger, so it's here. Production only.
+  "triggers": { "crons": ["*/15 * * * *"] },
   // Branch previews (<branch>-ditta.<subdomain>.workers.dev) stay on. `develop` is the Storyblok Visual Editor's
   // preview URL.
   "preview_urls": true,

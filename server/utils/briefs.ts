@@ -157,12 +157,13 @@ export async function sendBriefLinkOrRestore(
 }
 
 // The team's email and the client's copy, once a brief is confirmed. Marked notified only once both have gone, so
-// the sweep tries again if Resend fails.
-export async function notifyBrief(db: D1Database, row: BriefRow, event?: H3Event) {
+// the sweep tries again if Resend fails. `hurry` is for straight after confirming, where Cloudflare gives the work
+// about 30 seconds: the PDF gets one quick try, and the emails go without it rather than miss their chance.
+export async function notifyBrief(db: D1Database, row: BriefRow, event?: H3Event, { hurry = false } = {}) {
   const answers = parseBriefAnswers(row)
   const config = useRuntimeConfig(event)
   // Both emails carry the PDF, or neither does if it couldn't be made
-  const pdf = await briefPdf(db, row, event)
+  const pdf = await briefPdf(db, row, event, { hurry })
   const attachments = pdf ? [pdf] : undefined
 
   await sendEmails(event, [
