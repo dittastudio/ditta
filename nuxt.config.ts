@@ -203,6 +203,12 @@ export default defineNuxtConfig({
       // Public by design, and set here rather than as a Worker var: prerendered pages carry the build's public config,
       // so a runtime var never reaches the client. The dashboard's hostname list is what keeps it to this site.
       turnstileSiteKey: '0x4AAAAAAGQ0b2civA5o_kxC',
+      brief: {
+        // The least time between two emails for one brief: the server refuses a send sooner, and Check your inbox
+        // counts it down. Set only here, never as a Worker var: the client's copy is the build's (see above), so a
+        // runtime var would leave the countdown and the server disagreeing. The e2e tests shorten it under `nuxt dev`.
+        resendCooldownMs: 20_000,
+      },
     },
   },
   vite: {

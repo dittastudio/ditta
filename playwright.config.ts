@@ -1,6 +1,7 @@
 import { fileURLToPath } from 'node:url'
 import type { ConfigOptions } from '@nuxt/test-utils/playwright'
 import { defineConfig, devices } from '@playwright/test'
+import { RESEND_WAIT_MS } from './test/e2e/settings'
 
 // End-to-end tests for the brief builder: `npm run test:e2e`. Local only for now. They run their own `nuxt dev` on
 // port 3100, beside `npm run dev` (its own build dir, see nuxt.config.ts), with the local D1, Turnstile's always-pass
@@ -40,6 +41,8 @@ export default defineConfig<ConfigOptions>({
       NUXT_TURNSTILE_SECRET_KEY: '',
       NUXT_PUBLIC_TURNSTILE_SITE_KEY: '1x00000000000000000000AA',
       NUXT_BRIEF_TO: 'team@e2e.test',
+      // The wait between sends, 20 seconds for real, so the tests of it don't sit through it
+      NUXT_PUBLIC_BRIEF_RESEND_COOLDOWN_MS: String(RESEND_WAIT_MS),
     },
   },
 })

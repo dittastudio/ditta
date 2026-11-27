@@ -12,6 +12,7 @@ const emit = defineEmits<{ error: [message: string] }>()
 const brief = useBriefStore()
 
 const POLL_MS = 4000
+const { resendCooldownMs } = useRuntimeConfig().public.brief
 
 // "Not received your email?" opens the tips and the address, which can be fixed before resending
 const open = ref(false)
@@ -74,7 +75,7 @@ async function resend() {
   }
 
   // Resend counts the wait down and can't be pressed meanwhile (see Nav), but Enter in the address field still lands here
-  if (brief.lastSentAt + BRIEF_RESEND_COOLDOWN_MS > Date.now()) return
+  if (brief.lastSentAt + resendCooldownMs > Date.now()) return
 
   brief.sending = true
   try {

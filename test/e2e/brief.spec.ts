@@ -1,5 +1,6 @@
 import { expect, test } from '@nuxt/test-utils/playwright'
 import { confirmLink, fillBrief, open, outbox, primary, sendBrief, visitor } from './helpers'
+import { RESEND_WAIT_MS } from './settings'
 
 // The brief builder from the first step to the brief reaching the team (docs/plans/brief-builder.md, Verification).
 // Real email delivery, the PDF and the real Turnstile are checked on the preview instead.
@@ -24,10 +25,15 @@ test('a sent brief reaches the team once its link is confirmed, and the waiting 
   // The first tab, polling, flips to the thanks
   await expect(page.getByRole('heading', { name: /We've got your brief/ })).toBeVisible({ timeout: 15_000 })
 
-  const team = await outbox(request, 'team@e2e.test')
-  expect(team.some((email) => email.subject.startsWith(`New brief: ${client.name}`))).toBe(true)
-  const copies = (await outbox(request, client.email)).filter((email) => email.subject === 'We’ve got your brief')
-  expect(copies).toHaveLength(1)
+  // The emails go after the confirm page is answered
+  await expect
+    .poll(async () =>
+      (await outbox(request, 'team@e2e.test')).some((email) => email.subject.startsWith(`New brief: ${client.name}`)),
+    )
+    .toBe(true)
+  await expect
+    .poll(async () => (await outbox(request, client.email)).filter((email) => email.subject === 'We’ve got your brief'))
+    .toHaveLength(1)
 })
 
 test('opening the link changes nothing until its button is pressed', async ({ page, context, request }) => {
@@ -47,7 +53,6 @@ test('opening the link changes nothing until its button is pressed', async ({ pa
 })
 
 test('a mistyped email is fixed from the inbox, and only the newest link works', async ({ page, context, request }) => {
-  test.setTimeout(90_000)
   const client = await visitor(context)
   const typo = client.email.replace('@example.com', '@exampel.com')
   await fillBrief(page, { ...client, email: typo })
@@ -56,8 +61,8 @@ test('a mistyped email is fixed from the inbox, and only the newest link works',
 
   await page.getByRole('button', { name: 'Not received your email?' }).click()
   await page.getByRole('textbox', { name: 'Your email' }).fill(client.email)
-  // The server holds resends 20 seconds apart, by its own clock
-  await page.waitForTimeout(20_500)
+  // Once the wait between sends is up (shortened for the tests)
+  await expect(primary(page, 'Resend')).not.toHaveAttribute('aria-disabled', 'true', { timeout: RESEND_WAIT_MS * 2 })
   await primary(page, 'Resend').click()
   await expect(page.getByText(client.email, { exact: true })).toBeVisible()
 
@@ -71,23 +76,24 @@ test('a mistyped email is fixed from the inbox, and only the newest link works',
   await expect(confirmPage.getByRole('heading', { name: /We've got your brief/ })).toBeVisible()
 
   // One brief: one email to the team, the copy to the right address only
-  const team = (await outbox(request, 'team@e2e.test')).filter((email) => email.subject.includes(client.name))
-  expect(team).toHaveLength(1)
+  await expect
+    .poll(async () => (await outbox(request, 'team@e2e.test')).filter((email) => email.subject.includes(client.name)))
+    .toHaveLength(1)
   expect(await outbox(request, typo)).toHaveLength(1)
 })
 
 test('Resend counts down the wait between sends', async ({ page, context }) => {
-  test.setTimeout(90_000)
   const client = await visitor(context)
   await fillBrief(page, client)
   await sendBrief(page)
 
+  const seconds = RESEND_WAIT_MS / 1000
   const waiting = primary(page, /^Resend in \d+s$/)
-  await expect(waiting).toHaveText(/Resend in (20|19)s/)
+  await expect(waiting).toHaveText(new RegExp(`Resend in (${seconds}|${seconds - 1})s`))
   await expect(waiting).toHaveAttribute('aria-disabled', 'true')
-  await expect(waiting).toHaveText(/Resend in 1[0-5]s/, { timeout: 10_000 })
+  await expect(waiting).toHaveText(new RegExp(`Resend in ${seconds - 2}s`), { timeout: RESEND_WAIT_MS })
 
-  await expect(primary(page, 'Resend')).toBeVisible({ timeout: 20_000 })
+  await expect(primary(page, 'Resend')).toBeVisible({ timeout: RESEND_WAIT_MS * 2 })
   await expect(primary(page, 'Resend')).not.toHaveAttribute('aria-disabled', 'true')
 })
 

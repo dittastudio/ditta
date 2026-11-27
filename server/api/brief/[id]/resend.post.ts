@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
   if (row.status === 'confirmed') return { status: row.status, email: row.email }
 
   const now = Date.now()
-  const wait = row.last_sent_at + BRIEF_RESEND_COOLDOWN_MS - now
+  const wait = row.last_sent_at + useRuntimeConfig(event).public.brief.resendCooldownMs - now
   if (wait > 0) {
     setResponseHeader(event, 'Retry-After', Math.ceil(wait / 1000))
     throw createError({ statusCode: 429, message: `Wait ${Math.ceil(wait / 1000)} seconds to send it again` })

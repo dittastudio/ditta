@@ -89,12 +89,13 @@ const advanceSounds = {
 }
 
 // Checks the whole brief, then posts it with the Turnstile token
-const turnstileReady = !!useRuntimeConfig().public.turnstileSiteKey || import.meta.dev
+const config = useRuntimeConfig().public
+const turnstileReady = !!config.turnstileSiteKey || import.meta.dev
 
 async function send() {
   if (brief.sending) return
   // Back from Check your inbox, Send counts down the wait between sends (see Nav), but Enter still lands here
-  if (brief.briefId && brief.lastSentAt + BRIEF_RESEND_COOLDOWN_MS > Date.now()) return
+  if (brief.briefId && brief.lastSentAt + config.brief.resendCooldownMs > Date.now()) return
 
   const result = briefAnswersSchema.safeParse(brief.answers)
   if (!result.success) {

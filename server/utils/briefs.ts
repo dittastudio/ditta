@@ -10,8 +10,8 @@ export const BRIEF_TOKEN_TTL_MS = 72 * 60 * 60 * 1000
 export const BRIEF_PENDING_TTL_MS = 14 * 24 * 60 * 60 * 1000
 // How long a confirmed brief, and its PDF, is kept after it was confirmed: six months, as the privacy policy says
 export const BRIEF_CONFIRMED_TTL_MS = 183 * 24 * 60 * 60 * 1000
-// The most times one brief's link can be sent. The least time between two sends is BRIEF_RESEND_COOLDOWN_MS, in
-// shared/utils/brief.ts, since Check your inbox counts it down too.
+// The most times one brief's link can be sent. The least time between two sends is the public runtime config's
+// brief.resendCooldownMs (nuxt.config.ts), since Check your inbox counts it down too.
 export const BRIEF_MAX_SENDS = 10
 // The most times a confirmed brief's PDF is tried before the sweep leaves it, so one that never renders doesn't use up
 // Browser Run for good. Also written into the index the sweep reads it through (migration 0003), so change both.

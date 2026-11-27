@@ -59,7 +59,7 @@ export default defineEventHandler(async (event) => {
   const existing = pending && pending.send_count < BRIEF_MAX_SENDS ? pending : null
 
   // Sent again after an edit, it waits as long as Resend does, so Back and Send isn't a way round it
-  const wait = existing ? existing.last_sent_at + BRIEF_RESEND_COOLDOWN_MS - now : 0
+  const wait = existing ? existing.last_sent_at + config.public.brief.resendCooldownMs - now : 0
   if (wait > 0) {
     setResponseHeader(event, 'Retry-After', Math.ceil(wait / 1000))
     throw createError({ statusCode: 429, message: `Wait ${Math.ceil(wait / 1000)} seconds to send it again` })

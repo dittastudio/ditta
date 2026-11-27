@@ -5,8 +5,9 @@ import { useIntervalFn } from '@vueuse/core'
 export function useBriefResendWait() {
   const brief = useBriefStore()
   const seconds = ref(0)
+  const { resendCooldownMs } = useRuntimeConfig().public.brief
 
-  const left = () => Math.max(0, Math.ceil((brief.lastSentAt + BRIEF_RESEND_COOLDOWN_MS - Date.now()) / 1000))
+  const left = () => Math.max(0, Math.ceil((brief.lastSentAt + resendCooldownMs - Date.now()) / 1000))
 
   function tick() {
     seconds.value = left()

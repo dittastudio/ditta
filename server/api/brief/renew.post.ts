@@ -9,7 +9,10 @@ export default defineEventHandler(async (event) => {
   if (!row || row.status !== 'pending') return briefLinkState(row)
 
   const now = Date.now()
-  if (row.last_sent_at + BRIEF_RESEND_COOLDOWN_MS > now || row.send_count >= BRIEF_MAX_SENDS) {
+  if (
+    row.last_sent_at + useRuntimeConfig(event).public.brief.resendCooldownMs > now ||
+    row.send_count >= BRIEF_MAX_SENDS
+  ) {
     throw createError({ statusCode: 429, message: 'We’ve only just sent one. Check your inbox.' })
   }
 

@@ -254,13 +254,8 @@ const suggestBriefEmail = (email: string): string | null => {
   return local && fix ? `${local}@${fix}` : null
 }
 
-// The least time between two emails for one brief: the server refuses a resend sooner (server/api/brief/[id]/resend.post.ts),
-// and Check your inbox counts it down on Resend (useBriefResendWait)
-const BRIEF_RESEND_COOLDOWN_MS = 20 * 1000
-
 export type { BriefDraft, BriefField, BriefLinkRow, BriefLinkRowErrors, BriefQuestion, BriefStep }
 export {
-  BRIEF_RESEND_COOLDOWN_MS,
   briefFirstName,
   briefSteps,
   formatBriefAnswer,
