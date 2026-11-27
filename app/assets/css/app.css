@@ -346,6 +346,7 @@
     --app-gutter-outer: utopia.clamp(20, 190);
     --app-gutter-inner: --spacing(5);
     --app-vertical-rhythm: utopia.clamp(100, 300);
+    --app-header-height: calc(--spacing(7.5) + --spacing(11));
 
     --ui-button-medium-icon: utopia.clamp(24, 30);
     --ui-button-medium-height: calc(var(--ui-button-medium-icon) + --spacing(4));

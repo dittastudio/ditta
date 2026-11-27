@@ -9,6 +9,7 @@ import { blockCtaBlock } from './blocks/blocks/block-cta';
 import { blockHeroBlock } from './blocks/blocks/block-hero';
 import { blockHeroProjectBlock } from './blocks/blocks/block-hero-project';
 import { blockMediaBlock } from './blocks/blocks/block-media';
+import { blockPageTextBlock } from './blocks/blocks/block-page-text';
 import { blockPostsBlock } from './blocks/blocks/block-posts';
 import { blockPostTextBlock } from './blocks/blocks/block-post-text';
 import { blockProjectOverviewBlock } from './blocks/blocks/block-project-overview';
@@ -51,6 +52,7 @@ export const schema = defineSchema({
     blockHeroBlock,
     blockHeroProjectBlock,
     blockMediaBlock,
+    blockPageTextBlock,
     blockPostsBlock,
     blockPostTextBlock,
     blockProjectOverviewBlock,
